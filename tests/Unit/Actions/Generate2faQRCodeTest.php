@@ -26,7 +26,7 @@ class Generate2faQRCodeTest extends TestCase
         Date::setTestNow(Date::parse('2025-07-16 10:00:00'));
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $result = new Generate2faQRCode(

@@ -54,23 +54,23 @@ class UserTest extends TestCase
     #[Test]
     public function it_gets_the_initials(): void
     {
-        $dwight = User::factory()->create([
-            'first_name' => 'Dwight',
-            'last_name' => 'Schrute',
+        $ross = User::factory()->create([
+            'first_name' => 'Ross',
+            'last_name' => 'Geller',
         ]);
 
-        $this->assertEquals('DS', $dwight->initials());
+        $this->assertEquals('RG', $ross->initials());
     }
 
     #[Test]
     public function it_gets_the_full_name(): void
     {
         $user = User::factory()->create([
-            'first_name' => 'Dwight',
-            'last_name' => 'Schrute',
+            'first_name' => 'Ross',
+            'last_name' => 'Geller',
         ]);
 
-        $this->assertEquals('Dwight Schrute', $user->getFullName());
+        $this->assertEquals('Ross Geller', $user->getFullName());
     }
 
     #[Test]
@@ -91,22 +91,22 @@ class UserTest extends TestCase
     #[Test]
     public function it_gets_the_member_object_for_the_given_user(): void
     {
-        $dwight = Member::factory()->create([]);
+        $ross = Member::factory()->create([]);
 
         $this->assertInstanceOf(
             Member::class,
-            $dwight->user->memberOf($dwight->vault),
+            $ross->user->memberOf($ross->vault),
         );
     }
 
     #[Test]
     public function it_fails_to_get_the_member_object_if_user_is_not_part_of_the_vault(): void
     {
-        $dwight = Member::factory()->create([]);
+        $ross = Member::factory()->create([]);
         $vault = Vault::factory()->create([]);
 
         $this->assertNull(
-            $dwight->user->memberOf($vault),
+            $ross->user->memberOf($vault),
         );
     }
 }

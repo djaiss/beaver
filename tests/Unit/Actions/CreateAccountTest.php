@@ -27,10 +27,10 @@ class CreateAccountTest extends TestCase
         Date::setTestNow(Date::create(2018, 1, 1));
 
         $user = new CreateAccount(
-            email: 'michael.scott@dundermifflin.com',
+            email: 'chandler.bing@friends.com',
             password: 'password',
-            firstName: 'Michael',
-            lastName: 'Scott',
+            firstName: 'Chandler',
+            lastName: 'Bing',
         )->execute();
 
         $this->assertInstanceOf(
@@ -40,7 +40,7 @@ class CreateAccountTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
             'trial_ends_at' => '2018-01-31 00:00:00',
         ]);
 
@@ -59,16 +59,16 @@ class CreateAccountTest extends TestCase
     public function it_cant_create_an_account_with_the_same_email(): void
     {
         User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $this->expectException(UniqueConstraintViolationException::class);
 
         new CreateAccount(
-            email: 'michael.scott@dundermifflin.com',
+            email: 'chandler.bing@friends.com',
             password: 'password',
-            firstName: 'Michael',
-            lastName: 'Scott',
+            firstName: 'Chandler',
+            lastName: 'Bing',
         )->execute();
     }
 }

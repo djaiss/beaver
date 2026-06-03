@@ -25,27 +25,27 @@ class UpdateUserInformationTest extends TestCase
         Queue::fake();
 
         $user = User::factory()->create([
-            'first_name' => 'Ross',
+            'first_name' => 'Monica',
             'last_name' => 'Geller',
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'monica.geller@friends.com',
         ]);
 
         $updatedUser = new UpdateUserInformation(
             user: $user,
-            email: 'michael.scott@dundermifflin.com',
-            firstName: 'Michael',
-            lastName: 'Scott',
-            nickname: 'Mike',
+            email: 'chandler.bing@friends.com',
+            firstName: 'Chandler',
+            lastName: 'Bing',
+            nickname: 'Chan',
             locale: 'fr',
             timeFormat24h: false,
         )->execute();
 
         $this->assertInstanceOf(User::class, $updatedUser);
 
-        $this->assertEquals('michael.scott@dundermifflin.com', $updatedUser->email);
-        $this->assertEquals('Michael', $updatedUser->first_name);
-        $this->assertEquals('Scott', $updatedUser->last_name);
-        $this->assertEquals('Mike', $updatedUser->nickname);
+        $this->assertEquals('chandler.bing@friends.com', $updatedUser->email);
+        $this->assertEquals('Chandler', $updatedUser->first_name);
+        $this->assertEquals('Bing', $updatedUser->last_name);
+        $this->assertEquals('Chan', $updatedUser->nickname);
         $this->assertEquals('fr', $updatedUser->locale);
         $this->assertFalse($updatedUser->time_format_24h);
 
@@ -65,23 +65,23 @@ class UpdateUserInformationTest extends TestCase
         Event::fake();
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
             'email_verified_at' => now(),
         ]);
 
         new UpdateUserInformation(
             user: $user,
-            email: 'dwight.schrute@dundermifflin.com',
-            firstName: 'Dwight',
-            lastName: 'Schrute',
-            nickname: 'Dwight',
+            email: 'ross.geller@friends.com',
+            firstName: 'Ross',
+            lastName: 'Geller',
+            nickname: 'Ross',
             locale: 'fr',
             timeFormat24h: true,
         )->execute();
 
         Event::assertDispatched(
             event: Registered::class,
-            callback: fn (Registered $event): bool => $event->user->email === 'dwight.schrute@dundermifflin.com',
+            callback: fn (Registered $event): bool => $event->user->email === 'ross.geller@friends.com',
         );
         $this->assertNull($user->refresh()->email_verified_at);
     }
@@ -92,16 +92,16 @@ class UpdateUserInformationTest extends TestCase
         Event::fake();
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
             'email_verified_at' => now(),
         ]);
 
         new UpdateUserInformation(
             user: $user,
-            email: 'michael.scott@dundermifflin.com',
-            firstName: 'Dwight',
-            lastName: 'Schrute',
-            nickname: 'Dwight',
+            email: 'chandler.bing@friends.com',
+            firstName: 'Ross',
+            lastName: 'Geller',
+            nickname: 'Ross',
             locale: 'fr',
             timeFormat24h: true,
         )->execute();

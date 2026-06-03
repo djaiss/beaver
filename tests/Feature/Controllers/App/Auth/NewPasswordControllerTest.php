@@ -32,14 +32,14 @@ class NewPasswordControllerTest extends TestCase
         Event::fake();
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $token = Password::createToken($user);
 
         $response = $this->post('/reset-password', [
             'token' => $token,
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
             'password' => 'SecureP@ssw0rd!2024',
             'password_confirmation' => 'SecureP@ssw0rd!2024',
         ]);
@@ -55,12 +55,12 @@ class NewPasswordControllerTest extends TestCase
     public function it_rejects_invalid_token(): void
     {
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $response = $this->post('/reset-password', [
             'token' => 'invalid-token',
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
             'password' => 'SecureP@ssw0rd!2024',
             'password_confirmation' => 'SecureP@ssw0rd!2024',
         ]);

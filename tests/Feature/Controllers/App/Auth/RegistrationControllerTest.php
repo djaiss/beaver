@@ -23,9 +23,9 @@ class RegistrationControllerTest extends TestCase
     public function it_creates_an_account(): void
     {
         $response = $this->post('/register', [
-            'first_name' => 'Michael',
-            'last_name' => 'Scott',
-            'email' => 'michael.scott@dundermifflin.com',
+            'first_name' => 'Chandler',
+            'last_name' => 'Bing',
+            'email' => 'chandler.bing@friends.com',
             'password' => '5UTHSmdj',
             'password_confirmation' => '5UTHSmdj',
         ]);

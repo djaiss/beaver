@@ -69,7 +69,7 @@ class VaultControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $response = $this->json('POST', '/api/vaults', [
-            'name' => 'Dunder Mifflin',
+            'name' => 'Central Perk',
         ]);
 
         $response->assertStatus(201);
@@ -121,7 +121,7 @@ class VaultControllerTest extends TestCase
         Sanctum::actingAs($user);
 
         $response = $this->json('PUT', '/api/vaults/'.$vault->id, [
-            'name' => 'Dunder Mifflin Michael Scott Edition',
+            'name' => 'Central Perk Chandler Edition',
         ]);
 
         $response->assertStatus(200);

@@ -21,7 +21,7 @@ class UserIpAddressChangedTest extends TestCase
         Config::set('app.name', 'lifeOS');
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $mailable = new UserIpAddressChanged(
@@ -33,7 +33,7 @@ class UserIpAddressChangedTest extends TestCase
 
         $rendered = $mailable->render();
 
-        $this->assertStringContainsString('michael.scott@dundermifflin.com', $rendered);
+        $this->assertStringContainsString('chandler.bing@friends.com', $rendered);
         $this->assertStringContainsString('192.168.1.1', $rendered);
     }
 }

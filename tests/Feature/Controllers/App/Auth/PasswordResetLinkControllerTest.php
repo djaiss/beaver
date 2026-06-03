@@ -29,11 +29,11 @@ class PasswordResetLinkControllerTest extends TestCase
         Notification::fake();
 
         User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $response = $this->post('/forgot-password', [
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $response->assertRedirect();

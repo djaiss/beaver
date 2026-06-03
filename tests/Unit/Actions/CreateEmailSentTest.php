@@ -26,7 +26,7 @@ class CreateEmailSentTest extends TestCase
             user: $user,
             uuid: 'd27cee22-b10f-46c4-a7dc-af3b46820d80',
             emailType: 'birthday_wishes',
-            emailAddress: 'dwight.schrute@dundermifflin.com',
+            emailAddress: 'ross.geller@friends.com',
             subject: 'Happy Birthday!',
             body: 'Hope you have a great day!',
         )->execute();
@@ -55,7 +55,7 @@ class CreateEmailSentTest extends TestCase
             user: $user,
             uuid: null,
             emailType: 'birthday_wishes',
-            emailAddress: 'dwight.schrute@dundermifflin.com',
+            emailAddress: 'ross.geller@friends.com',
             subject: 'Happy Birthday!',
             body: 'Hope you <a href="https://example.com">have a great day!</a>',
         )->execute();
@@ -75,7 +75,7 @@ class CreateEmailSentTest extends TestCase
             user: $user,
             uuid: $uuid->toString(),
             emailType: 'birthday_wishes',
-            emailAddress: 'dwight.schrute@dundermifflin.com',
+            emailAddress: 'ross.geller@friends.com',
             subject: 'Happy Birthday!',
             body: 'Hope you have a great day!',
         )->execute();

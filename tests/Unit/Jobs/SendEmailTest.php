@@ -30,7 +30,7 @@ class SendEmailTest extends TestCase
         Mail::fake();
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $job = new SendEmail(
@@ -48,7 +48,7 @@ class SendEmailTest extends TestCase
 
         $emailSent = EmailSent::query()->latest()->first();
         $this->assertEquals(EmailType::LoginFailed->value, $emailSent->email_type);
-        $this->assertEquals('michael.scott@dundermifflin.com', $emailSent->email_address);
+        $this->assertEquals('chandler.bing@friends.com', $emailSent->email_address);
         $this->assertEquals('Login attempt on lifeOS', $emailSent->subject);
     }
 
@@ -68,7 +68,7 @@ class SendEmailTest extends TestCase
             ->with(Mockery::on(
                 fn ($args): bool => (
                     $args['from'] === 'noreply@example.com'
-                    && $args['to'] === ['michael.scott@dundermifflin.com']
+                    && $args['to'] === ['chandler.bing@friends.com']
                     && $args['subject'] === 'Login attempt on lifeOS'
                     && is_string($args['html'])
                     && mb_strlen($args['html']) > 0
@@ -86,7 +86,7 @@ class SendEmailTest extends TestCase
         app()->instance('resend', $resendMock);
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $job = new SendEmail(
@@ -99,7 +99,7 @@ class SendEmailTest extends TestCase
 
         $emailSent = EmailSent::query()->latest()->first();
         $this->assertEquals(EmailType::LoginFailed->value, $emailSent->email_type);
-        $this->assertEquals('michael.scott@dundermifflin.com', $emailSent->email_address);
+        $this->assertEquals('chandler.bing@friends.com', $emailSent->email_address);
         $this->assertEquals('Login attempt on lifeOS', $emailSent->subject);
         $this->assertEquals('resend-uuid-12345', $emailSent->uuid);
     }

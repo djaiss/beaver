@@ -30,10 +30,10 @@ class UpdateVaultTest extends TestCase
         $updatedVault = new UpdateVault(
             user: $user,
             vault: $vault,
-            name: 'Threat Level Midnight',
+            name: 'Joey Tribbiani Special',
         )->execute();
 
-        $this->assertEquals('Threat Level Midnight', $updatedVault->name);
+        $this->assertEquals('Joey Tribbiani Special', $updatedVault->name);
     }
 
     #[Test]
@@ -52,7 +52,7 @@ class UpdateVaultTest extends TestCase
         new UpdateVault(
             user: $user,
             vault: $vault,
-            name: 'Dunder@ / Mifflin!',
+            name: 'Central@ / Perk!',
         )->execute();
     }
 

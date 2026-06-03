@@ -78,10 +78,10 @@ class SettingsControllerTest extends TestCase
 
         $response = $this->actingAs($user)
             ->put('/settings/profile', [
-                'first_name' => 'Michael',
-                'last_name' => 'Scott',
-                'nickname' => 'Michael',
-                'email' => 'michael.scott@dundermifflin.com',
+                'first_name' => 'Chandler',
+                'last_name' => 'Bing',
+                'nickname' => 'Chan',
+                'email' => 'chandler.bing@friends.com',
                 'locale' => 'en',
                 'time_format_24h' => 'true',
             ]);

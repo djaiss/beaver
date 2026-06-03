@@ -34,19 +34,19 @@ class LogTest extends TestCase
     public function it_gets_the_name_of_the_user(): void
     {
         $user = User::factory()->create([
-            'first_name' => 'Dwight',
-            'last_name' => 'Schrute',
+            'first_name' => 'Ross',
+            'last_name' => 'Geller',
         ]);
         $log = Log::factory()->create([
             'user_id' => $user->id,
-            'user_name' => 'Jim Halpert',
+            'user_name' => 'Joey Tribbiani',
         ]);
 
-        $this->assertEquals('Dwight Schrute', $log->getUserName());
+        $this->assertEquals('Ross Geller', $log->getUserName());
 
         $log->user_id = null;
         $log->save();
 
-        $this->assertEquals('Jim Halpert', $log->refresh()->getUserName());
+        $this->assertEquals('Joey Tribbiani', $log->refresh()->getUserName());
     }
 }

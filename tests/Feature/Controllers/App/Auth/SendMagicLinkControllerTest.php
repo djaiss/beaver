@@ -31,11 +31,11 @@ class SendMagicLinkControllerTest extends TestCase
         Queue::fake();
 
         $user = User::factory()->create([
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $response = $this->post('/send-magic-link', [
-            'email' => 'michael.scott@dundermifflin.com',
+            'email' => 'chandler.bing@friends.com',
         ]);
 
         $response->assertStatus(200);

@@ -27,7 +27,7 @@ class CreateVaultTest extends TestCase
 
         $vault = new CreateVault(
             user: $user,
-            name: 'Dunder Mifflin',
+            name: 'Central Perk',
         )->execute();
 
         $this->assertInstanceOf(Vault::class, $vault);
@@ -47,7 +47,7 @@ class CreateVaultTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::VaultCreation
                 && $job->user->id === $user->id
-                && $job->description === 'Created a vault called Dunder Mifflin'
+                && $job->description === 'Created a vault called Central Perk'
             ),
         );
     }
@@ -61,7 +61,7 @@ class CreateVaultTest extends TestCase
 
         new CreateVault(
             user: $user,
-            name: 'Dunder & Mifflin',
+            name: 'Central & Perk',
         )->execute();
     }
 
