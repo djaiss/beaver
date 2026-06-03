@@ -10,7 +10,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -88,6 +87,10 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
+            'first_name' => 'encrypted',
+            'last_name' => 'encrypted',
+            'nickname' => 'encrypted',
+            'last_used_ip' => 'encrypted',
             'email_verified_at' => 'datetime',
             'trial_ends_at' => 'datetime',
             'password' => 'hashed',

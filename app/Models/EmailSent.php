@@ -54,6 +54,10 @@ class EmailSent extends Model
      * The attributes that should be cast.
      */
     protected $casts = [
+        'email_type' => 'encrypted',
+        'email_address' => 'encrypted',
+        'subject' => 'encrypted',
+        'body' => 'encrypted',
         'sent_at' => 'datetime',
         'delivered_at' => 'datetime',
         'bounced_at' => 'datetime',

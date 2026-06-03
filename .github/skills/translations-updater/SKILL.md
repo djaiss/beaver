@@ -21,7 +21,7 @@ Use this Skill when:
 
 1. Run the locale generation command:
    ```bash
-   composer libraryos:locale
+   composer lifeos:locale
    ```
 2. Confirm the command completes successfully before making any edits.
 
@@ -85,7 +85,7 @@ Ensure all `lang/*.json` files:
 
 ## Validation checklist
 
-- [ ] `composer libraryos:locale` executed successfully
+- [ ] `composer lifeos:locale` executed successfully
 - [ ] All `lang/*.json` files are valid JSON
 - [ ] No missing keys remain
 - [ ] No empty or null translation values remain

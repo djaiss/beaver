@@ -7,7 +7,6 @@ namespace Tests\Unit\Actions;
 use App\Actions\CreateAccount;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -42,8 +41,6 @@ class CreateAccountTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
             'email' => 'michael.scott@dundermifflin.com',
-            'first_name' => 'Michael',
-            'last_name' => 'Scott',
             'trial_ends_at' => '2018-01-31 00:00:00',
         ]);
 

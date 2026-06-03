@@ -18,7 +18,7 @@ class UserIpAddressChangedTest extends TestCase
     #[Test]
     public function it_should_have_correct_envelope_subject(): void
     {
-        Config::set('app.name', 'libraryOS');
+        Config::set('app.name', 'lifeOS');
 
         $user = User::factory()->create([
             'email' => 'michael.scott@dundermifflin.com',
@@ -29,7 +29,7 @@ class UserIpAddressChangedTest extends TestCase
             ip: '192.168.1.1',
         );
 
-        $this->assertEquals('New sign-in detected on your libraryOS account', $mailable->envelope()->subject);
+        $this->assertEquals('New sign-in detected on your lifeOS account', $mailable->envelope()->subject);
 
         $rendered = $mailable->render();
 

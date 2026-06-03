@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\Organization;
+use App\Models\Vault;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,7 +25,6 @@ class VaultResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'name' => $this->name,
-                'slug' => $this->slug,
                 'avatar' => $this->getAvatar(),
                 'created_at' => $this->created_at->timestamp,
                 'updated_at' => $this->updated_at->timestamp,

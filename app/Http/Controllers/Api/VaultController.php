@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\CreateOrganization;
 use App\Actions\CreateVault;
 use App\Actions\DestroyVault;
-use App\Actions\UpdateOrganization;
 use App\Actions\UpdateVault;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\VaultResource;

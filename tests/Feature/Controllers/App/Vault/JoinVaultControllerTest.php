@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault;
 
+use App\Enums\PermissionEnum;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use App\Enums\PermissionEnum;
 
 class JoinVaultControllerTest extends TestCase
 {
@@ -37,7 +37,7 @@ class JoinVaultControllerTest extends TestCase
             'invitation_code' => 'ABC123',
         ]);
 
-        $response->assertRedirect('/vaults/'.$vault->slug);
+        $response->assertRedirect('/vaults/'.$vault->id);
         $response->assertSessionHas('status');
     }
 

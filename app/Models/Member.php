@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Collection;
 
 /**
  * Class Member
@@ -17,7 +16,6 @@ use Illuminate\Support\Collection;
  * @property int $vault_id
  * @property int|null $user_id
  * @property string|null $timezone
- * @property Carbon|null $birthdate
  * @property Carbon|null $joined_at
  * @property string $role
  * @property Carbon $created_at
@@ -38,7 +36,6 @@ class Member extends Model
         'vault_id',
         'user_id',
         'timezone',
-        'birthdate',
         'joined_at',
         'role',
     ];
@@ -49,7 +46,6 @@ class Member extends Model
      * @return array<string, string>
      */
     protected $casts = [
-        'birthdate' => 'date',
         'joined_at' => 'datetime',
     ];
 

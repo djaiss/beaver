@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->string('first_name', 100)->comment('user\'s first name');
-            $table->string('last_name', 100)->comment('user\'s last name');
-            $table->string('nickname', 100)->nullable()->comment('user\'s nickname');
+            $table->text('first_name')->comment('user\'s first name');
+            $table->text('last_name')->comment('user\'s last name');
+            $table->text('nickname')->nullable()->comment('user\'s nickname');
             $table->string('email')->unique()->comment('user\'s email address');
             $table->timestamp('email_verified_at')->nullable()->comment('email verification timestamp');
             $table->string('password')->comment('user\'s password');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('two_factor_recovery_codes')->nullable()->comment('user\'s two factor recovery codes');
             $table->timestamp('two_factor_confirmed_at')->nullable()->comment('two factor confirmation timestamp');
             $table->datetime('trial_ends_at')->nullable()->comment('trial end timestamp');
-            $table->string('last_used_ip')->nullable()->comment('last used IP address');
+            $table->text('last_used_ip')->nullable()->comment('last used IP address');
             $table->datetime('last_activity_at')->nullable()->comment('last activity timestamp');
             $table->string('locale', 3)->default('en')->comment('user\'s locale');
             $table->boolean('time_format_24h')->default(true)->comment('time format preference');

@@ -28,14 +28,13 @@ class MemberResource extends JsonResource
                 'name' => $this->user?->getFullName(),
                 'email' => $this->user?->email,
                 'timezone' => $this->timezone,
-                'birthdate' => $this->birthdate?->timestamp,
                 'joined_at' => $this->joined_at?->timestamp,
                 'created_at' => $this->created_at->timestamp,
                 'updated_at' => $this->updated_at->timestamp,
             ],
             'links' => [
-                'self' => route('api.organization.adminland.member.show', [
-                    'id' => $this->organization_id,
+                'self' => route('api.vault.adminland.member.show', [
+                    'id' => $this->vault_id,
                     'memberId' => $this->id,
                 ]),
             ],

@@ -6,8 +6,8 @@ namespace App\Jobs;
 
 use App\Enums\UserActionEnum;
 use App\Models\Log;
-use App\Models\Vault;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

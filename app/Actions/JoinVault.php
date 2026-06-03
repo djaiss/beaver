@@ -8,8 +8,8 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Member;
-use App\Models\Vault;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
@@ -70,7 +70,7 @@ class JoinVault
             vault: $this->vault,
             user: $this->user,
             action: UserActionEnum::VaultJoined,
-            description: 'Joined vault called ' . $this->vault->name,
+            description: 'Joined vault called '.$this->vault->name,
         )->onQueue('low');
     }
 }

@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable()->comment('user account of the member');
             $table->timestamp('joined_at')->comment('timestamp when the member joined the vault');
             $table->string('timezone', 50)->nullable()->comment('member\'s preferred timezone');
-            $table->date('birthdate')->nullable()->comment('member\'s date of birth');
             $table->string('role', 15)->default(PermissionEnum::Viewer->value)->comment('member\'s role in the vault');
             $table->timestamps();
             $table->foreign('vault_id')->references('id')->on('vaults')->cascadeOnDelete();

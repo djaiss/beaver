@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Models\Member;
-use App\Models\Vault;
 use App\Enums\PermissionEnum;
+use App\Models\Member;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase

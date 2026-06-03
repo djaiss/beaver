@@ -6,9 +6,8 @@ namespace Database\Factories;
 
 use App\Enums\PermissionEnum;
 use App\Models\Member;
-use App\Models\Vault;
-use App\Models\Role;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -30,7 +29,6 @@ class MemberFactory extends Factory
             'user_id' => User::factory(),
             'role' => PermissionEnum::Viewer->value,
             'timezone' => fake()->timezone(),
-            'birthdate' => null,
             'joined_at' => now(),
         ];
     }

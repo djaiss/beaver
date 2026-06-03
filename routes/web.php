@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
-use App\Http\Controllers\App\Vault\Adminland\MemberController;
-use App\Http\Controllers\App\Vault\VaultController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteAccountController;
 use App\Http\Controllers\App\Settings\EmailSentController;
@@ -14,7 +11,9 @@ use App\Http\Controllers\App\Settings\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\SecurityController;
 use App\Http\Controllers\App\Settings\SettingsController;
 use App\Http\Controllers\App\Settings\TwoFAController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
 use App\Http\Controllers\App\Vault\JoinVaultController;
+use App\Http\Controllers\App\Vault\VaultController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,10 +33,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::post('vaults/join', [JoinVaultController::class, 'store'])->name('vault.join.store');
 
     Route::middleware(['vault'])->group(function (): void {
-        Route::get('vaults/{slug}', [VaultController::class, 'show'])->name('vault.show');
+        Route::get('vaults/{vaultId}', [VaultController::class, 'show'])->name('vault.show');
 
         // adminland
-        Route::prefix('vaults/{slug}/adminland')->group(function (): void {
+        Route::prefix('vaults/{vaultId}/adminland')->group(function (): void {
             Route::get('', [AdminlandController::class, 'index'])->name('vault.adminland.index');
         });
     });

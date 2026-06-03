@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaults', function (Blueprint $table): void {
+        Schema::create('account_deletion_reasons', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->text('name')->comment('vault name');
-            $table->string('invitation_code', 64)->unique()->nullable()->comment('code used to invite members to the vault');
+            $table->text('reason')->comment('reason for account deletion');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vaults');
+        Schema::dropIfExists('account_deletion_reasons');
     }
 };

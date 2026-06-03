@@ -50,6 +50,17 @@ class Log extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @return array<string, string>
+     */
+    protected $casts = [
+        'user_name' => 'encrypted',
+        'action' => 'encrypted',
+        'description' => 'encrypted',
+    ];
+
+    /**
      * Get the vault associated with the log.
      *
      * @return BelongsTo<Vault, $this>

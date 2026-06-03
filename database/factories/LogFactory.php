@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Log;
-use App\Models\Vault;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

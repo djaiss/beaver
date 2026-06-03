@@ -14,13 +14,13 @@ class MagicLinkCreatedTest extends TestCase
     #[Test]
     public function it_should_have_correct_envelope_subject(): void
     {
-        Config::set('app.name', 'libraryOS');
+        Config::set('app.name', 'lifeOS');
 
         $mailable = new MagicLinkCreated(
             link: 'https://example.com/magic-link/abc123',
         );
 
-        $this->assertEquals('Login to libraryOS', $mailable->envelope()->subject);
+        $this->assertEquals('Login to lifeOS', $mailable->envelope()->subject);
 
         $rendered = $mailable->render();
 

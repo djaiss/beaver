@@ -32,7 +32,7 @@ class JoinVaultController extends Controller
             invitationCode: $validated['invitation_code'],
         )->execute();
 
-        return to_route('vault.show', $vault->slug)
+        return to_route('vault.show', $vault->id)
             ->with('status', __('Welcome '));
     }
 }

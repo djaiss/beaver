@@ -9,7 +9,6 @@ use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckVault
@@ -21,8 +20,7 @@ class CheckVault
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $slug = $request->route()->parameter('slug');
-        $id = (int) Str::before($slug, '-');
+        $id = (int) $request->route()->parameter('vaultId');
 
         try {
             $vault = Vault::query()->findOrFail($id);

@@ -17,7 +17,7 @@ class UpdateVaultTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_updates_an_organization(): void
+    public function it_updates_a_vault(): void
     {
         $user = $this->createUser();
         $vault = $this->createVault();
@@ -34,7 +34,6 @@ class UpdateVaultTest extends TestCase
         )->execute();
 
         $this->assertEquals('Threat Level Midnight', $updatedVault->name);
-        $this->assertEquals($vault->id.'-threat-level-midnight', $updatedVault->slug);
     }
 
     #[Test]

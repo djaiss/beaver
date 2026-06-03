@@ -14,7 +14,7 @@ class LocalizeCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'libraryOS:localize {locales}';
+    protected $signature = 'lifeos:localize {locales}';
 
     /**
      * @var string

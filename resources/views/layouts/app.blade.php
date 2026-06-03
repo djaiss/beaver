@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
   <body class="flex min-h-screen flex-col font-sans text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
-    <x-header :organization="$organization" />
+    <x-header :vault="$vault" />
 
     <main class="flex flex-1 flex-col px-2 py-px">
       <div class="mx-auto flex w-full grow flex-col items-stretch rounded-lg bg-gray-50 shadow-xs ring-1 ring-[#E6E7E9] dark:bg-gray-950 dark:ring-gray-800">

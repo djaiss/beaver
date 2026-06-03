@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Actions\GenerateVaultAvatar;
 use Carbon\Carbon;
-use Database\Factories\OrganizationFactory;
+use Database\Factories\VaultFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property string $name
- * @property string $slug
  * @property string|null $invitation_code
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
@@ -40,7 +39,6 @@ class Vault extends Model
      */
     protected $fillable = [
         'name',
-        'slug',
         'invitation_code',
     ];
 
@@ -51,17 +49,9 @@ class Vault extends Model
      */
     protected function casts(): array
     {
-        return [];
-    }
-
-    /**
-     * Get the route key for implicit model binding.
-     *
-     * @return string
-     */
-    public function getRouteKeyName(): string
-    {
-        return 'slug';
+        return [
+            'name' => 'encrypted',
+        ];
     }
 
     /**

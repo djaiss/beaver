@@ -25,7 +25,7 @@ class SendEmailTest extends TestCase
     public function it_sends_email_the_traditional_way(): void
     {
         Config::set('app.use_resend', false);
-        Config::set('app.name', 'libraryOS');
+        Config::set('app.name', 'lifeOS');
         Config::set('mail.from.address', 'noreply@example.com');
         Mail::fake();
 
@@ -49,14 +49,14 @@ class SendEmailTest extends TestCase
         $emailSent = EmailSent::query()->latest()->first();
         $this->assertEquals(EmailType::LoginFailed->value, $emailSent->email_type);
         $this->assertEquals('michael.scott@dundermifflin.com', $emailSent->email_address);
-        $this->assertEquals('Login attempt on libraryOS', $emailSent->subject);
+        $this->assertEquals('Login attempt on lifeOS', $emailSent->subject);
     }
 
     #[Test]
     public function it_sends_email_with_resend_facade(): void
     {
         Config::set('app.use_resend', true);
-        Config::set('app.name', 'libraryOS');
+        Config::set('app.name', 'lifeOS');
         Config::set('mail.from.address', 'noreply@example.com');
 
         $resendMock = Mockery::mock();
@@ -69,7 +69,7 @@ class SendEmailTest extends TestCase
                 fn ($args): bool => (
                     $args['from'] === 'noreply@example.com'
                     && $args['to'] === ['michael.scott@dundermifflin.com']
-                    && $args['subject'] === 'Login attempt on libraryOS'
+                    && $args['subject'] === 'Login attempt on lifeOS'
                     && is_string($args['html'])
                     && mb_strlen($args['html']) > 0
                 ),
@@ -100,7 +100,7 @@ class SendEmailTest extends TestCase
         $emailSent = EmailSent::query()->latest()->first();
         $this->assertEquals(EmailType::LoginFailed->value, $emailSent->email_type);
         $this->assertEquals('michael.scott@dundermifflin.com', $emailSent->email_address);
-        $this->assertEquals('Login attempt on libraryOS', $emailSent->subject);
+        $this->assertEquals('Login attempt on lifeOS', $emailSent->subject);
         $this->assertEquals('resend-uuid-12345', $emailSent->uuid);
     }
 }

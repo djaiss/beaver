@@ -9,24 +9,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Country
+ * Class AccountDeletionReason
  *
  * @property int $id
- * @property string $name
- * @property string $iso2
- * @property string $iso3
- * @property string $phone_code
- * @property string $currency_code
- * @property string|null $timezone_default
- * @property bool $is_active
+ * @property string $reason
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class Country extends Model
+class AccountDeletionReason extends Model
 {
     use HasFactory;
 
-    protected $table = 'countries';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'account_deletion_reasons';
 
     /**
      * The attributes that are mass assignable.
@@ -34,24 +33,18 @@ class Country extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'iso2',
-        'iso3',
-        'phone_code',
-        'currency_code',
-        'timezone_default',
-        'is_active',
+        'reason',
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
+            'reason' => 'encrypted',
         ];
     }
 }

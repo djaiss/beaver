@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App\Vault\Adminland;
 
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Enums\PermissionEnum;
 use Illuminate\View\View;
 
 class AdminlandController extends Controller

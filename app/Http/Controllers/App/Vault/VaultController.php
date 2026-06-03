@@ -21,7 +21,7 @@ class VaultController extends Controller
             ->get()
             ->map(fn (Vault $vault) => (object) [
                 'name' => $vault->name,
-                'link' => route('vault.show', $vault->slug),
+                'link' => route('vault.show', $vault->id),
                 'avatar' => $vault->getAvatar(),
             ]);
 
@@ -51,7 +51,7 @@ class VaultController extends Controller
             name: $validated['vault_name'],
         )->execute();
 
-        return to_route('vault.show', $vault->slug)
+        return to_route('vault.show', $vault->id)
             ->with('status', __('Vault created successfully'));
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Controllers\App\Organization\Adminland;
+namespace Tests\Feature\Controllers\App\Vault\Adminland;
 
 use App\Enums\PermissionEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +24,7 @@ class AdminlandControllerTest extends TestCase
             role: PermissionEnum::Owner->value,
         );
 
-        $response = $this->actingAs($user)->get('/vaults/'.$vault->slug.'/adminland');
+        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland');
 
         $response->assertStatus(200);
     }
@@ -40,7 +40,7 @@ class AdminlandControllerTest extends TestCase
             role: PermissionEnum::Viewer->value,
         );
 
-        $response = $this->actingAs($user)->get('/vaults/'.$vault->slug.'/adminland');
+        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland');
 
         $response->assertStatus(403);
     }

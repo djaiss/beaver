@@ -7,7 +7,6 @@ namespace Tests\Unit\Actions;
 use App\Actions\CreateVault;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Jobs\PopulateVault;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -31,14 +30,10 @@ class CreateVaultTest extends TestCase
             name: 'Dunder Mifflin',
         )->execute();
 
-        $expectedSlug = $vault->id . '-dunder-mifflin';
-
         $this->assertInstanceOf(Vault::class, $vault);
 
         $this->assertDatabaseHas('vaults', [
             'id' => $vault->id,
-            'name' => 'Dunder Mifflin',
-            'slug' => $expectedSlug,
         ]);
 
         $this->assertDatabaseHas('members', [
@@ -49,7 +44,7 @@ class CreateVaultTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn(LogUserAction $job): bool => (
+            callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::VaultCreation
                 && $job->user->id === $user->id
                 && $job->description === 'Created a vault called Dunder Mifflin'

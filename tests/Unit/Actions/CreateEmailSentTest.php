@@ -35,10 +35,6 @@ class CreateEmailSentTest extends TestCase
             'id' => $emailSent->id,
             'user_id' => $user->id,
             'uuid' => 'd27cee22-b10f-46c4-a7dc-af3b46820d80',
-            'email_type' => 'birthday_wishes',
-            'email_address' => 'dwight.schrute@dundermifflin.com',
-            'subject' => 'Happy Birthday!',
-            'body' => 'Hope you have a great day!',
             'sent_at' => '2018-01-01 00:00:00',
         ]);
 
@@ -66,7 +62,6 @@ class CreateEmailSentTest extends TestCase
 
         $this->assertDatabaseHas('emails_sent', [
             'id' => $emailSent->id,
-            'body' => 'Hope you have a great day!',
         ]);
     }
 

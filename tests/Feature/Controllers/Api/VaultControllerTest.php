@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api;
 
+use App\Enums\PermissionEnum;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
-use App\Enums\PermissionEnum;
 use Tests\TestCase;
 
 class VaultControllerTest extends TestCase
@@ -22,7 +22,6 @@ class VaultControllerTest extends TestCase
             'id',
             'attributes' => [
                 'name',
-                'slug',
                 'avatar',
                 'created_at',
                 'updated_at',

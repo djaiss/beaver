@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\View\Components;
 
-use App\Models\Organization;
+use App\Models\Vault;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
@@ -12,13 +12,13 @@ class AppLayout extends Component
 {
     public function __construct(
         public string $title = '',
-        public ?Organization $organization = null,
+        public ?Vault $vault = null,
     ) {}
 
     public function render(): View
     {
         return view('layouts.app', [
-            'organization' => $this->organization,
+            'vault' => $this->vault,
         ]);
     }
 }

@@ -8,10 +8,9 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
-use App\Jobs\PopulateOrganization;
 use App\Models\Member;
-use App\Models\Vault;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -33,7 +32,6 @@ class CreateVault
         $this->sanitize();
         $this->validate();
         $this->create();
-        $this->generateSlug();
         $this->generateInvitationCode();
         $this->addMembership();
         $this->log();
@@ -69,13 +67,6 @@ class CreateVault
         $this->vault = Vault::query()->create([
             'name' => $this->name,
         ]);
-    }
-
-    private function generateSlug(): void
-    {
-        $slug = $this->vault->id.'-'.Str::of($this->name)->slug('-');
-
-        $this->vault->slug = $slug;
     }
 
     private function generateInvitationCode(): void

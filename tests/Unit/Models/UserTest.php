@@ -6,11 +6,8 @@ namespace Tests\Unit\Models;
 
 use App\Models\EmailSent;
 use App\Models\Member;
-use App\Models\Vault;
-use App\Models\Patron;
-use App\Models\PatronLog;
-use App\Models\PatronType;
 use App\Models\User;
+use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

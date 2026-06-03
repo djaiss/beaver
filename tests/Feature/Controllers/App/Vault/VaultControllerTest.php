@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault;
 
+use App\Enums\PermissionEnum;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use App\Enums\PermissionEnum;
 
 class VaultControllerTest extends TestCase
 {
@@ -55,8 +55,8 @@ class VaultControllerTest extends TestCase
             'vault_name' => 'Super Library',
         ]);
 
-        $vault = Vault::query()->where('name', 'Super Library')->first();
-        $response->assertRedirect('/vaults/'.$vault->slug);
+        $vault = Vault::query()->latest()->first();
+        $response->assertRedirect('/vaults/'.$vault->id);
         $response->assertSessionHas('status', 'Vault created successfully');
     }
 
@@ -72,7 +72,7 @@ class VaultControllerTest extends TestCase
         );
 
         $response = $this->actingAs($user)
-            ->get('/vaults/'.$vault->slug);
+            ->get('/vaults/'.$vault->id);
 
         $response->assertStatus(200);
         $response->assertViewIs('app.vault.show');

@@ -10,7 +10,6 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Jobs\SendEmail;
 use App\Mail\ApiKeyCreated;
-use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;

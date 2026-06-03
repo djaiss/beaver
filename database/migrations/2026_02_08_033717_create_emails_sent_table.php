@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('user_id')->nullable()->comment('user who received the email');
             $table->string('uuid')->nullable()->comment('unique identifier for the email');
-            $table->string('email_type', 100)->comment('type of email sent');
-            $table->string('email_address')->comment('recipient email address');
-            $table->string('subject')->nullable()->comment('email subject line');
+            $table->text('email_type')->comment('type of email sent');
+            $table->text('email_address')->comment('recipient email address');
+            $table->text('subject')->nullable()->comment('email subject line');
             $table->text('body')->nullable()->comment('email body content');
             $table->datetime('sent_at')->nullable()->comment('timestamp when the email was sent');
             $table->datetime('delivered_at')->nullable()->comment('timestamp when the email was delivered');
