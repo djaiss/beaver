@@ -23,8 +23,7 @@ class LogControllerTest extends TestCase
         Log::factory()->create([
             'vault_id' => null,
             'user_id' => $user->id,
-            'action' => 'profile_update',
-            'description' => 'Updated their profile',
+            'action' => 'log.user.profile_updated',
         ]);
 
         $response = $this->actingAs($user)

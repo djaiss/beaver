@@ -44,7 +44,6 @@ class UpdateUserPasswordTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::UpdateUserPassword
                 && $job->user->id === $user->id
-                && $job->description === 'Updated their password'
             ),
         );
     }

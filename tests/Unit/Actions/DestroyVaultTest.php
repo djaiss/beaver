@@ -44,7 +44,11 @@ class DestroyVaultTest extends TestCase
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::VaultDeletion && $job->user->id === $user->id,
+            callback: fn (LogUserAction $job): bool => (
+                $job->action === UserActionEnum::VaultDeletion
+                && $job->user->id === $user->id
+                && $job->parameters === ['name' => $vault->name]
+            ),
         );
     }
 

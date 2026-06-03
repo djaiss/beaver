@@ -60,7 +60,6 @@ class Generate2faQRCode
             vault: null,
             user: $this->user,
             action: UserActionEnum::TwoFaQrCodeGeneration,
-            description: 'Generated 2FA QR code for setup',
         )->onQueue('low');
     }
 }

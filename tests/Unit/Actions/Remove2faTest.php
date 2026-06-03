@@ -44,7 +44,6 @@ class Remove2faTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::TwoFaRemoval
                 && $job->user->id === $user->id
-                && $job->description === 'Removed 2FA from account'
             ),
         );
     }

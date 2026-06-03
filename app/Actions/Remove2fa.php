@@ -35,7 +35,6 @@ readonly class Remove2fa
             vault: null,
             user: $this->user,
             action: UserActionEnum::TwoFaRemoval,
-            description: 'Removed 2FA from account',
         )->onQueue('low');
     }
 }

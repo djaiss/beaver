@@ -27,7 +27,7 @@ return new class extends Migration
             $table->datetime('trial_ends_at')->nullable()->comment('trial end timestamp');
             $table->text('last_used_ip')->nullable()->comment('last used IP address');
             $table->datetime('last_activity_at')->nullable()->comment('last activity timestamp');
-            $table->string('locale', 3)->default('en')->comment('user\'s locale');
+            $table->string('locale', 5)->default('en')->comment('user\'s locale');
             $table->boolean('time_format_24h')->default(true)->comment('time format preference');
             $table->boolean('auto_delete_account')->default(false)->comment('auto delete account preference');
             $table->rememberToken()->comment('remember token');

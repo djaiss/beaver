@@ -6,8 +6,11 @@ namespace Tests\Unit\Actions;
 
 use App\Actions\UpdateVault;
 use App\Enums\PermissionEnum;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -19,6 +22,8 @@ class UpdateVaultTest extends TestCase
     #[Test]
     public function it_updates_a_vault(): void
     {
+        Queue::fake();
+
         $user = $this->createUser();
         $vault = $this->createVault();
         $this->assignUserToVault(
@@ -34,6 +39,16 @@ class UpdateVaultTest extends TestCase
         )->execute();
 
         $this->assertEquals('Joey Tribbiani Special', $updatedVault->name);
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: LogUserAction::class,
+            callback: fn (LogUserAction $job): bool => (
+                $job->action === UserActionEnum::VaultUpdate
+                && $job->user->id === $user->id
+                && $job->parameters === ['name' => 'Joey Tribbiani Special']
+            ),
+        );
     }
 
     #[Test]

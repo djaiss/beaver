@@ -53,7 +53,7 @@ class DestroyGender
             vault: $this->gender->vault,
             user: $this->user,
             action: UserActionEnum::GenderDeletion,
-            description: sprintf('Deleted the gender called %s', $this->genderName),
+            parameters: ['name' => $this->genderName],
         )->onQueue('low');
     }
 }

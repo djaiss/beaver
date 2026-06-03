@@ -31,7 +31,7 @@ class SettingsController extends Controller
                 'vault_name' => $log->vault?->name,
                 'vault_link' => $log->vault ? route('vault.show', $log->vault_id) : null,
                 'action' => $log->action,
-                'description' => $log->description,
+                'description' => $log->getTranslatedDescription(),
                 'created_at' => $log->created_at->format('Y-m-d H:i:s'),
                 'created_at_human' => $log->created_at->diffForHumans(),
             ]);
@@ -89,7 +89,7 @@ class SettingsController extends Controller
                 Rule::unique(User::class)->ignore(Auth::user()->id),
                 'disposable_email',
             ],
-            'locale' => ['required', 'string', 'max:3', Rule::in(['en', 'fr'])],
+            'locale' => ['required', 'string', 'max:5', Rule::in(config('app.supported_locales'))],
             'time_format_24h' => ['required', Rule::in(['true', 'false'])],
         ]);
 

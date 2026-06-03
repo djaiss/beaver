@@ -52,7 +52,7 @@ class DestroyGenderTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::GenderDeletion
                 && $job->user->id === $user->id
-                && $job->description === 'Deleted the gender called Other'
+                && $job->parameters === ['name' => 'Other']
             ),
         );
     }

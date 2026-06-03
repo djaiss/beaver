@@ -6,7 +6,7 @@
         @if (config('app.show_marketing_site'))
           <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('app/auth.shared.back_to_marketing') }}</x-link>
           </p>
         @endif
 
@@ -21,28 +21,28 @@
             </div>
           </a>
           <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {{ __('Reset password') }}
+            {{ __('app/auth.reset_password.title') }}
           </h1>
         </div>
 
         <!-- Reset password form -->
         <x-box class="mb-8">
-          <p class="mb-4 text-sm text-gray-600">{{ __('Please enter your new password below') }}</p>
+          <p class="mb-4 text-sm text-gray-600">{{ __('app/auth.reset_password.subtitle') }}</p>
 
           <x-form method="post" action="{{ route('password.store', $request->token) }}" class="space-y-4">
             <!-- Hidden token field -->
             <input type="hidden" name="token" value="{{ $request->token }}" />
 
             <!-- Email Address -->
-            <x-input id="email" type="email" :label="__('Email')" :value="$request->email" required autocomplete="email" />
+            <x-input id="email" type="email" :label="__('app/auth.reset_password.email')" :value="$request->email" required autocomplete="email" />
 
             <!-- Password -->
-            <x-input id="password" type="password" :label="__('Password')" required autocomplete="new-password" />
+            <x-input id="password" type="password" :label="__('app/auth.reset_password.password')" required autocomplete="new-password" />
 
             <!-- Confirm Password -->
-            <x-input id="password_confirmation" type="password" :label="__('Confirm password')" required autocomplete="new-password" />
+            <x-input id="password_confirmation" type="password" :label="__('app/auth.reset_password.confirm_password')" required autocomplete="new-password" />
 
-            <x-button class="w-full">{{ __('Reset password') }}</x-button>
+            <x-button class="w-full">{{ __('app/auth.reset_password.submit') }}</x-button>
           </x-form>
         </x-box>
 

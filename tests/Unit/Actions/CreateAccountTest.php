@@ -50,7 +50,6 @@ class CreateAccountTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::AccountCreation
                 && $job->user->id === $user->id
-                && $job->description === 'Created an account'
             ),
         );
     }

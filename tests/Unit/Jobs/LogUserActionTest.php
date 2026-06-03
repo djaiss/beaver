@@ -28,14 +28,13 @@ class LogUserActionTest extends TestCase
             vault: null,
             user: $user,
             action: UserActionEnum::PersonalProfileUpdate,
-            description: 'Updated their personal profile',
         );
 
         $log = Log::query()->first();
 
         $this->assertEquals('Chandler Bing', $log->getUserName());
-        $this->assertEquals('personal_profile_update', $log->action);
-        $this->assertEquals('Updated their personal profile', $log->description);
+        $this->assertEquals('user_profile_updated', $log->action);
+        $this->assertEquals('Updated their personal profile', $log->getTranslatedDescription());
 
         $this->assertEqualsWithDelta(
             now()->timestamp,

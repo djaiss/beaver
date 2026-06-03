@@ -47,7 +47,6 @@ class CreateApiKeyTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::ApiKeyCreation
                 && $job->user->id === $user->id
-                && $job->description === 'Created an API key'
             ),
         );
 

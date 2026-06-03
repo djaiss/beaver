@@ -41,7 +41,6 @@ class Generate2faQRCodeTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::TwoFaQrCodeGeneration
                 && $job->user->id === $user->id
-                && $job->description === 'Generated 2FA QR code for setup'
             ),
         );
     }

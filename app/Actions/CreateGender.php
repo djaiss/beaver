@@ -68,7 +68,7 @@ class CreateGender
             vault: $this->vault,
             user: $this->user,
             action: UserActionEnum::GenderCreation,
-            description: sprintf('Created a gender called %s', $this->name),
+            parameters: ['name' => $this->name],
         )->onQueue('low');
     }
 }

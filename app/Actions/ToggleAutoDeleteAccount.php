@@ -39,8 +39,7 @@ readonly class ToggleAutoDeleteAccount
             vault: null,
             user: $this->user,
             action: UserActionEnum::AutoDeleteAccountUpdate,
-            description: 'Updated auto delete account setting to '
-            .($this->user->auto_delete_account ? 'enabled' : 'disabled'),
+            parameters: ['status' => $this->user->auto_delete_account ? 'enabled' : 'disabled'],
         )->onQueue('low');
     }
 }

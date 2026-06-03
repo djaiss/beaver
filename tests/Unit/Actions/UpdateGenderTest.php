@@ -54,7 +54,7 @@ class UpdateGenderTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::GenderUpdate
                 && $job->user->id === $user->id
-                && $job->description === 'Updated a gender to Man'
+                && $job->parameters === ['name' => 'Man']
             ),
         );
     }

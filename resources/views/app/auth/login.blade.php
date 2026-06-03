@@ -6,7 +6,7 @@
         @if (config('app.show_marketing_site'))
           <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('app/auth.login.back_to_marketing') }}</x-link>
           </p>
         @endif
 
@@ -21,7 +21,7 @@
             </div>
           </a>
           <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {{ __('Welcome back') }}
+            {{ __('app/auth.login.title') }}
           </h1>
         </div>
 
@@ -29,17 +29,17 @@
         <x-box>
           <x-form method="post" :action="route('login')" class="space-y-4">
             <!-- Email address -->
-            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
+            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('app/auth.login.email_address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
 
             <!-- Password -->
-            <x-input type="password" id="password" :label="__('Password')" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="current-password" />
+            <x-input type="password" id="password" :label="__('app/auth.login.password')" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="current-password" />
 
             <!-- Remember me -->
             <div class="block">
               <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded-sm border-gray-300 text-indigo-600 shadow-xs focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-900" name="remember" />
                 <span class="ms-2 text-sm text-gray-600">
-                  {{ __('Remember me') }}
+                  {{ __('app/auth.login.remember_me') }}
                 </span>
               </label>
             </div>
@@ -56,10 +56,10 @@
 
             <div class="flex items-center justify-between">
               <x-link href="{{ route('password.request') }}" class="text-sm text-gray-600">
-                {{ __('Forgot your password?') }}
+                {{ __('app/auth.login.forgot_password') }}
               </x-link>
 
-              <x-button>{{ __('Continue') }}</x-button>
+              <x-button>{{ __('app/shared.continue') }}</x-button>
             </div>
           </x-form>
         </x-box>
@@ -73,17 +73,17 @@
 
         <!-- magic link -->
         <x-box class="text-center text-sm">
-          {{ __('Wanna skip the password?') }}
+          {{ __('app/auth.login.skip_password') }}
           <x-link :href="route('magic.link')" data-test="magic-link-link" class="ml-1">
-            {{ __('Send me a link instead') }}
+            {{ __('app/auth.login.send_link_instead') }}
           </x-link>
         </x-box>
 
         <!-- Register link -->
         <x-box class="text-center text-sm">
-          {{ __('New to :organization?', ['organization' => config('app.name')]) }}
+          {{ __('app/auth.login.new_to_organization', ['organization' => config('app.name')]) }}
           <x-link :href="route('register')" class="ml-1">
-            {{ __('Create an account') }}
+            {{ __('app/shared.create_account') }}
           </x-link>
         </x-box>
 

@@ -70,7 +70,7 @@ class UpdateVault
             vault: $this->vault,
             user: $this->user,
             action: UserActionEnum::VaultUpdate,
-            description: sprintf('Updated the vault called %s', $this->name),
+            parameters: ['name' => $this->name],
         )->onQueue('low');
     }
 }

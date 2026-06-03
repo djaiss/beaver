@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RegexIterator;
+use SplFileInfo;
 
 class LocalizeCommand extends Command
 {
@@ -19,12 +20,11 @@ class LocalizeCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Extract translation strings and synchronize locale JSON files';
+    protected $description = 'Synchronize PHP language files from the English master locale';
 
     public function handle(): int
     {
-        $localesArgument = (string) $this->argument('locales');
-        $locales = array_filter(array_map(trim(...), explode(',', $localesArgument)));
+        $locales = $this->locales();
 
         if ($locales === []) {
             $this->error('No locales provided.');
@@ -32,16 +32,20 @@ class LocalizeCommand extends Command
             return self::FAILURE;
         }
 
-        $translationKeys = $this->extractTranslationKeys();
+        $masterFiles = $this->masterLanguageFiles();
 
-        $this->syncEnglishLocaleFile($translationKeys);
+        if ($masterFiles === []) {
+            $this->error('No English language files found.');
+
+            return self::FAILURE;
+        }
 
         foreach ($locales as $locale) {
             if ($locale === 'en') {
                 continue;
             }
 
-            $this->syncLocaleFile($locale, $translationKeys);
+            $this->syncLocale($locale, $masterFiles);
         }
 
         $this->info('Locale files synchronized.');
@@ -52,114 +56,190 @@ class LocalizeCommand extends Command
     /**
      * @return array<int, string>
      */
-    private function extractTranslationKeys(): array
+    private function locales(): array
     {
-        $directories = [
-            base_path('resources/views'),
-            base_path('app/Http/Controllers'),
-            base_path('app/Actions'),
-            base_path('app/Jobs'),
-        ];
+        $localesArgument = (string) $this->argument('locales');
 
-        $keysByValue = [];
+        return array_values(array_filter(array_map(trim(...), explode(',', $localesArgument))));
+    }
 
-        foreach ($directories as $directory) {
-            if (! is_dir($directory)) {
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function masterLanguageFiles(): array
+    {
+        $englishPath = lang_path('en');
+
+        if (! is_dir($englishPath)) {
+            return [];
+        }
+
+        $files = [];
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($englishPath));
+
+        foreach ($iterator as $fileInfo) {
+            if (! $fileInfo instanceof SplFileInfo) {
+                continue;
+            }
+            if ($fileInfo->getExtension() !== 'php') {
+                continue;
+            }
+            $relativePath = str($fileInfo->getPathname())
+                ->after($englishPath.DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR, '/')
+                ->value();
+
+            $files[$relativePath] = $this->readLanguageFile($fileInfo->getPathname());
+        }
+
+        ksort($files);
+
+        return $files;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function readLanguageFile(string $path): array
+    {
+        $lines = require $path;
+
+        if (! is_array($lines)) {
+            return [];
+        }
+
+        return $lines;
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $masterFiles
+     */
+    private function syncLocale(string $locale, array $masterFiles): void
+    {
+        $localePath = lang_path($locale);
+
+        if (! is_dir($localePath)) {
+            mkdir($localePath, 0755, true);
+        }
+
+        $this->deleteStaleLanguageFiles($localePath, array_keys($masterFiles));
+
+        foreach ($masterFiles as $relativePath => $masterLines) {
+            $targetPath = $localePath.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+            $targetDirectory = dirname($targetPath);
+
+            if (! is_dir($targetDirectory)) {
+                mkdir($targetDirectory, 0755, true);
+            }
+
+            $existingLines = is_file($targetPath) ? $this->readLanguageFile($targetPath) : [];
+            $syncedLines = $this->syncLines($masterLines, $existingLines);
+
+            file_put_contents($targetPath, $this->renderLanguageFile($syncedLines));
+        }
+    }
+
+    /**
+     * @param  array<int, string>  $masterRelativePaths
+     */
+    private function deleteStaleLanguageFiles(string $localePath, array $masterRelativePaths): void
+    {
+        if (! is_dir($localePath)) {
+            return;
+        }
+
+        $masterRelativePaths = array_flip($masterRelativePaths);
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($localePath),
+            RecursiveIteratorIterator::CHILD_FIRST,
+        );
+
+        foreach ($iterator as $fileInfo) {
+            if (! $fileInfo instanceof SplFileInfo) {
                 continue;
             }
 
-            $iterator = new RegexIterator(
-                new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory)),
-                '/^.+\.php$/i',
-            );
-
-            foreach ($iterator as $fileInfo) {
-                $contents = file_get_contents($fileInfo->getPathname());
-
-                if ($contents === false) {
-                    continue;
+            if ($fileInfo->isDir()) {
+                if (! in_array($fileInfo->getBasename(), ['.', '..'], true)) {
+                    @rmdir($fileInfo->getPathname());
                 }
 
-                foreach ($this->extractKeysFromContent($contents) as $key) {
-                    $keysByValue[$key] = true;
-                }
+                continue;
+            }
+
+            if ($fileInfo->getExtension() !== 'php') {
+                continue;
+            }
+
+            $relativePath = str($fileInfo->getPathname())
+                ->after($localePath.DIRECTORY_SEPARATOR)
+                ->replace(DIRECTORY_SEPARATOR, '/')
+                ->value();
+
+            if (! Arr::exists($masterRelativePaths, $relativePath)) {
+                unlink($fileInfo->getPathname());
             }
         }
-
-        return array_keys($keysByValue);
     }
 
     /**
-     * @return array<int, string>
+     * @param  array<string, mixed>  $masterLines
+     * @param  array<string, mixed>  $existingLines
+     * @return array<string, mixed>
      */
-    private function extractKeysFromContent(string $content): array
+    private function syncLines(array $masterLines, array $existingLines): array
     {
-        $functions = ['__', 'trans', '@lang', 'trans_key'];
-        $patterns = [];
+        $syncedLines = [];
 
-        foreach ($functions as $function) {
-            $patterns[] = '/'.preg_quote($function, '/').'\(\s*\'((?:\\\\.|[^\'\\\\])*)\'/';
-            $patterns[] = '/'.preg_quote($function, '/').'\(\s*"((?:\\\\.|[^"\\\\])*)"/';
-        }
+        foreach ($masterLines as $key => $value) {
+            if (is_array($value)) {
+                $syncedLines[$key] = $this->syncLines(
+                    $value,
+                    Arr::exists($existingLines, $key) && is_array($existingLines[$key]) ? $existingLines[$key] : [],
+                );
 
-        $keys = [];
-
-        foreach ($patterns as $pattern) {
-            preg_match_all($pattern, $content, $matches);
-
-            foreach ($matches[1] ?? [] as $match) {
-                $keys[] = stripcslashes($match);
+                continue;
             }
+
+            $syncedLines[$key] = Arr::exists($existingLines, $key) && ! is_array($existingLines[$key])
+                ? (string) $existingLines[$key]
+                : '';
         }
 
-        return $keys;
+        return $syncedLines;
     }
 
     /**
-     * @param  array<int, string>  $translationKeys
+     * @param  array<string, mixed>  $lines
      */
-    private function syncEnglishLocaleFile(array $translationKeys): void
+    private function renderLanguageFile(array $lines): string
     {
-        $this->syncLocaleFile('en', $translationKeys);
+        return "<?php\n\n"
+            ."declare(strict_types=1);\n\n"
+            .'return '.$this->renderArray($lines).";\n";
     }
 
     /**
-     * @param  array<int, string>  $translationKeys
+     * @param  array<string, mixed>  $lines
      */
-    private function syncLocaleFile(string $locale, array $translationKeys): void
+    private function renderArray(array $lines, int $level = 0): string
     {
-        $localeFile = lang_path($locale.'.json');
-        $existingTranslations = [];
-
-        if (is_file($localeFile)) {
-            $contents = file_get_contents($localeFile);
-            $decoded = json_decode((string) $contents, true);
-
-            if (is_array($decoded)) {
-                $existingTranslations = $decoded;
-            }
+        if ($lines === []) {
+            return '[]';
         }
 
-        $syncedTranslations = [];
+        $indent = str_repeat('    ', $level);
+        $childIndent = str_repeat('    ', $level + 1);
+        $renderedLines = [];
 
-        foreach ($translationKeys as $key) {
-            $syncedTranslations[$key] = $existingTranslations[$key] ?? $this->defaultValueForLocale($locale, $key);
+        foreach ($lines as $key => $value) {
+            $renderedValue = is_array($value)
+                ? $this->renderArray($value, $level + 1)
+                : var_export((string) $value, true);
+
+            $renderedLines[] = $childIndent.var_export((string) $key, true).' => '.$renderedValue.',';
         }
 
-        ksort($syncedTranslations);
-
-        file_put_contents(
-            $localeFile,
-            json_encode($syncedTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE).PHP_EOL,
-        );
-    }
-
-    private function defaultValueForLocale(string $locale, string $key): string
-    {
-        if ($locale === 'en') {
-            return $key;
-        }
-
-        return '';
+        return "[\n".implode("\n", $renderedLines)."\n".$indent.']';
     }
 }

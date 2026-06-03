@@ -25,8 +25,8 @@ class LogFactory extends Factory
             'vault_id' => Vault::factory(),
             'user_id' => User::factory(),
             'user_name' => fake()->name(),
-            'action' => fake()->word(),
-            'description' => fake()->sentence(),
+            'action' => 'log.test.action',
+            'parameters' => ['name' => fake()->word()],
         ];
     }
 }

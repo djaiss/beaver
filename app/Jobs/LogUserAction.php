@@ -19,7 +19,7 @@ class LogUserAction implements ShouldQueue
         public ?Vault $vault,
         public User $user,
         public UserActionEnum $action,
-        public string $description,
+        public ?array $parameters = null,
     ) {}
 
     /**
@@ -32,7 +32,7 @@ class LogUserAction implements ShouldQueue
             'user_id' => $this->user->id,
             'user_name' => $this->user->getFullName(),
             'action' => $this->action->value,
-            'description' => $this->description,
+            'parameters' => $this->parameters,
         ]);
 
         $this->user->last_activity_at = now();

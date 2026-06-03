@@ -4,8 +4,8 @@
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.show', $vault)],
-    ['label' => __('Preferences')]
+    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.show', $vault)],
+    ['label' => __('app/breadcrumb.preferences')]
   ]" />
 
   <!-- settings layout -->

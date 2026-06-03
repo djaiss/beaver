@@ -1,12 +1,12 @@
 <x-app-layout>
   <x-slot:title>
-    {{ __('Logs') }}
+    {{ __('app/settings/logs.title') }}
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.index')],
-    ['label' => __('Settings'), 'route' => route('settings.index')],
-    ['label' => __('Logs')]
+    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
+    ['label' => __('app/breadcrumb.settings'), 'route' => route('settings.index')],
+    ['label' => __('app/breadcrumb.logs')]
   ]" />
 
   <!-- settings layout -->
@@ -18,7 +18,7 @@
     <section class="p-4 sm:p-8">
       <div class="mx-auto max-w-4xl sm:px-0">
         <x-box id="logs-container" x-merge="append" padding="p-0">
-          <x-slot:title>{{ __('Logs') }}</x-slot>
+          <x-slot:title>{{ __('app/settings/logs.title') }}</x-slot>
           <!-- last actions -->
           @foreach ($logs as $log)
             <div class="flex items-center justify-between border-b border-gray-200 p-3 text-sm first:rounded-t-lg last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
@@ -47,7 +47,7 @@
 
           @if ($logs->nextPageUrl())
             <div id="pagination" class="flex justify-center rounded-b-lg p-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-800">
-              <x-link x-target="logs-container pagination" href="{{ $logs->nextPageUrl() }}" class="text-center">{{ __('Load more') }}</x-link>
+              <x-link x-target="logs-container pagination" href="{{ $logs->nextPageUrl() }}" class="text-center">{{ __('app/shared.load_more') }}</x-link>
             </div>
           @endif
         </x-box>

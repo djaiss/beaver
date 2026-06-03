@@ -58,7 +58,6 @@ class CreateAccount
             vault: null,
             user: $this->user,
             action: UserActionEnum::AccountCreation,
-            description: 'Created an account',
         )->onQueue('low');
     }
 }

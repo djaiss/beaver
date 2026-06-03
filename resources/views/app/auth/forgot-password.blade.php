@@ -6,7 +6,7 @@
         @if (config('app.show_marketing_site'))
           <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('app/auth.shared.back_to_marketing') }}</x-link>
           </p>
         @endif
 
@@ -21,7 +21,7 @@
             </div>
           </a>
           <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {{ __('Forgot password') }}
+            {{ __('app/auth.forgot_password.title') }}
           </h1>
         </div>
 
@@ -29,23 +29,23 @@
         <x-box>
           <x-form method="post" action="{{ route('password.email') }}" class="space-y-4">
             <!-- Email Address -->
-            <x-input id="email" type="email" :label="__('Email address')" required autofocus placeholder="john@doe.com" />
+            <x-input id="email" type="email" :label="__('app/auth.forgot_password.email_address')" required autofocus placeholder="john@doe.com" />
 
             <div class="flex items-center justify-between">
               <x-link href="{{ route('login') }}" class="text-sm text-gray-600">
-                {{ __('Back to login') }}
+                {{ __('app/shared.back_to_login') }}
               </x-link>
 
-              <x-button>{{ __('Email password reset link') }}</x-button>
+              <x-button>{{ __('app/auth.forgot_password.submit') }}</x-button>
             </div>
           </x-form>
         </x-box>
 
         <!-- Register link -->
         <x-box class="text-center text-sm">
-          {{ __('New to :organization?', ['organization' => config('app.name')]) }}
+          {{ __('app/auth.shared.new_to_organization', ['organization' => config('app.name')]) }}
           <x-link :href="route('register')" class="ml-1">
-            {{ __('Create an account') }}
+            {{ __('app/shared.create_account') }}
           </x-link>
         </x-box>
 

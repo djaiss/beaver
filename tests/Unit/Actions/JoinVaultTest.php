@@ -49,6 +49,7 @@ class JoinVaultTest extends TestCase
                 $job->action === UserActionEnum::VaultJoined
                 && $job->user->id === $user->id
                 && $job->vault->id === $vault->id
+                && $job->parameters === ['name' => $vault->name]
             ),
         );
     }

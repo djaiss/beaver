@@ -1,11 +1,11 @@
 <x-app-layout>
   <x-slot:title>
-    {{ __('Security and access') }}
+    {{ __('app/settings/security.title') }}
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.index')],
-    ['label' => __('Security and access')],
+    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
+    ['label' => __('app/breadcrumb.security_and_access')],
   ]" />
 
   <!-- settings layout -->

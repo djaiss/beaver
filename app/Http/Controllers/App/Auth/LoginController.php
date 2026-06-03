@@ -54,7 +54,7 @@ class LoginController extends Controller
             }
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => trans('app/auth.failed'),
             ]);
         }
 
@@ -89,7 +89,7 @@ class LoginController extends Controller
         $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'email' => trans('app/auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),

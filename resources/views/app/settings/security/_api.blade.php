@@ -1,8 +1,8 @@
 <x-box padding="p-0">
-  <x-slot:title>{{ __('Personal API Keys') }}</x-slot>
+  <x-slot:title>{{ __('app/settings/security.api.title') }}</x-slot>
   <x-slot:description>
-    <p>{{ __('API keys are like secret passwords that allow other tools or apps to connect securely to your account.') }}</p>
-    <p>{{ __('Each API key is unique to you. Treat them like private passwords—don’t share them with anyone you don’t trust.') }}</p>
+    <p>{{ __('app/settings/security.api.description') }}</p>
+    <p>{{ __('app/settings/security.api.private_description') }}</p>
   </x-slot>
 
   <div id="api-key-notification">
@@ -14,11 +14,11 @@
           </div>
 
           <div class="ml-3 w-full">
-            <h3 class="text-sm font-medium text-green-800">{{ __('API Key created successfully') }}</h3>
+            <h3 class="text-sm font-medium text-green-800">{{ __('app/settings/security.api.create_success') }}</h3>
 
             <div class="mt-2">
               <div class="text-sm text-green-700">
-                {{ __('Please copy your API key now. For security reasons, it won\'t be shown again.') }}
+                {{ __('app/settings/security.api.warning') }}
               </div>
 
               <div class="mt-3" x-data="{
@@ -42,7 +42,11 @@
                   <button @click="copyToClipboard()" class="inline-flex cursor-pointer items-center rounded-md border border-green-200 bg-white px-3 py-2 text-sm font-semibold text-green-600 shadow-sm hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:border-green-700 dark:bg-gray-900 dark:text-green-300 dark:hover:bg-gray-800">
                     <x-phosphor-check x-show="copied" class="mr-1 h-4 w-4" />
                     <x-phosphor-copy x-show="!copied" class="mr-1 h-4 w-4" />
-                    <span x-text="copied ? '{{ __('Copied') }}' : '{{ __('Copy') }}'"></span>
+                    <span x-text="
+                      copied
+                        ? '{{ __('app/settings/security.api.copied') }}'
+                        : '{{ __('app/settings/security.api.copy') }}'
+                    "></span>
                   </button>
                 </div>
               </div>
@@ -55,13 +59,13 @@
 
   <div id="new-api-key-form" class="flex items-center justify-between rounded-t-lg p-3 last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:hover:bg-gray-800">
     @if ($apiKeys->isEmpty())
-      <p class="text-sm text-zinc-500">{{ __('No API keys created') }}</p>
+      <p class="text-sm text-zinc-500">{{ __('app/settings/security.api.empty') }}</p>
     @else
-      <p class="text-sm text-zinc-500">{{ __(':count API key(s) created', ['count' => $apiKeys->count()]) }}</p>
+      <p class="text-sm text-zinc-500">{{ __('app/settings/security.api.count', ['count' => $apiKeys->count()]) }}</p>
     @endif
 
     <x-button.secondary href="{{ route('settings.api-keys.create') }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">
-      {{ __('New API key') }}
+      {{ __('app/settings/security.api.new') }}
     </x-button.secondary>
   </div>
 
@@ -85,11 +89,11 @@
             action="{{ route('settings.api-keys.destroy', $apiKey->id) }}"
             method="delete"
             x-on:ajax:before="
-            confirm('Are you sure you want to proceed? This can not be undone.') ||
+            confirm('{{ __('app/settings/security.api.confirm_delete') }}') ||
               $event.preventDefault()
           ">
             <x-button x-target="api-key-list" class="text-sm" data-test="delete-api-key-{{ $apiKey->id }}">
-              {{ __('Delete') }}
+              {{ __('app/shared.delete') }}
             </x-button>
           </x-form>
         </div>

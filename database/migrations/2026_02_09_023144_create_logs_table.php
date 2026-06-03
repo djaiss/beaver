@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('vault_id')->nullable()->comment('vault this log entry belongs to');
             $table->unsignedBigInteger('user_id')->nullable()->comment('user who performed the action');
             $table->text('user_name')->comment('name of the user at the time of the action');
-            $table->text('action')->comment('action that was performed');
-            $table->text('description')->comment('description of the action');
+            $table->text('action')->comment('action that was performed (also used as translation key)');
+            $table->json('parameters')->nullable()->comment('parameters for the translation');
             $table->timestamps();
             $table->foreign('vault_id')->references('id')->on('vaults')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();

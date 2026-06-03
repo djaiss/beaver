@@ -82,7 +82,7 @@ class SettingsControllerTest extends TestCase
                 'last_name' => 'Bing',
                 'nickname' => 'Chan',
                 'email' => 'chandler.bing@friends.com',
-                'locale' => 'en',
+                'locale' => 'de_DE',
                 'time_format_24h' => 'true',
             ]);
 

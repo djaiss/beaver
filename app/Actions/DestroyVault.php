@@ -53,7 +53,7 @@ class DestroyVault
             vault: null,
             user: $this->user,
             action: UserActionEnum::VaultDeletion,
-            description: sprintf('Deleted the vault called %s', $this->vaultName),
+            parameters: ['name' => $this->vaultName],
         )->onQueue('low');
     }
 }

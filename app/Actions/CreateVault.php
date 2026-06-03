@@ -91,7 +91,7 @@ class CreateVault
             vault: $this->vault,
             user: $this->user,
             action: UserActionEnum::VaultCreation,
-            description: sprintf('Created a vault called %s', $this->name),
+            parameters: ['name' => $this->name],
         )->onQueue('low');
     }
 }

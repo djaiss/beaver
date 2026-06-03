@@ -24,7 +24,7 @@ class LogController extends Controller
                 'vault_name' => $log->vault?->name,
                 'vault_link' => $log->vault ? route('vault.show', $log->vault_id) : null,
                 'action' => $log->action,
-                'description' => $log->description,
+                'description' => $log->getTranslatedDescription(),
                 'created_at' => $log->created_at->format('Y-m-d H:i:s'),
                 'created_at_human' => $log->created_at->diffForHumans(),
             ]);

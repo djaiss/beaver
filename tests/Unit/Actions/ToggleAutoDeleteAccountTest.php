@@ -40,7 +40,7 @@ class ToggleAutoDeleteAccountTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::AutoDeleteAccountUpdate
                 && $job->user->id === $user->id
-                && $job->description === 'Updated auto delete account setting to enabled'
+                && $job->parameters === ['status' => 'enabled']
             ),
         );
     }

@@ -47,7 +47,7 @@ class CreateVaultTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::VaultCreation
                 && $job->user->id === $user->id
-                && $job->description === 'Created a vault called Central Perk'
+                && $job->parameters === ['name' => 'Central Perk']
             ),
         );
     }

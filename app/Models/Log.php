@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $user_id
  * @property string $user_name
  * @property string $action
- * @property string $description
+ * @property array|null $parameters
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -46,7 +46,7 @@ class Log extends Model
         'user_id',
         'user_name',
         'action',
-        'description',
+        'parameters',
     ];
 
     /**
@@ -57,7 +57,7 @@ class Log extends Model
     protected $casts = [
         'user_name' => 'encrypted',
         'action' => 'encrypted',
-        'description' => 'encrypted',
+        'parameters' => 'array',
     ];
 
     /**
@@ -89,5 +89,15 @@ class Log extends Model
     public function getUserName(): string
     {
         return $this->user ? $this->user->getFullName() : $this->user_name;
+    }
+
+    /**
+     * Get the translated description for this log entry.
+     * Note: The action field is encrypted, but Laravel automatically
+     * decrypts it when accessed as an attribute.
+     */
+    public function getTranslatedDescription(): string
+    {
+        return __('app/settings/logs.user_action.'.$this->action, $this->parameters ?? []);
     }
 }

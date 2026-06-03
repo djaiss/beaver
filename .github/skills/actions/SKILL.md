@@ -13,7 +13,6 @@ description: Actions are what the user does within an application. Use when work
 - If an action does something for a user, we should always log what the user did.
 - Always use Eloquent in an action, if possible.
 - Actions must do as fewer DB queries as possible.
-- Action must likely is tied to a permission. Permissions are managed in app/Enums/PermissionEnum.php. If the permission does not exist, create it in the Enum.
 
 ## Action Naming Conventions
 
@@ -34,8 +33,10 @@ AccountCreated
 ## Checklist
 
 - [ ] Always sanitize data first
-- [ ] Always validate data: permissions, existence of related models, link to organization,...
-- [ ] Create Permission if needed
+- [ ] Always validate data: permissions, existence of related models, link to vault,...
 - [ ] Do what the action is supposed to do
-- [ ] Log the action for the user, include organization if aplicable
+- [ ] Add the case to `UserActionEnum` if it's a user action
+- [ ] Add the mapping in `translationKey()` method if it's a user action
+- [ ] Add the translation to `lang/en.json` (and other locales) if it's a user action
+- [ ] Log the action for the user, include vault if applicable
 - [ ] Write test for the action, and test all edge cases

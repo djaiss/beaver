@@ -39,7 +39,6 @@ class CreateMagicLinkTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::MagicLinkCreated
                 && $job->user->id === $user->id
-                && $job->description === 'Sent a magic link'
             ),
         );
     }

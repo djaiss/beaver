@@ -52,7 +52,6 @@ class CreateMagicLink
             vault: null,
             user: $this->user,
             action: UserActionEnum::MagicLinkCreated,
-            description: 'Sent a magic link',
         )->onQueue('low');
     }
 }

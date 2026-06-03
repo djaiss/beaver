@@ -10,81 +10,110 @@ use Tests\TestCase;
 class LocalizeCommandTest extends TestCase
 {
     #[Test]
-    public function it_synchronizes_json_locale_files(): void
+    public function it_synchronizes_php_language_files_from_the_english_master_locale(): void
     {
-        $viewPath = resource_path('views/test-localize-command.blade.php');
-        $enPath = lang_path('en.json');
-        $frPath = lang_path('fr.json');
+        $paths = [
+            lang_path('en/localize-test.php'),
+            lang_path('en/localize-test/nested.php'),
+            lang_path('fr_FR/localize-test.php'),
+            lang_path('fr_FR/localize-test/nested.php'),
+            lang_path('fr_FR/localize-test-stale.php'),
+        ];
 
-        $originalView = is_file($viewPath) ? file_get_contents($viewPath) : null;
-        $originalEn = file_get_contents($enPath);
-        $originalFr = file_get_contents($frPath);
+        $originalFiles = [];
+
+        foreach ($paths as $path) {
+            $originalFiles[$path] = is_file($path) ? file_get_contents($path) : null;
+        }
 
         try {
-            file_put_contents(
-                $viewPath,
-                <<<'BLADE'
-{{ __('Localize test key') }}
-{{ trans("Localize double key") }}
-@lang('Localize lang key')
-{{ trans_key('Localize custom key') }}
-{{ __('We\'ve sent you a temporary login link. This link is valid for 5 minutes. Please check your inbox.') }}
-BLADE
-            );
+            $this->writeLanguageFile(lang_path('en/localize-test.php'), [
+                'existing' => 'Existing English value',
+                'new' => 'New English value',
+                'nested' => [
+                    'existing' => 'Existing nested English value',
+                    'new' => 'New nested English value',
+                ],
+            ]);
 
-            file_put_contents(
-                $enPath,
-                json_encode([
-                    'Localize test key' => 'Preserved English Value',
-                    'Localize stale key' => 'Remove me',
-                ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE).PHP_EOL,
-            );
+            $this->writeLanguageFile(lang_path('en/localize-test/nested.php'), [
+                'title' => 'Nested file title',
+            ]);
 
-            file_put_contents(
-                $frPath,
-                json_encode([
-                    'Localize test key' => 'Valeur Française Conservée',
-                    'Localize stale key' => 'Supprime-moi',
-                ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE).PHP_EOL,
-            );
+            $this->writeLanguageFile(lang_path('fr_FR/localize-test.php'), [
+                'existing' => 'Valeur française existante',
+                'stale' => 'Supprime-moi',
+                'nested' => [
+                    'existing' => 'Valeur française imbriquée existante',
+                    'stale' => 'Supprime-moi',
+                ],
+            ]);
 
-            $this->artisan('lifeos:localize en,fr')
+            $this->writeLanguageFile(lang_path('fr_FR/localize-test-stale.php'), [
+                'title' => 'Supprime-moi',
+            ]);
+
+            $this->artisan('lifeos:localize en,fr_FR')
                 ->assertSuccessful();
 
-            $enTranslations = json_decode((string) file_get_contents($enPath), true);
-            $frTranslations = json_decode((string) file_get_contents($frPath), true);
+            $this->assertSame([
+                'existing' => 'Valeur française existante',
+                'new' => '',
+                'nested' => [
+                    'existing' => 'Valeur française imbriquée existante',
+                    'new' => '',
+                ],
+            ], require lang_path('fr_FR/localize-test.php'));
 
-            $this->assertIsArray($enTranslations);
-            $this->assertIsArray($frTranslations);
+            $this->assertSame([
+                'title' => '',
+            ], require lang_path('fr_FR/localize-test/nested.php'));
 
-            $this->assertSame('Preserved English Value', $enTranslations['Localize test key']);
-            $this->assertSame('Valeur Française Conservée', $frTranslations['Localize test key']);
-
-            $this->assertSame('Localize double key', $enTranslations['Localize double key']);
-            $this->assertSame('Localize lang key', $enTranslations['Localize lang key']);
-            $this->assertSame('Localize custom key', $enTranslations['Localize custom key']);
-            $this->assertSame(
-                'We\'ve sent you a temporary login link. This link is valid for 5 minutes. Please check your inbox.',
-                $enTranslations['We\'ve sent you a temporary login link. This link is valid for 5 minutes. Please check your inbox.'],
-            );
-
-            $this->assertSame('', $frTranslations['Localize double key']);
-            $this->assertSame('', $frTranslations['Localize lang key']);
-            $this->assertSame('', $frTranslations['Localize custom key']);
-            $this->assertSame('', $frTranslations['We\'ve sent you a temporary login link. This link is valid for 5 minutes. Please check your inbox.']);
-            $this->assertArrayNotHasKey('We\\', $frTranslations);
-
-            $this->assertArrayNotHasKey('Localize stale key', $enTranslations);
-            $this->assertArrayNotHasKey('Localize stale key', $frTranslations);
+            $this->assertFileDoesNotExist(lang_path('fr_FR/localize-test-stale.php'));
         } finally {
-            if ($originalView === null) {
-                @unlink($viewPath);
-            } else {
-                file_put_contents($viewPath, $originalView);
+            foreach ($originalFiles as $path => $contents) {
+                if ($contents === null) {
+                    if (is_file($path)) {
+                        unlink($path);
+                    }
+
+                    continue;
+                }
+
+                $this->writeRawFile($path, $contents);
             }
 
-            file_put_contents($enPath, (string) $originalEn);
-            file_put_contents($frPath, (string) $originalFr);
+            @rmdir(lang_path('en/localize-test'));
+            @rmdir(lang_path('fr_FR/localize-test'));
         }
+    }
+
+    #[Test]
+    public function it_fails_when_no_locales_are_provided(): void
+    {
+        $this->artisan('lifeos:localize', ['locales' => ''])
+            ->assertFailed();
+    }
+
+    /**
+     * @param  array<string, mixed>  $lines
+     */
+    private function writeLanguageFile(string $path, array $lines): void
+    {
+        $this->writeRawFile(
+            $path,
+            "<?php\n\n"
+                ."declare(strict_types=1);\n\n"
+                .'return '.var_export($lines, true).";\n",
+        );
+    }
+
+    private function writeRawFile(string $path, string $contents): void
+    {
+        if (! is_dir(dirname($path))) {
+            mkdir(dirname($path), 0755, true);
+        }
+
+        file_put_contents($path, $contents);
     }
 }

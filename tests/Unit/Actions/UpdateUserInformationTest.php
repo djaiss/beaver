@@ -36,7 +36,7 @@ class UpdateUserInformationTest extends TestCase
             firstName: 'Chandler',
             lastName: 'Bing',
             nickname: 'Chan',
-            locale: 'fr',
+            locale: 'fr_FR',
             timeFormat24h: false,
         )->execute();
 
@@ -46,7 +46,7 @@ class UpdateUserInformationTest extends TestCase
         $this->assertEquals('Chandler', $updatedUser->first_name);
         $this->assertEquals('Bing', $updatedUser->last_name);
         $this->assertEquals('Chan', $updatedUser->nickname);
-        $this->assertEquals('fr', $updatedUser->locale);
+        $this->assertEquals('fr_FR', $updatedUser->locale);
         $this->assertFalse($updatedUser->time_format_24h);
 
         Queue::assertPushedOn(
@@ -75,7 +75,7 @@ class UpdateUserInformationTest extends TestCase
             firstName: 'Ross',
             lastName: 'Geller',
             nickname: 'Ross',
-            locale: 'fr',
+            locale: 'fr_FR',
             timeFormat24h: true,
         )->execute();
 
@@ -102,7 +102,7 @@ class UpdateUserInformationTest extends TestCase
             firstName: 'Ross',
             lastName: 'Geller',
             nickname: 'Ross',
-            locale: 'fr',
+            locale: 'fr_FR',
             timeFormat24h: true,
         )->execute();
 

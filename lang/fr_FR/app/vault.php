@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'create' => [
+        'name' => 'Nom',
+        'name_help' => 'Le nom ne peut contenir que des lettres, des chiffres, des espaces, des traits d’union et des traits de soulignement.',
+        'title' => 'Créer un coffre',
+    ],
+    'index' => [
+        'avatar_alt' => 'Avatar',
+        'empty' => 'Vous n’êtes encore membre d’aucun coffre.',
+        'join' => 'Rejoindre',
+        'new' => 'Nouveau coffre',
+        'title' => 'Tableau de bord',
+        'your_vaults' => 'Vos coffres',
+    ],
+    'join' => [
+        'invitation_code' => 'Collez le code d’invitation',
+        'invitation_code_help' => 'Le code d’invitation est fourni par l’administrateur du coffre.',
+        'submit' => 'Rejoindre',
+        'title' => 'Rejoindre un coffre',
+    ],
+    'show' => [
+        'placeholder' => 'bla',
+        'title' => 'Coffre',
+    ],
+];

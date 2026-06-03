@@ -96,7 +96,7 @@ class UpdateGender
             vault: $this->gender->vault,
             user: $this->user,
             action: UserActionEnum::GenderUpdate,
-            description: sprintf('Updated a gender to %s', $this->name),
+            parameters: ['name' => $this->name],
         )->onQueue('low');
     }
 }

@@ -42,7 +42,6 @@ class DestroyApiKey
             vault: null,
             user: $this->user,
             action: UserActionEnum::ApiKeyDeletion,
-            description: 'Deleted an API key',
         )->onQueue('low');
     }
 

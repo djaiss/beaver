@@ -1,12 +1,12 @@
 <x-app-layout>
   <x-slot:title>
-    {{ __('Account administration') }}
+    {{ __('app/settings/account.title') }}
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.index')],
-    ['label' => __('Settings'), 'route' => route('settings.index')],
-    ['label' => __('Account administration')]
+    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
+    ['label' => __('app/breadcrumb.settings'), 'route' => route('settings.index')],
+    ['label' => __('app/breadcrumb.account')]
   ]" />
 
   <!-- settings layout -->

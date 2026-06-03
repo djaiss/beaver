@@ -56,7 +56,6 @@ class CreateApiKey
             vault: null,
             user: $this->user,
             action: UserActionEnum::ApiKeyCreation,
-            description: 'Created an API key',
         )->onQueue('low');
     }
 

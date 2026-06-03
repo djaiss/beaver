@@ -6,7 +6,7 @@
         @if (config('app.show_marketing_site'))
           <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
+            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('app/auth.shared.back_to_marketing') }}</x-link>
           </p>
         @endif
 
@@ -17,7 +17,7 @@
             </div>
           </a>
           <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {{ __('Two-factor authentication') }}
+            {{ __('app/auth.two_factor.title') }}
           </h1>
         </div>
 
@@ -25,19 +25,19 @@
           <form method="POST" action="{{ route('2fa.challenge.store') }}">
             @csrf
             <div>
-              <x-input type="text" id="code" value="{{ old('code') }}" :label="__('Enter your 2FA code')" required :error="$errors->get('code')" :passManagerDisabled="false" autocomplete="one-time-code" autofocus />
+              <x-input type="text" id="code" value="{{ old('code') }}" :label="__('app/auth.two_factor.code')" required :error="$errors->get('code')" :passManagerDisabled="false" autocomplete="one-time-code" autofocus />
             </div>
             <div class="mt-6 flex items-center justify-between">
-              <x-button>{{ __('Verify') }}</x-button>
+              <x-button>{{ __('app/shared.verify') }}</x-button>
             </div>
           </form>
         </x-box>
 
         <!-- Register link -->
         <x-box class="mb-8 text-center text-sm">
-          {{ __('New to :organization?', ['organization' => config('app.name')]) }}
+          {{ __('app/auth.shared.new_to_organization', ['organization' => config('app.name')]) }}
           <x-link :href="route('register')" class="ml-1">
-            {{ __('Create an account') }}
+            {{ __('app/shared.create_account') }}
           </x-link>
         </x-box>
 

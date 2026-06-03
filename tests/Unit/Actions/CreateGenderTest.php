@@ -51,7 +51,7 @@ class CreateGenderTest extends TestCase
             callback: fn (LogUserAction $job): bool => (
                 $job->action === UserActionEnum::GenderCreation
                 && $job->user->id === $user->id
-                && $job->description === 'Created a gender called Non-binary'
+                && $job->parameters === ['name' => 'Non-binary']
             ),
         );
     }

@@ -70,7 +70,7 @@ class JoinVault
             vault: $this->vault,
             user: $this->user,
             action: UserActionEnum::VaultJoined,
-            description: 'Joined vault called '.$this->vault->name,
+            parameters: ['name' => $this->vault->name],
         )->onQueue('low');
     }
 }

@@ -50,7 +50,6 @@ readonly class UpdateUserPassword
             vault: null,
             user: $this->user,
             action: UserActionEnum::UpdateUserPassword,
-            description: 'Updated their password',
         )->onQueue('low');
     }
 }

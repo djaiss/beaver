@@ -18,12 +18,12 @@ class LocaleControllerTest extends TestCase
     {
         $response = $this->from('/')
             ->put('/locale', [
-                'locale' => 'fr',
+                'locale' => 'de_DE',
             ]);
 
         $response->assertRedirect('/');
-        $this->assertEquals('fr', session('locale'));
-        $this->assertEquals('fr', App::getLocale());
+        $this->assertEquals('de_DE', session('locale'));
+        $this->assertEquals('de_DE', App::getLocale());
     }
 
     #[Test]
@@ -36,12 +36,12 @@ class LocaleControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->from('/')
             ->put('/locale', [
-                'locale' => 'fr',
+                'locale' => 'de_DE',
             ]);
 
         $response->assertRedirect('/');
-        $this->assertEquals('fr', session('locale'));
-        $this->assertEquals('fr', App::getLocale());
-        $this->assertEquals('fr', $user->fresh()->locale);
+        $this->assertEquals('de_DE', session('locale'));
+        $this->assertEquals('de_DE', App::getLocale());
+        $this->assertEquals('de_DE', $user->fresh()->locale);
     }
 }

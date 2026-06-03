@@ -96,7 +96,6 @@ class UpdateUserInformation
             vault: null,
             user: $this->user,
             action: UserActionEnum::PersonalProfileUpdate,
-            description: 'Updated their personal profile',
         )->onQueue('low');
     }
 }
