@@ -1,0 +1,114 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\App\Auth;
+
+use App\Enums\EmailType;
+use App\Http\Controllers\Controller;
+use App\Jobs\CheckLastLogin;
+use App\Jobs\SendEmail;
+use App\Mail\LoginFailed;
+use App\Models\User;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+
+class LoginController extends Controller
+{
+    public function create(): View
+    {
+        $quotes = config('quotes');
+        $randomQuote = $quotes[array_rand($quotes)];
+
+        return view('app.auth.login', [
+            'quote' => $randomQuote,
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string', 'max:255'],
+        ]);
+
+        $this->ensureIsNotRateLimited($request);
+
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey($request));
+
+            $user = User::query()->where('email', $request->input('email'))->first();
+
+            if ($user) {
+                SendEmail::dispatch(
+                    mailable: new LoginFailed,
+                    user: $user,
+                    emailType: EmailType::LoginFailed,
+                )->onQueue('high');
+            }
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        if (! is_null($request->user()->two_factor_confirmed_at)) {
+            $userId = $request->user()->id;
+            Auth::logout();
+            session(['2fa:user:id' => $userId]);
+
+            return to_route('2fa.challenge.create');
+        }
+
+        RateLimiter::clear($this->throttleKey($request));
+
+        CheckLastLogin::dispatch(
+            user: $request->user(),
+            ip: $request->ip(),
+        )->onQueue('low');
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('vault.index', absolute: false));
+    }
+
+    private function ensureIsNotRateLimited(Request $request): void
+    {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {
+            return;
+        }
+
+        event(new Lockout($request));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey($request));
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    private function throttleKey(Request $request): string
+    {
+        return Str::transliterate(Str::lower((string) $request->string('email')).'|'.$request->ip());
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+}
