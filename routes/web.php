@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\App\Settings\AccountController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteAccountController;
 use App\Http\Controllers\App\Settings\EmailSentController;
@@ -68,6 +69,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('settings/api-keys/create', [ApiKeyController::class, 'create'])->name('settings.api-keys.create');
     Route::post('settings/api-keys', [ApiKeyController::class, 'store'])->name('settings.api-keys.store');
     Route::delete('settings/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->name('settings.api-keys.destroy');
+
+    // account
+    Route::get('settings/account', [AccountController::class, 'index'])->name('settings.account.index');
+    Route::delete('settings/account', [AccountController::class, 'destroy'])->name('settings.account.destroy');
 });
 
 require __DIR__.'/auth.php';
