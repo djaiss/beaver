@@ -65,6 +65,16 @@ class Vault extends Model
     }
 
     /**
+     * Get the genders of the vault.
+     *
+     * @return HasMany<Gender, $this>
+     */
+    public function genders(): HasMany
+    {
+        return $this->hasMany(Gender::class);
+    }
+
+    /**
      * Gets the avatar of the vault.
      */
     public function getAvatar(): string

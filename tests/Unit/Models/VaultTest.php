@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
+use App\Models\Gender;
 use App\Models\Member;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,6 +24,17 @@ class VaultTest extends TestCase
         ]);
 
         $this->assertTrue($vault->members()->exists());
+    }
+
+    #[Test]
+    public function it_has_many_genders(): void
+    {
+        $vault = Vault::factory()->create();
+        Gender::factory()->create([
+            'vault_id' => $vault->id,
+        ]);
+
+        $this->assertTrue($vault->genders()->exists());
     }
 
     #[Test]

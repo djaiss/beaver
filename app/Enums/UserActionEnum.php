@@ -19,4 +19,7 @@ enum UserActionEnum: string
     case VaultUpdate = 'vault_update';
     case PersonalProfileUpdate = 'personal_profile_update';
     case UpdateUserPassword = 'update_user_password';
+    case GenderCreation = 'gender_creation';
+    case GenderUpdate = 'gender_update';
+    case GenderDeletion = 'gender_deletion';
 }
