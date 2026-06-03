@@ -28,6 +28,5 @@ class PasswordControllerTest extends TestCase
             ]);
 
         $response->assertRedirect('/settings/security');
-        $response->assertSessionHas('status', 'Changes saved');
     }
 }

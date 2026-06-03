@@ -55,6 +55,6 @@ class TwoFAController extends Controller
         )->execute();
 
         return to_route('settings.security.index')
-            ->with('status', __('Changes saved'));
+            ->with('status', __('app/shared.changes_saved'));
     }
 }

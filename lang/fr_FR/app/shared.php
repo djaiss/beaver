@@ -15,4 +15,14 @@ return [
     'show' => 'Afficher',
     'verify' => 'Vérifier',
     'yes' => 'Oui',
+    'optional' => 'Optionnel',
+    'changes_saved' => 'Modifications enregistrées',
+    'header' => [
+        'dashboard' => 'Tableau de bord',
+        'adminland' => 'Adminland',
+        'menu' => 'Menu',
+        'instance_administration' => 'Administration',
+        'profile' => 'Profil',
+        'logout' => 'Déconnexion',
+    ],
 ];

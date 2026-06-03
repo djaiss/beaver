@@ -13,4 +13,6 @@ return [
     'security_and_access' => 'Seguridad y acceso',
     'settings' => 'Ajustes',
     'vault' => 'Bóveda',
+    'adminland' => 'Adminland',
+    'manage_vault' => 'Gestionar bóveda',
 ];

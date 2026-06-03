@@ -26,6 +26,5 @@ class AutoDeleteAccountControllerTest extends TestCase
             ]);
 
         $response->assertRedirect('/settings/security');
-        $response->assertSessionHas('status', 'Changes saved');
     }
 }

@@ -15,4 +15,14 @@ return [
     'show' => 'Anzeigen',
     'verify' => 'Verifizieren',
     'yes' => 'Ja',
+    'optional' => 'Optional',
+    'changes_saved' => 'Änderungen gespeichert',
+    'header' => [
+        'dashboard' => 'Dashboard',
+        'adminland' => 'Adminland',
+        'menu' => 'Menü',
+        'instance_administration' => 'Instanzverwaltung',
+        'profile' => 'Profil',
+        'logout' => 'Abmelden',
+    ],
 ];

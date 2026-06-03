@@ -13,4 +13,6 @@ return [
     'security_and_access' => 'Sicherheit und Zugriff',
     'settings' => 'Einstellungen',
     'vault' => 'Tresor',
+    'adminland' => 'Adminland',
+    'manage_vault' => 'Tresor verwalten',
 ];

@@ -23,6 +23,6 @@ class AutoDeleteAccountController extends Controller
         )->execute();
 
         return to_route('settings.security.index')
-            ->with('status', trans('Changes saved'));
+            ->with('status', trans('app/shared.changes_saved'));
     }
 }

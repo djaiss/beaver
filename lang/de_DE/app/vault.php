@@ -26,4 +26,10 @@ return [
         'placeholder' => 'bla',
         'title' => 'Tresor',
     ],
+    'adminland' => [
+        'destroy_vault' => 'Tresor löschen',
+        'destroy_vault_description' => 'Diese Aktion ist unumkehrbar. Alle Tresordaten werden sofort dauerhaft gelöscht.',
+        'destroy_vault_30_days' => 'Die Daten selbst bleiben, obwohl sie verschlüsselt sind, 30 Tage lang in unseren Backups, bevor sie dauerhaft gelöscht werden.',
+        'destroy_vault_confirm' => 'Bitte sei dir sicher. Diese Aktion kann nicht rückgängig gemacht werden.',
+    ],
 ];

@@ -13,4 +13,6 @@ return [
     'security_and_access' => 'Sécurité et accès',
     'settings' => 'Paramètres',
     'vault' => 'Coffre',
+    'adminland' => 'Adminland',
+    'manage_vault' => 'Gérer le coffre',
 ];

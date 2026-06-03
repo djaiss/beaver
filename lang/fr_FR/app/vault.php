@@ -26,4 +26,10 @@ return [
         'placeholder' => 'bla',
         'title' => 'Coffre',
     ],
+    'adminland' => [
+        'destroy_vault' => 'Détruire le coffre',
+        'destroy_vault_description' => 'Cette action est irréversible. Toutes les données du coffre seront supprimées définitivement et immédiatement.',
+        'destroy_vault_30_days' => 'Les données elles-mêmes, bien que chiffrées, resteront dans nos sauvegardes pendant 30 jours avant d’être supprimées définitivement.',
+        'destroy_vault_confirm' => 'Veuillez en être certain. Cette action est irréversible.',
+    ],
 ];

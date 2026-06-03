@@ -13,6 +13,7 @@ use App\Http\Controllers\App\Settings\SecurityController;
 use App\Http\Controllers\App\Settings\SettingsController;
 use App\Http\Controllers\App\Settings\TwoFAController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandManageController;
 use App\Http\Controllers\App\Vault\JoinVaultController;
 use App\Http\Controllers\App\Vault\VaultController;
 use App\Http\Controllers\LocaleController;
@@ -37,8 +38,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::get('vaults/{vaultId}', [VaultController::class, 'show'])->name('vault.show');
 
         // adminland
-        Route::prefix('vaults/{vaultId}/adminland')->group(function (): void {
+        Route::middleware(['vault.adminland'])->prefix('vaults/{vaultId}/adminland')->group(function (): void {
             Route::get('', [AdminlandController::class, 'index'])->name('vault.adminland.index');
+            Route::get('manage', [AdminlandManageController::class, 'index'])->name('vault.adminland.manage.index');
+            Route::delete('manage', [AdminlandManageController::class, 'destroy'])->name('vault.adminland.manage.destroy');
         });
     });
 

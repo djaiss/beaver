@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\CheckAdminland;
 use App\Http\Middleware\CheckMarketing;
 use App\Http\Middleware\CheckVault;
 use App\Http\Middleware\CheckVaultAPI;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'vault' => CheckVault::class,
             'marketing' => CheckMarketing::class,
             'vault.api' => CheckVaultAPI::class,
+            'vault.adminland' => CheckAdminland::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

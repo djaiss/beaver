@@ -15,4 +15,14 @@ return [
     'show' => 'Show',
     'verify' => 'Verify',
     'yes' => 'Yes',
+    'optional' => 'Optional',
+    'changes_saved' => 'Changes saved',
+    'header' => [
+        'dashboard' => 'Dashboard',
+        'adminland' => 'Adminland',
+        'menu' => 'Menu',
+        'instance_administration' => 'Instance administration',
+        'profile' => 'Profile',
+        'logout' => 'Logout',
+    ],
 ];

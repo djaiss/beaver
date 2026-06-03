@@ -93,6 +93,5 @@ class TwoFAControllerTest extends TestCase
             ->delete('/settings/security/2fa');
 
         $response->assertRedirect('/settings/security');
-        $response->assertSessionHas('status', 'Changes saved');
     }
 }

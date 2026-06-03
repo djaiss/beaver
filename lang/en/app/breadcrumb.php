@@ -13,4 +13,6 @@ return [
     'security_and_access' => 'Security and access',
     'settings' => 'Settings',
     'vault' => 'Vault',
+    'adminland' => 'Adminland',
+    'manage_vault' => 'Manage vault',
 ];

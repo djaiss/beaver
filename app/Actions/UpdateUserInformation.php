@@ -31,7 +31,6 @@ class UpdateUserInformation
     public function execute(): User
     {
         $this->sanitize();
-        $this->validate();
         $emailChanged = $this->user->email !== $this->email;
         $this->update();
         $this->triggerEmailVerification($emailChanged);
@@ -46,27 +45,6 @@ class UpdateUserInformation
         $this->lastName = TextSanitizer::plainText($this->lastName);
         $this->nickname = TextSanitizer::nullablePlainText($this->nickname);
         $this->locale = TextSanitizer::plainText($this->locale);
-    }
-
-    private function validate(): void
-    {
-        $messages = [];
-
-        if ($this->firstName === '') {
-            $messages['first_name'] = 'First name must be plain text.';
-        }
-
-        if ($this->lastName === '') {
-            $messages['last_name'] = 'Last name must be plain text.';
-        }
-
-        if ($this->locale === '') {
-            $messages['locale'] = 'Locale must be plain text.';
-        }
-
-        if ($messages !== []) {
-            throw ValidationException::withMessages($messages);
-        }
     }
 
     private function triggerEmailVerification(bool $emailChanged): void

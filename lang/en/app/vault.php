@@ -26,4 +26,10 @@ return [
         'placeholder' => 'bla',
         'title' => 'Vault',
     ],
+    'adminland' => [
+        'destroy_vault' => 'Destroy vault',
+        'destroy_vault_description' => 'This action is irreversible. All vault data will be permanently deleted immediately.',
+        'destroy_vault_30_days' => 'The data itself, while encrypted, will remain in our backups for 30 days before being permanently deleted.',
+        'destroy_vault_confirm' => 'Please be certain. This action cannot be undone.',
+    ],
 ];
