@@ -96,29 +96,4 @@ class DestroyGenderTest extends TestCase
             gender: $gender,
         )->execute();
     }
-
-    #[Test]
-    public function it_allows_editors_to_delete_genders(): void
-    {
-        $user = $this->createUser();
-        $vault = $this->createVault();
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Editor->value,
-        );
-
-        $gender = Gender::factory()->create([
-            'vault_id' => $vault->id,
-        ]);
-
-        new DestroyGender(
-            user: $user,
-            gender: $gender,
-        )->execute();
-
-        $this->assertDatabaseMissing('genders', [
-            'id' => $gender->id,
-        ]);
-    }
 }

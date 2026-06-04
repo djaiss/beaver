@@ -33,5 +33,16 @@ return [
         'destroy_vault_confirm' => 'Asegúrate bien. Esta acción no se puede deshacer.',
         'edit_title' => 'Actualizar detalles de la bóveda',
         'vault_name' => 'Nombre de la bóveda',
+        'genders' => [
+            'confirm_delete' => '¿Seguro que quieres continuar? Esta acción no se puede deshacer.',
+            'count' => ':count género(s)',
+            'description' => 'Los géneros se usan para identificar el género de una persona.',
+            'edit' => 'Editar',
+            'empty' => 'Empieza creando un nuevo género.',
+            'name' => 'Nombre del género',
+            'new' => 'Nuevo género',
+            'none' => 'No se han creado géneros',
+            'title' => 'Todos los géneros de la bóveda',
+        ],
     ],
 ];

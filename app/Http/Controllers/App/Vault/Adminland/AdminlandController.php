@@ -6,6 +6,7 @@ namespace App\Http\Controllers\App\Vault\Adminland;
 
 use App\Actions\UpdateVault;
 use App\Http\Controllers\Controller;
+use App\Models\Gender;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,7 +15,18 @@ class AdminlandController extends Controller
 {
     public function index(Request $request): View
     {
-        return view('app.vault.adminland.index');
+        $vault = $request->attributes->get('vault');
+        $genders = Gender::query()->where('vault_id', $vault->id)
+            ->orderBy('position')
+            ->get()
+            ->map(fn (Gender $gender): array => [
+                'id' => $gender->id,
+                'name' => $gender->name,
+            ]);
+
+        return view('app.vault.adminland.index', [
+            'genders' => $genders,
+        ]);
     }
 
     public function update(Request $request): RedirectResponse

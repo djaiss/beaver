@@ -33,5 +33,16 @@ return [
         'destroy_vault_confirm' => 'Please be certain. This action cannot be undone.',
         'edit_title' => 'Update vault details',
         'vault_name' => 'Name of the vault',
+        'genders' => [
+            'confirm_delete' => 'Are you sure you want to proceed? This cannot be undone.',
+            'count' => ':count gender(s)',
+            'description' => 'Genders are used to identify the gender of a person.',
+            'edit' => 'Edit',
+            'empty' => 'Get started by creating a new gender.',
+            'name' => 'Name of the gender',
+            'new' => 'New gender',
+            'none' => 'No genders created',
+            'title' => 'All the genders in the vault',
+        ],
     ],
 ];

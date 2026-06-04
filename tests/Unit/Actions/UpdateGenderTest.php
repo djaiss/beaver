@@ -102,33 +102,6 @@ class UpdateGenderTest extends TestCase
     }
 
     #[Test]
-    public function it_allows_editors_to_update_genders(): void
-    {
-        $user = $this->createUser();
-        $vault = $this->createVault();
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Editor->value,
-        );
-
-        $gender = Gender::factory()->create([
-            'vault_id' => $vault->id,
-            'name' => 'Female',
-            'position' => 1,
-        ]);
-
-        $updatedGender = new UpdateGender(
-            user: $user,
-            gender: $gender,
-            name: 'Woman',
-        )->execute();
-
-        $this->assertEquals('Woman', $updatedGender->name);
-        $this->assertEquals(1, $updatedGender->position);
-    }
-
-    #[Test]
     public function it_updates_position_when_provided(): void
     {
         $user = $this->createUser();

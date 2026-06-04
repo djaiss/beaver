@@ -33,5 +33,16 @@ return [
         'destroy_vault_confirm' => 'Veuillez en être certain. Cette action est irréversible.',
         'edit_title' => 'Mettre à jour les détails du coffre',
         'vault_name' => 'Nom du coffre',
+        'genders' => [
+            'confirm_delete' => 'Voulez-vous vraiment continuer ? Cette action est irréversible.',
+            'count' => ':count genre(s)',
+            'description' => 'Les genres servent à identifier le genre d’une personne.',
+            'edit' => 'Modifier',
+            'empty' => 'Commencez par créer un nouveau genre.',
+            'name' => 'Nom du genre',
+            'new' => 'Nouveau genre',
+            'none' => 'Aucun genre créé',
+            'title' => 'Tous les genres du coffre',
+        ],
     ],
 ];

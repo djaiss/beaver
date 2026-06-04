@@ -37,7 +37,7 @@ class DestroyGender
 
         $member = $this->user->memberOf($this->gender->vault);
 
-        if (! in_array($member->role, [PermissionEnum::Owner->value, PermissionEnum::Editor->value], true)) {
+        if ($member->role !== PermissionEnum::Owner->value) {
             throw new ModelNotFoundException('Permission denied');
         }
     }

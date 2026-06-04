@@ -46,7 +46,7 @@ class CreateGender
 
         $member = $this->user->memberOf($this->vault);
 
-        if (! in_array($member->role, [PermissionEnum::Owner->value, PermissionEnum::Editor->value], true)) {
+        if ($member->role !== PermissionEnum::Owner->value) {
             throw new ModelNotFoundException('Permission denied');
         }
     }

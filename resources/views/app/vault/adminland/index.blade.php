@@ -5,7 +5,7 @@
 
   <x-breadcrumb :items="[
     ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.show', $vault)],
-    ['label' => __('app/breadcrumb.preferences')]
+    ['label' => __('app/breadcrumb.adminland')],
   ]" />
 
   <!-- settings layout -->
@@ -16,8 +16,11 @@
     <!-- Main content -->
     <section class="p-4 sm:p-8">
       <div class="mx-auto max-w-2xl space-y-6 sm:px-0">
-        <!-- delete -->
+        <!-- edit vault -->
         @include('app.vault.adminland._edit')
+
+        <!-- genders -->
+        @include('app.vault.adminland.manage._genders')
       </div>
     </section>
   </div>

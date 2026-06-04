@@ -33,5 +33,16 @@ return [
         'destroy_vault_confirm' => 'Bitte sei dir sicher. Diese Aktion kann nicht rückgängig gemacht werden.',
         'edit_title' => 'Tresordetails aktualisieren',
         'vault_name' => 'Name des Tresors',
+        'genders' => [
+            'confirm_delete' => 'Möchtest du wirklich fortfahren? Diese Aktion kann nicht rückgängig gemacht werden.',
+            'count' => ':count Geschlecht(er)',
+            'description' => 'Geschlechter werden verwendet, um das Geschlecht einer Person zu identifizieren.',
+            'edit' => 'Bearbeiten',
+            'empty' => 'Erstelle zunächst ein neues Geschlecht.',
+            'name' => 'Name des Geschlechts',
+            'new' => 'Neues Geschlecht',
+            'none' => 'Keine Geschlechter erstellt',
+            'title' => 'Alle Geschlechter im Tresor',
+        ],
     ],
 ];

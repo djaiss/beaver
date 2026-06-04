@@ -115,24 +115,4 @@ class CreateGenderTest extends TestCase
             name: 'Female',
         )->execute();
     }
-
-    #[Test]
-    public function it_allows_editors_to_create_genders(): void
-    {
-        $user = $this->createUser();
-        $vault = $this->createVault();
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Editor->value,
-        );
-
-        $gender = new CreateGender(
-            user: $user,
-            vault: $vault,
-            name: 'Prefer not to say',
-        )->execute();
-
-        $this->assertInstanceOf(Gender::class, $gender);
-    }
 }

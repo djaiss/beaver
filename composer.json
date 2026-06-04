@@ -95,6 +95,7 @@
     "lifeos:prettier": "npx prettier --write resources/",
     "lifeos:pint": "./vendor/bin/pint",
     "lifeos:rector": "./vendor/bin/rector",
+    "lifeos:update": "composer update && bun update && bun upgrade",
     "lifeos:update-blacklist-domains": "php artisan erag:sync-disposable-email-list",
     "lint": [
       "@lifeos:prettier",
@@ -105,7 +106,8 @@
       "@lifeos:unit",
       "@lifeos:locale",
       "@lint",
-      "@lifeos:update-blacklist-domains"
+      "@lifeos:update-blacklist-domains",
+      "@lifeos:update"
     ]
   },
   "extra": {
