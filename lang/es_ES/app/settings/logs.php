@@ -14,7 +14,7 @@ return [
         'api_key_deleted' => 'Ha eliminado una clave API',
         'gender_created' => 'Ha creado un género llamado :name',
         'gender_deleted' => 'Ha eliminado el género llamado :name',
-        'gender_updated' => 'Ha actualizado un género a :name',
+        'gender_updated' => 'Ha actualizado un género llamado :name',
         'magic_link_created' => 'Ha enviado un Magic Link',
         'user_auto_delete_updated' => 'Ha actualizado la eliminación automática de cuenta a :status',
         'user_password_updated' => 'Ha actualizado su propia contraseña',

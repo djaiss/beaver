@@ -14,7 +14,7 @@ return [
         'api_key_deleted' => 'Hat einen API-Schlüssel gelöscht',
         'gender_created' => 'Hat ein Geschlecht namens :name erstellt',
         'gender_deleted' => 'Hat das Geschlecht namens :name gelöscht',
-        'gender_updated' => 'Hat ein Geschlecht zu :name aktualisiert',
+        'gender_updated' => 'Hat ein Geschlecht namens :name aktualisiert',
         'magic_link_created' => 'Hat einen Magic Link versendet',
         'user_auto_delete_updated' => 'Hat die automatische Kontolöschung auf :status aktualisiert',
         'user_password_updated' => 'Hat das eigene Passwort aktualisiert',

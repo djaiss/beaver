@@ -14,7 +14,7 @@ return [
         'api_key_deleted' => 'Deleted an API key',
         'gender_created' => 'Created a gender called :name',
         'gender_deleted' => 'Deleted the gender called :name',
-        'gender_updated' => 'Updated a gender to :name',
+        'gender_updated' => 'Updated a gender called :name',
         'magic_link_created' => 'Sent a magic link',
         'user_auto_delete_updated' => 'Updated auto delete account setting to :status',
         'user_password_updated' => 'Updated their password',

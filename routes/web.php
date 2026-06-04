@@ -14,6 +14,7 @@ use App\Http\Controllers\App\Settings\SettingsController;
 use App\Http\Controllers\App\Settings\TwoFAController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderPositionController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandManageController;
 use App\Http\Controllers\App\Vault\JoinVaultController;
 use App\Http\Controllers\App\Vault\VaultController;
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
             Route::post('genders', [AdminlandGenderController::class, 'create'])->name('vault.adminland.genders.create');
             Route::get('genders/{gender}/edit', [AdminlandGenderController::class, 'edit'])->name('vault.adminland.genders.edit');
             Route::put('genders/{gender}', [AdminlandGenderController::class, 'update'])->name('vault.adminland.genders.update');
+            Route::put('genders/{gender}/position', [AdminlandGenderPositionController::class, 'update'])->name('vault.adminland.genders.position.update');
             Route::delete('genders/{gender}', [AdminlandGenderController::class, 'destroy'])->name('vault.adminland.genders.destroy');
 
             // manage vault

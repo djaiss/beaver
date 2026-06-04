@@ -37,6 +37,7 @@ return [
             'confirm_delete' => 'Möchtest du wirklich fortfahren? Diese Aktion kann nicht rückgängig gemacht werden.',
             'count' => ':count Geschlecht(er)',
             'description' => 'Geschlechter werden verwendet, um das Geschlecht einer Person zu identifizieren.',
+            'drop_to_move' => 'Hier ablegen, um zu verschieben',
             'edit' => 'Bearbeiten',
             'empty' => 'Erstelle zunächst ein neues Geschlecht.',
             'name' => 'Name des Geschlechts',

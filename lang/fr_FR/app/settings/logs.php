@@ -14,7 +14,7 @@ return [
         'api_key_deleted' => 'A supprimé une clé API',
         'gender_created' => 'A créé un genre nommé :name',
         'gender_deleted' => 'A supprimé un genre nommé :name',
-        'gender_updated' => 'A mis à jour un genre vers :name',
+        'gender_updated' => 'A mis à jour un genre appelé :name',
         'magic_link_created' => 'A envoyé un lien magique',
         'user_auto_delete_updated' => 'A mis à jour le paramètre de suppression automatique du compte vers :status',
         'user_password_updated' => 'A mis à jour le mot de passe',

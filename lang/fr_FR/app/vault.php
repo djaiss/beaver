@@ -37,6 +37,7 @@ return [
             'confirm_delete' => 'Voulez-vous vraiment continuer ? Cette action est irréversible.',
             'count' => ':count genre(s)',
             'description' => 'Les genres servent à identifier le genre d’une personne.',
+            'drop_to_move' => 'Déposez ici pour déplacer',
             'edit' => 'Modifier',
             'empty' => 'Commencez par créer un nouveau genre.',
             'name' => 'Nom du genre',

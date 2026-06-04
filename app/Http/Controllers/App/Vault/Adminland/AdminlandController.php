@@ -22,6 +22,7 @@ class AdminlandController extends Controller
             ->map(fn (Gender $gender): array => [
                 'id' => $gender->id,
                 'name' => $gender->name,
+                'position' => $gender->position,
             ]);
 
         return view('app.vault.adminland.index', [

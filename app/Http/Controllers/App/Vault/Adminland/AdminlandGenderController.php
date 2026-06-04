@@ -50,10 +50,6 @@ class AdminlandGenderController extends Controller
             abort(404);
         }
 
-        if ($gender->vault_id !== $vault->id) {
-            abort(404);
-        }
-
         return view('app.vault.adminland.manage._gender-edit', [
             'gender' => $gender,
             'vault' => $vault,
@@ -68,10 +64,6 @@ class AdminlandGenderController extends Controller
         try {
             $gender = $vault->genders()->findOrFail($id);
         } catch (ModelNotFoundException) {
-            abort(404);
-        }
-
-        if ($gender->vault_id !== $vault->id) {
             abort(404);
         }
 
@@ -98,10 +90,6 @@ class AdminlandGenderController extends Controller
         try {
             $gender = $vault->genders()->findOrFail($id);
         } catch (ModelNotFoundException) {
-            abort(404);
-        }
-
-        if ($gender->vault_id !== $vault->id) {
             abort(404);
         }
 

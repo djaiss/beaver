@@ -37,6 +37,7 @@ return [
             'confirm_delete' => 'Are you sure you want to proceed? This cannot be undone.',
             'count' => ':count gender(s)',
             'description' => 'Genders are used to identify the gender of a person.',
+            'drop_to_move' => 'Drop here to move',
             'edit' => 'Edit',
             'empty' => 'Get started by creating a new gender.',
             'name' => 'Name of the gender',

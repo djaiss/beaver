@@ -37,6 +37,7 @@ return [
             'confirm_delete' => '¿Seguro que quieres continuar? Esta acción no se puede deshacer.',
             'count' => ':count género(s)',
             'description' => 'Los géneros se usan para identificar el género de una persona.',
+            'drop_to_move' => 'Suelta aquí para mover',
             'edit' => 'Editar',
             'empty' => 'Empieza creando un nuevo género.',
             'name' => 'Nombre del género',
