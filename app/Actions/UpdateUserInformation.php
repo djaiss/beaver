@@ -9,7 +9,6 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Validation\ValidationException;
 
 class UpdateUserInformation
 {

@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         // adminland
         Route::middleware(['vault.adminland'])->prefix('vaults/{vaultId}/adminland')->group(function (): void {
             Route::get('', [AdminlandController::class, 'index'])->name('vault.adminland.index');
+            Route::put('', [AdminlandController::class, 'update'])->name('vault.adminland.update');
             Route::get('manage', [AdminlandManageController::class, 'index'])->name('vault.adminland.manage.index');
             Route::delete('manage', [AdminlandManageController::class, 'destroy'])->name('vault.adminland.manage.destroy');
         });

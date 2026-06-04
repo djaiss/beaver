@@ -10,7 +10,7 @@
       <div class="flex items-center gap-1">
         <a href="{{ route('vault.index') }}" data-turbo="true" class="rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800">{{ __('app/shared.header.dashboard') }}</a>
         <span class="text-gray-500">/</span>
-        <div class="flex items-center pl-2">
+        <div class="flex items-center pl-2" id="header-vault-name">
           {{ $vault->name }}
         </div>
       </div>

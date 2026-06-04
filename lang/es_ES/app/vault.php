@@ -31,5 +31,7 @@ return [
         'destroy_vault_description' => 'Esta acción es irreversible. Todos los datos de la bóveda se eliminarán permanentemente de inmediato.',
         'destroy_vault_30_days' => 'Los datos en sí, aunque están cifrados, permanecerán en nuestras copias de seguridad durante 30 días antes de eliminarse permanentemente.',
         'destroy_vault_confirm' => 'Asegúrate bien. Esta acción no se puede deshacer.',
+        'edit_title' => 'Actualizar detalles de la bóveda',
+        'vault_name' => 'Nombre de la bóveda',
     ],
 ];

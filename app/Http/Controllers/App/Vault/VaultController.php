@@ -41,7 +41,7 @@ class VaultController extends Controller
             'vault_name' => [
                 'required',
                 'string',
-                'max:255',
+                'max:100',
                 'regex:/^[a-zA-Z0-9\s\-_]+$/',
             ],
         ]);

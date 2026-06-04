@@ -11,7 +11,6 @@ use App\Jobs\LogUserAction;
 use App\Models\User;
 use App\Models\Vault;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class UpdateVault
@@ -60,7 +59,6 @@ class UpdateVault
     {
         $this->vault->update([
             'name' => $this->name,
-            'slug' => $this->vault->id.'-'.Str::of($this->name)->slug('-'),
         ]);
     }
 
