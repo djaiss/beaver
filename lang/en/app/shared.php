@@ -17,6 +17,11 @@ return [
     'yes' => 'Yes',
     'optional' => 'Optional',
     'changes_saved' => 'Changes saved',
+    'genders' => [
+        'man' => 'Man',
+        'woman' => 'Woman',
+        'other' => 'Other',
+    ],
     'header' => [
         'dashboard' => 'Dashboard',
         'adminland' => 'Adminland',

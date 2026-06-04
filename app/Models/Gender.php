@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int $vault_id
- * @property string $name
+ * @property string|null $name
+ * @property string|null $name_translation_key
  * @property int $position
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
@@ -38,6 +39,7 @@ class Gender extends Model
     protected $fillable = [
         'vault_id',
         'name',
+        'name_translation_key',
         'position',
     ];
 
@@ -50,6 +52,7 @@ class Gender extends Model
     {
         return [
             'name' => 'encrypted',
+            'name_translation_key' => 'encrypted',
             'position' => 'integer',
         ];
     }
@@ -62,5 +65,19 @@ class Gender extends Model
     public function vault(): BelongsTo
     {
         return $this->belongsTo(Vault::class);
+    }
+
+    /**
+     * Get the display name of the gender.
+     * Returns the name field if set, otherwise returns the translated value of
+     * name_translation_key.
+     */
+    public function getName(): string
+    {
+        if ($this->name !== null) {
+            return $this->name;
+        }
+
+        return __($this->name_translation_key ?? '');
     }
 }

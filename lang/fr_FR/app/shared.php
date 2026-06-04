@@ -17,6 +17,11 @@ return [
     'yes' => 'Oui',
     'optional' => 'Optionnel',
     'changes_saved' => 'Modifications enregistrées',
+    'genders' => [
+        'man' => 'Homme',
+        'woman' => 'Femme',
+        'other' => 'Autre',
+    ],
     'header' => [
         'dashboard' => 'Tableau de bord',
         'adminland' => 'Adminland',

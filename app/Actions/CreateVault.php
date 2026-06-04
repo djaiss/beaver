@@ -8,6 +8,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
+use App\Jobs\PopulateVault;
 use App\Models\Member;
 use App\Models\User;
 use App\Models\Vault;
@@ -34,6 +35,7 @@ class CreateVault
         $this->create();
         $this->generateInvitationCode();
         $this->addMembership();
+        $this->populate();
         $this->log();
 
         return $this->vault;
@@ -83,6 +85,11 @@ class CreateVault
             'joined_at' => now(),
             'role' => PermissionEnum::Owner->value,
         ]);
+    }
+
+    private function populate(): void
+    {
+        PopulateVault::dispatch($this->vault)->onQueue('low');
     }
 
     private function log(): void

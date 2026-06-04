@@ -7,6 +7,7 @@ namespace Tests\Unit\Actions;
 use App\Actions\CreateVault;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
+use App\Jobs\PopulateVault;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -49,6 +50,12 @@ class CreateVaultTest extends TestCase
                 && $job->user->id === $user->id
                 && $job->parameters === ['name' => 'Central Perk']
             ),
+        );
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: PopulateVault::class,
+            callback: fn (PopulateVault $job): bool => $job->vault->id === $vault->id,
         );
     }
 

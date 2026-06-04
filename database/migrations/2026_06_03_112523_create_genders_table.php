@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('genders', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('vault_id')->comment('vault the gender belongs to');
-            $table->text('name')->comment('gender name');
+            $table->text('name')->nullable()->comment('gender name');
+            $table->text('name_translation_key')->nullable()->comment('gender name translation key');
             $table->integer('position')->comment('display order position');
             $table->timestamps();
             $table->foreign('vault_id')->references('id')->on('vaults')->onDelete('cascade');

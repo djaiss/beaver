@@ -20,4 +20,26 @@ class GenderTest extends TestCase
 
         $this->assertTrue($gender->vault()->exists());
     }
+
+    #[Test]
+    public function it_returns_name_when_set(): void
+    {
+        $gender = Gender::factory()->make([
+            'name' => 'Male',
+            'name_translation_key' => null,
+        ]);
+
+        $this->assertEquals('Male', $gender->getName());
+    }
+
+    #[Test]
+    public function it_returns_translated_name_when_name_is_null(): void
+    {
+        $gender = Gender::factory()->make([
+            'name' => null,
+            'name_translation_key' => 'Male',
+        ]);
+
+        $this->assertEquals('Male', $gender->getName());
+    }
 }
