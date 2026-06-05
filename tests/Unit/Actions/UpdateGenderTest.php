@@ -60,6 +60,48 @@ class UpdateGenderTest extends TestCase
     }
 
     #[Test]
+    public function it_updates_a_gender_with_a_null_name(): void
+    {
+        Queue::fake();
+
+        $user = $this->createUser();
+        $vault = $this->createVault();
+        $this->assignUserToVault(
+            user: $user,
+            vault: $vault,
+            role: PermissionEnum::Owner->value,
+        );
+
+        $gender = Gender::factory()->create([
+            'vault_id' => $vault->id,
+            'name' => 'Male',
+            'name_translation_key' => 'app/shared.genders.man',
+            'position' => 2,
+        ]);
+
+        $updatedGender = new UpdateGender(
+            user: $user,
+            gender: $gender,
+            name: null,
+        )->execute();
+
+        $this->assertInstanceOf(Gender::class, $updatedGender);
+        $this->assertNull($updatedGender->name);
+        $this->assertEquals('app/shared.genders.man', $updatedGender->name_translation_key);
+        $this->assertEquals(2, $updatedGender->position);
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: LogUserAction::class,
+            callback: fn (LogUserAction $job): bool => (
+                $job->action === UserActionEnum::GenderUpdate
+                && $job->user->id === $user->id
+                && $job->parameters === ['name' => null]
+            ),
+        );
+    }
+
+    #[Test]
     public function it_fails_if_user_is_not_part_of_vault(): void
     {
         $this->expectException(ModelNotFoundException::class);

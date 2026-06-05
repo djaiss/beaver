@@ -17,7 +17,7 @@ class UpdateGender
     public function __construct(
         private readonly User $user,
         private readonly Gender $gender,
-        private string $name,
+        private ?string $name,
         private readonly ?int $position = null,
     ) {}
 
@@ -33,7 +33,7 @@ class UpdateGender
 
     private function sanitize(): void
     {
-        $this->name = TextSanitizer::plainText($this->name);
+        $this->name = TextSanitizer::nullablePlainText($this->name);
     }
 
     private function validate(): void
@@ -59,7 +59,9 @@ class UpdateGender
 
     private function update(): void
     {
-        $data = ['name' => $this->name];
+        $data = [
+            'name' => $this->name,
+        ];
 
         if ($this->position !== null && $this->position !== $this->gender->position) {
             $this->reorderPositions();

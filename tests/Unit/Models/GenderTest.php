@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Models;
 
 use App\Models\Gender;
+use App\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -30,6 +31,17 @@ class GenderTest extends TestCase
         ]);
 
         $this->assertEquals('Male', $gender->getName());
+    }
+
+    #[Test]
+    public function it_has_many_persons(): void
+    {
+        $gender = Gender::factory()->create();
+        Person::factory()->create([
+            'gender_id' => $gender->id,
+        ]);
+
+        $this->assertTrue($gender->persons()->exists());
     }
 
     #[Test]

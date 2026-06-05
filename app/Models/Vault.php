@@ -65,6 +65,16 @@ class Vault extends Model
     }
 
     /**
+     * Get the persons of the vault.
+     *
+     * @return HasMany<Person, $this>
+     */
+    public function persons(): HasMany
+    {
+        return $this->hasMany(Person::class);
+    }
+
+    /**
      * Get the genders of the vault.
      *
      * @return HasMany<Gender, $this>

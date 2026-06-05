@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Gender
@@ -65,6 +66,16 @@ class Gender extends Model
     public function vault(): BelongsTo
     {
         return $this->belongsTo(Vault::class);
+    }
+
+    /**
+     * Get the persons associated with the gender.
+     *
+     * @return HasMany<Person, $this>
+     */
+    public function persons(): HasMany
+    {
+        return $this->hasMany(Person::class);
     }
 
     /**
