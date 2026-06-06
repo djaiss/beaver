@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Gender;
+use App\Models\MaritalStatus;
 use App\Models\Person;
 use App\Models\Vault;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,7 +27,7 @@ class PersonFactory extends Factory
         return [
             'vault_id' => Vault::factory(),
             'gender_id' => Gender::factory(),
-            'marital_status' => $this->faker->randomElement(['single', 'married', 'divorced', 'widowed']),
+            'marital_status_id' => MaritalStatus::factory(),
             'kids_status' => $this->faker->randomElement(['has_kids', 'no_kids', 'unknown']),
             'slug' => $this->faker->unique()->slug(),
             'first_name' => $this->faker->firstName(),

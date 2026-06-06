@@ -22,6 +22,7 @@ class PopulateVault implements ShouldQueue
     public function handle(): void
     {
         $this->addDefaultGenders();
+        $this->addDefaultMaritalStatuses();
     }
 
     private function addDefaultGenders(): void
@@ -42,5 +43,33 @@ class PopulateVault implements ShouldQueue
         ];
 
         $this->vault->genders()->createMany($gendersData);
+    }
+
+    private function addDefaultMaritalStatuses(): void
+    {
+        $maritalStatusesData = [
+            [
+                'name_translation_key' => 'app/shared.marital_statuses.unknown',
+                'position' => 1,
+            ],
+            [
+                'name_translation_key' => 'app/shared.marital_statuses.single',
+                'position' => 2,
+            ],
+            [
+                'name_translation_key' => 'app/shared.marital_statuses.married',
+                'position' => 3,
+            ],
+            [
+                'name_translation_key' => 'app/shared.marital_statuses.divorced',
+                'position' => 4,
+            ],
+            [
+                'name_translation_key' => 'app/shared.marital_statuses.widowed',
+                'position' => 5,
+            ],
+        ];
+
+        $this->vault->maritalStatuses()->createMany($maritalStatusesData);
     }
 }

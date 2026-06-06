@@ -9,6 +9,7 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Gender;
+use App\Models\MaritalStatus;
 use App\Models\Person;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -20,6 +21,7 @@ class UpdatePerson
         private readonly User $user,
         private readonly Person $person,
         private readonly ?Gender $gender = null,
+        private readonly ?MaritalStatus $maritalStatus = null,
         private ?string $firstName = null,
         private ?string $middleName = null,
         private ?string $lastName = null,
@@ -27,7 +29,6 @@ class UpdatePerson
         private ?string $maidenName = null,
         private ?string $suffix = null,
         private ?string $prefix = null,
-        private ?string $maritalStatus = null,
         private ?string $kidsStatus = null,
         private readonly ?bool $canBeDeleted = null,
         private readonly ?bool $isListed = null,
@@ -53,7 +54,6 @@ class UpdatePerson
         $this->maidenName = TextSanitizer::nullablePlainText($this->maidenName);
         $this->suffix = TextSanitizer::nullablePlainText($this->suffix);
         $this->prefix = TextSanitizer::nullablePlainText($this->prefix);
-        $this->maritalStatus = TextSanitizer::nullablePlainText($this->maritalStatus);
         $this->kidsStatus = TextSanitizer::nullablePlainText($this->kidsStatus);
     }
 
@@ -72,13 +72,17 @@ class UpdatePerson
         if ($this->gender instanceof Gender && $this->gender->vault_id !== $this->person->vault_id) {
             throw new ModelNotFoundException('Gender not found');
         }
+
+        if ($this->maritalStatus instanceof MaritalStatus && $this->maritalStatus->vault_id !== $this->person->vault_id) {
+            throw new ModelNotFoundException('Marital status not found');
+        }
     }
 
     private function update(): void
     {
         $data = [
             'gender_id' => $this->gender?->id,
-            'marital_status' => $this->maritalStatus,
+            'marital_status_id' => $this->maritalStatus?->id,
             'kids_status' => $this->kidsStatus,
             'first_name' => $this->firstName,
             'middle_name' => $this->middleName,

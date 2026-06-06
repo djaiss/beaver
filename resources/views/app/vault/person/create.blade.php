@@ -21,10 +21,10 @@
               showGender:
                 {{ $errors->has('gender_id') || old('gender_id') ? 'true' : 'false' }},
               showRelationshipStatus:
-                {{ $errors->has('marital_status') || old('marital_status') ? 'true' : 'false' }},
+                {{ $errors->has('marital_status_id') || old('marital_status_id') ? 'true' : 'false' }},
               showKids:
                 {{ $errors->has('kids_status') || old('kids_status') ? 'true' : 'false' }},
-              selectedRelationship: @js(__('app/person.options.' . (old('marital_status') ?: 'unknown'))),
+              selectedRelationship: @js($maritalStatuses->get(old('marital_status_id')) ?? ''),
               selectedKidsStatus: @js(__('app/person.options.' . (old('kids_status') ?: 'unknown'))),
             }">
             <div x-cloak x-show="showPrefix" x-transition class="relative">
@@ -52,13 +52,13 @@
               </div>
             </div>
 
-            <x-error class="mt-2" :messages="$errors->get('marital_status')" />
+            <x-error class="mt-2" :messages="$errors->get('marital_status_id')" />
 
             <div x-cloak x-show="showRelationshipStatus" x-transition class="rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-blue-900">
-              @foreach (['' => 'unknown', 'single' => 'single', 'married' => 'married', 'in_relationship' => 'in_relationship', 'divorced' => 'divorced', 'widowed' => 'widowed'] as $value => $label)
+              @foreach ($maritalStatuses as $id => $name)
                 <div class="flex items-center gap-x-3 p-3 not-last:border-b not-last:border-gray-200 dark:not-last:border-gray-700">
-                  <input id="marital-status-{{ $label }}" value="{{ $value }}" name="marital_status" type="radio" @checked(old('marital_status', '') === $value) x-on:click="selectedRelationship = @js(__('app/person.options.' . $label))" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 forced-colors:appearance-auto forced-colors:before:hidden" />
-                  <label for="marital-status-{{ $label }}" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">{{ __('app/person.options.' . $label) }}</label>
+                  <input id="marital-status-{{ $id }}" value="{{ $id }}" name="marital_status_id" type="radio" @checked((string) old('marital_status_id') === (string) $id) x-on:click="selectedRelationship = @js($name)" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 forced-colors:appearance-auto forced-colors:before:hidden" />
+                  <label for="marital-status-{{ $id }}" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">{{ $name }}</label>
                 </div>
               @endforeach
             </div>

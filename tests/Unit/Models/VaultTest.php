@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Models;
 
 use App\Models\Gender;
+use App\Models\MaritalStatus;
 use App\Models\Member;
 use App\Models\Person;
 use App\Models\Vault;
@@ -47,6 +48,17 @@ class VaultTest extends TestCase
         ]);
 
         $this->assertTrue($vault->persons()->exists());
+    }
+
+    #[Test]
+    public function it_has_many_marital_statuses(): void
+    {
+        $vault = Vault::factory()->create();
+        MaritalStatus::factory()->create([
+            'vault_id' => $vault->id,
+        ]);
+
+        $this->assertTrue($vault->maritalStatuses()->exists());
     }
 
     #[Test]

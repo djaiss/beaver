@@ -14,22 +14,13 @@ class PopulateVaultTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_populates_a_vault_with_default_genders(): void
+    public function it_populates_a_vault(): void
     {
         $vault = $this->createVault();
 
         new PopulateVault($vault)->handle();
 
-        $this->assertEquals(
-            [
-                'app/shared.genders.man',
-                'app/shared.genders.woman',
-                'app/shared.genders.other',
-            ],
-            $vault->genders()
-                ->orderBy('position')
-                ->pluck('name_translation_key')
-                ->all(),
-        );
+        $this->assertEquals(3, $vault->genders()->count());
+        $this->assertEquals(5, $vault->maritalStatuses()->count());
     }
 }

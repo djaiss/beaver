@@ -28,4 +28,12 @@ class PersonTest extends TestCase
 
         $this->assertTrue($person->gender()->exists());
     }
+
+    #[Test]
+    public function it_belongs_to_a_marital_status(): void
+    {
+        $person = Person::factory()->create();
+
+        $this->assertTrue($person->maritalStatus()->exists());
+    }
 }

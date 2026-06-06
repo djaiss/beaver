@@ -22,6 +22,13 @@ return [
         'woman' => 'Woman',
         'other' => 'Other',
     ],
+    'marital_statuses' => [
+        'unknown' => 'Unknown',
+        'single' => 'Single',
+        'married' => 'Married',
+        'divorced' => 'Divorced',
+        'widowed' => 'Widowed',
+    ],
     'header' => [
         'dashboard' => 'Dashboard',
         'adminland' => 'Adminland',

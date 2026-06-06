@@ -6,6 +6,7 @@ namespace Tests\Feature\Controllers\App\Vault;
 
 use App\Enums\PermissionEnum;
 use App\Models\Gender;
+use App\Models\MaritalStatus;
 use App\Models\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -32,6 +33,16 @@ class PersonControllerTest extends TestCase
             'name' => 'First',
             'position' => 1,
         ]);
+        $secondMaritalStatus = MaritalStatus::factory()->create([
+            'vault_id' => $vault->id,
+            'name' => 'Second status',
+            'position' => 2,
+        ]);
+        $firstMaritalStatus = MaritalStatus::factory()->create([
+            'vault_id' => $vault->id,
+            'name' => 'First status',
+            'position' => 1,
+        ]);
 
         $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/persons/new');
 
@@ -43,6 +54,13 @@ class PersonControllerTest extends TestCase
             fn ($genders): bool => $genders->all() === [
                 $firstGender->id => 'First',
                 $secondGender->id => 'Second',
+            ],
+        );
+        $response->assertViewHas(
+            'maritalStatuses',
+            fn ($maritalStatuses): bool => $maritalStatuses->all() === [
+                $firstMaritalStatus->id => 'First status',
+                $secondMaritalStatus->id => 'Second status',
             ],
         );
     }
@@ -58,10 +76,13 @@ class PersonControllerTest extends TestCase
         $gender = Gender::factory()->create([
             'vault_id' => $vault->id,
         ]);
+        $maritalStatus = MaritalStatus::factory()->create([
+            'vault_id' => $vault->id,
+        ]);
 
         $response = $this->actingAs($user)->post('/vaults/'.$vault->id.'/persons', [
             'gender_id' => $gender->id,
-            'marital_status' => 'married',
+            'marital_status_id' => $maritalStatus->id,
             'kids_status' => 'has_kids',
             'first_name' => 'Regis',
             'middle_name' => 'John',
@@ -79,6 +100,7 @@ class PersonControllerTest extends TestCase
         $this->assertSame('Regis', $person->first_name);
         $this->assertSame('Smith', $person->last_name);
         $this->assertSame($gender->id, $person->gender_id);
+        $this->assertSame($maritalStatus->id, $person->marital_status_id);
         $this->assertSame($person->id.'-regis-smith', $person->slug);
     }
 

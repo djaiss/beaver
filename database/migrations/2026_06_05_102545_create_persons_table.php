@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('vault_id')->comment('vault the person belongs to');
             $table->unsignedBigInteger('gender_id')->nullable()->comment('gender associated with the person');
-            $table->text('marital_status')->nullable()->comment('person marital status');
+            $table->unsignedBigInteger('marital_status_id')->nullable()->comment('marital status associated with the person');
             $table->text('kids_status')->nullable()->comment('person kids status');
             $table->text('slug')->nullable()->comment('person URL slug');
             $table->text('first_name')->nullable()->comment('person first name');
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('vault_id')->references('id')->on('vaults')->onDelete('cascade');
             $table->foreign('gender_id')->references('id')->on('genders')->onDelete('set null');
+            $table->foreign('marital_status_id')->references('id')->on('marital_statuses')->onDelete('set null');
         });
     }
 

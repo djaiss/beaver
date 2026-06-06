@@ -9,6 +9,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Gender;
+use App\Models\MaritalStatus;
 use App\Models\Person;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,6 +37,9 @@ class UpdatePersonTest extends TestCase
         $gender = Gender::factory()->create([
             'vault_id' => $vault->id,
         ]);
+        $maritalStatus = MaritalStatus::factory()->create([
+            'vault_id' => $vault->id,
+        ]);
 
         $person = Person::factory()->create([
             'vault_id' => $vault->id,
@@ -48,6 +52,7 @@ class UpdatePersonTest extends TestCase
             user: $user,
             person: $person,
             gender: $gender,
+            maritalStatus: $maritalStatus,
             firstName: '<strong>Regis</strong>',
             middleName: 'John',
             lastName: 'Smith',
@@ -55,7 +60,6 @@ class UpdatePersonTest extends TestCase
             maidenName: 'Brown',
             suffix: 'Jr.',
             prefix: 'Mr.',
-            maritalStatus: 'married',
             kidsStatus: 'has_kids',
             canBeDeleted: false,
             isListed: false,
@@ -63,7 +67,6 @@ class UpdatePersonTest extends TestCase
 
         $this->assertSame('Regis', $updatedPerson->first_name);
         $this->assertSame($updatedPerson->id.'-regis-smith', $updatedPerson->slug);
-        $this->assertSame($gender->id, $updatedPerson->gender_id);
         $this->assertFalse($updatedPerson->can_be_deleted);
         $this->assertFalse($updatedPerson->is_listed);
 
@@ -146,6 +149,36 @@ class UpdatePersonTest extends TestCase
             user: $user,
             person: $person,
             gender: $gender,
+            firstName: 'Regis',
+        )->execute();
+    }
+
+    #[Test]
+    public function it_fails_if_marital_status_is_not_part_of_person_vault(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $user = $this->createUser();
+        $vault = $this->createVault();
+        $otherVault = $this->createVault('Other vault');
+        $this->assignUserToVault(
+            user: $user,
+            vault: $vault,
+            role: PermissionEnum::Owner->value,
+        );
+
+        $person = Person::factory()->create([
+            'vault_id' => $vault->id,
+        ]);
+
+        $maritalStatus = MaritalStatus::factory()->create([
+            'vault_id' => $otherVault->id,
+        ]);
+
+        new UpdatePerson(
+            user: $user,
+            person: $person,
+            maritalStatus: $maritalStatus,
             firstName: 'Regis',
         )->execute();
     }
