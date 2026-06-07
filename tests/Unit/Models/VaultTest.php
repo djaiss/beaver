@@ -8,6 +8,7 @@ use App\Models\Gender;
 use App\Models\MaritalStatus;
 use App\Models\Member;
 use App\Models\Person;
+use App\Models\RelationshipTypeCategory;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -59,6 +60,15 @@ class VaultTest extends TestCase
         ]);
 
         $this->assertTrue($vault->maritalStatuses()->exists());
+    }
+
+    #[Test]
+    public function it_has_many_relationship_type_categories(): void
+    {
+        $vault = Vault::factory()->create();
+        RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id]);
+
+        $this->assertTrue($vault->relationshipTypeCategories()->exists());
     }
 
     #[Test]

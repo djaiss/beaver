@@ -95,6 +95,16 @@ class Vault extends Model
     }
 
     /**
+     * Get the relationship type categories of the vault.
+     *
+     * @return HasMany<RelationshipTypeCategory, $this>
+     */
+    public function relationshipTypeCategories(): HasMany
+    {
+        return $this->hasMany(RelationshipTypeCategory::class);
+    }
+
+    /**
      * Gets the avatar of the vault.
      */
     public function getAvatar(): string

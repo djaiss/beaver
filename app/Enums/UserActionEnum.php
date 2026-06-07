@@ -20,6 +20,9 @@ enum UserActionEnum: string
     case MaritalStatusCreation = 'marital_status_created';
     case MaritalStatusUpdate = 'marital_status_updated';
     case MaritalStatusDeletion = 'marital_status_deleted';
+    case RelationshipTypeCategoryCreation = 'relationship_type_category_created';
+    case RelationshipTypeCategoryUpdate = 'relationship_type_category_updated';
+    case RelationshipTypeCategoryDeletion = 'relationship_type_category_deleted';
     case PersonCreation = 'person_created';
     case PersonUpdate = 'person_updated';
     case PersonDeletion = 'person_deleted';
