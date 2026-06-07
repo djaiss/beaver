@@ -86,7 +86,7 @@ class UpdateGenderTest extends TestCase
         )->execute();
 
         $this->assertInstanceOf(Gender::class, $updatedGender);
-        $this->assertNull($updatedGender->name);
+        $this->assertEquals('Man', $updatedGender->name);
         $this->assertEquals('app/shared.genders.man', $updatedGender->name_translation_key);
         $this->assertEquals(2, $updatedGender->position);
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property int $vault_id
- * @property string|null $name
+ * @property string $name
  * @property string|null $name_translation_key
  * @property int $position
  * @property Carbon $created_at
@@ -59,6 +60,26 @@ class Gender extends Model
     }
 
     /**
+     * Get the gender name.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value, array $attributes): string {
+                if ($value !== null) {
+                    return $this->fromEncryptedString($value);
+                }
+
+                $translationKey = $attributes['name_translation_key'] ?? null;
+
+                return __($translationKey !== null ? $this->fromEncryptedString($translationKey) : '');
+            },
+        );
+    }
+
+    /**
      * Get the vault associated with the gender.
      *
      * @return BelongsTo<Vault, $this>
@@ -76,19 +97,5 @@ class Gender extends Model
     public function persons(): HasMany
     {
         return $this->hasMany(Person::class);
-    }
-
-    /**
-     * Get the display name of the gender.
-     * Returns the name field if set, otherwise returns the translated value of
-     * name_translation_key.
-     */
-    public function getName(): string
-    {
-        if ($this->name !== null) {
-            return $this->name;
-        }
-
-        return __($this->name_translation_key ?? '');
     }
 }

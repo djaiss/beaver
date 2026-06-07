@@ -22,7 +22,7 @@ class AdminlandController extends Controller
             ->get()
             ->map(fn (Gender $gender) => (object) [
                 'id' => $gender->id,
-                'name' => $gender->getName(),
+                'name' => $gender->name,
                 'position' => $gender->position,
             ]);
 

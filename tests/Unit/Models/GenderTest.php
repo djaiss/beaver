@@ -30,7 +30,7 @@ class GenderTest extends TestCase
             'name_translation_key' => null,
         ]);
 
-        $this->assertEquals('Male', $gender->getName());
+        $this->assertSame('Male', $gender->name);
     }
 
     #[Test]
@@ -52,6 +52,6 @@ class GenderTest extends TestCase
             'name_translation_key' => 'Male',
         ]);
 
-        $this->assertEquals('Male', $gender->getName());
+        $this->assertSame('Male', $gender->name);
     }
 }

@@ -23,7 +23,7 @@ class PersonController extends Controller
         $genders = $vault->genders()
             ->orderBy('position')
             ->get()
-            ->mapWithKeys(fn (Gender $gender): array => [$gender->id => $gender->getName()]);
+            ->mapWithKeys(fn (Gender $gender): array => [$gender->id => $gender->name]);
 
         $maritalStatuses = $vault->maritalStatuses()
             ->orderBy('position')
