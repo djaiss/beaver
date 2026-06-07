@@ -21,6 +21,6 @@ class PopulateVaultTest extends TestCase
         new PopulateVault($vault)->handle();
 
         $this->assertEquals(3, $vault->genders()->count());
-        $this->assertEquals(5, $vault->maritalStatuses()->count());
+        $this->assertEquals(12, $vault->relationshipTypeCategories()->count());
     }
 }

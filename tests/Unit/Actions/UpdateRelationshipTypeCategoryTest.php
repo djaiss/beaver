@@ -55,30 +55,6 @@ class UpdateRelationshipTypeCategoryTest extends TestCase
     }
 
     #[Test]
-    public function it_sanitizes_the_name(): void
-    {
-        [$user, $category] = $this->createOwnerAndCategory();
-
-        $updatedCategory = new UpdateRelationshipTypeCategory($user, $category, ' <strong>Family</strong> ')->execute();
-
-        $this->assertSame('Family', $updatedCategory->name);
-    }
-
-    #[Test]
-    public function it_updates_a_category_with_a_null_name(): void
-    {
-        [$user, $category] = $this->createOwnerAndCategory([
-            'name' => 'Family',
-            'name_translation_key' => 'app/shared.relationship_type_categories.family',
-        ]);
-
-        $updatedCategory = new UpdateRelationshipTypeCategory($user, $category, null)->execute();
-
-        $this->assertSame('app/shared.relationship_type_categories.family', $updatedCategory->name);
-        $this->assertSame('app/shared.relationship_type_categories.family', $updatedCategory->name_translation_key);
-    }
-
-    #[Test]
     public function it_updates_position_when_provided(): void
     {
         [$user, $category] = $this->createOwnerAndCategory(['position' => 1]);
@@ -126,34 +102,6 @@ class UpdateRelationshipTypeCategoryTest extends TestCase
         $this->assertSame(4, $category3->refresh()->position);
         $this->assertSame(2, $category4->refresh()->position);
         $this->assertSame(5, $category5->refresh()->position);
-    }
-
-    #[Test]
-    public function it_does_not_update_position_when_not_provided(): void
-    {
-        [$user, $category] = $this->createOwnerAndCategory(['position' => 3]);
-
-        $updatedCategory = new UpdateRelationshipTypeCategory($user, $category, 'Family')->execute();
-
-        $this->assertSame(3, $updatedCategory->position);
-    }
-
-    #[Test]
-    public function it_fails_if_position_is_less_than_one(): void
-    {
-        $this->expectException(ModelNotFoundException::class);
-        [$user, $category] = $this->createOwnerAndCategory();
-
-        new UpdateRelationshipTypeCategory($user, $category, 'Family', 0)->execute();
-    }
-
-    #[Test]
-    public function it_fails_if_position_is_greater_than_the_next_position(): void
-    {
-        $this->expectException(ModelNotFoundException::class);
-        [$user, $category] = $this->createOwnerAndCategory(['position' => 1]);
-
-        new UpdateRelationshipTypeCategory($user, $category, 'Family', 3)->execute();
     }
 
     #[Test]

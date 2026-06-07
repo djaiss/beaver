@@ -22,7 +22,7 @@ class PopulateVault implements ShouldQueue
     public function handle(): void
     {
         $this->addDefaultGenders();
-        $this->addDefaultMaritalStatuses();
+        $this->addDefaultRelationshipTypeCategories();
     }
 
     private function addDefaultGenders(): void
@@ -45,31 +45,83 @@ class PopulateVault implements ShouldQueue
         $this->vault->genders()->createMany($gendersData);
     }
 
-    private function addDefaultMaritalStatuses(): void
+    private function addDefaultRelationshipTypeCategories(): void
     {
-        $maritalStatusesData = [
+        $categoriesData = [
             [
-                'name_translation_key' => 'app/shared.marital_statuses.unknown',
+                'key' => 'family',
+                'name_translation_key' => 'app/shared.relationship_type_categories.family',
                 'position' => 1,
+                'can_be_deleted' => false,
             ],
             [
-                'name_translation_key' => 'app/shared.marital_statuses.single',
+                'key' => 'romantic',
+                'name_translation_key' => 'app/shared.relationship_type_categories.romantic',
                 'position' => 2,
+                'can_be_deleted' => false,
             ],
             [
-                'name_translation_key' => 'app/shared.marital_statuses.married',
+                'key' => 'friendship',
+                'name_translation_key' => 'app/shared.relationship_type_categories.friendship',
                 'position' => 3,
+                'can_be_deleted' => true,
             ],
             [
-                'name_translation_key' => 'app/shared.marital_statuses.divorced',
+                'key' => 'professional',
+                'name_translation_key' => 'app/shared.relationship_type_categories.professional',
                 'position' => 4,
+                'can_be_deleted' => true,
             ],
             [
-                'name_translation_key' => 'app/shared.marital_statuses.widowed',
+                'key' => 'community',
+                'name_translation_key' => 'app/shared.relationship_type_categories.community',
                 'position' => 5,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'education',
+                'name_translation_key' => 'app/shared.relationship_type_categories.education',
+                'position' => 6,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'care',
+                'name_translation_key' => 'app/shared.relationship_type_categories.care',
+                'position' => 7,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'service',
+                'name_translation_key' => 'app/shared.relationship_type_categories.service',
+                'position' => 8,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'household',
+                'name_translation_key' => 'app/shared.relationship_type_categories.household',
+                'position' => 9,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'online',
+                'name_translation_key' => 'app/shared.relationship_type_categories.online',
+                'position' => 10,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'organization',
+                'name_translation_key' => 'app/shared.relationship_type_categories.organization',
+                'position' => 11,
+                'can_be_deleted' => true,
+            ],
+            [
+                'key' => 'other',
+                'name_translation_key' => 'app/shared.relationship_type_categories.other',
+                'position' => 12,
+                'can_be_deleted' => true,
             ],
         ];
 
-        $this->vault->maritalStatuses()->createMany($maritalStatusesData);
+        $this->vault->relationshipTypeCategories()->createMany($categoriesData);
     }
 }
