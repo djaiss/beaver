@@ -23,6 +23,9 @@ enum UserActionEnum: string
     case RelationshipTypeCategoryCreation = 'relationship_type_category_created';
     case RelationshipTypeCategoryUpdate = 'relationship_type_category_updated';
     case RelationshipTypeCategoryDeletion = 'relationship_type_category_deleted';
+    case RelationshipTypeCreation = 'relationship_type_created';
+    case RelationshipTypeUpdate = 'relationship_type_updated';
+    case RelationshipTypeDeletion = 'relationship_type_deleted';
     case PersonCreation = 'person_created';
     case PersonUpdate = 'person_updated';
     case PersonDeletion = 'person_deleted';

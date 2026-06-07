@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
+use App\Models\RelationshipType;
 use App\Models\RelationshipTypeCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -41,5 +42,16 @@ class RelationshipTypeCategoryTest extends TestCase
         ]);
 
         $this->assertSame('Family', $category->name);
+    }
+
+    #[Test]
+    public function it_has_many_relationship_types(): void
+    {
+        $category = RelationshipTypeCategory::factory()->create();
+        RelationshipType::factory()->create([
+            'relationship_type_category_id' => $category->id,
+        ]);
+
+        $this->assertTrue($category->relationshipTypes()->exists());
     }
 }

@@ -5,27 +5,30 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Carbon\Carbon;
-use Database\Factories\RelationshipTypeCategoryFactory;
+use Database\Factories\RelationshipTypeFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
  * @property int $vault_id
+ * @property int $relationship_type_category_id
  * @property string $key
- * @property string|null $name
+ * @property string $name
  * @property string|null $name_translation_key
- * @property int $position
+ * @property string|null $forward_name_translation_key
+ * @property string|null $reverse_name_translation_key
+ * @property bool $is_directed
  * @property bool $can_be_deleted
+ * @property int $position
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class RelationshipTypeCategory extends Model
+class RelationshipType extends Model
 {
-    /** @use HasFactory<RelationshipTypeCategoryFactory> */
+    /** @use HasFactory<RelationshipTypeFactory> */
     use HasFactory;
 
     /**
@@ -33,7 +36,7 @@ class RelationshipTypeCategory extends Model
      *
      * @var string
      */
-    protected $table = 'relationship_type_categories';
+    protected $table = 'relationship_types';
 
     /**
      * The attributes that are mass assignable.
@@ -42,11 +45,15 @@ class RelationshipTypeCategory extends Model
      */
     protected $fillable = [
         'vault_id',
+        'relationship_type_category_id',
         'key',
         'name',
         'name_translation_key',
-        'position',
+        'forward_name_translation_key',
+        'reverse_name_translation_key',
+        'is_directed',
         'can_be_deleted',
+        'position',
     ];
 
     /**
@@ -59,13 +66,16 @@ class RelationshipTypeCategory extends Model
         return [
             'name' => 'encrypted',
             'name_translation_key' => 'encrypted',
-            'position' => 'integer',
+            'forward_name_translation_key' => 'encrypted',
+            'reverse_name_translation_key' => 'encrypted',
+            'is_directed' => 'boolean',
             'can_be_deleted' => 'boolean',
+            'position' => 'integer',
         ];
     }
 
     /**
-     * Get the relationship type category name.
+     * Get the relationship type name.
      *
      * @return Attribute<string, never>
      */
@@ -85,7 +95,7 @@ class RelationshipTypeCategory extends Model
     }
 
     /**
-     * Get the vault associated with the category.
+     * Get the vault associated with the relationship type.
      *
      * @return BelongsTo<Vault, $this>
      */
@@ -95,12 +105,12 @@ class RelationshipTypeCategory extends Model
     }
 
     /**
-     * Get the relationship types associated with the category.
+     * Get the relationship type category associated with the relationship type.
      *
-     * @return HasMany<RelationshipType, $this>
+     * @return BelongsTo<RelationshipTypeCategory, $this>
      */
-    public function relationshipTypes(): HasMany
+    public function relationshipTypeCategory(): BelongsTo
     {
-        return $this->hasMany(RelationshipType::class);
+        return $this->belongsTo(RelationshipTypeCategory::class);
     }
 }
