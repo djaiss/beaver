@@ -16,3 +16,4 @@ description: Use when working with controllers.
 - [ ] If possible, only take the Request as a parameter, and extract everything else from it (like the vault, or the user), like `$vault = $request->attributes->get('vault');`.
 - [ ] Validate the request data, but do not sanitize it. In the validation, do not check if an object exists by checking if the id exists in the database - this is done in Actions.
 - [ ] Always pass validated data to the action.
+- [ ] Do not compact data to a view. Instead, pass an array with keys that represent what the data is, like `['journals' => $journals]` instead of `compact('journals')`.

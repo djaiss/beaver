@@ -16,6 +16,8 @@ use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderPositionController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandManageController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandMaritalStatusController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandMaritalStatusPositionController;
 use App\Http\Controllers\App\Vault\JoinVaultController;
 use App\Http\Controllers\App\Vault\PersonController;
 use App\Http\Controllers\App\Vault\VaultController;
@@ -57,6 +59,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
             Route::put('genders/{gender}', [AdminlandGenderController::class, 'update'])->name('vault.adminland.genders.update');
             Route::put('genders/{gender}/position', [AdminlandGenderPositionController::class, 'update'])->name('vault.adminland.genders.position.update');
             Route::delete('genders/{gender}', [AdminlandGenderController::class, 'destroy'])->name('vault.adminland.genders.destroy');
+
+            // marital statuses
+            Route::get('marital-statuses/new', [AdminlandMaritalStatusController::class, 'new'])->name('vault.adminland.marital-statuses.new');
+            Route::post('marital-statuses', [AdminlandMaritalStatusController::class, 'create'])->name('vault.adminland.marital-statuses.create');
+            Route::get('marital-statuses/{maritalStatus}/edit', [AdminlandMaritalStatusController::class, 'edit'])->name('vault.adminland.marital-statuses.edit');
+            Route::put('marital-statuses/{maritalStatus}', [AdminlandMaritalStatusController::class, 'update'])->name('vault.adminland.marital-statuses.update');
+            Route::put('marital-statuses/{maritalStatus}/position', [AdminlandMaritalStatusPositionController::class, 'update'])->name('vault.adminland.marital-statuses.position.update');
+            Route::delete('marital-statuses/{maritalStatus}', [AdminlandMaritalStatusController::class, 'destroy'])->name('vault.adminland.marital-statuses.destroy');
 
             // manage vault
             Route::get('manage', [AdminlandManageController::class, 'index'])->name('vault.adminland.manage.index');

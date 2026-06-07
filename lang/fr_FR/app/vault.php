@@ -45,5 +45,17 @@ return [
             'none' => 'Aucun genre créé',
             'title' => 'Tous les genres du coffre',
         ],
+        'marital-statuses' => [
+            'confirm_delete' => 'Êtes-vous sûr de vouloir continuer ? Cette action est irréversible.',
+            'count' => ':count statut(s) marital(aux)',
+            'description' => 'Les statuts maritaux servent à identifier la situation relationnelle d’une personne.',
+            'drop_to_move' => 'Déposer ici pour déplacer',
+            'edit' => 'Modifier',
+            'empty' => 'Commencez par créer un nouveau statut marital.',
+            'name' => 'Nom du statut marital',
+            'new' => 'Nouveau statut marital',
+            'none' => 'Aucun statut marital créé',
+            'title' => 'Tous les statuts maritaux du coffre',
+        ],
     ],
 ];

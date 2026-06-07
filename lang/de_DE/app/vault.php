@@ -45,5 +45,17 @@ return [
             'none' => 'Keine Geschlechter erstellt',
             'title' => 'Alle Geschlechter im Tresor',
         ],
+        'marital-statuses' => [
+            'confirm_delete' => 'Möchtest du wirklich fortfahren? Dies kann nicht rückgängig gemacht werden.',
+            'count' => ':count Familienstand/Familienstände',
+            'description' => 'Familienstände werden verwendet, um den Beziehungsstatus einer Person anzugeben.',
+            'drop_to_move' => 'Zum Verschieben hier ablegen',
+            'edit' => 'Bearbeiten',
+            'empty' => 'Erstelle zunächst einen neuen Familienstand.',
+            'name' => 'Name des Familienstands',
+            'new' => 'Neuer Familienstand',
+            'none' => 'Keine Familienstände erstellt',
+            'title' => 'Alle Familienstände im Tresor',
+        ],
     ],
 ];

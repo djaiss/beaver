@@ -46,25 +46,25 @@
     </x-form>
 
     @forelse ($genders as $gender)
-      <div id="gender-{{ $gender['id'] }}" draggable="true" @dragstart="startDrag({{ $gender['id'] }})" @dragend="clearDrag()" @dragover.prevent="markDropTarget({{ $gender['position'] }})" @drop.prevent="reorder({{ $gender['position'] }})" :class="dropTarget === {{ $gender['position'] }} ? 'bg-blue-50 ring-2 ring-blue-200 dark:bg-gray-800 dark:ring-blue-900/40' : ''" class="group flex items-center justify-between p-3 transition-colors duration-200 hover:bg-blue-50 dark:hover:bg-gray-800">
+      <div id="gender-{{ $gender->id }}" draggable="true" @dragstart="startDrag({{ $gender->id }})" @dragend="clearDrag()" @dragover.prevent="markDropTarget({{ $gender->position }})" @drop.prevent="reorder({{ $gender->position }})" :class="dropTarget === {{ $gender->position }} ? 'bg-blue-50 ring-2 ring-blue-200 dark:bg-gray-800 dark:ring-blue-900/40' : ''" class="group flex items-center justify-between p-3 transition-colors duration-200 hover:bg-blue-50 dark:hover:bg-gray-800">
         <div class="flex items-center gap-2">
           <x-phosphor-dots-six-vertical class="h-4 w-4 cursor-move text-gray-400" />
-          <p class="border border-transparent py-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $gender['name'] }}</p>
+          <p class="border border-transparent py-1 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $gender->name }}</p>
         </div>
 
         <div class="flex gap-2">
-          <x-button.invisible x-target="gender-{{ $gender['id'] }}" href="{{ route('vault.adminland.genders.edit', ['vaultId' => $vault->id, 'gender' => $gender['id']]) }}" class="invisible text-sm group-hover:visible">
+          <x-button.invisible x-target="gender-{{ $gender->id }}" href="{{ route('vault.adminland.genders.edit', ['vaultId' => $vault->id, 'gender' => $gender->id]) }}" class="invisible text-sm group-hover:visible">
             {{ __('app/vault.adminland.genders.edit') }}
           </x-button.invisible>
 
           <x-form
             method="delete"
-            x-target="gender-{{ $gender['id'] }}"
+            x-target="gender-{{ $gender->id }}"
             x-on:ajax:before="
             confirm('{{ __('app/vault.adminland.genders.confirm_delete') }}') ||
               $event.preventDefault()
           "
-            action="{{ route('vault.adminland.genders.destroy', ['vaultId' => $vault->id, 'gender' => $gender['id']]) }}">
+            action="{{ route('vault.adminland.genders.destroy', ['vaultId' => $vault->id, 'gender' => $gender->id]) }}">
             <x-button.invisible class="invisible text-sm group-hover:visible">
               {{ __('app/shared.delete') }}
             </x-button.invisible>

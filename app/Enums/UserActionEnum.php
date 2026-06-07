@@ -17,6 +17,9 @@ enum UserActionEnum: string
     case GenderCreation = 'gender_created';
     case GenderUpdate = 'gender_updated';
     case GenderDeletion = 'gender_deleted';
+    case MaritalStatusCreation = 'marital_status_created';
+    case MaritalStatusUpdate = 'marital_status_updated';
+    case MaritalStatusDeletion = 'marital_status_deleted';
     case PersonCreation = 'person_created';
     case PersonUpdate = 'person_updated';
     case PersonDeletion = 'person_deleted';

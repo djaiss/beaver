@@ -21,6 +21,9 @@
 
         <!-- genders -->
         @include('app.vault.adminland.manage._genders')
+
+        <!-- marital statuses -->
+        @include('app.vault.adminland.manage._marital-statuses')
       </div>
     </section>
   </div>
