@@ -9,7 +9,7 @@
   ]" />
 
   <!-- settings layout -->
-  <div class="grid grow bg-gray-50 sm:grid-cols-[220px_1fr] dark:bg-gray-950">
+  <div class="grid grow bg-gray-50 sm:grid-cols-[220px_1fr] dark:bg-gray-950 rounded-bl-lg rounded-br-lg">
     <!-- Sidebar -->
     @include('app.vault.adminland._sidebar')
 
@@ -22,8 +22,6 @@
         <!-- genders -->
         @include('app.vault.adminland.manage._genders')
 
-        <!-- marital statuses -->
-        @include('app.vault.adminland.manage._marital-statuses')
       </div>
     </section>
   </div>

@@ -45,17 +45,5 @@ return [
             'none' => 'No se han creado géneros',
             'title' => 'Todos los géneros de la bóveda',
         ],
-        'marital-statuses' => [
-            'confirm_delete' => '¿Seguro que quieres continuar? Esta acción no se puede deshacer.',
-            'count' => ':count estado(s) civil(es)',
-            'description' => 'Los estados civiles se utilizan para identificar la situación sentimental de una persona.',
-            'drop_to_move' => 'Suelta aquí para mover',
-            'edit' => 'Editar',
-            'empty' => 'Empieza creando un nuevo estado civil.',
-            'name' => 'Nombre del estado civil',
-            'new' => 'Nuevo estado civil',
-            'none' => 'No se han creado estados civiles',
-            'title' => 'Todos los estados civiles de la bóveda',
-        ],
     ],
 ];

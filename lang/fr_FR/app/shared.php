@@ -22,13 +22,6 @@ return [
         'woman' => 'Femme',
         'other' => 'Autre',
     ],
-    'marital_statuses' => [
-        'unknown' => 'Inconnu',
-        'single' => 'Célibataire',
-        'married' => 'Marié(e)',
-        'divorced' => 'Divorcé(e)',
-        'widowed' => 'Veuf ou veuve',
-    ],
     'relationship_type_categories' => [
         'family' => 'Famille',
         'romantic' => 'Relation amoureuse',

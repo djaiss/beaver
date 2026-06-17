@@ -17,7 +17,6 @@ return [
         'kids_status' => 'Kids status',
         'last_name' => 'Last name',
         'maiden_name' => 'Maiden name',
-        'marital_status' => 'Relationship status',
         'middle_name' => 'Middle name',
         'nickname' => 'Nickname',
         'prefix' => 'Prefix',
@@ -34,14 +33,9 @@ return [
         'title' => 'Add a person',
     ],
     'options' => [
-        'divorced' => 'Divorced',
         'has_kids' => 'Has kids',
-        'in_relationship' => 'In a relationship',
-        'married' => 'Married',
         'maybe_kids' => 'May have kids',
         'no_kids' => 'Does not have kids',
-        'single' => 'Single',
         'unknown' => 'Unknown',
-        'widowed' => 'Widowed',
     ],
 ];

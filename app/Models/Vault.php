@@ -85,16 +85,6 @@ class Vault extends Model
     }
 
     /**
-     * Get the marital statuses of the vault.
-     *
-     * @return HasMany<MaritalStatus, $this>
-     */
-    public function maritalStatuses(): HasMany
-    {
-        return $this->hasMany(MaritalStatus::class);
-    }
-
-    /**
      * Get the relationship type categories of the vault.
      *
      * @return HasMany<RelationshipTypeCategory, $this>

@@ -20,11 +20,8 @@
                 {{ $errors->has('maiden_name') || old('maiden_name') ? 'true' : 'false' }},
               showGender:
                 {{ $errors->has('gender_id') || old('gender_id') ? 'true' : 'false' }},
-              showRelationshipStatus:
-                {{ $errors->has('marital_status_id') || old('marital_status_id') ? 'true' : 'false' }},
               showKids:
                 {{ $errors->has('kids_status') || old('kids_status') ? 'true' : 'false' }},
-              selectedRelationship: @js($maritalStatuses->get(old('marital_status_id')) ?? ''),
               selectedKidsStatus: @js(__('app/person.options.' . (old('kids_status') ?: 'unknown'))),
             }">
             <div x-cloak x-show="showPrefix" x-transition class="relative">
@@ -37,30 +34,6 @@
 
             <div class="relative">
               <x-input id="last_name" :label="__('app/person.fields.last_name')" :error="$errors->get('last_name')" :value="old('last_name')" />
-            </div>
-
-            <div x-on:click="showRelationshipStatus = !showRelationshipStatus" class="flex cursor-pointer items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-              <div class="flex items-center gap-x-2">
-                <x-phosphor-heart class="h-4 w-4 text-rose-500" />
-                <span>{{ __('app/person.fields.marital_status') }}</span>
-              </div>
-
-              <div class="flex items-center gap-x-1">
-                <p class="text-xs text-gray-500" x-text="selectedRelationship"></p>
-                <x-phosphor-caret-down x-show="!showRelationshipStatus" class="size-4 transition" />
-                <x-phosphor-caret-up x-show="showRelationshipStatus" class="size-4 transition" />
-              </div>
-            </div>
-
-            <x-error class="mt-2" :messages="$errors->get('marital_status_id')" />
-
-            <div x-cloak x-show="showRelationshipStatus" x-transition class="rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-blue-900">
-              @foreach ($maritalStatuses as $id => $name)
-                <div class="flex items-center gap-x-3 p-3 not-last:border-b not-last:border-gray-200 dark:not-last:border-gray-700">
-                  <input id="marital-status-{{ $id }}" value="{{ $id }}" name="marital_status_id" type="radio" @checked((string) old('marital_status_id') === (string) $id) x-on:click="selectedRelationship = @js($name)" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 forced-colors:appearance-auto forced-colors:before:hidden" />
-                  <label for="marital-status-{{ $id }}" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">{{ $name }}</label>
-                </div>
-              @endforeach
             </div>
 
             <div x-on:click="showKids = !showKids" class="flex cursor-pointer items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300">

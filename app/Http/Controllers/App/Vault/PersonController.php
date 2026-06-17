@@ -7,7 +7,6 @@ namespace App\Http\Controllers\App\Vault;
 use App\Actions\CreatePerson;
 use App\Http\Controllers\Controller;
 use App\Models\Gender;
-use App\Models\MaritalStatus;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,14 +24,8 @@ class PersonController extends Controller
             ->get()
             ->mapWithKeys(fn (Gender $gender): array => [$gender->id => $gender->name]);
 
-        $maritalStatuses = $vault->maritalStatuses()
-            ->orderBy('position')
-            ->get()
-            ->mapWithKeys(fn (MaritalStatus $maritalStatus): array => [$maritalStatus->id => $maritalStatus->getName()]);
-
         return view('app.vault.person.create', [
             'genders' => $genders,
-            'maritalStatuses' => $maritalStatuses,
             'vault' => $vault,
         ]);
     }
@@ -48,12 +41,6 @@ class PersonController extends Controller
                 Rule::exists(Gender::class, 'id')
                     ->where(fn (Builder $query): Builder => $query->where('vault_id', $vault->id)),
             ],
-            'marital_status_id' => [
-                'nullable',
-                'integer',
-                Rule::exists(MaritalStatus::class, 'id')
-                    ->where(fn (Builder $query): Builder => $query->where('vault_id', $vault->id)),
-            ],
             'kids_status' => ['nullable', Rule::in(['no_kids', 'maybe_kids', 'has_kids'])],
             'first_name' => ['required', 'string', 'max:100'],
             'middle_name' => ['nullable', 'string', 'max:100'],
@@ -67,15 +54,10 @@ class PersonController extends Controller
         $gender = isset($validated['gender_id'])
             ? $vault->genders()->findOrFail($validated['gender_id'])
             : null;
-        $maritalStatus = isset($validated['marital_status_id'])
-            ? $vault->maritalStatuses()->findOrFail($validated['marital_status_id'])
-            : null;
-
         new CreatePerson(
             user: $request->user(),
             vault: $vault,
             gender: $gender,
-            maritalStatus: $maritalStatus,
             firstName: $validated['first_name'],
             middleName: $validated['middle_name'] ?? null,
             lastName: $validated['last_name'] ?? null,

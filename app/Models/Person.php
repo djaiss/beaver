@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $vault_id
  * @property int|null $gender_id
- * @property int|null $marital_status_id
  * @property string|null $kids_status
  * @property string|null $slug
  * @property string|null $first_name
@@ -51,7 +50,6 @@ class Person extends Model
     protected $fillable = [
         'vault_id',
         'gender_id',
-        'marital_status_id',
         'kids_status',
         'slug',
         'first_name',
@@ -105,15 +103,5 @@ class Person extends Model
     public function gender(): BelongsTo
     {
         return $this->belongsTo(Gender::class);
-    }
-
-    /**
-     * Get the marital status associated with the person.
-     *
-     * @return BelongsTo<MaritalStatus, $this>
-     */
-    public function maritalStatus(): BelongsTo
-    {
-        return $this->belongsTo(MaritalStatus::class);
     }
 }

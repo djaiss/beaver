@@ -9,7 +9,6 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Gender;
-use App\Models\MaritalStatus;
 use App\Models\Person;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,7 +20,6 @@ class UpdatePerson
         private readonly User $user,
         private readonly Person $person,
         private readonly ?Gender $gender = null,
-        private readonly ?MaritalStatus $maritalStatus = null,
         private ?string $firstName = null,
         private ?string $middleName = null,
         private ?string $lastName = null,
@@ -73,16 +71,12 @@ class UpdatePerson
             throw new ModelNotFoundException('Gender not found');
         }
 
-        if ($this->maritalStatus instanceof MaritalStatus && $this->maritalStatus->vault_id !== $this->person->vault_id) {
-            throw new ModelNotFoundException('Marital status not found');
-        }
     }
 
     private function update(): void
     {
         $data = [
             'gender_id' => $this->gender?->id,
-            'marital_status_id' => $this->maritalStatus?->id,
             'kids_status' => $this->kidsStatus,
             'first_name' => $this->firstName,
             'middle_name' => $this->middleName,

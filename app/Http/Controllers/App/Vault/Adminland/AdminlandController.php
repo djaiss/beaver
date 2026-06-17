@@ -7,7 +7,6 @@ namespace App\Http\Controllers\App\Vault\Adminland;
 use App\Actions\UpdateVault;
 use App\Http\Controllers\Controller;
 use App\Models\Gender;
-use App\Models\MaritalStatus;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,18 +25,8 @@ class AdminlandController extends Controller
                 'position' => $gender->position,
             ]);
 
-        $maritalStatuses = MaritalStatus::query()->where('vault_id', $vault->id)
-            ->orderBy('position')
-            ->get()
-            ->map(fn (MaritalStatus $maritalStatus) => (object) [
-                'id' => $maritalStatus->id,
-                'name' => $maritalStatus->getName(),
-                'position' => $maritalStatus->position,
-            ]);
-
         return view('app.vault.adminland.index', [
             'genders' => $genders,
-            'maritalStatuses' => $maritalStatuses,
         ]);
     }
 

@@ -45,17 +45,5 @@ return [
             'none' => 'No genders created',
             'title' => 'All the genders in the vault',
         ],
-        'marital-statuses' => [
-            'confirm_delete' => 'Are you sure you want to proceed? This cannot be undone.',
-            'count' => ':count marital status(es)',
-            'description' => 'Marital statuses are used to identify the relationship status of a person.',
-            'drop_to_move' => 'Drop here to move',
-            'edit' => 'Edit',
-            'empty' => 'Get started by creating a new marital status.',
-            'name' => 'Name of the marital status',
-            'new' => 'New marital status',
-            'none' => 'No marital statuses created',
-            'title' => 'All the marital statuses in the vault',
-        ],
     ],
 ];

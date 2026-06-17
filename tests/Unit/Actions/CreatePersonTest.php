@@ -9,7 +9,6 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Gender;
-use App\Models\MaritalStatus;
 use App\Models\Person;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,15 +36,10 @@ class CreatePersonTest extends TestCase
         $gender = Gender::factory()->create([
             'vault_id' => $vault->id,
         ]);
-        $maritalStatus = MaritalStatus::factory()->create([
-            'vault_id' => $vault->id,
-        ]);
-
         $person = new CreatePerson(
             user: $user,
             vault: $vault,
             gender: $gender,
-            maritalStatus: $maritalStatus,
             firstName: '<strong>Regis</strong>',
             middleName: 'John',
             lastName: 'Smith',
@@ -65,7 +59,6 @@ class CreatePersonTest extends TestCase
             'id' => $person->id,
             'vault_id' => $vault->id,
             'gender_id' => $gender->id,
-            'marital_status_id' => $maritalStatus->id,
             'can_be_deleted' => false,
             'is_listed' => false,
         ]);
@@ -138,32 +131,6 @@ class CreatePersonTest extends TestCase
             user: $user,
             vault: $vault,
             gender: $gender,
-            firstName: 'Regis',
-        )->execute();
-    }
-
-    #[Test]
-    public function it_fails_if_marital_status_is_not_part_of_vault(): void
-    {
-        $this->expectException(ModelNotFoundException::class);
-
-        $user = $this->createUser();
-        $vault = $this->createVault();
-        $otherVault = $this->createVault('Other vault');
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Owner->value,
-        );
-
-        $maritalStatus = MaritalStatus::factory()->create([
-            'vault_id' => $otherVault->id,
-        ]);
-
-        new CreatePerson(
-            user: $user,
-            vault: $vault,
-            maritalStatus: $maritalStatus,
             firstName: 'Regis',
         )->execute();
     }

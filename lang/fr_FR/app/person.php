@@ -17,7 +17,6 @@ return [
         'kids_status' => 'Statut parental',
         'last_name' => 'Nom',
         'maiden_name' => 'Nom de naissance',
-        'marital_status' => 'Statut relationnel',
         'middle_name' => 'Deuxième prénom',
         'nickname' => 'Surnom',
         'prefix' => 'Préfixe',
@@ -34,14 +33,9 @@ return [
         'title' => 'Ajouter une personne',
     ],
     'options' => [
-        'divorced' => 'Divorcé(e)',
         'has_kids' => 'A des enfants',
-        'in_relationship' => 'En couple',
-        'married' => 'Marié(e)',
         'maybe_kids' => 'Pourrait avoir des enfants',
         'no_kids' => 'N’a pas d’enfants',
-        'single' => 'Célibataire',
         'unknown' => 'Inconnu',
-        'widowed' => 'Veuf ou veuve',
     ],
 ];
