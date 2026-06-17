@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('key')->comment('stable relationship type key');
             $table->text('name')->nullable()->comment('relationship type name');
             $table->text('name_translation_key')->nullable()->comment('relationship type name translation key');
+            $table->text('forward_name')->nullable()->comment('forward relationship name');
             $table->text('forward_name_translation_key')->nullable()->comment('forward relationship name translation key');
+            $table->text('reverse_name')->nullable()->comment('reverse relationship name');
             $table->text('reverse_name_translation_key')->nullable()->comment('reverse relationship name translation key');
             $table->boolean('is_directed')->default(false)->comment('whether the relationship has different meanings depending on direction');
             $table->boolean('can_be_deleted')->default(true)->comment('whether the relationship type can be deleted');
@@ -26,7 +28,6 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('vault_id')->references('id')->on('vaults')->onDelete('cascade');
             $table->foreign('relationship_type_category_id')->references('id')->on('relationship_type_categories')->onDelete('cascade');
-            $table->unique(['relationship_type_category_id', 'key']);
         });
     }
 

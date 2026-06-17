@@ -18,7 +18,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $key
  * @property string $name
  * @property string|null $name_translation_key
+ * @property string $forward_name
  * @property string|null $forward_name_translation_key
+ * @property string $reverse_name
  * @property string|null $reverse_name_translation_key
  * @property bool $is_directed
  * @property bool $can_be_deleted
@@ -49,7 +51,9 @@ class RelationshipType extends Model
         'key',
         'name',
         'name_translation_key',
+        'forward_name',
         'forward_name_translation_key',
+        'reverse_name',
         'reverse_name_translation_key',
         'is_directed',
         'can_be_deleted',
@@ -66,7 +70,9 @@ class RelationshipType extends Model
         return [
             'name' => 'encrypted',
             'name_translation_key' => 'encrypted',
+            'forward_name' => 'encrypted',
             'forward_name_translation_key' => 'encrypted',
+            'reverse_name' => 'encrypted',
             'reverse_name_translation_key' => 'encrypted',
             'is_directed' => 'boolean',
             'can_be_deleted' => 'boolean',
@@ -88,6 +94,46 @@ class RelationshipType extends Model
                 }
 
                 $translationKey = $attributes['name_translation_key'] ?? null;
+
+                return __($translationKey !== null ? $this->fromEncryptedString($translationKey) : '');
+            },
+        );
+    }
+
+    /**
+     * Get the forward relationship type name.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function forwardName(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value, array $attributes): string {
+                if ($value !== null) {
+                    return $this->fromEncryptedString($value);
+                }
+
+                $translationKey = $attributes['forward_name_translation_key'] ?? null;
+
+                return __($translationKey !== null ? $this->fromEncryptedString($translationKey) : '');
+            },
+        );
+    }
+
+    /**
+     * Get the reverse relationship type name.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function reverseName(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value, array $attributes): string {
+                if ($value !== null) {
+                    return $this->fromEncryptedString($value);
+                }
+
+                $translationKey = $attributes['reverse_name_translation_key'] ?? null;
 
                 return __($translationKey !== null ? $this->fromEncryptedString($translationKey) : '');
             },

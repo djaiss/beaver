@@ -26,6 +26,8 @@ class RelationshipTypeFactory extends Factory
             'relationship_type_category_id' => RelationshipTypeCategory::factory(),
             'key' => $this->faker->unique()->slug(2),
             'name' => $this->faker->randomElement(['Parent', 'Sibling', 'Friend', 'Colleague']),
+            'forward_name' => $this->faker->randomElement(['Parent of', 'Sibling of', 'Friend of', 'Colleague of']),
+            'reverse_name' => $this->faker->randomElement(['Child of', 'Sibling of', 'Friend of', 'Colleague of']),
             'is_directed' => $this->faker->boolean(),
             'can_be_deleted' => true,
             'position' => $this->faker->numberBetween(1, 100),

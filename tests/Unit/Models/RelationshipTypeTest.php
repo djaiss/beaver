@@ -63,4 +63,48 @@ class RelationshipTypeTest extends TestCase
 
         $this->assertSame('Parent', $relationshipType->name);
     }
+
+    #[Test]
+    public function it_returns_the_forward_name_when_defined(): void
+    {
+        $relationshipType = RelationshipType::factory()->make([
+            'forward_name' => 'Parent of',
+            'forward_name_translation_key' => null,
+        ]);
+
+        $this->assertSame('Parent of', $relationshipType->forward_name);
+    }
+
+    #[Test]
+    public function it_returns_the_translated_forward_name_when_forward_name_is_null(): void
+    {
+        $relationshipType = RelationshipType::factory()->make([
+            'forward_name' => null,
+            'forward_name_translation_key' => 'Parent of',
+        ]);
+
+        $this->assertSame('Parent of', $relationshipType->forward_name);
+    }
+
+    #[Test]
+    public function it_returns_the_reverse_name_when_defined(): void
+    {
+        $relationshipType = RelationshipType::factory()->make([
+            'reverse_name' => 'Child of',
+            'reverse_name_translation_key' => null,
+        ]);
+
+        $this->assertSame('Child of', $relationshipType->reverse_name);
+    }
+
+    #[Test]
+    public function it_returns_the_translated_reverse_name_when_reverse_name_is_null(): void
+    {
+        $relationshipType = RelationshipType::factory()->make([
+            'reverse_name' => null,
+            'reverse_name_translation_key' => 'Child of',
+        ]);
+
+        $this->assertSame('Child of', $relationshipType->reverse_name);
+    }
 }
