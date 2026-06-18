@@ -20,6 +20,8 @@ class UpdateRelationshipType
         private ?string $name,
         private readonly bool $isDirected,
         private readonly ?int $position = null,
+        private ?string $forwardName = null,
+        private ?string $reverseName = null,
     ) {}
 
     public function execute(): RelationshipType
@@ -35,6 +37,8 @@ class UpdateRelationshipType
     private function sanitize(): void
     {
         $this->name = TextSanitizer::nullablePlainText($this->name);
+        $this->forwardName = TextSanitizer::nullablePlainText($this->forwardName);
+        $this->reverseName = TextSanitizer::nullablePlainText($this->reverseName);
     }
 
     private function validate(): void
@@ -63,6 +67,14 @@ class UpdateRelationshipType
             'name' => $this->name,
             'is_directed' => $this->isDirected,
         ];
+
+        if ($this->isDirected === false) {
+            $data['forward_name'] = null;
+            $data['reverse_name'] = null;
+        } elseif ($this->forwardName !== null && $this->reverseName !== null) {
+            $data['forward_name'] = $this->forwardName;
+            $data['reverse_name'] = $this->reverseName;
+        }
 
         if ($this->position !== null && $this->position !== $this->relationshipType->position) {
             $this->reorderPositions();

@@ -26,6 +26,8 @@ class CreateRelationshipType
         private ?string $key,
         private string $name,
         private readonly bool $isDirected = false,
+        private ?string $forwardName = null,
+        private ?string $reverseName = null,
     ) {}
 
     public function execute(): RelationshipType
@@ -41,6 +43,8 @@ class CreateRelationshipType
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+        $this->forwardName = TextSanitizer::nullablePlainText($this->forwardName);
+        $this->reverseName = TextSanitizer::nullablePlainText($this->reverseName);
         $this->key = $this->key === null
             ? 'custom-'.Str::lower(Str::random(16))
             : TextSanitizer::plainText($this->key);
@@ -74,6 +78,8 @@ class CreateRelationshipType
             'relationship_type_category_id' => $this->relationshipTypeCategory->id,
             'key' => $this->key,
             'name' => $this->name,
+            'forward_name' => $this->isDirected ? $this->forwardName : null,
+            'reverse_name' => $this->isDirected ? $this->reverseName : null,
             'is_directed' => $this->isDirected,
             'position' => $maxPosition + 1,
         ]);

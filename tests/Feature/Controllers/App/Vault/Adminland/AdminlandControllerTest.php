@@ -68,7 +68,7 @@ class AdminlandControllerTest extends TestCase
         $response->assertSee('group/category flex items-center justify-between gap-3 border-b border-gray-200 bg-gray-100 p-3 transition-colors duration-200 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800', false);
         $response->assertSee('invisible text-sm group-hover/category:visible', false);
         $response->assertSee('divide-y divide-gray-200 dark:divide-gray-700', false);
-        $response->assertViewHas('relationshipTypeCategories', fn($categories): bool => $categories->pluck('id')->all() === [$firstCategory->id, $secondCategory->id]
+        $response->assertViewHas('relationshipTypeCategories', fn ($categories): bool => $categories->pluck('id')->all() === [$firstCategory->id, $secondCategory->id]
             && $categories->first()->relationshipTypes->pluck('position')->all() === [1, 2]);
     }
 

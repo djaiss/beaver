@@ -54,13 +54,17 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
 
         $response = $this->actingAs($user)
             ->post('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id.'/relationship-types', [
-                'name' => 'Parent',
+                'name' => 'Parent / child',
                 'is_directed' => '1',
+                'forward_name' => 'Parent',
+                'reverse_name' => 'Child',
             ]);
 
         $relationshipType = $relationshipTypeCategory->relationshipTypes()->sole();
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
-        $this->assertSame('Parent', $relationshipType->name);
+        $this->assertSame('Parent / child', $relationshipType->name);
+        $this->assertSame('Parent', $relationshipType->forward_name);
+        $this->assertSame('Child', $relationshipType->reverse_name);
         $this->assertTrue($relationshipType->is_directed);
         $this->assertSame(1, $relationshipType->position);
         $this->assertStringStartsWith('custom-', $relationshipType->key);
@@ -74,7 +78,9 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         $relationshipType = RelationshipType::factory()->create([
             'vault_id' => $vault->id,
             'relationship_type_category_id' => $relationshipTypeCategory->id,
-            'name' => 'Parent',
+            'name' => 'Parent / child',
+            'forward_name' => 'Parent',
+            'reverse_name' => 'Child',
             'is_directed' => true,
             'position' => 1,
         ]);
@@ -83,17 +89,41 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
             ->get('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id.'/relationship-types/'.$relationshipType->id.'/edit')
             ->assertOk()
             ->assertViewIs('app.vault.adminland._relationship-type-edit')
-            ->assertSee('value="Parent"', false);
+            ->assertSee('value="Parent / child"', false)
+            ->assertSee('value="Parent"', false)
+            ->assertSee('value="Child"', false);
 
         $response = $this->actingAs($user)
             ->put('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id.'/relationship-types/'.$relationshipType->id, [
-                'name' => 'Guardian',
+                'name' => 'Guardian / ward',
+                'is_directed' => '1',
+                'forward_name' => 'Guardian',
+                'reverse_name' => 'Ward',
             ]);
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
-        $this->assertSame('Guardian', $relationshipType->refresh()->name);
-        $this->assertFalse($relationshipType->is_directed);
+        $this->assertSame('Guardian / ward', $relationshipType->refresh()->name);
+        $this->assertSame('Guardian', $relationshipType->forward_name);
+        $this->assertSame('Ward', $relationshipType->reverse_name);
+        $this->assertTrue($relationshipType->is_directed);
         $this->assertSame(1, $relationshipType->position);
+    }
+
+    #[Test]
+    public function it_requires_forward_and_reverse_names_for_a_directional_relationship(): void
+    {
+        [$user, $vault, $relationshipTypeCategory] = $this->createOwnerAndCategory();
+
+        $response = $this->actingAs($user)
+            ->from('/vaults/'.$vault->id.'/adminland')
+            ->post('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id.'/relationship-types', [
+                'name' => 'Parent / child',
+                'is_directed' => '1',
+            ]);
+
+        $response->assertRedirect('/vaults/'.$vault->id.'/adminland');
+        $response->assertSessionHasErrors(['forward_name', 'reverse_name']);
+        $this->assertSame(0, $relationshipTypeCategory->relationshipTypes()->count());
     }
 
     #[Test]

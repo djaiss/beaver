@@ -31,15 +31,26 @@ class CreateRelationshipTypeTest extends TestCase
         $this->assignUserToVault(user: $user, vault: $vault, role: PermissionEnum::Owner->value);
         $category = RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id]);
 
-        $relationshipType = new CreateRelationshipType($user, $vault, $category, 'parent', 'Parent', true)->execute();
+        $relationshipType = new CreateRelationshipType(
+            user: $user,
+            vault: $vault,
+            relationshipTypeCategory: $category,
+            key: 'parent',
+            name: 'Parent / child',
+            isDirected: true,
+            forwardName: 'Parent',
+            reverseName: 'Child',
+        )->execute();
 
         $this->assertInstanceOf(RelationshipType::class, $relationshipType);
-        $this->assertSame('Parent', $relationshipType->name);
+        $this->assertSame('Parent / child', $relationshipType->name);
+        $this->assertSame('Parent', $relationshipType->forward_name);
+        $this->assertSame('Child', $relationshipType->reverse_name);
         $this->assertTrue($relationshipType->is_directed);
         $this->assertSame(1, $relationshipType->position);
         Queue::assertPushedOn('low', LogUserAction::class, fn (LogUserAction $job): bool => (
             $job->action === UserActionEnum::RelationshipTypeCreation
-            && $job->parameters === ['name' => 'Parent']
+            && $job->parameters === ['name' => 'Parent / child']
         ));
     }
 
@@ -59,11 +70,36 @@ class CreateRelationshipTypeTest extends TestCase
             $category,
             ' <strong>parent</strong> ',
             ' <strong>Parent</strong> ',
+            true,
+            ' <strong>Parent of</strong> ',
+            ' <strong>Child of</strong> ',
         )->execute();
 
         $this->assertSame('parent', $relationshipType->key);
         $this->assertSame('Parent', $relationshipType->name);
+        $this->assertSame('Parent of', $relationshipType->forward_name);
+        $this->assertSame('Child of', $relationshipType->reverse_name);
         $this->assertSame(6, $relationshipType->position);
+    }
+
+    #[Test]
+    public function it_does_not_store_direction_names_for_a_non_directional_relationship(): void
+    {
+        [$user, $vault, $category] = $this->createOwnerAndCategory();
+
+        $relationshipType = new CreateRelationshipType(
+            user: $user,
+            vault: $vault,
+            relationshipTypeCategory: $category,
+            key: 'friend',
+            name: 'Friend',
+            isDirected: false,
+            forwardName: 'Friend',
+            reverseName: 'Friend',
+        )->execute();
+
+        $this->assertNull($relationshipType->getRawOriginal('forward_name'));
+        $this->assertNull($relationshipType->getRawOriginal('reverse_name'));
     }
 
     #[Test]

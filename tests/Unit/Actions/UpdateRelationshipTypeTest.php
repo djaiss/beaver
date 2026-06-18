@@ -27,13 +27,22 @@ class UpdateRelationshipTypeTest extends TestCase
         Queue::fake();
         [$user, $relationshipType] = $this->createOwnerAndRelationshipType();
 
-        $updated = new UpdateRelationshipType($user, $relationshipType, 'Close parent', true)->execute();
+        $updated = new UpdateRelationshipType(
+            user: $user,
+            relationshipType: $relationshipType,
+            name: 'Parent / child',
+            isDirected: true,
+            forwardName: 'Parent',
+            reverseName: 'Child',
+        )->execute();
 
-        $this->assertSame('Close parent', $updated->name);
+        $this->assertSame('Parent / child', $updated->name);
+        $this->assertSame('Parent', $updated->forward_name);
+        $this->assertSame('Child', $updated->reverse_name);
         $this->assertTrue($updated->is_directed);
         Queue::assertPushedOn('low', LogUserAction::class, fn (LogUserAction $job): bool => (
             $job->action === UserActionEnum::RelationshipTypeUpdate
-            && $job->parameters === ['name' => 'Close parent']
+            && $job->parameters === ['name' => 'Parent / child']
         ));
     }
 
@@ -47,6 +56,40 @@ class UpdateRelationshipTypeTest extends TestCase
         $updated = new UpdateRelationshipType($user, $relationshipType, null, false)->execute();
 
         $this->assertSame('Parent', $updated->name);
+        $this->assertFalse($updated->is_directed);
+    }
+
+    #[Test]
+    public function it_sanitizes_direction_names(): void
+    {
+        [$user, $relationshipType] = $this->createOwnerAndRelationshipType();
+
+        $updated = new UpdateRelationshipType(
+            user: $user,
+            relationshipType: $relationshipType,
+            name: 'Parent / child',
+            isDirected: true,
+            forwardName: ' <strong>Parent</strong> ',
+            reverseName: ' <strong>Child</strong> ',
+        )->execute();
+
+        $this->assertSame('Parent', $updated->forward_name);
+        $this->assertSame('Child', $updated->reverse_name);
+    }
+
+    #[Test]
+    public function it_clears_direction_names_when_relationship_becomes_non_directional(): void
+    {
+        [$user, $relationshipType] = $this->createOwnerAndRelationshipType([
+            'forward_name' => 'Parent',
+            'reverse_name' => 'Child',
+            'is_directed' => true,
+        ]);
+
+        $updated = new UpdateRelationshipType($user, $relationshipType, 'Relative', false)->execute();
+
+        $this->assertNull($updated->getRawOriginal('forward_name'));
+        $this->assertNull($updated->getRawOriginal('reverse_name'));
         $this->assertFalse($updated->is_directed);
     }
 

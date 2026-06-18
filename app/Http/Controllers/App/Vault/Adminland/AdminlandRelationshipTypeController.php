@@ -39,6 +39,8 @@ class AdminlandRelationshipTypeController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
             'is_directed' => ['sometimes', 'boolean'],
+            'forward_name' => ['required_if_accepted:is_directed', 'nullable', 'string', 'min:3', 'max:100'],
+            'reverse_name' => ['required_if_accepted:is_directed', 'nullable', 'string', 'min:3', 'max:100'],
         ]);
 
         new CreateRelationshipType(
@@ -48,6 +50,8 @@ class AdminlandRelationshipTypeController extends Controller
             key: null,
             name: $validated['name'],
             isDirected: (bool) ($validated['is_directed'] ?? false),
+            forwardName: $validated['forward_name'] ?? null,
+            reverseName: $validated['reverse_name'] ?? null,
         )->execute();
 
         return to_route('vault.adminland.index', $vault->id)
@@ -88,6 +92,8 @@ class AdminlandRelationshipTypeController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
             'is_directed' => ['sometimes', 'boolean'],
+            'forward_name' => ['required_if_accepted:is_directed', 'nullable', 'string', 'min:3', 'max:100'],
+            'reverse_name' => ['required_if_accepted:is_directed', 'nullable', 'string', 'min:3', 'max:100'],
         ]);
 
         new UpdateRelationshipType(
@@ -96,6 +102,8 @@ class AdminlandRelationshipTypeController extends Controller
             name: $validated['name'],
             isDirected: (bool) ($validated['is_directed'] ?? false),
             position: $relationshipType->position,
+            forwardName: $validated['forward_name'] ?? null,
+            reverseName: $validated['reverse_name'] ?? null,
         )->execute();
 
         return to_route('vault.adminland.index', $vault->id)

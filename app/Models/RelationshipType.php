@@ -12,6 +12,45 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * A relationship type defines the semantics of a relationship between two people.
+ *
+ * Examples:
+ * * Parent / Child
+ * * Manager / Direct Report
+ * * Friend
+ * * Spouse
+ *
+ * Relationship types may be directed or non-directed.
+ *
+ * When `is_directed` is false, both sides of the relationship have the same meaning:
+ *
+ * Alice ── friend ── Bob
+ *
+ * Both Alice and Bob are friends of each other, so
+ * `forward_name` and `reverse_name` are typically identical.
+ *
+ * When `is_directed` is true, the meaning depends on the direction of the relationship:
+ *
+ * Alice ── parent ──▶ Bob
+ *
+ * Alice is the parent of Bob, and Bob is the child of Alice.
+ *
+ * In this case:
+ * * `forward_name` describes the role of the source person (`parent`)
+ * * `reverse_name` describes the role of the target person (`child`)
+ *
+ * The same pattern applies to relationships such as:
+ *
+ * manager ──▶ direct report
+ * mentor ──▶ mentee
+ * teacher ──▶ student
+ * landlord ──▶ tenant
+ *
+ * The `*_translation_key` attributes are used to translate these labels and
+ * allow relationship names to be localized independently of their stored keys.
+ */
+
+/**
  * @property int $id
  * @property int $vault_id
  * @property int $relationship_type_category_id
