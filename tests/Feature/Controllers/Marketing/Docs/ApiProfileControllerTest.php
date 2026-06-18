@@ -19,4 +19,12 @@ class ApiProfileControllerTest extends TestCase
 
         $response->assertOk();
     }
+
+    #[Test]
+    public function it_returns_the_profile_document_as_markdown(): void
+    {
+        $response = $this->get('/docs/1.x/api/account-management/profile.md');
+
+        $response->assertOk();
+    }
 }

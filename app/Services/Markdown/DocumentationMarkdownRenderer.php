@@ -11,7 +11,10 @@ use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 
 class DocumentationMarkdownRenderer
 {
-    public function render(string $markdown): string
+    /**
+     * @param  array<string, string>  $configurationValues
+     */
+    public function render(string $markdown, array $configurationValues = []): string
     {
         return Str::markdown(
             $markdown,
@@ -31,6 +34,7 @@ class DocumentationMarkdownRenderer
                 new ConfigurationValueExtension([
                     'app.name' => (string) config('app.name'),
                     'app.url' => (string) config('app.url'),
+                    ...$configurationValues,
                 ]),
                 new ApiDocumentationExtension,
             ],

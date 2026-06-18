@@ -14,7 +14,18 @@ class ApiDocumentationExtension implements ExtensionInterface
 {
     public function register(EnvironmentBuilderInterface $environment): void
     {
-        foreach (['attribute', 'code', 'column', 'description', 'parameters', 'section', 'toc'] as $directive) {
+        foreach ([
+            'attribute',
+            'code',
+            'column',
+            'copy-for-llm',
+            'description',
+            'markdown-actions',
+            'parameters',
+            'section',
+            'toc',
+            'view-as-markdown',
+        ] as $directive) {
             $environment->addBlockStartParser(new DocsDirectiveStartParser($directive), 100);
         }
 

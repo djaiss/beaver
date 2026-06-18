@@ -12,6 +12,13 @@ Route::middleware(['marketing'])->group(function (): void {
 
     Route::get('/docs', [DocsIndexController::class, 'index'])->name('marketing.docs.index');
 
+    Route::get('/docs/{version}/{path}.md', [DocsPageController::class, 'markdown'])
+        ->where([
+            'version' => implode('|', array_map(preg_quote(...), config('docs.versions'))),
+            'path' => '.*',
+        ])
+        ->name('marketing.docs.markdown');
+
     Route::get('/docs/{version}/{path?}', [DocsPageController::class, 'show'])
         ->where([
             'version' => implode('|', array_map(preg_quote(...), config('docs.versions'))),

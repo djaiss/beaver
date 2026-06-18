@@ -1,5 +1,13 @@
 # Authentication
 
+:::markdown-actions url="{{docs.markdown_url}}"
+:::copy-for-llm
+:::/copy-for-llm
+
+:::view-as-markdown url="{{docs.markdown_url}}"
+:::/view-as-markdown
+:::/markdown-actions
+
 :::section columns divided
 :::column
 The {{app.name}} API uses API keys to authenticate requests. You can view and manage your API keys in the settings section of your account.

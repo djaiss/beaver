@@ -1,5 +1,13 @@
 # Introduction
 
+:::markdown-actions url="{{docs.markdown_url}}"
+:::copy-for-llm
+:::/copy-for-llm
+
+:::view-as-markdown url="{{docs.markdown_url}}"
+:::/view-as-markdown
+:::/markdown-actions
+
 :::toc
 
 - [Test the API yourself](#test-the-api-yourself)

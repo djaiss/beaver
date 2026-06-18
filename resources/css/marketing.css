@@ -3,6 +3,7 @@
 pre[class*='language-'] {
   background-color: rgb(243 244 246);
   padding: 0.5rem;
+  font-size: 14px;
 }
 
 .dark pre[class*='language-'] {
@@ -41,7 +42,7 @@ pre[class*='language-'] {
     margin-top: 0.5rem;
   }
 
-  a {
+  not(.llm) > a {
     color: #2563eb; /* blue-600 */
     text-underline-offset: 4px;
     text-decoration-line: underline;
@@ -51,18 +52,18 @@ pre[class*='language-'] {
     transition-duration: 200ms;
   }
 
-  a:hover {
+  not(.llm) > a:hover {
     text-decoration-thickness: 1.15px;
     color: #2563eb; /* blue-600 */
     text-decoration-color: #60a5fa; /* blue-400 */
   }
 
-  .dark a {
+  not(.llm) > .dark a {
     color: #d1d5db; /* gray-300 */
     text-decoration-color: #4b5563; /* gray-600 */
   }
 
-  .dark a:hover {
+  not(.llm) > .dark a:hover {
     color: #60a5fa; /* blue-400 */
     text-decoration-color: #60a5fa; /* blue-400 */
   }

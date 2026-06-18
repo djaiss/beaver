@@ -63,4 +63,26 @@ class DocumentationMarkdownRendererTest extends TestCase
             $html,
         );
     }
+
+    #[Test]
+    public function it_renders_markdown_action_directives(): void
+    {
+        $html = resolve(DocumentationMarkdownRenderer::class)->render(
+            <<<'MARKDOWN'
+                :::markdown-actions url="{{docs.markdown_url}}"
+                :::copy-for-llm
+                :::/copy-for-llm
+
+                :::view-as-markdown url="{{docs.markdown_url}}"
+                :::/view-as-markdown
+                :::/markdown-actions
+                MARKDOWN,
+            ['docs.markdown_url' => 'https://lifeos.test/docs/1.x/api/profile.md'],
+        );
+
+        $this->assertStringContainsString('Copy for LLM', $html);
+        $this->assertStringContainsString('View as Markdown', $html);
+        $this->assertStringContainsString('https://lifeos.test/docs/1.x/api/profile.md', $html);
+        $this->assertStringNotContainsString(':::markdown-actions', $html);
+    }
 }

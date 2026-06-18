@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Marketing\Docs;
 
 use App\Services\DocNavigationBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Response;
 
 class DocsPageController extends DocsController
 {
@@ -21,10 +22,41 @@ class DocsPageController extends DocsController
         $breadcrumbs = $this->buildBreadcrumbs($version, $path, $builder);
 
         if (str_ends_with($filePath, '.md')) {
-            return $this->renderDoc($filePath, $breadcrumbs);
+            return $this->renderDoc($filePath, $breadcrumbs, [
+                'docs.markdown_url' => route('marketing.docs.markdown', [
+                    'version' => $version,
+                    'path' => $path,
+                ]),
+            ]);
         }
 
         return view()->file($filePath, ['breadcrumbs' => $breadcrumbs]);
+    }
+
+    public function markdown(string $version, string $path): Response
+    {
+        $filePath = (new DocNavigationBuilder)->resolve($version, $path);
+
+        if ($filePath === null || ! str_ends_with($filePath, '.md')) {
+            abort(404);
+        }
+
+        $markdown = file_get_contents($filePath);
+
+        if ($markdown === false) {
+            abort(404);
+        }
+
+        $markdown = preg_replace(
+            '/^:::(?:\/)?(?:markdown-actions|copy-for-llm|view-as-markdown)(?:\s+.*?)?\s*$(?:\R)?/m',
+            '',
+            $markdown,
+        ) ?? $markdown;
+
+        return response($markdown, 200, [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Disposition' => 'inline',
+        ]);
     }
 
     private function buildBreadcrumbs(string $version, string $path, DocNavigationBuilder $builder): array

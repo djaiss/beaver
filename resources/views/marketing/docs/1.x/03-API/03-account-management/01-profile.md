@@ -1,5 +1,13 @@
 # Profile
 
+:::markdown-actions url="{{docs.markdown_url}}"
+:::copy-for-llm
+:::/copy-for-llm
+
+:::view-as-markdown url="{{docs.markdown_url}}"
+:::/view-as-markdown
+:::/markdown-actions
+
 :::toc
 
 - [Get the logged-in user's profile](#get-the-logged-in-users-profile)

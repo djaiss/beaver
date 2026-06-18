@@ -14,7 +14,11 @@ class DocsController extends Controller
         private readonly DocumentationMarkdownRenderer $markdownRenderer,
     ) {}
 
-    protected function renderDoc(string $absoluteFilePath, array $breadcrumbs): View
+    /**
+     * @param  array<int, array{label: string, route?: string}>  $breadcrumbs
+     * @param  array<string, string>  $configurationValues
+     */
+    protected function renderDoc(string $absoluteFilePath, array $breadcrumbs, array $configurationValues = []): View
     {
         $markdown = file_get_contents($absoluteFilePath);
 
@@ -23,7 +27,7 @@ class DocsController extends Controller
         }
 
         return view('marketing.docs.markdown', [
-            'content' => $this->markdownRenderer->render($markdown),
+            'content' => $this->markdownRenderer->render($markdown, $configurationValues),
             'breadcrumbs' => $breadcrumbs,
         ]);
     }
