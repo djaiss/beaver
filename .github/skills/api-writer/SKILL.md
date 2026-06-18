@@ -1,22 +1,13 @@
 ---
 name: api-writer
-description: Build a complete API surface from an existing web controller. Use when the user asks to add API methods, expose a resource via API, or mirror a web controller as an API, especially for adminland resources. Activates when user mentions API methods, API controller, API routes, or wants to expose an existing web resource via API.
+description: Build a complete API surface for a given model or concept. Use when the user asks to add API methods, expose a resource via API, or mirror a web controller as an API. Activates when user mentions API methods, API controller, API routes, or wants to expose an existing web resource via API.
 ---
 
-# API from Web Controller
+# API writer
 
-This skill walks through creating a full API surface for a resource that already has a web controller.
+## Step 1 — Study the existing web controller
 
-## Before you start
-
-At the end, load and run both documentation skills in order:
-- `marketing-api-docs-writer` — after Bruno docs are written
-
----
-
-## Step 1 — Study the web controller
-
-Read the existing web controller (`app/Http/Controllers/App/…`). Extract:
+Read the existing web controller, if it exists (`app/Http/Controllers/App/…`). Extract:
 
 - The **resource name** (singular, e.g. `Office`)
 - Which **actions** are used (`CreateXxx`, `UpdateXxx`, `DestroyXxx`)
@@ -77,67 +68,28 @@ class OfficeResource extends JsonResource
 
 ## Step 3 — Create the API controller
 
-Create `app/Http/Controllers/Api/Adminland/{Resource}Controller.php`.
+Load instructions from [the controller skill](../controllers/SKILL.md) and apply them, with the following adjustments.
 
-Rules (from `laravel-controllers` skill):
+Create `app/Http/Controllers/Api/[XXX]/{Resource}Controller.php`. 
+
+It MUST match the web controller's namespace pattern (e.g. `Adminland`), but under `Api` instead of `App`.
+
+Rules (from `controllers` skill):
 - Only these methods: `index`, `show`, `store`, `update`, `destroy`
 - No domain logic — call Actions
 - Validate inline (no FormRequests)
-- Use `$request->attributes->get('organization')` to get the organization (set by `organization.api` middleware)
+- Use `$request->attributes->get('vault')` to get the vault (set by `vault.api` middleware)
 - Use `$request->user()` — never `Auth::user()`
-- Use `TextSanitizer::plainText()` / `nullablePlainText()` on string inputs before passing to actions
 - Return `AnonymousResourceCollection` from `index`, `JsonResponse` from `show`/`store`/`update`, `Response` (204) from `destroy`
-- Scope all resource lookups to the organization: `$organization->offices()->findOrFail($officeId)`
-
-```php
-public function index(Request $request): AnonymousResourceCollection
-{
-    $vault = $request->attributes->get('vault');
-    $offices = $organization->offices()->orderBy('name')->get();
-    return OfficeResource::collection($offices);
-}
-
-public function store(Request $request, int $id): JsonResponse
-{
-    $vault = $request->attributes->get('vault');
-    $validated = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        // ...
-    ]);
-    $office = new CreateOffice(
-        user: $request->user(),
-        organization: $organization,
-        name: TextSanitizer::plainText($validated['name']),
-        // ...
-    )->execute();
-    return new OfficeResource($office)->response()->setStatusCode(201);
-}
-
-public function destroy(Request $request, int $id, int $officeId): Response
-{
-    $vault = $request->attributes->get('vault');
-    $office = $organization->offices()->findOrFail($officeId);
-    new DestroyOffice(user: $request->user(), organization: $organization, office: $office)->execute();
-    return response()->noContent(204);
-}
-```
+- Scope all resource lookups to the vault: `$vault->offices()->findOrFail($officeId)`
 
 ---
 
 ## Step 4 — Register routes
 
-Add routes to `routes/api.php` inside the `organization.api` middleware group. Follow the existing pattern exactly.
-
-```php
-// adminland - offices
-Route::get('organizations/{id}/adminland/offices', [OfficeController::class, 'index'])->name('organization.adminland.office.index');
-Route::post('organizations/{id}/adminland/offices', [OfficeController::class, 'store'])->name('organization.adminland.office.store');
-Route::get('organizations/{id}/adminland/offices/{officeId}', [OfficeController::class, 'show'])->name('organization.adminland.office.show');
-Route::put('organizations/{id}/adminland/offices/{officeId}', [OfficeController::class, 'update'])->name('organization.adminland.office.update');
-Route::delete('organizations/{id}/adminland/offices/{officeId}', [OfficeController::class, 'destroy'])->name('organization.adminland.office.destroy');
-```
-
-Add the `use` import in alphabetical order with other `Adminland` controller imports.
+- Add routes to `routes/api.php` inside the `vault.api` middleware group. Follow the existing pattern exactly.
+- Add the `use` import in alphabetical order with other `Adminland` controller imports.
+- Use something like `->where('gender', '[1-9][0-9]*')` to enforce numeric IDs in the URL when applicable.
 
 ---
 
@@ -145,7 +97,7 @@ Add the `use` import in alphabetical order with other `Adminland` controller imp
 
 Create `tests/Feature/Controllers/Api/{Resource}ControllerTest.php`.
 
-Rules (from `test-writer` skill):
+Rules:
 - Use `RefreshDatabase`
 - Use `#[Test]` attributes
 - Use `Sanctum::actingAs($user)` for auth
@@ -155,56 +107,32 @@ Rules (from `test-writer` skill):
 - Define a `$jsonStructure` property once and reuse it
 
 **Required test cases:**
-1. `it_lists_{resources}_for_an_organization` — 200 + count
-2. `it_returns_empty_collection_when_no_{resources}_exist` — 200 + count 0
-3. `it_restricts_listing_{resources}_to_organization_members` — 403 for non-member
-4. `it_can_show_a_{resource}` — 200 + structure
-5. `it_returns_404_when_showing_a_{resource}_from_another_organization` — 404
-6. `it_can_create_a_{resource}` — 201 + structure
-7. `it_requires_[field]_when_creating_a_{resource}` — 422 (one per required field)
-8. `it_returns_404_when_a_user_doesnt_have_permission_to_create_a_{resource}` — 404
-9. `it_can_update_a_{resource}` — 200 + structure
-10. `it_requires_[field]_when_updating_a_{resource}` — 422 (one per required field)
-11. `it_returns_404_when_a_user_doesnt_have_permission_to_update_a_{resource}` — 404
-12. `it_can_destroy_a_{resource}` — 204 no content
-13. `it_returns_404_when_a_user_doesnt_have_permission_to_destroy_a_{resource}` — 404
+1. `it_lists_{resources}_of_a_vault` — 200 + count
+2. `it_restricts_listing_{resources}_to_vault_members` — 403 for non-member
+3. `it_can_show_a_{resource}` — 200 + structure
+4. `it_returns_404_when_showing_a_{resource}_from_another_vault` — 404
+5. `it_can_create_a_{resource}` — 201 + structure
+6. `it_returns_404_when_a_user_doesnt_have_permission_to_create_a_{resource}` — 404
+7. `it_can_update_a_{resource}` — 200 + structure
+8. `it_returns_404_when_a_user_doesnt_have_permission_to_update_a_{resource}` — 404
+9. `it_can_destroy_a_{resource}` — 204 no content
+10. `it_returns_404_when_a_user_doesnt_have_permission_to_destroy_a_{resource}` — 404
 
 ---
 
-## Step 6 — Run Pint and tests
+## Step 6 — Marketing docs
 
-```bash
-vendor/bin/pint --dirty --format agent
-php artisan test --compact tests/Feature/Controllers/Api/{Resource}ControllerTest.php
-```
-
-All tests must pass before proceeding.
-
----
-
-## Step 7 — Marketing docs
-
-Load and follow the **`marketing-api-docs-writer`** skill.
+Load and follow the **`api-docs-writer`** skill.
 
 Summary:
 - Create `app/Http/Controllers/Marketing/Docs/Api{Resource}Controller.php`
-- Add route to `routes/marketing.php` (import alphabetically)
-- Update `resources/views/layouts/docs.blade.php`:
-  - Add Alpine state variable `{resource}Documentation` to the `x-data` block
-  - Add a link inside the Adminland section, expanding when the route matches
-- Create `resources/views/marketing/docs/api/organizations/{resources}/index.blade.php`
-- Create `tests/Feature/Controllers/Marketing/Docs/Api{Resource}ControllerTest.php` asserting HTTP 200
+- Add markdown document in the appropriate location.
+- Create the test file, which should match how we wrote `tests/Feature/Controllers/Marketing/Docs/ApiVaultManagementControllerTest.php`.
+    - Only assert that the page loads, without checking for specific content, to avoid brittle tests.
 
 ---
 
-## Validation checklist
+## Step 7 — Bruno documentation
 
-- [ ] `{Resource}Resource.php` returns correct type, id (string), attributes, links.self
-- [ ] API controller uses only `index`, `show`, `store`, `update`, `destroy`
-- [ ] All string inputs pass through `TextSanitizer`
-- [ ] Resource lookups are scoped to the organization (`$organization->offices()->findOrFail(…)`)
-- [ ] 5 routes registered with correct names
-- [ ] All test cases listed in Step 5 are present and passing
-- [ ] Pint reports no violations
-- [ ] Bruno folder + 5 `.bru` files created
-- [ ] Marketing controller, route, sidebar link, Blade view, and test created
+- Create a folder in the Bruno doc folder in `docs/Bruno`, following the existing pattern.
+- Create 5 `.bru` files for the 5 API methods, following the existing pattern.
