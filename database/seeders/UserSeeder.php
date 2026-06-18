@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\Date;
 use App\Actions\CreateAccount;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Date;
 
 class UserSeeder extends Seeder
 {

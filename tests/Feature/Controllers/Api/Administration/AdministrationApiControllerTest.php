@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Administration;
 
-use Illuminate\Support\Facades\Date;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Date;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
