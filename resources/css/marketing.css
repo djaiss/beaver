@@ -1,11 +1,11 @@
 @import 'prismjs/themes/prism.css';
 
-pre[class*="language-"] {
+pre[class*='language-'] {
   background-color: rgb(243 244 246);
   padding: 0.5rem;
 }
 
-.dark pre[class*="language-"] {
+.dark pre[class*='language-'] {
   background-color: rgb(31 41 55);
 }
 

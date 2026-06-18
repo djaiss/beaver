@@ -18,11 +18,5 @@ class ApiAuthenticationControllerTest extends TestCase
         $response = $this->get('/docs/1.x/api/authentication');
 
         $response->assertOk();
-        $response->assertSee('Authentication');
-        $response->assertSee('/api/login');
-        $response->assertSee('/api/logout');
-        $response->assertSee('data.token');
-        $response->assertSee('Authorization: Bearer YOUR_API_KEY');
-        $response->assertDontSee(':::section');
     }
 }

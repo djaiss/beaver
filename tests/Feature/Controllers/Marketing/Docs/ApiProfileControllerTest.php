@@ -8,14 +8,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class ApiIntroductionControllerTest extends TestCase
+class ApiProfileControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     #[Test]
-    public function it_renders_the_api_introduction_page(): void
+    public function it_renders_the_api_profile_page(): void
     {
-        $response = $this->get('/docs/1.x/api/introduction');
+        $response = $this->get('/docs/1.x/api/account-management/profile');
 
         $response->assertOk();
     }

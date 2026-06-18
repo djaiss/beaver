@@ -27,7 +27,7 @@ class DocsIndexControllerTest extends TestCase
     #[Test]
     public function it_renders_a_right_sidebar_when_its_slot_is_provided(): void
     {
-        Route::get('/docs-with-right-sidebar', fn(): string => Blade::render(<<<'BLADE'
+        Route::get('/docs-with-right-sidebar', fn (): string => Blade::render(<<<'BLADE'
                 <x-marketing-docs-layout>
                     <x-slot:rightSidebar>
                         <p>Right sidebar content</p>

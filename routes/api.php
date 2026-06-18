@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\VaultController;
@@ -16,6 +17,10 @@ Route::name('api.')->group(function (): void {
     Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function (): void {
         // logout
         Route::delete('logout', [LoginController::class, 'destroy'])->name('logout');
+
+        // logged user
+        Route::get('me', [MeController::class, 'show'])->name('me');
+        Route::put('me', [MeController::class, 'update'])->name('me.update');
 
         // vaults
         Route::post('vaults', [VaultController::class, 'create'])->name('vault.create');

@@ -34,6 +34,7 @@ class UserFactory extends Factory
             'password' => self::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'locale' => 'en',
+            'time_format_24h' => true,
         ];
     }
 
