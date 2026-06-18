@@ -16,6 +16,9 @@ use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderPositionController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandManageController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandRelationshipTypeCategoryController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandRelationshipTypeController;
+use App\Http\Controllers\App\Vault\Adminland\AdminlandRelationshipTypePositionController;
 use App\Http\Controllers\App\Vault\JoinVaultController;
 use App\Http\Controllers\App\Vault\PersonController;
 use App\Http\Controllers\App\Vault\VaultController;
@@ -57,6 +60,21 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
             Route::put('genders/{gender}', [AdminlandGenderController::class, 'update'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.update');
             Route::put('genders/{gender}/position', [AdminlandGenderPositionController::class, 'update'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.position.update');
             Route::delete('genders/{gender}', [AdminlandGenderController::class, 'destroy'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.destroy');
+
+            // relationship type categories
+            Route::get('relationship-type-categories/new', [AdminlandRelationshipTypeCategoryController::class, 'new'])->name('vault.adminland.relationship_type_categories.new');
+            Route::post('relationship-type-categories', [AdminlandRelationshipTypeCategoryController::class, 'create'])->name('vault.adminland.relationship_type_categories.store');
+            Route::get('relationship-type-categories/{relationshipTypeCategory}/edit', [AdminlandRelationshipTypeCategoryController::class, 'edit'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_type_categories.edit');
+            Route::put('relationship-type-categories/{relationshipTypeCategory}', [AdminlandRelationshipTypeCategoryController::class, 'update'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_type_categories.update');
+            Route::delete('relationship-type-categories/{relationshipTypeCategory}', [AdminlandRelationshipTypeCategoryController::class, 'destroy'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_type_categories.destroy');
+
+            // relationship types
+            Route::get('relationship-type-categories/{relationshipTypeCategory}/relationship-types/new', [AdminlandRelationshipTypeController::class, 'new'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_types.new');
+            Route::post('relationship-type-categories/{relationshipTypeCategory}/relationship-types', [AdminlandRelationshipTypeController::class, 'create'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_types.store');
+            Route::get('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}/edit', [AdminlandRelationshipTypeController::class, 'edit'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.edit');
+            Route::put('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}', [AdminlandRelationshipTypeController::class, 'update'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.update');
+            Route::put('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}/position', [AdminlandRelationshipTypePositionController::class, 'update'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.position.update');
+            Route::delete('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}', [AdminlandRelationshipTypeController::class, 'destroy'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.destroy');
 
             // manage vault
             Route::get('manage', [AdminlandManageController::class, 'index'])->name('vault.adminland.manage.index');

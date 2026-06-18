@@ -8,6 +8,7 @@ use App\Actions\DestroyRelationshipTypeCategory;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
+use App\Models\RelationshipType;
 use App\Models\RelationshipTypeCategory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,10 +31,15 @@ class DestroyRelationshipTypeCategoryTest extends TestCase
             'vault_id' => $vault->id,
             'name' => 'Family',
         ]);
+        $relationshipType = RelationshipType::factory()->create([
+            'vault_id' => $vault->id,
+            'relationship_type_category_id' => $category->id,
+        ]);
 
         new DestroyRelationshipTypeCategory(user: $user, relationshipTypeCategory: $category)->execute();
 
         $this->assertModelMissing($category);
+        $this->assertModelMissing($relationshipType);
         Queue::assertPushedOn(
             queue: 'low',
             job: LogUserAction::class,

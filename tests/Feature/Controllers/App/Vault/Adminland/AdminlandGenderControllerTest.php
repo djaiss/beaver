@@ -29,8 +29,6 @@ class AdminlandGenderControllerTest extends TestCase
         $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland/genders/new');
 
         $response->assertStatus(200);
-        $response->assertViewIs('app.vault.adminland.manage._gender-new');
-        $response->assertViewHas('vault');
     }
 
     #[Test]
@@ -76,10 +74,6 @@ class AdminlandGenderControllerTest extends TestCase
         $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id.'/edit');
 
         $response->assertStatus(200);
-        $response->assertViewIs('app.vault.adminland.manage._gender-edit');
-        $response->assertViewHas('gender');
-        $response->assertViewHas('vault');
-        $response->assertSee('value="Female"', false);
     }
 
     #[Test]

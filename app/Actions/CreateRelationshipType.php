@@ -13,6 +13,7 @@ use App\Models\RelationshipTypeCategory;
 use App\Models\User;
 use App\Models\Vault;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
 
 class CreateRelationshipType
 {
@@ -22,7 +23,7 @@ class CreateRelationshipType
         private readonly User $user,
         private readonly Vault $vault,
         private readonly RelationshipTypeCategory $relationshipTypeCategory,
-        private string $key,
+        private ?string $key,
         private string $name,
         private readonly bool $isDirected = false,
     ) {}
@@ -39,8 +40,10 @@ class CreateRelationshipType
 
     private function sanitize(): void
     {
-        $this->key = TextSanitizer::plainText($this->key);
         $this->name = TextSanitizer::plainText($this->name);
+        $this->key = $this->key === null
+            ? 'custom-'.Str::lower(Str::random(16))
+            : TextSanitizer::plainText($this->key);
     }
 
     private function validate(): void

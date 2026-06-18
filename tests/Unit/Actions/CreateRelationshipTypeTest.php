@@ -67,6 +67,16 @@ class CreateRelationshipTypeTest extends TestCase
     }
 
     #[Test]
+    public function it_generates_a_key_when_none_is_provided(): void
+    {
+        [$user, $vault, $category] = $this->createOwnerAndCategory();
+
+        $relationshipType = new CreateRelationshipType($user, $vault, $category, null, 'Parent')->execute();
+
+        $this->assertStringStartsWith('custom-', $relationshipType->key);
+    }
+
+    #[Test]
     public function it_rejects_a_duplicate_key_in_the_category(): void
     {
         $this->expectException(ModelNotFoundException::class);

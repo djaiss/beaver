@@ -16,6 +16,7 @@ class AdminlandController extends Controller
     public function index(Request $request): View
     {
         $vault = $request->attributes->get('vault');
+
         $genders = Gender::query()->where('vault_id', $vault->id)
             ->orderBy('position')
             ->get()
@@ -25,8 +26,16 @@ class AdminlandController extends Controller
                 'position' => $gender->position,
             ]);
 
+        $relationshipTypeCategories = $vault->relationshipTypeCategories()
+            ->with(['relationshipTypes' => function ($query): void {
+                $query->orderBy('position');
+            }])
+            ->orderBy('position')
+            ->get();
+
         return view('app.vault.adminland.index', [
             'genders' => $genders,
+            'relationshipTypeCategories' => $relationshipTypeCategories,
         ]);
     }
 

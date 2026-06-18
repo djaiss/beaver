@@ -7,6 +7,7 @@ namespace App\Jobs;
 use App\Models\Vault;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class PopulateVault implements ShouldQueue
@@ -509,13 +510,13 @@ class PopulateVault implements ShouldQueue
                         ->map(fn ($type, $index): array => [
                             'vault_id' => $this->vault->id,
                             'relationship_type_category_id' => $category->id,
-                            'key' => $type['key'],
+                            'key' => Crypt::encryptString($type['key']),
                             'name' => null,
-                            'name_translation_key' => $type['name_translation_key'],
+                            'name_translation_key' => Crypt::encryptString($type['name_translation_key']),
                             'forward_name' => null,
-                            'forward_name_translation_key' => $type['forward_name_translation_key'],
+                            'forward_name_translation_key' => Crypt::encryptString($type['forward_name_translation_key']),
                             'reverse_name' => null,
-                            'reverse_name_translation_key' => $type['reverse_name_translation_key'],
+                            'reverse_name_translation_key' => Crypt::encryptString($type['reverse_name_translation_key']),
                             'is_directed' => $type['is_directed'],
                             'can_be_deleted' => $type['can_be_deleted'] ?? true,
                             'position' => $index + 1,

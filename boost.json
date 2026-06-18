@@ -13,6 +13,14 @@
     "sail": false,
     "skills": [
         "laravel-best-practices",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "disposable-email-detection",
+        "debug-using-debugbar",
+        "actions",
+        "api-docs-writer",
+        "api-writer",
+        "controllers",
+        "add-model",
+        "translations-updater"
     ]
 }

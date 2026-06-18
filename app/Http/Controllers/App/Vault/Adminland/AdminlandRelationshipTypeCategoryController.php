@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App\Vault\Adminland;
 
-use App\Actions\CreateGender;
-use App\Actions\DestroyGender;
-use App\Actions\UpdateGender;
+use App\Actions\CreateRelationshipTypeCategory;
+use App\Actions\DestroyRelationshipTypeCategory;
+use App\Actions\UpdateRelationshipTypeCategory;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class AdminlandGenderController extends Controller
+class AdminlandRelationshipTypeCategoryController extends Controller
 {
     public function new(Request $request): View
     {
-        return view('app.vault.adminland._gender-new', [
+        return view('app.vault.adminland._relationship-type-category-new', [
             'vault' => $request->attributes->get('vault'),
         ]);
     }
@@ -25,14 +24,14 @@ class AdminlandGenderController extends Controller
     public function create(Request $request): RedirectResponse
     {
         $vault = $request->attributes->get('vault');
-
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
         ]);
 
-        new CreateGender(
+        new CreateRelationshipTypeCategory(
             user: $request->user(),
             vault: $vault,
+            key: null,
             name: $validated['name'],
         )->execute();
 
@@ -43,16 +42,13 @@ class AdminlandGenderController extends Controller
     public function edit(Request $request): View
     {
         $vault = $request->attributes->get('vault');
-        $id = $request->route()->parameter('gender');
+        $id = $request->route()->parameter('relationshipTypeCategory');
 
-        try {
-            $gender = $vault->genders()->findOrFail($id);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
-        return view('app.vault.adminland._gender-edit', [
-            'gender' => $gender,
+        return view('app.vault.adminland._relationship-type-category-edit', [
+            'relationshipTypeCategory' => $relationshipTypeCategory,
             'vault' => $vault,
         ]);
     }
@@ -60,46 +56,40 @@ class AdminlandGenderController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $vault = $request->attributes->get('vault');
-        $id = $request->route()->parameter('gender');
+        $id = $request->route()->parameter('relationshipTypeCategory');
 
-        try {
-            $gender = $vault->genders()->findOrFail($id);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
         ]);
 
-        new UpdateGender(
+        new UpdateRelationshipTypeCategory(
             user: $request->user(),
-            gender: $gender,
+            relationshipTypeCategory: $relationshipTypeCategory,
             name: $validated['name'],
-            position: $gender->position,
+            position: $relationshipTypeCategory->position,
         )->execute();
 
-        return to_route('vault.adminland.index', $request->attributes->get('vault')->id)
+        return to_route('vault.adminland.index', $vault->id)
             ->with('status', __('app/shared.changes_saved'));
     }
 
     public function destroy(Request $request): RedirectResponse
     {
         $vault = $request->attributes->get('vault');
-        $id = $request->route()->parameter('gender');
+        $id = $request->route()->parameter('relationshipTypeCategory');
 
-        try {
-            $gender = $vault->genders()->findOrFail($id);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
-        new DestroyGender(
+        new DestroyRelationshipTypeCategory(
             user: $request->user(),
-            gender: $gender,
+            relationshipTypeCategory: $relationshipTypeCategory,
         )->execute();
 
-        return to_route('vault.adminland.index', $request->attributes->get('vault')->id)
+        return to_route('vault.adminland.index', $vault->id)
             ->with('status', __('app/shared.changes_saved'));
     }
 }

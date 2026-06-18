@@ -75,6 +75,18 @@ class CreateRelationshipTypeCategoryTest extends TestCase
     }
 
     #[Test]
+    public function it_generates_a_key_when_none_is_provided(): void
+    {
+        $user = $this->createUser();
+        $vault = $this->createVault();
+        $this->assignUserToVault(user: $user, vault: $vault, role: PermissionEnum::Owner->value);
+
+        $category = new CreateRelationshipTypeCategory($user, $vault, null, 'Family')->execute();
+
+        $this->assertStringStartsWith('custom-', $category->key);
+    }
+
+    #[Test]
     public function it_increments_position_automatically(): void
     {
         $user = $this->createUser();

@@ -9,10 +9,12 @@ Turbo.session.drive = false; // explicit (enabled by default)
 import Alpine from 'alpinejs';
 import ajax from '@imacrayon/alpine-ajax';
 import Popover from './components/popover';
+import RelationshipTypeSorter from './components/relationship-type-sorter';
 
 window.Alpine = Alpine;
 Alpine.plugin(ajax);
 Alpine.data('popover', Popover);
+Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
 
 // Start Alpine on the initial load (once)
 document.addEventListener('DOMContentLoaded', () => {

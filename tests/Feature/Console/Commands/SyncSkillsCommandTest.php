@@ -71,6 +71,35 @@ class SyncSkillsCommandTest extends TestCase
         $this->assertSame('AI skill', File::get(base_path('.ai/skills/existing/SKILL.md')));
     }
 
+    #[Test]
+    public function it_stages_source_skills_before_removing_linked_target_directories(): void
+    {
+        $this->writeFile('.agents/skills/tailwindcss-development/SKILL.md', 'tailwind skill');
+        File::ensureDirectoryExists(base_path('.github/skills'));
+        File::link(
+            base_path('.agents/skills/tailwindcss-development'),
+            base_path('.github/skills/tailwindcss-development'),
+        );
+
+        $this->artisan('lifeos:sync-skills')
+            ->expectsOutput('Skills synchronized.')
+            ->assertSuccessful();
+
+        $this->assertTrue(is_link(base_path('.github/skills/tailwindcss-development')));
+        $this->assertSame(
+            'tailwind skill',
+            File::get(base_path('.github/skills/tailwindcss-development/SKILL.md')),
+        );
+        $this->assertSame(
+            'tailwind skill',
+            File::get(base_path('.agents/skills/tailwindcss-development/SKILL.md')),
+        );
+        $this->assertSame(
+            'tailwind skill',
+            File::get(base_path('.ai/skills/tailwindcss-development/SKILL.md')),
+        );
+    }
+
     private function writeFile(string $relativePath, string $contents): void
     {
         $path = base_path($relativePath);

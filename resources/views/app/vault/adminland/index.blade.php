@@ -20,7 +20,10 @@
         @include('app.vault.adminland._edit')
 
         <!-- genders -->
-        @include('app.vault.adminland.manage._genders')
+        @include('app.vault.adminland._genders')
+
+        <!-- relationship types -->
+        @include('app.vault.adminland._relationship-types')
       </div>
     </section>
   </div>

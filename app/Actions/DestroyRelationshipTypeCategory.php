@@ -10,6 +10,7 @@ use App\Jobs\LogUserAction;
 use App\Models\RelationshipTypeCategory;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class DestroyRelationshipTypeCategory
 {
@@ -46,7 +47,10 @@ class DestroyRelationshipTypeCategory
 
     private function delete(): void
     {
-        $this->relationshipTypeCategory->delete();
+        DB::transaction(function (): void {
+            $this->relationshipTypeCategory->relationshipTypes()->delete();
+            $this->relationshipTypeCategory->delete();
+        });
     }
 
     private function log(): void
