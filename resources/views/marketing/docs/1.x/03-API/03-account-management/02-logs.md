@@ -51,6 +51,10 @@ The response is paginated with 10 logs per page.
 :::attribute name="page" type="integer"
 The page number to return. The first page is returned when this parameter is omitted.
 :::/attribute
+
+:::attribute name="per_page" type="integer"
+The number of logs to return per page. The default is 10, the minimum is 1 and the maximum is 100.
+:::/attribute
 :::/parameters
 
 :::parameters title="Response attributes"

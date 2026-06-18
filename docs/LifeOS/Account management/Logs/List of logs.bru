@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: {{URL}}/administration/logs
+  url: {{URL}}/administration/logs?per_page=100
   body: none
   auth: inherit
+}
+
+params:query {
+  per_page: 100
 }

@@ -14,11 +14,13 @@ class AdministrationLogsController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
+        $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
+
         $logs = Log::query()
             ->where('user_id', $request->user()->id)
             ->with(['user', 'vault'])
             ->latest()
-            ->paginate(10);
+            ->paginate($perPage);
 
         return LogResource::collection($logs);
     }

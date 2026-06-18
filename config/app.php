@@ -159,4 +159,17 @@ return [
     */
 
     'account_deletion_notification_email' => env('ACCOUNT_DELETION_NOTIFICATION_EMAIL', 'hello@example.com'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maximum number of items per page for paginated API responses
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the maximum number of items that can be returned in
+    | a paginated API response. It is used to prevent clients from requesting
+    | too many items at once, which could lead to performance issues.
+    |
+    */
+
+    'maximum_items_per_page' => env('MAXIMUM_ITEMS_PER_PAGE', 100),
 ];

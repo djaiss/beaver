@@ -63,7 +63,7 @@ There is no strict standard for JSON payloads, but we do try to follow [the JSON
 
 All endpoints that return a collection of resources support pagination.
 
-The default value for `per_page` is 10. This can not be changed at the moment.
+The default value for `per_page` is 10. The minimum value is 1, and the maximum value is 100.
 
 All responses will include links to navigate to the next and previous pages.
 :::/column
