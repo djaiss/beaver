@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\Administration\AdministrationApiController;
 use App\Http\Controllers\Api\Administration\AdministrationLogsController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
@@ -32,8 +33,14 @@ Route::name('api.')->group(function (): void {
             Route::delete('vaults/{id}', [VaultController::class, 'destroy'])->name('vault.destroy');
         });
 
+        // api keys
+        Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');
+        Route::get('administration/api/{id}', [AdministrationApiController::class, 'show'])->where('id', '[0-9]+')->name('administration.api.show');
+        Route::post('administration/api', [AdministrationApiController::class, 'create'])->name('administration.api.create');
+        Route::delete('administration/api/{id}', [AdministrationApiController::class, 'destroy'])->where('id', '[0-9]+')->name('administration.api.destroy');
+
         // logs
         Route::get('administration/logs', [AdministrationLogsController::class, 'index'])->name('administration.logs');
-        Route::get('administration/logs/{log}', [AdministrationLogsController::class, 'show'])->name('administration.logs.show');
+        Route::get('administration/logs/{log}', [AdministrationLogsController::class, 'show'])->where('log', '[0-9]+')->name('administration.logs.show');
     });
 });
