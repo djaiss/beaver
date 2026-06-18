@@ -1,0 +1,15 @@
+meta {
+  name: Update vault
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{URL}}/vaults/3?name=New vault
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: New vault
+}

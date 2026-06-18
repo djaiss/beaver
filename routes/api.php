@@ -28,9 +28,9 @@ Route::name('api.')->group(function (): void {
         Route::post('vaults', [VaultController::class, 'create'])->name('vault.create');
         Route::get('vaults', [VaultController::class, 'index'])->name('vault.index');
         Route::middleware(['vault.api'])->group(function (): void {
-            Route::get('vaults/{id}', [VaultController::class, 'show'])->name('vault.show');
-            Route::put('vaults/{id}', [VaultController::class, 'update'])->name('vault.update');
-            Route::delete('vaults/{id}', [VaultController::class, 'destroy'])->name('vault.destroy');
+            Route::get('vaults/{id}', [VaultController::class, 'show'])->where('id', '[0-9]+')->name('vault.show');
+            Route::put('vaults/{id}', [VaultController::class, 'update'])->where('id', '[0-9]+')->name('vault.update');
+            Route::delete('vaults/{id}', [VaultController::class, 'destroy'])->where('id', '[0-9]+')->name('vault.destroy');
         });
 
         // api keys

@@ -18,10 +18,12 @@ class VaultController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
+        $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
+
         $vaults = $request->user()
             ->vaults()
             ->orderBy('id')
-            ->get();
+            ->paginate($perPage);
 
         return VaultResource::collection($vaults);
     }
@@ -59,13 +61,13 @@ class VaultController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        new UpdateVault(
+        $vault = new UpdateVault(
             user: $request->user(),
             vault: $vault,
             name: $validated['name'],
         )->execute();
 
-        return new VaultResource($vault->fresh())
+        return new VaultResource($vault)
             ->response()
             ->setStatusCode(200);
     }

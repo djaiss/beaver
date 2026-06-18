@@ -1,0 +1,15 @@
+meta {
+  name: Create vault
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{URL}}/vaults?name=Secret vault 2
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: Secret vault 2
+}
