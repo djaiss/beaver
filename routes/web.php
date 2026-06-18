@@ -37,7 +37,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('vaults/join', [JoinVaultController::class, 'create'])->name('vault.join.create');
     Route::post('vaults/join', [JoinVaultController::class, 'store'])->name('vault.join.store');
 
-    Route::middleware(['vault'])->group(function (): void {
+    Route::middleware(['vault'])->where(['vaultId' => '[1-9][0-9]*'])->group(function (): void {
         Route::get('vaults/{vaultId}', [VaultController::class, 'show'])->name('vault.show');
 
         // persons
@@ -53,10 +53,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
             // genders
             Route::get('genders/new', [AdminlandGenderController::class, 'new'])->name('vault.adminland.genders.new');
             Route::post('genders', [AdminlandGenderController::class, 'create'])->name('vault.adminland.genders.create');
-            Route::get('genders/{gender}/edit', [AdminlandGenderController::class, 'edit'])->name('vault.adminland.genders.edit');
-            Route::put('genders/{gender}', [AdminlandGenderController::class, 'update'])->name('vault.adminland.genders.update');
-            Route::put('genders/{gender}/position', [AdminlandGenderPositionController::class, 'update'])->name('vault.adminland.genders.position.update');
-            Route::delete('genders/{gender}', [AdminlandGenderController::class, 'destroy'])->name('vault.adminland.genders.destroy');
+            Route::get('genders/{gender}/edit', [AdminlandGenderController::class, 'edit'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.edit');
+            Route::put('genders/{gender}', [AdminlandGenderController::class, 'update'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.update');
+            Route::put('genders/{gender}/position', [AdminlandGenderPositionController::class, 'update'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.position.update');
+            Route::delete('genders/{gender}', [AdminlandGenderController::class, 'destroy'])->where('gender', '[1-9][0-9]*')->name('vault.adminland.genders.destroy');
 
             // manage vault
             Route::get('manage', [AdminlandManageController::class, 'index'])->name('vault.adminland.manage.index');

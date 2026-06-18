@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Gender;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Laravel\Sanctum\PersonalAccessToken;
 
 /**
- * @mixin PersonalAccessToken
+ * @mixin Gender
  */
-class ApiResource extends JsonResource
+class GenderResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,17 +21,19 @@ class ApiResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'api_key',
+            'type' => 'gender',
             'id' => (string) $this->id,
             'attributes' => [
                 'name' => $this->name,
-                'token' => $this->additional['token'] ?? null,
-                'last_used_at' => $this->last_used_at ? $this->last_used_at->timestamp : null,
+                'position' => $this->position,
                 'created_at' => $this->created_at->timestamp,
-                'updated_at' => $this->updated_at->timestamp,
+                'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.administration.api.show', $this->id),
+                'self' => route('api.vault.gender.show', [
+                    'id' => $this->vault_id,
+                    'gender' => $this->id,
+                ]),
             ],
         ];
     }

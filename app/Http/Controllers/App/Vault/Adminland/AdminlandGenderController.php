@@ -25,6 +25,7 @@ class AdminlandGenderController extends Controller
     public function create(Request $request): RedirectResponse
     {
         $vault = $request->attributes->get('vault');
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
         ]);

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Administration;
 
+use Illuminate\Support\Facades\Date;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
@@ -55,12 +55,12 @@ class AdministrationApiControllerTest extends TestCase
     #[Test]
     public function it_can_list_the_api_keys_of_the_current_user(): void
     {
-        Carbon::setTestNow('2025-07-01 00:00:00');
+        Date::setTestNow('2025-07-01 00:00:00');
         $user = User::factory()->create();
 
-        $token1 = $user->createToken('Test API Key 1');
+        $user->createToken('Test API Key 1');
         $token2AccessToken = $user->createToken('Test API Key 2')->accessToken;
-        $token2AccessToken->last_used_at = Carbon::now()->subDays(5);
+        $token2AccessToken->last_used_at = Date::now()->subDays(5);
         $token2AccessToken->save();
 
         Sanctum::actingAs($user);

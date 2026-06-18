@@ -28,14 +28,14 @@ class AdministrationApiController extends Controller
             'label' => ['required', 'string', 'max:255'],
         ]);
 
-        $token = (new CreateApiKey(
+        $token = new CreateApiKey(
             user: $request->user(),
             label: $validated['label'],
-        ))->execute();
+        )->execute();
 
         $apiKey = $request->user()->tokens()->latest()->first();
 
-        return (new ApiResource($apiKey))
+        return new ApiResource($apiKey)
             ->additional(['token' => $token])
             ->response()
             ->setStatusCode(201);
@@ -47,19 +47,19 @@ class AdministrationApiController extends Controller
 
         $apiKey = $request->user()->tokens()->findOrFail($id);
 
-        return (new ApiResource($apiKey))->response()->setStatusCode(200);
+        return new ApiResource($apiKey)->response()->setStatusCode(200);
     }
 
     public function destroy(Request $request): Response|JsonResponse
     {
         $id = (int) $request->route()->parameter('id');
 
-        $apiKey = $request->user()->tokens()->findOrFail($id);
+        $request->user()->tokens()->findOrFail($id);
 
-        (new DestroyApiKey(
+        new DestroyApiKey(
             user: $request->user(),
             tokenId: $id,
-        ))->execute();
+        )->execute();
 
         return response()->noContent(204);
     }

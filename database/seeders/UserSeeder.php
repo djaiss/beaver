@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use Illuminate\Support\Facades\Date;
 use App\Actions\CreateAccount;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -17,23 +16,23 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Create admin user with demo data
-        $adminUser = (new CreateAccount(
+        $adminUser = new CreateAccount(
             email: 'admin@admin.com',
             password: 'admin123',
             firstName: 'Monica',
             lastName: 'Geller',
-        ))->execute();
-        $adminUser->email_verified_at = Carbon::now();
+        )->execute();
+        $adminUser->email_verified_at = Date::now();
         $adminUser->save();
 
         // Create blank user for clean testing
-        $blankUser = (new CreateAccount(
+        $blankUser = new CreateAccount(
             email: 'blank@blank.com',
             password: 'blank123',
             firstName: 'Rachel',
             lastName: 'Green',
-        ))->execute();
-        $blankUser->email_verified_at = Carbon::now();
+        )->execute();
+        $blankUser->email_verified_at = Date::now();
         $blankUser->save();
     }
 }

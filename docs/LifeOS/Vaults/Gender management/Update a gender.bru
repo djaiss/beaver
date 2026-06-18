@@ -1,0 +1,15 @@
+meta {
+  name: Update a gender
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{URL}}/vaults/1/genders/1?name=Genderqueer
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: Genderqueer
+}
