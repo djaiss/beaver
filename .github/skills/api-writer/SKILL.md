@@ -75,7 +75,7 @@ Create `app/Http/Controllers/Api/[XXX]/{Resource}Controller.php`.
 It MUST match the web controller's namespace pattern (e.g. `Adminland`), but under `Api` instead of `App`.
 
 Rules (from `controllers` skill):
-- Only these methods: `index`, `show`, `store`, `update`, `destroy`
+- Only these methods: `index`, `create`, `show`, `update`, `destroy`
 - No domain logic — call Actions
 - Validate inline (no FormRequests)
 - Use `$request->attributes->get('vault')` to get the vault (set by `vault.api` middleware)

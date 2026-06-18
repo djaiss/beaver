@@ -1,0 +1,18 @@
+meta {
+  name: Create a relationship type
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{URL}}/vaults/1/relationship-type-categories/1/relationship-types?name=Parent / child&is_directed=true&forward_name=Parent&reverse_name=Child
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: Parent / child
+  is_directed: true
+  forward_name: Parent
+  reverse_name: Child
+}

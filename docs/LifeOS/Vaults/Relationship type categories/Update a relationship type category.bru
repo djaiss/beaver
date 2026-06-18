@@ -1,0 +1,16 @@
+meta {
+  name: Update a relationship type category
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{URL}}/vaults/1/relationship-type-categories/1?name=Close family&position=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: Close family
+  position: 1
+}

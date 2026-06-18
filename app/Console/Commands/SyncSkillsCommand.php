@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
-use Throwable;
+use Illuminate\Support\Facades\Process;
 
 class SyncSkillsCommand extends Command
 {
@@ -22,47 +21,23 @@ class SyncSkillsCommand extends Command
 
     public function handle(): int
     {
-        $sourcePath = base_path('.github/skills');
+        $result = Process::timeout(60)->run([
+            'bash',
+            base_path('scripts/sync-skills.sh'),
+            base_path(),
+        ]);
 
-        if (! File::isDirectory($sourcePath)) {
-            $this->error(sprintf('The source skills directory was not found at %s.', $sourcePath));
+        if ($result->failed()) {
+            $message = trim($result->errorOutput()) ?: trim($result->output());
+
+            if ($message !== '') {
+                $this->error($message);
+            }
 
             return self::FAILURE;
         }
 
-        $stagingPath = sys_get_temp_dir().'/lifeos-sync-skills-'.bin2hex(random_bytes(8));
-
-        try {
-            if (! File::copyDirectory($sourcePath, $stagingPath)) {
-                $this->error(sprintf('The source skills directory could not be staged from %s.', $sourcePath));
-
-                return self::FAILURE;
-            }
-
-            foreach (['.agents/skills', '.ai/skills'] as $targetDirectory) {
-                $targetPath = base_path($targetDirectory);
-
-                if (File::isDirectory($targetPath) && ! File::deleteDirectory($targetPath)) {
-                    $this->error(sprintf('The skills directory could not be removed at %s.', $targetPath));
-
-                    return self::FAILURE;
-                }
-
-                if (! File::copyDirectory($stagingPath, $targetPath)) {
-                    $this->error(sprintf('The skills directory could not be copied to %s.', $targetPath));
-
-                    return self::FAILURE;
-                }
-            }
-        } catch (Throwable $throwable) {
-            $this->error($throwable->getMessage());
-
-            return self::FAILURE;
-        } finally {
-            File::deleteDirectory($stagingPath);
-        }
-
-        $this->info('Skills synchronized.');
+        $this->info(trim($result->output()));
 
         return self::SUCCESS;
     }

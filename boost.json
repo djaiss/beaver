@@ -17,10 +17,10 @@
         "disposable-email-detection",
         "debug-using-debugbar",
         "actions",
+        "add-model",
         "api-docs-writer",
         "api-writer",
         "controllers",
-        "add-model",
         "translations-updater"
     ]
 }

@@ -13,7 +13,7 @@ description: Use when working with controllers.
 
 ## Things to do
 
-- Only these methods: `index`, `show`, `store`, `update`, `destroy`
+- Only these methods: `index`, `new`, `create`, `show`, `edit`, `update`, `destroy`
 - No domain logic — call Actions
 - Validate inline (no FormRequests)
 - Use `$request->attributes->get('vault')` to get the vault (set by `vault.api` middleware)

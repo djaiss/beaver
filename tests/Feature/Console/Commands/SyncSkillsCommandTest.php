@@ -22,6 +22,11 @@ class SyncSkillsCommandTest extends TestCase
         $this->temporaryBasePath = sys_get_temp_dir().'/lifeos-sync-skills-'.bin2hex(random_bytes(8));
 
         File::makeDirectory($this->temporaryBasePath, 0755, true);
+        File::ensureDirectoryExists($this->temporaryBasePath.'/scripts');
+        File::copy(
+            $this->originalBasePath.'/scripts/sync-skills.sh',
+            $this->temporaryBasePath.'/scripts/sync-skills.sh',
+        );
         $this->app->setBasePath($this->temporaryBasePath);
     }
 
@@ -98,6 +103,22 @@ class SyncSkillsCommandTest extends TestCase
             'tailwind skill',
             File::get(base_path('.ai/skills/tailwindcss-development/SKILL.md')),
         );
+    }
+
+    #[Test]
+    public function it_does_not_touch_targets_when_another_sync_is_running(): void
+    {
+        $this->writeFile('.github/skills/actions/SKILL.md', 'new skill');
+        $this->writeFile('.agents/skills/existing/SKILL.md', 'agent skill');
+        $this->writeFile('.ai/skills/existing/SKILL.md', 'AI skill');
+        File::makeDirectory(base_path('.sync-skills.lock'));
+
+        $this->artisan('lifeos:sync-skills')
+            ->expectsOutputToContain('Another skills synchronization is already running')
+            ->assertFailed();
+
+        $this->assertSame('agent skill', File::get(base_path('.agents/skills/existing/SKILL.md')));
+        $this->assertSame('AI skill', File::get(base_path('.ai/skills/existing/SKILL.md')));
     }
 
     private function writeFile(string $relativePath, string $contents): void

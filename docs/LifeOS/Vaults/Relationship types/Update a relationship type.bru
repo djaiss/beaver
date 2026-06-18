@@ -1,0 +1,19 @@
+meta {
+  name: Update a relationship type
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{URL}}/vaults/1/relationship-type-categories/1/relationship-types/1?name=Guardian / ward&is_directed=true&forward_name=Guardian&reverse_name=Ward&position=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  name: Guardian / ward
+  is_directed: true
+  forward_name: Guardian
+  reverse_name: Ward
+  position: 1
+}

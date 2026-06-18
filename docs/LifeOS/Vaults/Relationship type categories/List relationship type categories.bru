@@ -1,0 +1,16 @@
+meta {
+  name: List relationship type categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{URL}}/vaults/1/relationship-type-categories?page=1&per_page=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  per_page: 10
+}
