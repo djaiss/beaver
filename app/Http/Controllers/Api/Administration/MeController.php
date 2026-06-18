@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class MeController extends Controller
@@ -17,9 +16,9 @@ class MeController extends Controller
     /**
      * Get the information about the logged user.
      */
-    public function show(): UserResource
+    public function show(Request $request): UserResource
     {
-        return new UserResource(Auth::user());
+        return new UserResource($request->user());
     }
 
     /**
@@ -37,7 +36,7 @@ class MeController extends Controller
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore(Auth::user()->id),
+                Rule::unique(User::class)->ignore($request->user()->id),
                 'disposable_email',
             ],
             'locale' => ['required', 'string', 'max:5', Rule::in(config('app.supported_locales'))],
@@ -54,6 +53,6 @@ class MeController extends Controller
             timeFormat24h: $validated['time_format_24h'] === 'true',
         )->execute();
 
-        return new UserResource(Auth::user()->refresh());
+        return new UserResource($request->user()->refresh());
     }
 }

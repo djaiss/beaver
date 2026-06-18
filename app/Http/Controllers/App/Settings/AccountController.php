@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $vaultsToDelete = auth()->user()->memberships()
+        $vaultsToDelete = $request->user()->memberships()
             ->where('role', 'owner')
             ->with('vault')
             ->get()
@@ -29,7 +29,7 @@ class AccountController extends Controller
 
         // vaults where there are other owners, so the vault won't be deleted
         // but we want to warn the user about it
-        $vaultsNotDeleted = auth()->user()->memberships()
+        $vaultsNotDeleted = $request->user()->memberships()
             ->where('role', 'owner')
             ->with('vault')
             ->get()

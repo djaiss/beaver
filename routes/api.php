@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\Administration\AdministrationLogsController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\HealthController;
@@ -30,5 +31,9 @@ Route::name('api.')->group(function (): void {
             Route::put('vaults/{id}', [VaultController::class, 'update'])->name('vault.update');
             Route::delete('vaults/{id}', [VaultController::class, 'destroy'])->name('vault.destroy');
         });
+
+        // logs
+        Route::get('administration/logs', [AdministrationLogsController::class, 'index'])->name('administration.logs');
+        Route::get('administration/logs/{log}', [AdministrationLogsController::class, 'show'])->name('administration.logs.show');
     });
 });
