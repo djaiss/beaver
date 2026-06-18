@@ -8,7 +8,7 @@
     @include('partials.meta', ['title' => $title ?? null])
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
 
     <!-- json-ld -->
     @yield('json-ld')

@@ -66,19 +66,6 @@ jobs:
       - name: Check PHP Extensions
         run: php -m
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
-
-      - name: Cache node modules
-        uses: actions/cache@v5
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/pnpm-lock.yaml', '**/yarn.lock', '**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       # Composer
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -100,9 +87,6 @@ jobs:
       - name: Install composer dependencies
         run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Install node dependencies
-        run: npm install
-
       # Prepare
       - name: Prepare environment
         run: |
@@ -110,7 +94,7 @@ jobs:
           mkdir -p public/build/assets
           {\
             echo "{"; \
-            for f in app.js app.css marketing.css; do \
+            for f in app.js app.css marketing.js marketing.css; do \
               [[ $first == 1 ]] && echo -n "," || first=1; \
               k=${f##*.}/$f; \
               echo "\"resources/$k\": {\"file\": \"assets/$f\", \"src\": \"resources/$k\"}"; \
@@ -147,7 +131,6 @@ jobs:
       - name: Run tests
         if: matrix.connection == 'sqlite'
         run: php artisan test --parallel
-        continue-on-error: true
         env:
           DB_CONNECTION: ${{ matrix.connection }}
 

@@ -1,10 +1,14 @@
 <x-marketing-layout>
+  @php
+    $hasRightSidebar = isset($rightSidebar) && $rightSidebar->hasActualContent();
+  @endphp
+
   @if (! empty($breadcrumbItems))
     <x-breadcrumb :items="$breadcrumbItems" />
   @endif
 
   <div class="relative mx-auto max-w-7xl px-6 lg:px-8 xl:px-0">
-    <div class="grid grid-cols-1 gap-x-16 lg:grid-cols-[300px_1fr_250px]">
+    <div @class(['grid grid-cols-1 gap-x-16', 'lg:grid-cols-[300px_1fr_250px]' => $hasRightSidebar, 'lg:grid-cols-[300px_1fr]' => ! $hasRightSidebar])>
       <!-- Sidebar -->
       <div class="hidden w-full shrink-0 flex-col justify-self-end sm:border-r sm:border-gray-200 sm:pr-3 lg:flex dark:sm:border-gray-700">
         <div class="bg-light dark:bg-dark z-10 pt-16">
@@ -30,8 +34,12 @@
         {{ $slot }}
       </div>
 
-      <!-- Sidebar -->
-      <div class="hidden w-full shrink-0 flex-col justify-self-end py-16 sm:border-l sm:border-gray-200 sm:pl-6 lg:flex">{{ $rightSidebar ?? '' }} sdfsdfs</div>
+      @if ($hasRightSidebar)
+        <!-- Right sidebar -->
+        <div class="hidden w-full shrink-0 flex-col justify-self-end py-16 sm:border-l sm:border-gray-200 sm:pl-6 lg:flex">
+          {{ $rightSidebar }}
+        </div>
+      @endif
     </div>
   </div>
 </x-marketing-layout>

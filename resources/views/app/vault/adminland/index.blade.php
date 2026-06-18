@@ -21,7 +21,6 @@
 
         <!-- genders -->
         @include('app.vault.adminland.manage._genders')
-
       </div>
     </section>
   </div>

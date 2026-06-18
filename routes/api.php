@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\VaultController;
 use Illuminate\Support\Facades\Route;
@@ -9,7 +10,13 @@ use Illuminate\Support\Facades\Route;
 Route::name('api.')->group(function (): void {
     Route::get('health', [HealthController::class, 'show'])->middleware('throttle:60,1');
 
+    // login
+    Route::post('login', [LoginController::class, 'store'])->name('login');
+
     Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function (): void {
+        // logout
+        Route::delete('logout', [LoginController::class, 'destroy'])->name('logout');
+
         // vaults
         Route::post('vaults', [VaultController::class, 'create'])->name('vault.create');
         Route::get('vaults', [VaultController::class, 'index'])->name('vault.index');

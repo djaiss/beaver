@@ -10,14 +10,15 @@
         "@hotwired/turbo": "^8.0.23",
         "@imacrayon/alpine-ajax": "^0.12.7",
         "alpinejs": "^3.15.12",
-        "instant.page": "^5.2.0"
+        "instant.page": "^5.2.0",
+        "prismjs": "^1.30.0"
     },
     "devDependencies": {
         "@tailwindcss/typography": "^0.5.20",
-        "@tailwindcss/vite": "^4.3.0",
+        "@tailwindcss/vite": "^4.3.1",
         "concurrently": "^9.2.1",
         "laravel-vite-plugin": "^3.1.0",
-        "tailwindcss": "^4.3.0",
+        "tailwindcss": "^4.3.1",
         "vite": "^8.0.16"
     }
 }

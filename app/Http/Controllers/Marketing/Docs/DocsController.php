@@ -5,30 +5,26 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Marketing\Docs;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
+use App\Services\Markdown\DocumentationMarkdownRenderer;
 use Illuminate\View\View;
-use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 
 class DocsController extends Controller
 {
+    public function __construct(
+        private readonly DocumentationMarkdownRenderer $markdownRenderer,
+    ) {}
+
     protected function renderDoc(string $absoluteFilePath, array $breadcrumbs): View
     {
-        $content = Str::of(
-            file_get_contents($absoluteFilePath)
-        )->markdown(
-            [
-                'html_input' => 'strip',
-                'heading_permalink' => [
-                    'id_prefix' => '',
-                    'fragment_prefix' => '',
-                    'symbol' => '#',
-                    'insert' => 'after',
-                    'html_class' => 'heading-anchor',
-                ],
-            ],
-            [new HeadingPermalinkExtension],
-        );
+        $markdown = file_get_contents($absoluteFilePath);
 
-        return view('marketing.docs.markdown', ['content' => $content, 'breadcrumbs' => $breadcrumbs]);
+        if ($markdown === false) {
+            abort(404);
+        }
+
+        return view('marketing.docs.markdown', [
+            'content' => $this->markdownRenderer->render($markdown),
+            'breadcrumbs' => $breadcrumbs,
+        ]);
     }
 }
