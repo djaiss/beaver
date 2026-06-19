@@ -1,0 +1,21 @@
+meta {
+  name: Create a person
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{URL}}/vaults/1/persons?gender_id=1&kids_status=has_kids&first_name=Regis&middle_name=John&last_name=Smith&nickname=RJ&prefix=Mr.
+  body: none
+  auth: inherit
+}
+
+params:query {
+  gender_id: 1
+  kids_status: has_kids
+  first_name: Regis
+  middle_name: John
+  last_name: Smith
+  nickname: RJ
+  prefix: Mr.
+}

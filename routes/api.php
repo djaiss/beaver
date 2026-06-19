@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Vault\Adminland\AdminlandGenderController;
 use App\Http\Controllers\Api\Vault\Adminland\AdminlandRelationshipTypeCategoryController;
 use App\Http\Controllers\Api\Vault\Adminland\AdminlandRelationshipTypeController;
+use App\Http\Controllers\Api\Vault\PersonController;
 use App\Http\Controllers\Api\VaultController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,13 @@ Route::name('api.')->group(function (): void {
             Route::post('relationship-type-categories/{relationshipTypeCategory}/relationship-types', [AdminlandRelationshipTypeController::class, 'create'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.relationship_type.create');
             Route::put('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}', [AdminlandRelationshipTypeController::class, 'update'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.relationship_type.update');
             Route::delete('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}', [AdminlandRelationshipTypeController::class, 'destroy'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.relationship_type.destroy');
+
+            // persons
+            Route::get('persons', [PersonController::class, 'index'])->name('vault.person');
+            Route::get('persons/{person}', [PersonController::class, 'show'])->where('person', '[1-9][0-9]*')->name('vault.person.show');
+            Route::post('persons', [PersonController::class, 'create'])->name('vault.person.create');
+            Route::put('persons/{person}', [PersonController::class, 'update'])->where('person', '[1-9][0-9]*')->name('vault.person.update');
+            Route::delete('persons/{person}', [PersonController::class, 'destroy'])->where('person', '[1-9][0-9]*')->name('vault.person.destroy');
         });
 
         // api keys

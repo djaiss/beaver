@@ -12,7 +12,7 @@ class ApiManagementControllerTest extends TestCase
     #[Test]
     public function it_renders_the_api_management_page(): void
     {
-        $response = $this->get('/docs/1.x/api/account-management/api-management');
+        $response = $this->get('/docs/1.x/api/account/api-management');
 
         $response->assertOk();
     }
@@ -20,7 +20,7 @@ class ApiManagementControllerTest extends TestCase
     #[Test]
     public function it_returns_the_api_management_document_as_markdown(): void
     {
-        $response = $this->get('/docs/1.x/api/account-management/api-management.md');
+        $response = $this->get('/docs/1.x/api/account/api-management.md');
 
         $response->assertOk();
     }

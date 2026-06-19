@@ -15,7 +15,7 @@ class ApiProfileControllerTest extends TestCase
     #[Test]
     public function it_renders_the_api_profile_page(): void
     {
-        $response = $this->get('/docs/1.x/api/account-management/profile');
+        $response = $this->get('/docs/1.x/api/account/profile');
 
         $response->assertOk();
     }
@@ -23,7 +23,7 @@ class ApiProfileControllerTest extends TestCase
     #[Test]
     public function it_returns_the_profile_document_as_markdown(): void
     {
-        $response = $this->get('/docs/1.x/api/account-management/profile.md');
+        $response = $this->get('/docs/1.x/api/account/profile.md');
 
         $response->assertOk();
     }

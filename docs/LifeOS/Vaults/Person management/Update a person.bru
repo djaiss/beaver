@@ -1,0 +1,17 @@
+meta {
+  name: Update a person
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{URL}}/vaults/1/persons/1?first_name=Regis&last_name=Updated&kids_status=maybe_kids
+  body: none
+  auth: inherit
+}
+
+params:query {
+  first_name: Regis
+  last_name: Updated
+  kids_status: maybe_kids
+}
