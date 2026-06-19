@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Cache\PersonsListCache;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -27,6 +28,7 @@ class DestroyPerson
         $this->validate();
         $this->delete();
         $this->log();
+        $this->refreshCache();
     }
 
     private function validate(): void
@@ -59,5 +61,12 @@ class DestroyPerson
             action: UserActionEnum::PersonDeletion,
             parameters: ['name' => $this->personName],
         )->onQueue('low');
+    }
+
+    private function refreshCache(): void
+    {
+        PersonsListCache::make(
+            vaultId: $this->person->vault_id,
+        )->forget();
     }
 }

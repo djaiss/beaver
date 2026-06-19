@@ -26,7 +26,9 @@ return new class extends Migration
             $table->text('prefix')->nullable()->comment('person name prefix');
             $table->boolean('can_be_deleted')->default(true)->comment('whether the person can be deleted');
             $table->boolean('is_listed')->default(true)->comment('whether the person is listed');
+            $table->timestamp('last_consulted_at')->nullable();
             $table->timestamps();
+
             $table->foreign('vault_id')->references('id')->on('vaults')->onDelete('cascade');
             $table->foreign('gender_id')->references('id')->on('genders')->onDelete('set null');
         });

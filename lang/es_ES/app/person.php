@@ -11,6 +11,12 @@ return [
         'prefix' => '+ prefijo',
         'suffix' => '+ sufijo',
     ],
+    'blank' => [
+        'action' => 'Añade tu primera persona',
+        'description' => 'Añade tu primer contacto para documentar tus relaciones.',
+        'help' => 'Puedes añadir familiares, amigos, compañeros de trabajo o cualquier otra persona con la que quieras mantener el contacto.',
+        'title' => 'Te damos la bienvenida a :name',
+    ],
     'fields' => [
         'first_name' => 'Nombre',
         'gender' => 'Género',
@@ -26,6 +32,10 @@ return [
         'maiden_name' => 'El apellido de nacimiento es el nombre que una persona utilizaba antes de casarse.',
         'prefix' => 'El prefijo es un título o tratamiento que precede a un nombre, como Sr., Sra. o Dr.',
         'suffix' => 'El sufijo es un término que sigue a un nombre, como Jr., Sr. o III.',
+    ],
+    'list' => [
+        'add' => 'Añadir una persona',
+        'search_placeholder' => 'Buscar a alguien',
     ],
     'new' => [
         'created' => 'Persona creada correctamente',

@@ -71,8 +71,7 @@ class PersonControllerTest extends TestCase
 
         $person = Person::query()->where('vault_id', $vault->id)->firstOrFail();
 
-        $response->assertRedirect(route('vault.person.index', $vault->id));
-        $response->assertSessionHas('status', __('app/person.new.created'));
+        $response->assertRedirect(route('vault.person.show', [$vault->id, $person->slug]));
         $this->assertSame('Regis', $person->first_name);
         $this->assertSame('Smith', $person->last_name);
         $this->assertSame($gender->id, $person->gender_id);
@@ -89,7 +88,33 @@ class PersonControllerTest extends TestCase
         $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/persons');
 
         $response->assertOk();
-        $response->assertViewIs('app.vault.person.index');
+        $response->assertSee(__('app/person.blank.title', ['name' => config('app.name')]));
+        $response->assertSee(__('app/person.blank.description'));
+        $response->assertSee(__('app/person.blank.action'));
+        $response->assertSee(__('app/person.blank.help'));
+    }
+
+    #[Test]
+    public function it_renders_the_person_search_text_input(): void
+    {
+        $user = $this->createUser();
+        $vault = $this->createVault();
+        $this->assignUserToVault($user, $vault, PermissionEnum::Editor->value);
+        $person = Person::factory()->create([
+            'vault_id' => $vault->id,
+        ]);
+        $person->update([
+            'slug' => $person->id.'-test-person',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get(route('vault.person.show', [$vault->id, $person->slug]));
+
+        $response->assertOk();
+        $response->assertSee('id="term"', false);
+        $response->assertSee('name="term"', false);
+        $response->assertSee(__('app/person.list.search_placeholder'));
+        $response->assertSee(__('app/person.list.add'));
     }
 
     #[Test]

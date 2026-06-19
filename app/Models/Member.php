@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $vault_id
  * @property int|null $user_id
+ * @property int|null $last_person_seen_id
  * @property string|null $timezone
  * @property Carbon|null $joined_at
  * @property string $role
@@ -35,6 +36,7 @@ class Member extends Model
     protected $fillable = [
         'vault_id',
         'user_id',
+        'last_person_seen_id',
         'timezone',
         'joined_at',
         'role',

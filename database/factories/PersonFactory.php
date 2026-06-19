@@ -37,6 +37,7 @@ class PersonFactory extends Factory
             'prefix' => $this->faker->optional()->title(),
             'can_be_deleted' => true,
             'is_listed' => true,
+            'last_consulted_at' => null,
         ];
     }
 }

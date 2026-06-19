@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Cache\PersonsListCache;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -39,6 +40,7 @@ class UpdatePerson
         $this->update();
         $this->generateSlug();
         $this->log();
+        $this->refreshCache();
 
         return $this->person;
     }
@@ -115,5 +117,12 @@ class UpdatePerson
             action: UserActionEnum::PersonUpdate,
             parameters: ['name' => $this->person->first_name],
         )->onQueue('low');
+    }
+
+    private function refreshCache(): void
+    {
+        PersonsListCache::make(
+            vaultId: $this->person->vault_id,
+        )->refresh();
     }
 }

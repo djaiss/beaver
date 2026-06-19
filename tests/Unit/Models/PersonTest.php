@@ -28,4 +28,18 @@ class PersonTest extends TestCase
 
         $this->assertTrue($person->gender()->exists());
     }
+
+    #[Test]
+    public function it_gets_the_name(): void
+    {
+        $person = Person::factory()->create([
+            'first_name' => 'Ross',
+            'last_name' => 'Geller',
+        ]);
+
+        $this->assertEquals(
+            'Ross Geller',
+            $person->name,
+        );
+    }
 }

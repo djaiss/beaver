@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Cache\PersonsListCache;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
@@ -42,6 +43,7 @@ class CreatePerson
         $this->create();
         $this->generateSlug();
         $this->log();
+        $this->refreshCache();
 
         return $this->person;
     }
@@ -111,5 +113,12 @@ class CreatePerson
             action: UserActionEnum::PersonCreation,
             parameters: ['name' => $this->person->first_name],
         )->onQueue('low');
+    }
+
+    private function refreshCache(): void
+    {
+        PersonsListCache::make(
+            vaultId: $this->vault->id,
+        )->refresh();
     }
 }

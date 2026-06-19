@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Database\Factories\PersonFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $prefix
  * @property bool $can_be_deleted
  * @property bool $is_listed
+ * @property Carbon|null $last_consulted_at
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -61,6 +63,7 @@ class Person extends Model
         'prefix',
         'can_be_deleted',
         'is_listed',
+        'last_consulted_at',
     ];
 
     /**
@@ -82,6 +85,7 @@ class Person extends Model
             'prefix' => 'encrypted',
             'can_be_deleted' => 'boolean',
             'is_listed' => 'boolean',
+            'last_consulted_at' => 'datetime',
         ];
     }
 
@@ -103,5 +107,23 @@ class Person extends Model
     public function gender(): BelongsTo
     {
         return $this->belongsTo(Gender::class);
+    }
+
+    /**
+     * Get the person's full name.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: function (): string {
+                $firstName = $this->first_name;
+                $lastName = $this->last_name;
+                $separator = $firstName && $lastName ? ' ' : '';
+
+                return $firstName.$separator.$lastName;
+            },
+        );
     }
 }

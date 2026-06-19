@@ -21,6 +21,7 @@ use App\Http\Controllers\App\Vault\Adminland\AdminlandRelationshipTypeController
 use App\Http\Controllers\App\Vault\Adminland\AdminlandRelationshipTypePositionController;
 use App\Http\Controllers\App\Vault\JoinVaultController;
 use App\Http\Controllers\App\Vault\PersonController;
+use App\Http\Controllers\App\Vault\Persons\PersonSearchController;
 use App\Http\Controllers\App\Vault\VaultController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
@@ -44,9 +45,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::get('vaults/{vaultId}', [VaultController::class, 'show'])->name('vault.show');
 
         // persons
-        Route::view('vaults/{vaultId}/persons', 'app.vault.person.index')->name('vault.person.index');
+        Route::get('vaults/{vaultId}/persons', [PersonController::class, 'index'])->name('vault.person.index');
         Route::get('vaults/{vaultId}/persons/new', [PersonController::class, 'new'])->name('vault.person.new');
         Route::post('vaults/{vaultId}/persons', [PersonController::class, 'create'])->name('vault.person.create');
+        Route::post('vaults/{vaultId}/persons/search', [PersonSearchController::class, 'create'])->name('vault.person.search');
+
+        Route::middleware(['person'])->group(function (): void {
+            Route::get('vaults/{vaultId}/persons/{slug}', [PersonController::class, 'show'])->name('vault.person.show');
+        });
 
         // adminland
         Route::middleware(['vault.adminland'])->prefix('vaults/{vaultId}/adminland')->group(function (): void {

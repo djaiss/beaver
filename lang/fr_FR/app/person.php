@@ -11,6 +11,12 @@ return [
         'prefix' => '+ préfixe',
         'suffix' => '+ suffixe',
     ],
+    'blank' => [
+        'action' => 'Ajouter votre première personne',
+        'description' => 'Ajoutez votre premier contact pour documenter vos relations.',
+        'help' => 'Vous pouvez ajouter des membres de votre famille, des amis, des collègues ou toute autre personne avec qui vous souhaitez rester en contact.',
+        'title' => 'Bienvenue sur :name',
+    ],
     'fields' => [
         'first_name' => 'Prénom',
         'gender' => 'Genre',
@@ -26,6 +32,10 @@ return [
         'maiden_name' => 'Le nom de naissance est le nom qu’une personne utilisait avant son mariage.',
         'prefix' => 'Le préfixe est un titre ou une civilité qui précède un nom, comme M., Mme ou Dr.',
         'suffix' => 'Le suffixe est un terme qui suit un nom, comme Jr., Sr. ou III.',
+    ],
+    'list' => [
+        'add' => 'Ajouter une personne',
+        'search_placeholder' => 'Rechercher une personne',
     ],
     'new' => [
         'created' => 'Personne créée avec succès',

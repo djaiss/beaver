@@ -27,6 +27,7 @@ class MemberFactory extends Factory
         return [
             'vault_id' => Vault::factory(),
             'user_id' => User::factory(),
+            'last_person_seen_id' => null,
             'role' => PermissionEnum::Viewer->value,
             'timezone' => fake()->timezone(),
             'joined_at' => now(),

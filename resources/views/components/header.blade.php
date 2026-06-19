@@ -16,6 +16,7 @@
       </div>
 
       <div class="ml-4 flex items-center gap-2">
+        <a href="{{ route('vault.person.index', $vault) }}" data-turbo="true" class="rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800">{{ __('app/shared.header.persons') }}</a>
         <a href="{{ route('vault.adminland.index', $vault) }}" data-turbo="true" class="rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800">{{ __('app/shared.header.adminland') }}</a>
       </div>
     @endif

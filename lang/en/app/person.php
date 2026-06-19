@@ -11,6 +11,12 @@ return [
         'prefix' => '+ prefix',
         'suffix' => '+ suffix',
     ],
+    'blank' => [
+        'action' => 'Add your first person',
+        'description' => 'Add your first contact to document your relationships.',
+        'help' => 'You can add family members, friends, colleagues, or anyone else you want to keep in touch with.',
+        'title' => 'Welcome to :name',
+    ],
     'fields' => [
         'first_name' => 'First name',
         'gender' => 'Gender',
@@ -26,6 +32,10 @@ return [
         'maiden_name' => 'Maiden name is the name a person used before they were married.',
         'prefix' => 'Prefix is a title or honorific that precedes a name, like Mr., Mrs., or Dr.',
         'suffix' => 'Suffix is a term that follows a name, like Jr., Sr., or III.',
+    ],
+    'list' => [
+        'add' => 'Add person',
+        'search_placeholder' => 'Search someone',
     ],
     'new' => [
         'created' => 'Person created successfully',

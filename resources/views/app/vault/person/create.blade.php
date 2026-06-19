@@ -99,7 +99,7 @@
           </div>
 
           <div class="flex justify-between">
-            <x-button.secondary href="{{ route('vault.show', $vault->id) }}" turbo="true">
+            <x-button.secondary href="{{ route('vault.person.index', $vault->id) }}" turbo="true">
               {{ __('app/shared.cancel') }}
             </x-button.secondary>
 

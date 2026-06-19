@@ -118,6 +118,7 @@ return [
     'header' => [
         'dashboard' => 'Dashboard',
         'adminland' => 'Adminland',
+        'persons' => 'Persons',
         'menu' => 'Menu',
         'instance_administration' => 'Instance administration',
         'profile' => 'Profile',

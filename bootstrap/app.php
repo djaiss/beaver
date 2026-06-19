@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Middleware\CheckAdminland;
 use App\Http\Middleware\CheckMarketing;
+use App\Http\Middleware\CheckPerson;
 use App\Http\Middleware\CheckVault;
 use App\Http\Middleware\CheckVaultAPI;
 use App\Http\Middleware\SetLocale;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'marketing' => CheckMarketing::class,
             'vault.api' => CheckVaultAPI::class,
             'vault.adminland' => CheckAdminland::class,
+            'person' => CheckPerson::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
