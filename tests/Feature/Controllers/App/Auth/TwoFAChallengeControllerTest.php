@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -23,7 +23,7 @@ class TwoFAChallengeControllerTest extends TestCase
         $response = $this->withSession(['2fa:user:id' => $user->id])
             ->get('/2fa-challenge');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('app.auth.2fa');
         $response->assertViewHas('quote');
     }

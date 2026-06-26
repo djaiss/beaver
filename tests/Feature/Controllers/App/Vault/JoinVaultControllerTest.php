@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Vault;
 
@@ -21,7 +21,7 @@ class JoinVaultControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get('/vaults/join');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('app.vault.join.create');
     }
 
@@ -37,7 +37,7 @@ class JoinVaultControllerTest extends TestCase
             'invitation_code' => 'ABC123',
         ]);
 
-        $response->assertRedirect('/vaults/'.$vault->id);
+        $response->assertRedirect("/vaults/{$vault->id}");
         $response->assertSessionHas('status');
     }
 

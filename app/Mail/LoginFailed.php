@@ -21,8 +21,10 @@ class LoginFailed extends Mailable implements HasEnvelope, ShouldQueue
 
     public function envelope(): Envelope
     {
+        $appName = config('app.name');
+
         return new Envelope(
-            subject: 'Login attempt on '.config('app.name'),
+            subject: "Login attempt on {$appName}",
         );
     }
 

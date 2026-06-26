@@ -43,11 +43,8 @@ class SendEmail implements ShouldQueue
     {
         $this->setSubject();
 
-        if (config('app.use_resend')) {
-            $this->sendWithResend();
-        } else {
-            $this->sendTheTraditionalWay();
-        }
+        $method = config('app.use_resend') ? 'sendWithResend' : 'sendTheTraditionalWay';
+        $this->$method();
 
         $this->recordEmailSent();
     }

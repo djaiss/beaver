@@ -35,10 +35,11 @@ class DeleteInactiveAccounts implements ShouldQueue
         // Check if the user has been inactive for 6 months
         if ($user->last_activity_at->diffInMonths(now()) >= 6) {
             $user->delete();
+            $inactiveMonths = $user->created_at->diffInMonths(now());
 
             Mail::to(config('app.account_deletion_notification_email'))
                 ->queue(new AccountAutomaticallyDestroyed(
-                    age: $user->created_at->diffInMonths(now()).' months',
+                    age: "{$inactiveMonths} months",
                 ));
         }
     }

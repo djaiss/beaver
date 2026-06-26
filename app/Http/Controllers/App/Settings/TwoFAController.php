@@ -8,6 +8,7 @@ use App\Actions\Generate2faQRCode;
 use App\Actions\Remove2fa;
 use App\Actions\Validate2faQRCode;
 use App\Http\Controllers\Controller;
+use App\ViewModels\Settings\TwoFANewViewModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,15 +16,18 @@ use InvalidArgumentException;
 
 class TwoFAController extends Controller
 {
-    public function create(Request $request): View
+    public function new(Request $request): View
     {
         $code = new Generate2faQRCode(
             user: $request->user(),
         )->execute();
 
+        $view = new TwoFANewViewModel(
+            code: $code,
+        );
+
         return view('app.settings.security._2fa-new', [
-            'secret' => $code['secret'],
-            'qrCodeSvg' => $code['qrCodeSvg'],
+            'view' => $view,
         ]);
     }
 

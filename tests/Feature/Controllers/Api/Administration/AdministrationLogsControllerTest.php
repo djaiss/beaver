@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\Api\Administration;
 
@@ -89,9 +89,11 @@ class AdministrationLogsControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Log::factory()->count(15)->create([
-            'user_id' => $user->id,
-        ]);
+        Log::factory()
+            ->count(15)
+            ->create([
+                'user_id' => $user->id,
+            ]);
 
         Sanctum::actingAs($user);
 
@@ -121,7 +123,7 @@ class AdministrationLogsControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/administration/logs/'.$log->id);
+        $response = $this->json('GET', "/api/administration/logs/{$log->id}");
 
         $response
             ->assertOk()
@@ -149,7 +151,7 @@ class AdministrationLogsControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/administration/logs/'.$anotherLog->id);
+        $response = $this->json('GET', "/api/administration/logs/{$anotherLog->id}");
 
         $response->assertNotFound();
     }

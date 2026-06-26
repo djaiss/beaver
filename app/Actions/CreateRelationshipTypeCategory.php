@@ -38,8 +38,9 @@ class CreateRelationshipTypeCategory
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+        $randomKey = Str::lower(Str::random(16));
         $this->key = $this->key === null
-            ? 'custom-'.Str::lower(Str::random(16))
+            ? "custom-{$randomKey}"
             : TextSanitizer::plainText($this->key);
     }
 

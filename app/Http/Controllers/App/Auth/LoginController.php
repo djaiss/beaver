@@ -98,7 +98,10 @@ class LoginController extends Controller
 
     private function throttleKey(Request $request): string
     {
-        return Str::transliterate(Str::lower((string) $request->string('email')).'|'.$request->ip());
+        $email = Str::lower((string) $request->string('email'));
+        $ip = $request->ip();
+
+        return Str::transliterate("{$email}|{$ip}");
     }
 
     public function destroy(Request $request): RedirectResponse

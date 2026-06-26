@@ -23,8 +23,10 @@ class MagicLinkCreated extends Mailable implements HasEnvelope, ShouldQueue
 
     public function envelope(): Envelope
     {
+        $appName = config('app.name');
+
         return new Envelope(
-            subject: 'Login to '.config('app.name'),
+            subject: "Login to {$appName}",
         );
     }
 

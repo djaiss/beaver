@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -22,7 +22,7 @@ class NewPasswordControllerTest extends TestCase
     {
         $response = $this->get('/reset-password/fake-token');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('app.auth.reset-password');
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Vault\Adminland;
 
 use App\Actions\CreateRelationshipType;
@@ -18,12 +20,12 @@ class AdminlandRelationshipTypeController extends Controller
     {
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
-        $relationshipTypes = $relationshipTypeCategory->relationshipTypes()
+        $relationshipTypes = $relationshipTypeCategory
+            ->relationshipTypes()
             ->orderBy('position')
             ->paginate($perPage);
 
@@ -35,10 +37,10 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory
+            ->relationshipTypes()
             ->findOrFail($request->route()->parameter('relationshipType'));
 
         return new RelationshipTypeResource($relationshipType)
@@ -51,8 +53,7 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
@@ -82,10 +83,10 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory
+            ->relationshipTypes()
             ->findOrFail($request->route()->parameter('relationshipType'));
 
         $validated = $request->validate([
@@ -117,10 +118,10 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory
+            ->relationshipTypes()
             ->findOrFail($request->route()->parameter('relationshipType'));
 
         new DestroyRelationshipType(

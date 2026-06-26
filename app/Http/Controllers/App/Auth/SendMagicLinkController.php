@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendEmail;
 use App\Mail\MagicLinkCreated;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -34,19 +33,18 @@ class SendMagicLinkController extends Controller
 
         $email = mb_strtolower((string) $request->input('email'));
 
-        try {
+        $user = User::query()->where('email', $email)->first();
+
+        if ($user) {
             $link = new CreateMagicLink(
                 email: $email,
             )->execute();
 
             SendEmail::dispatch(
-                mailable: new MagicLinkCreated(
-                    link: $link,
-                ),
-                user: User::query()->where('email', $email)->firstOrFail(),
+                mailable: new MagicLinkCreated(link: $link),
+                user: $user,
                 emailType: EmailType::MagicLinkCreated,
             )->onQueue('high');
-        } catch (ModelNotFoundException) {
         }
 
         $quotes = config('quotes');

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Vault\Adminland;
 
@@ -23,12 +23,14 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
     #[Test]
     public function it_uses_the_relationship_type_category_controller_for_form_routes(): void
     {
+        $controller = AdminlandRelationshipTypeCategoryController::class;
+
         $this->assertSame(
-            AdminlandRelationshipTypeCategoryController::class.'@new',
+            "{$controller}@new",
             Route::getRoutes()->getByName('vault.adminland.relationship_type_categories.new')->getActionName(),
         );
         $this->assertSame(
-            AdminlandRelationshipTypeCategoryController::class.'@edit',
+            "{$controller}@edit",
             Route::getRoutes()->getByName('vault.adminland.relationship_type_categories.edit')->getActionName(),
         );
     }
@@ -39,7 +41,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         [$user, $vault] = $this->createOwnerAndVault();
 
         $response = $this->actingAs($user)
-            ->get('/vaults/'.$vault->id.'/adminland/relationship-type-categories/new');
+            ->get("/vaults/{$vault->id}/adminland/relationship-type-categories/new");
 
         $response->assertOk();
         $response->assertViewIs('app.vault.adminland._relationship-type-category-new');
@@ -53,7 +55,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         [$user, $vault] = $this->createOwnerAndVault();
 
         $response = $this->actingAs($user)
-            ->post('/vaults/'.$vault->id.'/adminland/relationship-type-categories', [
+            ->post("/vaults/{$vault->id}/adminland/relationship-type-categories", [
                 'name' => 'Extended family',
             ]);
 
@@ -76,13 +78,15 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id.'/edit')
+            ->get(
+                "/vaults/{$vault->id}/adminland/relationship-type-categories/{$relationshipTypeCategory->id}/edit",
+            )
             ->assertOk()
             ->assertViewIs('app.vault.adminland._relationship-type-category-edit')
             ->assertSee('value="Family"', false);
 
         $response = $this->actingAs($user)
-            ->put('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id, [
+            ->put("/vaults/{$vault->id}/adminland/relationship-type-categories/{$relationshipTypeCategory->id}", [
                 'name' => 'Close family',
             ]);
 
@@ -107,7 +111,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->delete('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id);
+            ->delete("/vaults/{$vault->id}/adminland/relationship-type-categories/{$relationshipTypeCategory->id}");
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
         $this->assertModelMissing($relationshipTypeCategory);
@@ -121,7 +125,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $relationshipTypeCategory = RelationshipTypeCategory::factory()->create();
 
         $this->actingAs($user)
-            ->put('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$relationshipTypeCategory->id, [
+            ->put("/vaults/{$vault->id}/adminland/relationship-type-categories/{$relationshipTypeCategory->id}", [
                 'name' => 'Close family',
             ])
             ->assertNotFound();

@@ -22,7 +22,7 @@ class LocaleController extends Controller
         session()->put('locale', $validated['locale']);
 
         if (Auth::check()) {
-            Auth::user()->update(['locale' => $validated['locale']]);
+            $request->user()->update(['locale' => $validated['locale']]);
         }
 
         return back()->with('status', __('Locale updated'));

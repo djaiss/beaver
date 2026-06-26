@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.docs', function (\Illuminate\View\View $view): void {
             $version = request()->route('version') ?? config('docs.default_version');
-            $view->with('docNav', (new DocNavigationBuilder)->build($version));
+            $view->with('docNav', new DocNavigationBuilder()->build($version));
             $view->with('currentVersion', $version);
         });
     }

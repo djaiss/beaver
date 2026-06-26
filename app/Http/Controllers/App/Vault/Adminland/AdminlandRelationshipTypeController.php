@@ -19,8 +19,7 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
         return view('app.vault.adminland._relationship-type-new', [
             'relationshipTypeCategory' => $relationshipTypeCategory,
@@ -33,8 +32,7 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
@@ -63,10 +61,10 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory
+            ->relationshipTypes()
             ->where('vault_id', $vault->id)
             ->findOrFail($request->route()->parameter('relationshipType'));
 
@@ -82,10 +80,10 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory
+            ->relationshipTypes()
             ->where('vault_id', $vault->id)
             ->findOrFail($request->route()->parameter('relationshipType'));
 
@@ -115,10 +113,10 @@ class AdminlandRelationshipTypeController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
-            ->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory
+            ->relationshipTypes()
             ->where('vault_id', $vault->id)
             ->findOrFail($request->route()->parameter('relationshipType'));
 

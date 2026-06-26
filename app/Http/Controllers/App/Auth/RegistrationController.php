@@ -6,12 +6,10 @@ namespace App\Http\Controllers\App\Auth;
 
 use App\Actions\CreateAccount;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\App\Auth\StoreAccountRequest;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class RegistrationController extends Controller
@@ -26,28 +24,9 @@ class RegistrationController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreAccountRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                'unique:'.User::class,
-                'disposable_email',
-            ],
-            'password' => [
-                'required',
-                'string',
-                'max:255',
-                'confirmed',
-                Password::min(8)->uncompromised(),
-            ],
-        ]);
+        $validated = $request->validated();
 
         $user = new CreateAccount(
             email: mb_strtolower((string) $validated['email']),

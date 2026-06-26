@@ -25,8 +25,10 @@ class UserIpAddressChanged extends Mailable implements HasEnvelope, ShouldQueue
 
     public function envelope(): Envelope
     {
+        $appName = config('app.name');
+
         return new Envelope(
-            subject: 'New sign-in detected on your '.config('app.name').' account',
+            subject: "New sign-in detected on your {$appName} account",
         );
     }
 

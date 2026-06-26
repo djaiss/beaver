@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Console\Commands;
 
@@ -19,13 +19,15 @@ class SyncSkillsCommandTest extends TestCase
         parent::setUp();
 
         $this->originalBasePath = $this->app->basePath();
-        $this->temporaryBasePath = sys_get_temp_dir().'/lifeos-sync-skills-'.bin2hex(random_bytes(8));
+        $temporaryDirectory = sys_get_temp_dir();
+        $temporarySuffix = bin2hex(random_bytes(8));
+        $this->temporaryBasePath = "{$temporaryDirectory}/lifeos-sync-skills-{$temporarySuffix}";
 
-        File::makeDirectory($this->temporaryBasePath, 0755, true);
-        File::ensureDirectoryExists($this->temporaryBasePath.'/scripts');
+        File::makeDirectory($this->temporaryBasePath, 0o755, true);
+        File::ensureDirectoryExists("{$this->temporaryBasePath}/scripts");
         File::copy(
-            $this->originalBasePath.'/scripts/sync-skills.sh',
-            $this->temporaryBasePath.'/scripts/sync-skills.sh',
+            "{$this->originalBasePath}/scripts/sync-skills.sh",
+            "{$this->temporaryBasePath}/scripts/sync-skills.sh",
         );
         $this->app->setBasePath($this->temporaryBasePath);
     }
@@ -52,13 +54,13 @@ class SyncSkillsCommandTest extends TestCase
             ->assertSuccessful();
 
         foreach (['.agents/skills', '.ai/skills'] as $targetDirectory) {
-            $this->assertFileDoesNotExist(base_path($targetDirectory.'/stale/SKILL.md'));
-            $this->assertSame('actions skill', File::get(base_path($targetDirectory.'/actions/SKILL.md')));
+            $this->assertFileDoesNotExist(base_path("{$targetDirectory}/stale/SKILL.md"));
+            $this->assertSame('actions skill', File::get(base_path("{$targetDirectory}/actions/SKILL.md")));
             $this->assertSame(
                 'reference',
-                File::get(base_path($targetDirectory.'/actions/references/example.md')),
+                File::get(base_path("{$targetDirectory}/actions/references/example.md")),
             );
-            $this->assertSame('controllers skill', File::get(base_path($targetDirectory.'/controllers/SKILL.md')));
+            $this->assertSame('controllers skill', File::get(base_path("{$targetDirectory}/controllers/SKILL.md")));
         }
     }
 

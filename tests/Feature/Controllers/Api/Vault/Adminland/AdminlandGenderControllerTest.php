@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\Api\Vault\Adminland;
 
@@ -51,7 +51,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/genders');
+        $response = $this->json('GET', "/api/vaults/{$vault->id}/genders");
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -77,7 +77,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/genders');
+        $response = $this->json('GET', "/api/vaults/{$vault->id}/genders");
 
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
@@ -95,7 +95,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/genders/'.$gender->id);
+        $response = $this->json('GET', "/api/vaults/{$vault->id}/genders/{$gender->id}");
 
         $response->assertOk();
         $response->assertJsonStructure($this->jsonStructure);
@@ -114,7 +114,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/genders/'.$gender->id);
+        $response = $this->json('GET', "/api/vaults/{$vault->id}/genders/{$gender->id}");
 
         $response->assertNotFound();
     }
@@ -128,7 +128,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('POST', '/api/vaults/'.$vault->id.'/genders', [
+        $response = $this->json('POST', "/api/vaults/{$vault->id}/genders", [
             'name' => 'Non-binary',
         ]);
 
@@ -147,7 +147,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('POST', '/api/vaults/'.$vault->id.'/genders', [
+        $response = $this->json('POST', "/api/vaults/{$vault->id}/genders", [
             'name' => 'No',
         ]);
 
@@ -164,7 +164,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('POST', '/api/vaults/'.$vault->id.'/genders', [
+        $response = $this->json('POST', "/api/vaults/{$vault->id}/genders", [
             'name' => 'Non-binary',
         ]);
 
@@ -185,7 +185,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('PUT', '/api/vaults/'.$vault->id.'/genders/'.$gender->id, [
+        $response = $this->json('PUT', "/api/vaults/{$vault->id}/genders/{$gender->id}", [
             'name' => 'Updated',
         ]);
 
@@ -207,7 +207,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('PUT', '/api/vaults/'.$vault->id.'/genders/'.$gender->id, [
+        $response = $this->json('PUT', "/api/vaults/{$vault->id}/genders/{$gender->id}", [
             'name' => 'Updated',
         ]);
 
@@ -226,7 +226,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', '/api/vaults/'.$vault->id.'/genders/'.$gender->id);
+        $response = $this->json('DELETE', "/api/vaults/{$vault->id}/genders/{$gender->id}");
 
         $response->assertNoContent();
         $this->assertModelMissing($gender);
@@ -244,7 +244,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', '/api/vaults/'.$vault->id.'/genders/'.$gender->id);
+        $response = $this->json('DELETE', "/api/vaults/{$vault->id}/genders/{$gender->id}");
 
         $response->assertNotFound();
     }

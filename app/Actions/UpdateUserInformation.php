@@ -32,7 +32,10 @@ class UpdateUserInformation
         $this->sanitize();
         $emailChanged = $this->user->email !== $this->email;
         $this->update();
-        $this->triggerEmailVerification($emailChanged);
+
+        if ($emailChanged) {
+            $this->triggerEmailVerification();
+        }
         $this->log();
 
         return $this->user;
@@ -46,13 +49,11 @@ class UpdateUserInformation
         $this->locale = TextSanitizer::plainText($this->locale);
     }
 
-    private function triggerEmailVerification(bool $emailChanged): void
+    private function triggerEmailVerification(): void
     {
-        if ($emailChanged) {
-            $this->user->email_verified_at = null;
-            $this->user->save();
-            event(new Registered($this->user));
-        }
+        $this->user->email_verified_at = null;
+        $this->user->save();
+        event(new Registered($this->user));
     }
 
     private function update(): void

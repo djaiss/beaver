@@ -22,7 +22,8 @@ class AdminlandGenderController extends Controller
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
-        $genders = $vault->genders()
+        $genders = $vault
+            ->genders()
             ->orderBy('position')
             ->paginate($perPage);
 

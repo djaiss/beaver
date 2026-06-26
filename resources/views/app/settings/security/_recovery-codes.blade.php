@@ -3,9 +3,7 @@
     <x-phosphor-toolbox class="h-5 w-5 text-gray-500" />
     <div class="ms-5 flex w-full items-center justify-between">
       <div>
-        <p class="font-semibold">
-          {{ __('app/settings/security.two_factor.recovery_codes') }}
-        </p>
+        <p class="font-semibold">{{ __('app/settings/security.two_factor.recovery_codes') }}</p>
         <p class="text-xs text-gray-600">{{ __('app/settings/security.two_factor.recovery_codes_description') }}</p>
       </div>
     </div>

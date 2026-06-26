@@ -1,11 +1,19 @@
+<?php
+/**
+ * @var \App\ViewModels\Settings\SettingsIndexViewModel $view
+ */
+?>
+
 <x-box padding="p-0">
-  <x-slot:title>{{ __('app/settings/logs.title') }}</x-slot>
+  <x-slot:title>
+    {{ __('app/settings/logs.title') }}
+  </x-slot:title>
   <x-slot:description>
     <p>{{ __('app/settings/logs.description') }}</p>
-  </x-slot>
+  </x-slot:description>
 
   <!-- last actions -->
-  @foreach ($logs as $log)
+  @foreach ($view->logs() as $log)
     <div class="flex items-center justify-between border-b border-gray-200 p-3 text-sm first:rounded-t-lg last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
       <div class="flex items-center gap-3">
         <x-phosphor-pulse class="size-3 min-w-3 text-zinc-600 dark:text-zinc-400" />
@@ -30,9 +38,9 @@
     </div>
   @endforeach
 
-  @if ($hasMoreLogs)
+  @if ($view->hasMoreLogs())
     <div class="flex justify-center rounded-b-lg p-3 text-sm">
-      <x-link href="{{ route('settings.logs.index') }}" class="text-center">{{ __('app/settings/logs.browse_all') }}</x-link>
+      <x-link href="{{ $view->url()->logs }}" class="text-center">{{ __('app/settings/logs.browse_all') }}</x-link>
     </div>
   @endif
 </x-box>

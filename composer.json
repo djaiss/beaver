@@ -27,6 +27,7 @@
   "require-dev": {
     "barryvdh/laravel-debugbar": "^4.2",
     "brianium/paratest": "^7.8.5",
+    "carthage-software/mago": "^1.30.0",
     "driftingly/rector-laravel": "^2.4",
     "fakerphp/faker": "^1.23",
     "larastan/larastan": "^3.9.2",
@@ -94,23 +95,23 @@
     "lifeos:locale": "php artisan lifeos:localize en,fr_FR,es_ES,de_DE",
     "lifeos:bruno": "php artisan lifeos:bruno",
     "lifeos:sync-skills": "php artisan lifeos:sync-skills",
-    "lifeos:prettier": "npx prettier --write resources/",
+    "lifeos:prettier": "bunx prettier --write resources/",
     "lifeos:pint": "./vendor/bin/pint",
+    "lifeos:mago": "mago lint && mago format",
     "lifeos:rector": "./vendor/bin/rector",
     "lifeos:update": "composer update && bun update && bun upgrade",
     "lifeos:update-blacklist-domains": "php artisan erag:sync-disposable-email-list",
     "lint": [
       "@lifeos:prettier",
-      "@lifeos:pint",
-      "@lifeos:rector"
+      "@lifeos:rector",
+      "@lifeos:mago"
     ],
     "precommit": [
       "@lifeos:unit",
       "@lifeos:locale",
       "@lint",
       "@lifeos:update-blacklist-domains",
-      "@lifeos:update",
-      "@lifeos:sync-skills"
+      "@lifeos:update"
     ]
   },
   "extra": {

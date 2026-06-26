@@ -21,11 +21,13 @@ class CountryFactory extends Factory
      */
     public function definition(): array
     {
+        $phoneCode = fake()->numberBetween(1, 999);
+
         return [
             'name' => fake()->country(),
             'iso2' => mb_strtoupper(fake()->unique()->regexify('\d[A-Z]')),
             'iso3' => mb_strtoupper(fake()->unique()->regexify('[0-9][A-Z]{2}')),
-            'phone_code' => '+'.fake()->numberBetween(1, 999),
+            'phone_code' => "+{$phoneCode}",
             'currency_code' => mb_strtoupper(fake()->lexify('???')),
             'timezone_default' => null,
             'is_active' => true,

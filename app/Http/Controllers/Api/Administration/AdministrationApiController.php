@@ -47,7 +47,9 @@ class AdministrationApiController extends Controller
 
         $apiKey = $request->user()->tokens()->findOrFail($id);
 
-        return new ApiResource($apiKey)->response()->setStatusCode(200);
+        return new ApiResource($apiKey)
+            ->response()
+            ->setStatusCode(200);
     }
 
     public function destroy(Request $request): Response|JsonResponse

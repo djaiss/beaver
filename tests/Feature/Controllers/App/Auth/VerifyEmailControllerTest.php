@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -33,7 +33,8 @@ class VerifyEmailControllerTest extends TestCase
 
         $this->assertNotNull($user->fresh()->email_verified_at);
         Event::assertDispatched(Verified::class);
-        $response->assertRedirect(route('vault.index', absolute: false).'?verified=1');
+        $vaultIndexRoute = route('vault.index', absolute: false);
+        $response->assertRedirect("{$vaultIndexRoute}?verified=1");
     }
 
     #[Test]
@@ -52,7 +53,8 @@ class VerifyEmailControllerTest extends TestCase
         $response = $this->actingAs($user)->get($verificationUrl);
 
         Event::assertNotDispatched(Verified::class);
-        $response->assertRedirect(route('vault.index', absolute: false).'?verified=1');
+        $vaultIndexRoute = route('vault.index', absolute: false);
+        $response->assertRedirect("{$vaultIndexRoute}?verified=1");
     }
 
     #[Test]

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\Api;
 
@@ -17,7 +17,7 @@ class HealthControllerTest extends TestCase
     {
         $response = $this->json('GET', '/api/health');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJson([
             'message' => 'ok',
             'services' => [

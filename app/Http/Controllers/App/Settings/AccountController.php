@@ -6,6 +6,8 @@ namespace App\Http\Controllers\App\Settings;
 
 use App\Actions\DestroyAccount;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\App\Settings\DestroyAccountRequest;
+use App\ViewModels\Settings\AccountIndexViewModel;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,41 +16,16 @@ class AccountController extends Controller
 {
     public function index(Request $request): View
     {
-        $vaultsToDelete = $request->user()->memberships()
-            ->where('role', 'owner')
-            ->with('vault')
-            ->get()
-            ->filter(fn ($membership): bool => $membership->vault->members()
-                ->where('role', 'owner')
-                ->count() === 1)
-            ->map(fn ($membership) => (object) [
-                'name' => $membership->vault->name,
-                'link' => route('vault.show', $membership->vault->id),
-                'avatar' => $membership->vault->getAvatar(),
-            ]);
-
-        // vaults where there are other owners, so the vault won't be deleted
-        // but we want to warn the user about it
-        $vaultsNotDeleted = $request->user()->memberships()
-            ->where('role', 'owner')
-            ->with('vault')
-            ->get()
-            ->filter(fn ($membership): bool => $membership->vault->members()
-                ->where('role', 'owner')
-                ->count() > 1)
-            ->map(fn ($membership) => (object) [
-                'name' => $membership->vault->name,
-                'link' => route('vault.show', $membership->vault->id),
-                'avatar' => $membership->vault->getAvatar(),
-            ]);
+        $view = new AccountIndexViewModel(
+            user: $request->user(),
+        );
 
         return view('app.settings.account.index', [
-            'vaultsToDelete' => $vaultsToDelete,
-            'vaultsNotDeleted' => $vaultsNotDeleted,
+            'view' => $view,
         ]);
     }
 
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(DestroyAccountRequest $request): RedirectResponse
     {
         new DestroyAccount(
             user: $request->user(),

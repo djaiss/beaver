@@ -20,9 +20,7 @@
               <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
             </div>
           </a>
-          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {{ __('app/auth.forgot_password.title') }}
-          </h1>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ __('app/auth.forgot_password.title') }}</h1>
         </div>
 
         <!-- Forgot password form -->
@@ -32,9 +30,7 @@
             <x-input id="email" type="email" :label="__('app/auth.forgot_password.email_address')" required autofocus placeholder="john@doe.com" />
 
             <div class="flex items-center justify-between">
-              <x-link href="{{ route('login') }}" class="text-sm text-gray-600">
-                {{ __('app/shared.back_to_login') }}
-              </x-link>
+              <x-link href="{{ route('login') }}" class="text-sm text-gray-600">{{ __('app/shared.back_to_login') }}</x-link>
 
               <x-button>{{ __('app/auth.forgot_password.submit') }}</x-button>
             </div>
@@ -44,9 +40,7 @@
         <!-- Register link -->
         <x-box class="text-center text-sm">
           {{ __('app/auth.shared.new_to_organization', ['organization' => config('app.name')]) }}
-          <x-link :href="route('register')" class="ml-1">
-            {{ __('app/shared.create_account') }}
-          </x-link>
+          <x-link :href="route('register')" class="ml-1">{{ __('app/shared.create_account') }}</x-link>
         </x-box>
 
         <ul class="text-xs text-gray-600">
@@ -56,6 +50,6 @@
     </div>
 
     <!-- Right side -->
-    @include('partials.quotes', ['quote' => $quote])
+    @include ('partials.quotes', ['quote' => $quote])
   </div>
 </x-guest-layout>

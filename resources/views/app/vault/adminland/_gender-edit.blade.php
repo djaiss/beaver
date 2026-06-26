@@ -4,12 +4,8 @@
   </div>
 
   <div class="flex justify-between">
-    <x-button.secondary x-target="gender-{{ $gender->id }}" href="{{ route('vault.adminland.index', ['vaultId' => $vault->id]) }}">
-      {{ __('app/shared.cancel') }}
-    </x-button.secondary>
+    <x-button.secondary x-target="gender-{{ $gender->id }}" href="{{ route('vault.adminland.index', ['vaultId' => $vault->id]) }}">{{ __('app/shared.cancel') }}</x-button.secondary>
 
-    <x-button class="mr-2">
-      {{ __('app/shared.save') }}
-    </x-button>
+    <x-button class="mr-2">{{ __('app/shared.save') }}</x-button>
   </div>
 </x-form>

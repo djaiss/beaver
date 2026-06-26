@@ -6,7 +6,9 @@ namespace App\Http\Controllers\App\Vault;
 
 use App\Actions\CreateVault;
 use App\Http\Controllers\Controller;
-use App\Models\Vault;
+use App\Http\Requests\App\Vault\VaultStoreRequest;
+use App\ViewModels\Vault\VaultIndexViewModel;
+use App\ViewModels\Vault\VaultNewViewModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,36 +17,27 @@ class VaultController extends Controller
 {
     public function index(Request $request): View
     {
-        $vaults = $request
-            ->user()
-            ->vaults()
-            ->get()
-            ->map(fn (Vault $vault) => (object) [
-                'name' => $vault->name,
-                'link' => route('vault.show', $vault->id),
-                'avatar' => $vault->getAvatar(),
-            ]);
+        $view = new VaultIndexViewModel(
+            user: $request->user(),
+        );
 
         return view('app.vault.index', [
-            'vaults' => $vaults,
+            'view' => $view,
         ]);
     }
 
-    public function create(): View
+    public function new(): View
     {
-        return view('app.vault.create');
+        $view = new VaultNewViewModel;
+
+        return view('app.vault.new', [
+            'view' => $view,
+        ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function create(VaultStoreRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'vault_name' => [
-                'required',
-                'string',
-                'max:100',
-                'regex:/^[a-zA-Z0-9\s\-_]+$/',
-            ],
-        ]);
+        $validated = $request->validated();
 
         $vault = new CreateVault(
             user: $request->user(),

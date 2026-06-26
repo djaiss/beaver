@@ -16,8 +16,9 @@ class GenerateVaultAvatar
     public function execute(): string
     {
         $avatar = $this->generate();
+        $encodedAvatar = base64_encode($avatar);
 
-        return 'data:image/svg+xml;base64,'.base64_encode($avatar);
+        return "data:image/svg+xml;base64,{$encodedAvatar}";
     }
 
     private function generate(): string

@@ -9,12 +9,15 @@ use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use InvalidArgumentException;
+use SensitiveParameter;
 
 readonly class UpdateUserPassword
 {
     public function __construct(
         private User $user,
+        #[SensitiveParameter]
         private string $currentPassword,
+        #[SensitiveParameter]
         private string $newPassword,
     ) {}
 

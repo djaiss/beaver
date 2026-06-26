@@ -6,20 +6,18 @@ namespace App\Http\Controllers\App\Settings;
 
 use App\Actions\ToggleAutoDeleteAccount;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\App\Settings\ToggleAutoDeleteAccountRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class AutoDeleteAccountController extends Controller
 {
-    public function update(Request $request): RedirectResponse
+    public function update(ToggleAutoDeleteAccountRequest $request): RedirectResponse
     {
-        $request->validate([
-            'auto_delete_account' => ['required', 'in:yes,no'],
-        ]);
+        $validated = $request->validated();
 
         new ToggleAutoDeleteAccount(
             user: $request->user(),
-            autoDeleteAccount: $request->input('auto_delete_account') === 'yes',
+            autoDeleteAccount: $validated['auto_delete_account'] === 'yes',
         )->execute();
 
         return to_route('settings.security.index')

@@ -1,9 +1,10 @@
 <x-app-layout>
   <x-slot:title>
     {{ __('app/settings/logs.title') }}
-  </x-slot>
+  </x-slot:title>
 
-  <x-breadcrumb :items="[
+  <x-breadcrumb
+    :items="[
     ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
     ['label' => __('app/breadcrumb.settings'), 'route' => route('settings.index')],
     ['label' => __('app/breadcrumb.logs')]
@@ -12,13 +13,15 @@
   <!-- settings layout -->
   <div class="grid flex-grow bg-gray-50 sm:grid-cols-[220px_1fr] dark:bg-gray-950">
     <!-- Sidebar -->
-    @include('app.settings._sidebar')
+    @include ('app.settings._sidebar')
 
     <!-- Main content -->
     <section class="p-4 sm:p-8">
       <div class="mx-auto max-w-4xl sm:px-0">
         <x-box id="logs-container" x-merge="append" padding="p-0">
-          <x-slot:title>{{ __('app/settings/logs.title') }}</x-slot>
+          <x-slot:title>
+            {{ __('app/settings/logs.title') }}
+          </x-slot:title>
           <!-- last actions -->
           @foreach ($logs as $log)
             <div class="flex items-center justify-between border-b border-gray-200 p-3 text-sm first:rounded-t-lg last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">

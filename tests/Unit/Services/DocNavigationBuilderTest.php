@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Unit\Services;
 
@@ -18,8 +18,10 @@ class DocNavigationBuilderTest extends TestCase
     {
         parent::setUp();
         $this->builder = new DocNavigationBuilder;
-        $this->tmpDir = sys_get_temp_dir().'/doc_nav_test_'.uniqid();
-        mkdir($this->tmpDir, 0755, true);
+        $temporaryDirectory = sys_get_temp_dir();
+        $temporarySuffix = uniqid();
+        $this->tmpDir = "{$temporaryDirectory}/doc_nav_test_{$temporarySuffix}";
+        mkdir($this->tmpDir, 0o755, true);
     }
 
     protected function tearDown(): void
@@ -85,8 +87,8 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_builds_leaf_nodes_from_markdown_files(): void
     {
-        touch($this->tmpDir.'/01-getting-started.md');
-        touch($this->tmpDir.'/02-advanced.md');
+        touch("{$this->tmpDir}/01-getting-started.md");
+        touch("{$this->tmpDir}/02-advanced.md");
 
         $nav = $this->builder->build('1.x', $this->tmpDir);
 
@@ -99,9 +101,9 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_builds_section_nodes_from_directories(): void
     {
-        mkdir($this->tmpDir.'/01-offices');
-        touch($this->tmpDir.'/01-offices/01-index.md');
-        touch($this->tmpDir.'/01-offices/02-manage.md');
+        mkdir("{$this->tmpDir}/01-offices");
+        touch("{$this->tmpDir}/01-offices/01-index.md");
+        touch("{$this->tmpDir}/01-offices/02-manage.md");
 
         $nav = $this->builder->build('1.x', $this->tmpDir);
 
@@ -118,9 +120,9 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_always_sets_url_to_null_for_sections(): void
     {
-        mkdir($this->tmpDir.'/01-group');
-        touch($this->tmpDir.'/01-group/01-index.md');
-        touch($this->tmpDir.'/01-group/02-item.md');
+        mkdir("{$this->tmpDir}/01-group");
+        touch("{$this->tmpDir}/01-group/01-index.md");
+        touch("{$this->tmpDir}/01-group/02-item.md");
 
         $nav = $this->builder->build('1.x', $this->tmpDir);
 
@@ -131,9 +133,9 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_sorts_items_by_numeric_prefix(): void
     {
-        touch($this->tmpDir.'/03-third.md');
-        touch($this->tmpDir.'/01-first.md');
-        touch($this->tmpDir.'/02-second.md');
+        touch("{$this->tmpDir}/03-third.md");
+        touch("{$this->tmpDir}/01-first.md");
+        touch("{$this->tmpDir}/02-second.md");
 
         $nav = $this->builder->build('1.x', $this->tmpDir);
 
@@ -145,8 +147,8 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_skips_files_starting_with_underscore(): void
     {
-        touch($this->tmpDir.'/_hidden.md');
-        touch($this->tmpDir.'/01-visible.md');
+        touch("{$this->tmpDir}/_hidden.md");
+        touch("{$this->tmpDir}/01-visible.md");
 
         $nav = $this->builder->build('1.x', $this->tmpDir);
 
@@ -157,7 +159,7 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_supports_blade_files(): void
     {
-        touch($this->tmpDir.'/01-intro.blade.php');
+        touch("{$this->tmpDir}/01-intro.blade.php");
 
         $nav = $this->builder->build('1.x', $this->tmpDir);
 
@@ -173,41 +175,41 @@ class DocNavigationBuilderTest extends TestCase
     #[Test]
     public function it_resolves_a_markdown_leaf_file(): void
     {
-        mkdir($this->tmpDir.'/02-offices');
-        touch($this->tmpDir.'/02-offices/02-manage.md');
+        mkdir("{$this->tmpDir}/02-offices");
+        touch("{$this->tmpDir}/02-offices/02-manage.md");
 
         $result = $this->builder->resolve('1.x', 'offices/manage', $this->tmpDir);
 
-        $this->assertSame($this->tmpDir.'/02-offices/02-manage.md', $result);
+        $this->assertSame("{$this->tmpDir}/02-offices/02-manage.md", $result);
     }
 
     #[Test]
     public function it_resolves_a_prefixed_index_file_by_its_slug(): void
     {
-        mkdir($this->tmpDir.'/01-organizations');
-        touch($this->tmpDir.'/01-organizations/01-index.md');
+        mkdir("{$this->tmpDir}/01-organizations");
+        touch("{$this->tmpDir}/01-organizations/01-index.md");
 
         $result = $this->builder->resolve('1.x', 'organizations/index', $this->tmpDir);
 
-        $this->assertSame($this->tmpDir.'/01-organizations/01-index.md', $result);
+        $this->assertSame("{$this->tmpDir}/01-organizations/01-index.md", $result);
     }
 
     #[Test]
     public function it_resolves_a_blade_file_by_its_slug(): void
     {
-        mkdir($this->tmpDir.'/04-API');
-        touch($this->tmpDir.'/04-API/01-index.blade.php');
+        mkdir("{$this->tmpDir}/04-API");
+        touch("{$this->tmpDir}/04-API/01-index.blade.php");
 
         $result = $this->builder->resolve('1.x', 'api/index', $this->tmpDir);
 
-        $this->assertSame($this->tmpDir.'/04-API/01-index.blade.php', $result);
+        $this->assertSame("{$this->tmpDir}/04-API/01-index.blade.php", $result);
     }
 
     #[Test]
     public function it_returns_null_for_a_directory_path_with_no_file_segment(): void
     {
-        mkdir($this->tmpDir.'/01-organizations');
-        touch($this->tmpDir.'/01-organizations/01-index.md');
+        mkdir("{$this->tmpDir}/01-organizations");
+        touch("{$this->tmpDir}/01-organizations/01-index.md");
 
         $result = $this->builder->resolve('1.x', 'organizations', $this->tmpDir);
 
@@ -224,18 +226,23 @@ class DocNavigationBuilderTest extends TestCase
 
     private function removeDirectory(string $dir): void
     {
-        if (! is_dir($dir)) {
+        if (!is_dir($dir)) {
             return;
         }
-        foreach (scandir($dir) ?: [] as $entry) {
-            if ($entry === '.') {
-                continue;
+
+        $files = scandir($dir);
+
+        if ($files !== false) {
+            foreach ($files as $entry) {
+                if ($entry === '.') {
+                    continue;
+                }
+                if ($entry === '..') {
+                    continue;
+                }
+                $path = "{$dir}/{$entry}";
+                is_dir($path) ? $this->removeDirectory($path) : unlink($path);
             }
-            if ($entry === '..') {
-                continue;
-            }
-            $path = $dir.'/'.$entry;
-            is_dir($path) ? $this->removeDirectory($path) : unlink($path);
         }
         rmdir($dir);
     }

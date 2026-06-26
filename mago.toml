@@ -1,0 +1,51 @@
+# Welcome to Mago!
+# For full documentation, see https://mago.carthage.software/tools/overview
+php-version = "8.4.0"
+
+[source]
+workspace = "."
+paths = ["app/", "database/factories/", "database/seeders/"]
+includes = ["vendor"]
+excludes = []
+
+[formatter]
+preset = "laravel"
+
+[linter]
+integrations = ["laravel", "phpunit"]
+
+[linter.rules]
+ambiguous-function-call = { enabled = false }
+literal-named-argument = { enabled = false }
+halstead = { enabled = false }
+final-controller = { enabled = false }
+prefer-static-closure = { enabled = false }
+prefer-first-class-callable = { enabled = false }
+cyclomatic-complexity = { enabled = false }
+no-literal-password = { enabled = false }
+excessive-parameter-list = { enabled = false }
+kan-defect = { enabled = false }
+too-many-methods = { enabled = false }
+prefer-arrow-function = { enabled = false }
+too-many-enum-cases = { enabled = false }
+no-insecure-comparison = { enabled = false }
+
+[analyzer]
+plugins = []
+find-unused-definitions = true
+find-unused-expressions = false
+analyze-dead-code = false
+memoize-properties = true
+allow-possibly-undefined-array-keys = true
+check-throws = false
+check-missing-override = false
+find-unused-parameters = false
+strict-list-index-checks = false
+no-boolean-literal-comparison = false
+check-missing-type-hints = false
+register-super-globals = true
+ignore = [
+    "non-documented-property",
+    "non-documented-method",
+    "possibly-null-argument",
+]

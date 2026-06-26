@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Unit\Actions;
 
@@ -22,7 +22,7 @@ class GenerateVaultAvatarTest extends TestCase
 
         // Decode and verify it's valid SVG
         $base64Part = mb_substr($result, mb_strlen('data:image/svg+xml;base64,'));
-        $decodedSvg = base64_decode($base64Part);
+        $decodedSvg = base64_decode($base64Part, true);
 
         $this->assertStringContainsString('<svg', $decodedSvg);
         $this->assertStringContainsString('</svg>', $decodedSvg);

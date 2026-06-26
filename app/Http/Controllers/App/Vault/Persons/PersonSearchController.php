@@ -34,14 +34,23 @@ class PersonSearchController extends Controller
             if ($validated['term'] === '' || $validated['term'] === '0') {
                 return true;
             }
-            if (Str::contains(mb_strtolower((string) $personItem['name']), mb_strtolower((string) $validated['term']))) {
+            if (Str::contains(
+                mb_strtolower((string) $personItem['name']),
+                mb_strtolower((string) $validated['term']),
+            )) {
                 return true;
             }
-            if (Str::contains(mb_strtolower((string) $personItem['nickname']), mb_strtolower((string) $validated['term']))) {
+            if (Str::contains(
+                mb_strtolower((string) $personItem['nickname']),
+                mb_strtolower((string) $validated['term']),
+            )) {
                 return true;
             }
 
-            return Str::contains(mb_strtolower((string) $personItem['maiden_name']), mb_strtolower((string) $validated['term']));
+            return Str::contains(
+                mb_strtolower((string) $personItem['maiden_name']),
+                mb_strtolower((string) $validated['term']),
+            );
         });
 
         return view('app.vault.person._list', [

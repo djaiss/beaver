@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Settings;
 
@@ -30,7 +30,7 @@ class EmailSentControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get('/settings/emails');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('app.settings.emails.index');
         $response->assertViewHas('emails');
     }

@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         $user = User::query()->where('email', $validated['email'])->first();
 
-        $tokenName = 'API token for '.$user->email;
+        $tokenName = "API token for {$user->email}";
 
         $token = $user->createToken($tokenName)->plainTextToken;
 

@@ -20,9 +20,7 @@
               <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
             </div>
           </a>
-          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {{ __('app/auth.login.title') }}
-          </h1>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ __('app/auth.login.title') }}</h1>
         </div>
 
         <!-- Login form -->
@@ -38,9 +36,7 @@
             <div class="block">
               <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="rounded-sm border-gray-300 text-indigo-600 shadow-xs focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-900" name="remember" />
-                <span class="ms-2 text-sm text-gray-600">
-                  {{ __('app/auth.login.remember_me') }}
-                </span>
+                <span class="ms-2 text-sm text-gray-600">{{ __('app/auth.login.remember_me') }}</span>
               </label>
             </div>
 
@@ -55,9 +51,7 @@
             --}}
 
             <div class="flex items-center justify-between">
-              <x-link href="{{ route('password.request') }}" class="text-sm text-gray-600">
-                {{ __('app/auth.login.forgot_password') }}
-              </x-link>
+              <x-link href="{{ route('password.request') }}" class="text-sm text-gray-600">{{ __('app/auth.login.forgot_password') }}</x-link>
 
               <x-button>{{ __('app/shared.continue') }}</x-button>
             </div>
@@ -65,7 +59,7 @@
         </x-box>
 
         <!-- local login link -->
-        @env('local')
+        @env ('local')
           <x-box class="text-center text-sm">
             <x-login-link label="Michael Scott" email="michael.scott@dundermifflin.com" redirect-url="{{ route('vault.index') }}" />
           </x-box>
@@ -74,17 +68,13 @@
         <!-- magic link -->
         <x-box class="text-center text-sm">
           {{ __('app/auth.login.skip_password') }}
-          <x-link :href="route('magic.link')" data-test="magic-link-link" class="ml-1">
-            {{ __('app/auth.login.send_link_instead') }}
-          </x-link>
+          <x-link :href="route('magic.link')" data-test="magic-link-link" class="ml-1">{{ __('app/auth.login.send_link_instead') }}</x-link>
         </x-box>
 
         <!-- Register link -->
         <x-box class="text-center text-sm">
           {{ __('app/auth.login.new_to_organization', ['organization' => config('app.name')]) }}
-          <x-link :href="route('register')" class="ml-1">
-            {{ __('app/shared.create_account') }}
-          </x-link>
+          <x-link :href="route('register')" class="ml-1">{{ __('app/shared.create_account') }}</x-link>
         </x-box>
 
         <ul class="text-xs text-gray-600">
@@ -94,6 +84,6 @@
     </div>
 
     <!-- Right side -->
-    @include('partials.quotes', ['quote' => $quote])
+    @include ('partials.quotes', ['quote' => $quote])
   </div>
 </x-guest-layout>

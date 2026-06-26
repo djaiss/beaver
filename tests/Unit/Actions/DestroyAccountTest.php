@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Unit\Actions;
 
@@ -42,8 +42,13 @@ class DestroyAccountTest extends TestCase
             AccountDeletionReason::query()->count(),
         );
 
-        Mail::assertQueued(AccountDestroyed::class, fn (AccountDestroyed $job): bool => $job->reason === 'the service is not working'
-            && $job->to[0]['address'] === 'regis@lifeos.com');
+        Mail::assertQueued(
+            AccountDestroyed::class,
+            fn (AccountDestroyed $job): bool => (
+                $job->reason === 'the service is not working'
+                && $job->to[0]['address'] === 'regis@lifeos.com'
+            ),
+        );
     }
 
     #[Test]

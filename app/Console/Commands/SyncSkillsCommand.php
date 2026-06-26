@@ -28,7 +28,11 @@ class SyncSkillsCommand extends Command
         ]);
 
         if ($result->failed()) {
-            $message = trim($result->errorOutput()) ?: trim($result->output());
+            $message = trim($result->errorOutput());
+
+            if ($message === '') {
+                $message = trim($result->output());
+            }
 
             if ($message !== '') {
                 $this->error($message);

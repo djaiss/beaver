@@ -1,4 +1,4 @@
-@props([
+@props ([
   'title' => null,
   'padding' => 'p-4',
   'description' => null,
@@ -6,29 +6,25 @@
 ])
 
 <div class="flex flex-col gap-2">
-  @isset($title)
+  @isset ($title)
     <div class="flex items-center justify-between">
-      @isset($title)
+      @isset ($title)
         <h2 class="font-semi-bold mb-1 text-lg">{{ $title }}</h2>
       @endisset
 
-      @isset($actions)
+      @isset ($actions)
         <div>{{ $actions }}</div>
       @endisset
     </div>
   @endisset
 
-  @isset($description)
-    <div class="mb-2 flex flex-col gap-y-2 text-sm text-gray-500">
-      {{ $description }}
-    </div>
+  @isset ($description)
+    <div class="mb-2 flex flex-col gap-y-2 text-sm text-gray-500">{{ $description }}</div>
   @endisset
 
-  @isset($additionalInfo)
+  @isset ($additionalInfo)
     {{ $additionalInfo }}
   @endisset
 
-  <div {{ $attributes->merge(['class' => 'rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 ' . $padding]) }}>
-    {{ $slot }}
-  </div>
+  <div {{ $attributes->merge(['class' => "rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900 {$padding}"]) }}>{{ $slot }}</div>
 </div>

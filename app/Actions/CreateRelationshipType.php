@@ -45,8 +45,9 @@ class CreateRelationshipType
         $this->name = TextSanitizer::plainText($this->name);
         $this->forwardName = TextSanitizer::nullablePlainText($this->forwardName);
         $this->reverseName = TextSanitizer::nullablePlainText($this->reverseName);
+        $randomKey = Str::lower(Str::random(16));
         $this->key = $this->key === null
-            ? 'custom-'.Str::lower(Str::random(16))
+            ? "custom-{$randomKey}"
             : TextSanitizer::plainText($this->key);
     }
 

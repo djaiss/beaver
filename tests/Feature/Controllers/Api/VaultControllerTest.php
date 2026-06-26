@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\Api;
 
@@ -51,7 +51,7 @@ class VaultControllerTest extends TestCase
 
         $response = $this->json('GET', '/api/vaults');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJsonStructure([
             'data' => [
                 '*' => $this->jsonStructure['data'],
@@ -88,9 +88,9 @@ class VaultControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/vaults/'.$vault->id);
+        $response = $this->json('GET', "/api/vaults/{$vault->id}");
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJsonStructure($this->jsonStructure);
     }
 
@@ -102,7 +102,7 @@ class VaultControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/vaults/'.$vault->id);
+        $response = $this->json('GET', "/api/vaults/{$vault->id}");
 
         $response->assertStatus(403);
     }
@@ -120,11 +120,11 @@ class VaultControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('PUT', '/api/vaults/'.$vault->id, [
+        $response = $this->json('PUT', "/api/vaults/{$vault->id}", [
             'name' => 'Central Perk Chandler Edition',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertJsonStructure($this->jsonStructure);
     }
 
@@ -141,7 +141,7 @@ class VaultControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', '/api/vaults/'.$vault->id);
+        $response = $this->json('DELETE', "/api/vaults/{$vault->id}");
 
         $response->assertNoContent();
     }

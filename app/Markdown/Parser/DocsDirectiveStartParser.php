@@ -11,17 +11,24 @@ use League\CommonMark\Parser\MarkdownParserStateInterface;
 
 class DocsDirectiveStartParser implements BlockStartParserInterface
 {
-    public function __construct(private readonly string $name) {}
+    public function __construct(
+        private readonly string $name,
+    ) {}
 
     public function tryStart(Cursor $cursor, MarkdownParserStateInterface $parserState): ?BlockStart
     {
-        if ($cursor->isIndented() || $parserState->getParagraphContent() !== null || ! $parserState->getActiveBlockParser()->isContainer()) {
+        if (
+            $cursor->isIndented()
+            || $parserState->getParagraphContent() !== null
+            || ! $parserState->getActiveBlockParser()->isContainer()
+        ) {
             return BlockStart::none();
         }
 
         $cursor->advanceToNextNonSpaceOrTab();
 
-        $pattern = '/^:::'.preg_quote($this->name, '/').'(?:\s+(.*?))?\s*$/';
+        $escapedName = preg_quote($this->name, '/');
+        $pattern = "/^:::{$escapedName}(?:\s+(.*?))?\s*$/";
 
         if (preg_match($pattern, $cursor->getRemainder(), $matches) !== 1) {
             return BlockStart::none();

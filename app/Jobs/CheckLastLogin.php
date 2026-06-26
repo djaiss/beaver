@@ -39,7 +39,7 @@ class CheckLastLogin implements ShouldQueue
 
     private function initialize(): void
     {
-        $this->oldIp = $this->user->last_used_ip ?: null;
+        $this->oldIp = $this->user->last_used_ip ?? null;
     }
 
     private function compare(): void

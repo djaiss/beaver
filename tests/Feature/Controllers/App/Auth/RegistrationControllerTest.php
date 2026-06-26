@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -16,7 +16,7 @@ class RegistrationControllerTest extends TestCase
     public function it_shows_the_create_account_page(): void
     {
         $response = $this->get('/register');
-        $response->assertStatus(200);
+        $response->assertOk();
     }
 
     #[Test]

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Vault;
 
@@ -32,7 +32,7 @@ class PersonControllerTest extends TestCase
             'name' => 'First',
             'position' => 1,
         ]);
-        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/persons/new');
+        $response = $this->actingAs($user)->get("/vaults/{$vault->id}/persons/new");
 
         $response->assertOk();
         $response->assertViewIs('app.vault.person.create');
@@ -57,7 +57,7 @@ class PersonControllerTest extends TestCase
         $gender = Gender::factory()->create([
             'vault_id' => $vault->id,
         ]);
-        $response = $this->actingAs($user)->post('/vaults/'.$vault->id.'/persons', [
+        $response = $this->actingAs($user)->post("/vaults/{$vault->id}/persons", [
             'gender_id' => $gender->id,
             'kids_status' => 'has_kids',
             'first_name' => 'Regis',
@@ -75,7 +75,7 @@ class PersonControllerTest extends TestCase
         $this->assertSame('Regis', $person->first_name);
         $this->assertSame('Smith', $person->last_name);
         $this->assertSame($gender->id, $person->gender_id);
-        $this->assertSame($person->id.'-regis-smith', $person->slug);
+        $this->assertSame("{$person->id}-regis-smith", $person->slug);
     }
 
     #[Test]
@@ -85,7 +85,7 @@ class PersonControllerTest extends TestCase
         $vault = $this->createVault();
         $this->assignUserToVault($user, $vault, PermissionEnum::Editor->value);
 
-        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/persons');
+        $response = $this->actingAs($user)->get("/vaults/{$vault->id}/persons");
 
         $response->assertOk();
         $response->assertSee(__('app/person.blank.title', ['name' => config('app.name')]));
@@ -104,7 +104,7 @@ class PersonControllerTest extends TestCase
             'vault_id' => $vault->id,
         ]);
         $person->update([
-            'slug' => $person->id.'-test-person',
+            'slug' => "{$person->id}-test-person",
         ]);
 
         $response = $this->actingAs($user)
@@ -129,13 +129,13 @@ class PersonControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from('/vaults/'.$vault->id.'/persons/new')
-            ->post('/vaults/'.$vault->id.'/persons', [
+            ->from("/vaults/{$vault->id}/persons/new")
+            ->post("/vaults/{$vault->id}/persons", [
                 'gender_id' => $gender->id,
                 'first_name' => 'Regis',
             ]);
 
-        $response->assertRedirect('/vaults/'.$vault->id.'/persons/new');
+        $response->assertRedirect("/vaults/{$vault->id}/persons/new");
         $response->assertSessionHasErrors('gender_id');
         $this->assertDatabaseCount('persons', 0);
     }
@@ -147,7 +147,7 @@ class PersonControllerTest extends TestCase
         $vault = $this->createVault();
         $this->assignUserToVault($user, $vault, PermissionEnum::Viewer->value);
 
-        $response = $this->actingAs($user)->post('/vaults/'.$vault->id.'/persons', [
+        $response = $this->actingAs($user)->post("/vaults/{$vault->id}/persons", [
             'first_name' => 'Regis',
         ]);
 

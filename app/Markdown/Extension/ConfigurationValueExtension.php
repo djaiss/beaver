@@ -14,7 +14,9 @@ class ConfigurationValueExtension implements ExtensionInterface
     /**
      * @param  array<string, string>  $values
      */
-    public function __construct(private readonly array $values) {}
+    public function __construct(
+        private readonly array $values,
+    ) {}
 
     public function register(EnvironmentBuilderInterface $environment): void
     {

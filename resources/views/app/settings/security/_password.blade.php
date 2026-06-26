@@ -1,7 +1,15 @@
-<x-box padding="p-0">
-  <x-slot:title>{{ __('app/settings/security.password.title') }}</x-slot>
+<?php
+/**
+ * @var \App\ViewModels\Settings\SecurityIndexViewModel $view
+ */
+?>
 
-  <x-form method="put" action="{{ route('settings.security.password.update') }}">
+<x-box padding="p-0">
+  <x-slot:title>
+    {{ __('app/settings/security.password.title') }}
+  </x-slot:title>
+
+  <x-form method="put" action="{{ $view->url()->updatePassword }}">
     <!-- current password -->
     <div class="grid grid-cols-3 items-center rounded-t-lg border-b border-gray-200 p-3 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
       <p class="col-span-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('app/settings/security.password.current') }}</p>

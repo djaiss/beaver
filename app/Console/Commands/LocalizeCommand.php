@@ -77,6 +77,8 @@ class LocalizeCommand extends Command
         $files = [];
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($englishPath));
 
+        $englishPathPrefix = implode('', [$englishPath, DIRECTORY_SEPARATOR]);
+
         foreach ($iterator as $fileInfo) {
             if (! $fileInfo instanceof SplFileInfo) {
                 continue;
@@ -85,7 +87,7 @@ class LocalizeCommand extends Command
                 continue;
             }
             $relativePath = str($fileInfo->getPathname())
-                ->after($englishPath.DIRECTORY_SEPARATOR)
+                ->after($englishPathPrefix)
                 ->replace(DIRECTORY_SEPARATOR, '/')
                 ->value();
 
@@ -119,17 +121,20 @@ class LocalizeCommand extends Command
         $localePath = lang_path($locale);
 
         if (! is_dir($localePath)) {
-            mkdir($localePath, 0755, true);
+            mkdir($localePath, 0o755, true);
         }
 
         $this->deleteStaleLanguageFiles($localePath, array_keys($masterFiles));
 
         foreach ($masterFiles as $relativePath => $masterLines) {
-            $targetPath = $localePath.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+            $targetPath = implode(DIRECTORY_SEPARATOR, [
+                $localePath,
+                str_replace('/', DIRECTORY_SEPARATOR, $relativePath),
+            ]);
             $targetDirectory = dirname($targetPath);
 
             if (! is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0755, true);
+                mkdir($targetDirectory, 0o755, true);
             }
 
             $existingLines = is_file($targetPath) ? $this->readLanguageFile($targetPath) : [];
@@ -154,6 +159,8 @@ class LocalizeCommand extends Command
             RecursiveIteratorIterator::CHILD_FIRST,
         );
 
+        $localePathPrefix = implode('', [$localePath, DIRECTORY_SEPARATOR]);
+
         foreach ($iterator as $fileInfo) {
             if (! $fileInfo instanceof SplFileInfo) {
                 continue;
@@ -161,7 +168,15 @@ class LocalizeCommand extends Command
 
             if ($fileInfo->isDir()) {
                 if (! in_array($fileInfo->getBasename(), ['.', '..'], true)) {
-                    @rmdir($fileInfo->getPathname());
+                    $pathname = $fileInfo->getPathname();
+
+                    if (is_dir($pathname) && ! is_link($pathname)) {
+                        $isEmpty = count(scandir($pathname)) === 2; // Contains only '.' and '..'
+
+                        if ($isEmpty) {
+                            rmdir($pathname);
+                        }
+                    }
                 }
 
                 continue;
@@ -172,7 +187,7 @@ class LocalizeCommand extends Command
             }
 
             $relativePath = str($fileInfo->getPathname())
-                ->after($localePath.DIRECTORY_SEPARATOR)
+                ->after($localePathPrefix)
                 ->replace(DIRECTORY_SEPARATOR, '/')
                 ->value();
 
@@ -214,9 +229,9 @@ class LocalizeCommand extends Command
      */
     private function renderLanguageFile(array $lines): string
     {
-        return "<?php\n\n"
-            ."declare(strict_types=1);\n\n"
-            .'return '.$this->renderArray($lines).";\n";
+        $renderedArray = $this->renderArray($lines);
+
+        return "<?php\n\ndeclare(strict_types=1);\n\nreturn {$renderedArray};\n";
     }
 
     /**
@@ -237,9 +252,12 @@ class LocalizeCommand extends Command
                 ? $this->renderArray($value, $level + 1)
                 : var_export((string) $value, true);
 
-            $renderedLines[] = $childIndent.var_export((string) $key, true).' => '.$renderedValue.',';
+            $renderedKey = var_export((string) $key, true);
+            $renderedLines[] = "{$childIndent}{$renderedKey} => {$renderedValue},";
         }
 
-        return "[\n".implode("\n", $renderedLines)."\n".$indent.']';
+        $renderedBody = implode("\n", $renderedLines);
+
+        return "[\n{$renderedBody}\n{$indent}]";
     }
 }

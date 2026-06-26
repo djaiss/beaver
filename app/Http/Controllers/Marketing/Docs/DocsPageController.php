@@ -35,7 +35,7 @@ class DocsPageController extends DocsController
 
     public function markdown(string $version, string $path): Response
     {
-        $filePath = (new DocNavigationBuilder)->resolve($version, $path);
+        $filePath = new DocNavigationBuilder()->resolve($version, $path);
 
         if ($filePath === null || ! str_ends_with($filePath, '.md')) {
             abort(404);
@@ -47,11 +47,12 @@ class DocsPageController extends DocsController
             abort(404);
         }
 
-        $markdown = preg_replace(
-            '/^:::(?:\/)?(?:markdown-actions|copy-for-llm|view-as-markdown)(?:\s+.*?)?\s*$(?:\R)?/m',
-            '',
-            $markdown,
-        ) ?? $markdown;
+        $markdown =
+            preg_replace(
+                '/^:::(?:\/)?(?:markdown-actions|copy-for-llm|view-as-markdown)(?:\s+.*?)?\s*$(?:\R)?/m',
+                '',
+                $markdown,
+            ) ?? $markdown;
 
         return response($markdown, 200, [
             'Content-Type' => 'text/plain; charset=UTF-8',
@@ -74,18 +75,17 @@ class DocsPageController extends DocsController
         $cumulativePath = '';
 
         foreach ($segments as $i => $segment) {
-            $cumulativePath = $cumulativePath !== '' ? $cumulativePath.'/'.$segment : $segment;
+            $cumulativePath = $cumulativePath !== '' ? "{$cumulativePath}/{$segment}" : $segment;
             $label = $builder->toLabel($segment);
-            $isLast = $i === count($segments) - 1;
+            $isLast = $i === (count($segments) - 1);
 
-            if ($isLast) {
-                $breadcrumbs[] = ['label' => $label];
-            } else {
-                $breadcrumbs[] = [
-                    'label' => $label,
-                    'route' => route('marketing.docs.show', ['version' => $version, 'path' => $cumulativePath]),
-                ];
+            $item = ['label' => $label];
+
+            if (! $isLast) {
+                $item['route'] = route('marketing.docs.show', ['version' => $version, 'path' => $cumulativePath]);
             }
+
+            $breadcrumbs[] = $item;
         }
 
         return $breadcrumbs;

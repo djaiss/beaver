@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api\Vault\Adminland;
 
 use App\Actions\CreateRelationshipTypeCategory;
@@ -19,7 +21,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
         $vault = $request->attributes->get('vault');
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
-        $relationshipTypeCategories = $vault->relationshipTypeCategories()
+        $relationshipTypeCategories = $vault
+            ->relationshipTypeCategories()
             ->orderBy('position')
             ->paginate($perPage);
 
@@ -30,7 +33,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
     {
         $vault = $request->attributes->get('vault');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+        $relationshipTypeCategory = $vault
+            ->relationshipTypeCategories()
             ->findOrFail($request->route()->parameter('relationshipTypeCategory'));
 
         return new RelationshipTypeCategoryResource($relationshipTypeCategory)
@@ -61,7 +65,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
     {
         $vault = $request->attributes->get('vault');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+        $relationshipTypeCategory = $vault
+            ->relationshipTypeCategories()
             ->findOrFail($request->route()->parameter('relationshipTypeCategory'));
 
         $validated = $request->validate([
@@ -73,7 +78,9 @@ class AdminlandRelationshipTypeCategoryController extends Controller
             user: $request->user(),
             relationshipTypeCategory: $relationshipTypeCategory,
             name: $validated['name'],
-            position: isset($validated['position']) ? (int) $validated['position'] : $relationshipTypeCategory->position,
+            position: isset($validated['position'])
+                ? (int) $validated['position']
+                : $relationshipTypeCategory->position,
         )->execute();
 
         return new RelationshipTypeCategoryResource($relationshipTypeCategory)
@@ -85,7 +92,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
     {
         $vault = $request->attributes->get('vault');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+        $relationshipTypeCategory = $vault
+            ->relationshipTypeCategories()
             ->findOrFail($request->route()->parameter('relationshipTypeCategory'));
 
         new DestroyRelationshipTypeCategory(

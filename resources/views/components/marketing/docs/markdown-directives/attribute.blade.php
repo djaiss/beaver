@@ -6,7 +6,5 @@
       <span class="text-rose-800">required</span>
     @endif
   </div>
-  <div class="[&_p]:m-0">
-    {!! $content !!}
-  </div>
+  <div class="[&_p]:m-0">{!! $content !!}</div>
 </div>

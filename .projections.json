@@ -35,6 +35,9 @@
   "app/View/Components/*.php": {
     "alternate": "tests/Unit/View/Components/{}Test.php"
   },
+  "app/ViewModels/**/*.php": {
+    "alternate": "tests/Unit/ViewModels/{}Test.php"
+  },
   "app/View/Presenters/*.php": {
     "alternate": "tests/Unit/Presenters/{}Test.php"
   },
@@ -75,6 +78,6 @@
     "alternate": "app/View/Components/{}.php"
   },
   "tests/Unit/ViewModels/*Test.php": {
-    "alternate": "app/Http/ViewModels/{}.php"
+    "alternate": "app/ViewModels/{}.php"
   }
 }

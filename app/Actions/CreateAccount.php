@@ -9,6 +9,7 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use SensitiveParameter;
 
 /**
  * Create an account for the user. That does not create a vault. Only an access
@@ -20,6 +21,7 @@ class CreateAccount
 
     public function __construct(
         private string $email,
+        #[SensitiveParameter]
         private readonly string $password,
         private string $firstName,
         private string $lastName,

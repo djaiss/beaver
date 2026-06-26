@@ -109,6 +109,6 @@ class Vault extends Model
      */
     public function getAvatar(): string
     {
-        return new GenerateVaultAvatar($this->id.'-'.$this->name)->execute();
+        return new GenerateVaultAvatar("{$this->id}-{$this->name}")->execute();
     }
 }

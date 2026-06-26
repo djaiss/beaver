@@ -2,12 +2,8 @@
   <x-input id="name" :label="__('app/vault.adminland.relationship_types.category_name')" type="text" :value="old('name', $relationshipTypeCategory->name)" required autofocus :error="$errors->get('name')" />
 
   <div class="flex justify-between">
-    <x-button.secondary x-target="relationship-type-category-{{ $relationshipTypeCategory->id }}" href="{{ route('vault.adminland.index', ['vaultId' => $vault->id]) }}">
-      {{ __('app/shared.cancel') }}
-    </x-button.secondary>
+    <x-button.secondary x-target="relationship-type-category-{{ $relationshipTypeCategory->id }}" href="{{ route('vault.adminland.index', ['vaultId' => $vault->id]) }}">{{ __('app/shared.cancel') }}</x-button.secondary>
 
-    <x-button class="mr-2">
-      {{ __('app/shared.save') }}
-    </x-button>
+    <x-button class="mr-2">{{ __('app/shared.save') }}</x-button>
   </div>
 </x-form>

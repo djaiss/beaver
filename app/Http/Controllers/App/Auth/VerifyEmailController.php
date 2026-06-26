@@ -14,8 +14,11 @@ class VerifyEmailController extends Controller
 {
     public function index(EmailVerificationRequest $request): RedirectResponse
     {
+        $vaultIndexRoute = route('vault.index', absolute: false);
+        $verifiedRedirect = "{$vaultIndexRoute}?verified=1";
+
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('vault.index', absolute: false).'?verified=1');
+            return redirect()->intended($verifiedRedirect);
         }
 
         if ($request->user()->markEmailAsVerified()) {
@@ -25,6 +28,6 @@ class VerifyEmailController extends Controller
             event(new Verified($user));
         }
 
-        return redirect()->intended(route('vault.index', absolute: false).'?verified=1');
+        return redirect()->intended($verifiedRedirect);
     }
 }

@@ -11,9 +11,7 @@
                 <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
               </div>
             </a>
-            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {{ __('app/auth.verify_email.title') }}
-            </h1>
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ __('app/auth.verify_email.title') }}</h1>
           </div>
         </div>
 
@@ -24,9 +22,7 @@
         <x-box class="mb-12">
           <x-form method="post" action="{{ route('verification.store') }}" class="space-y-6">
             @if (session('status') == 'verification-link-sent')
-              <p class="!dark:text-green-400 text-center font-medium !text-green-600">
-                {{ __('app/auth.verify_email.resent') }}
-              </p>
+              <p class="!dark:text-green-400 text-center font-medium !text-green-600">{{ __('app/auth.verify_email.resent') }}</p>
             @endif
 
             <div class="flex items-center justify-between">

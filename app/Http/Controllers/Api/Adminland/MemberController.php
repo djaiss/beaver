@@ -16,7 +16,8 @@ class MemberController extends Controller
     {
         $vault = $request->attributes->get('vault');
 
-        $members = $vault->members()
+        $members = $vault
+            ->members()
             ->with('user')
             ->orderByDesc('joined_at')
             ->get();

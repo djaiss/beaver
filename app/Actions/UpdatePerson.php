@@ -72,7 +72,6 @@ class UpdatePerson
         if ($this->gender instanceof Gender && $this->gender->vault_id !== $this->person->vault_id) {
             throw new ModelNotFoundException('Gender not found');
         }
-
     }
 
     private function update(): void
@@ -102,8 +101,9 @@ class UpdatePerson
 
     private function generateSlug(): void
     {
-        $name = $this->person->first_name.' '.$this->person->last_name;
-        $slug = $this->person->id.'-'.Str::of($name)->slug('-');
+        $name = "{$this->person->first_name} {$this->person->last_name}";
+        $sluggedName = Str::of($name)->slug('-');
+        $slug = "{$this->person->id}-{$sluggedName}";
 
         $this->person->slug = $slug;
         $this->person->save();

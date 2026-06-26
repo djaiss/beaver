@@ -33,7 +33,8 @@ final class PersonsListCache extends CacheHelper
 
     protected function generate(): Collection
     {
-        return Person::query()->where('vault_id', $this->identifier)
+        return Person::query()
+            ->where('vault_id', $this->identifier)
             ->where('is_listed', true)
             ->select(
                 'id',

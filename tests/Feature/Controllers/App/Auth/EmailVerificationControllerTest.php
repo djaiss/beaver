@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -21,7 +21,7 @@ class EmailVerificationControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get('/verify-email');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('app.auth.verify-email');
     }
 

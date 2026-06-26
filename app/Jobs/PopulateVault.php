@@ -504,27 +504,33 @@ class PopulateVault implements ShouldQueue
                     continue;
                 }
 
-                $category->relationshipTypes()->insert(
-                    collect($types)
-                        ->values()
-                        ->map(fn ($type, $index): array => [
-                            'vault_id' => $this->vault->id,
-                            'relationship_type_category_id' => $category->id,
-                            'key' => Crypt::encryptString($type['key']),
-                            'name' => null,
-                            'name_translation_key' => Crypt::encryptString($type['name_translation_key']),
-                            'forward_name' => null,
-                            'forward_name_translation_key' => Crypt::encryptString($type['forward_name_translation_key']),
-                            'reverse_name' => null,
-                            'reverse_name_translation_key' => Crypt::encryptString($type['reverse_name_translation_key']),
-                            'is_directed' => $type['is_directed'],
-                            'can_be_deleted' => $type['can_be_deleted'] ?? true,
-                            'position' => $index + 1,
-                            'created_at' => $now,
-                            'updated_at' => $now,
-                        ])
-                        ->all()
-                );
+                $category
+                    ->relationshipTypes()
+                    ->insert(
+                        collect($types)
+                            ->values()
+                            ->map(fn ($type, $index): array => [
+                                'vault_id' => $this->vault->id,
+                                'relationship_type_category_id' => $category->id,
+                                'key' => Crypt::encryptString($type['key']),
+                                'name' => null,
+                                'name_translation_key' => Crypt::encryptString($type['name_translation_key']),
+                                'forward_name' => null,
+                                'forward_name_translation_key' => Crypt::encryptString(
+                                    $type['forward_name_translation_key'],
+                                ),
+                                'reverse_name' => null,
+                                'reverse_name_translation_key' => Crypt::encryptString(
+                                    $type['reverse_name_translation_key'],
+                                ),
+                                'is_directed' => $type['is_directed'],
+                                'can_be_deleted' => $type['can_be_deleted'] ?? true,
+                                'position' => $index + 1,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ])
+                            ->all(),
+                    );
             }
         });
     }

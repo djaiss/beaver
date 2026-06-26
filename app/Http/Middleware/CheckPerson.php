@@ -10,7 +10,6 @@ use App\Models\Person;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,13 +27,12 @@ class CheckPerson
 
         $member = $request->attributes->get('member');
         try {
-            $person = Person::query()->where('vault_id', $member->vault_id)
-                ->findOrFail($id);
+            $person = Person::query()->where('vault_id', $member->vault_id)->findOrFail($id);
 
             $request->attributes->add(['person' => $person]);
 
             LogLastPersonSeen::dispatch(
-                user: Auth::user(),
+                user: $request->user(),
                 person: $person,
             )->onQueue('low');
 

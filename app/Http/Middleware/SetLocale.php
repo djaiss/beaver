@@ -25,10 +25,12 @@ class SetLocale
             return $next($request);
         }
 
+        // Set the fallback default first
+        App::setLocale(config('app.locale'));
+
+        // Override if a session locale exists
         if (session()->has('locale')) {
             App::setLocale(session()->get('locale'));
-        } else {
-            App::setLocale(config('app.locale'));
         }
 
         return $next($request);
