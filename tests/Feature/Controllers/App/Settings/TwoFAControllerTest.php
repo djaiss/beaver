@@ -19,7 +19,7 @@ class TwoFAControllerTest extends TestCase
         $user = $this->createUser();
 
         $response = $this->actingAs($user)
-            ->get('/settings/security/2fa/create');
+            ->get('/settings/security/2fa/new');
 
         $response->assertStatus(200);
         $response->assertViewIs('app.settings.security._2fa-new');
@@ -42,7 +42,7 @@ class TwoFAControllerTest extends TestCase
         $validToken = $google2fa->getCurrentOtp($secret);
 
         $response = $this->actingAs($user)
-            ->from('/settings/security/2fa/create')
+            ->from('/settings/security/2fa/new')
             ->post('/settings/security/2fa', [
                 'token' => $validToken,
             ]);
@@ -67,12 +67,12 @@ class TwoFAControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from('/settings/security/2fa/create')
+            ->from('/settings/security/2fa/new')
             ->post('/settings/security/2fa', [
                 'token' => '000000',
             ]);
 
-        $response->assertRedirect('/settings/security/2fa/create');
+        $response->assertRedirect('/settings/security/2fa/new');
         $response->assertSessionHasErrors(['token' => 'The provided token is invalid.']);
 
         $user->refresh();

@@ -9,11 +9,11 @@
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('app/vault.index.your_vaults') }}</h2>
 
         <div class="flex items-center gap-x-2">
-          <x-button.secondary href="{{ route('vault.join.create') }}" turbo="true">
+          <x-button.secondary href="{{ route('vault.join.new') }}" turbo="true">
             {{ __('app/vault.index.join') }}
           </x-button.secondary>
 
-          <x-button href="{{ route('vault.create') }}" turbo="true">
+          <x-button href="{{ route('vault.new') }}" turbo="true">
             <x-slot:icon>
               <x-phosphor-plus-bold class="size-4" />
             </x-slot>

@@ -15,7 +15,7 @@ use InvalidArgumentException;
 
 class TwoFAController extends Controller
 {
-    public function create(Request $request): View
+    public function new(Request $request): View
     {
         $code = new Generate2faQRCode(
             user: $request->user(),
@@ -27,7 +27,7 @@ class TwoFAController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
         $request->validate([
             'token' => ['required', 'numeric', 'digits:6'],

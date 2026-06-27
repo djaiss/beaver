@@ -11,7 +11,7 @@
   <div class="px-6 pt-12">
     <div class="mx-auto w-full max-w-xl items-start justify-center">
       <x-box title="{{ __('app/vault.create.title') }}">
-        <x-form method="post" :action="route('vault.store')" class="space-y-4">
+        <x-form method="post" :action="route('vault.create')" class="space-y-4">
           <x-input id="vault_name" name="vault_name" :label="__('app/vault.create.name')" :help="__('app/vault.create.name_help')" :error="$errors->get('vault_name')" required placeholder="Dunder Mifflin" autofocus />
 
           <div class="flex items-center justify-between">

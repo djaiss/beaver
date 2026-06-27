@@ -34,12 +34,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('vaults', [VaultController::class, 'index'])->name('vault.index');
 
     // create
-    Route::get('vaults/create', [VaultController::class, 'create'])->name('vault.create');
-    Route::post('vaults', [VaultController::class, 'store'])->name('vault.store');
+    Route::get('vaults/new', [VaultController::class, 'new'])->name('vault.new');
+    Route::post('vaults', [VaultController::class, 'create'])->name('vault.create');
 
     // join
-    Route::get('vaults/join', [JoinVaultController::class, 'create'])->name('vault.join.create');
-    Route::post('vaults/join', [JoinVaultController::class, 'store'])->name('vault.join.store');
+    Route::get('vaults/join', [JoinVaultController::class, 'new'])->name('vault.join.new');
+    Route::post('vaults/join', [JoinVaultController::class, 'create'])->name('vault.join.create');
 
     Route::middleware(['vault'])->where(['vaultId' => '[1-9][0-9]*'])->group(function (): void {
         Route::get('vaults/{vaultId}', [VaultController::class, 'show'])->name('vault.show');
@@ -48,7 +48,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::get('vaults/{vaultId}/persons', [PersonController::class, 'index'])->name('vault.person.index');
         Route::get('vaults/{vaultId}/persons/new', [PersonController::class, 'new'])->name('vault.person.new');
         Route::post('vaults/{vaultId}/persons', [PersonController::class, 'create'])->name('vault.person.create');
-        Route::post('vaults/{vaultId}/persons/search', [PersonSearchController::class, 'create'])->name('vault.person.search');
+        Route::post('vaults/{vaultId}/persons/search', [PersonSearchController::class, 'create'])->name('vault.person.search.create');
 
         Route::middleware(['person'])->group(function (): void {
             Route::get('vaults/{vaultId}/persons/{slug}', [PersonController::class, 'show'])->name('vault.person.show');
@@ -69,14 +69,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
             // relationship type categories
             Route::get('relationship-type-categories/new', [AdminlandRelationshipTypeCategoryController::class, 'new'])->name('vault.adminland.relationship_type_categories.new');
-            Route::post('relationship-type-categories', [AdminlandRelationshipTypeCategoryController::class, 'create'])->name('vault.adminland.relationship_type_categories.store');
+            Route::post('relationship-type-categories', [AdminlandRelationshipTypeCategoryController::class, 'create'])->name('vault.adminland.relationship_type_categories.create');
             Route::get('relationship-type-categories/{relationshipTypeCategory}/edit', [AdminlandRelationshipTypeCategoryController::class, 'edit'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_type_categories.edit');
             Route::put('relationship-type-categories/{relationshipTypeCategory}', [AdminlandRelationshipTypeCategoryController::class, 'update'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_type_categories.update');
             Route::delete('relationship-type-categories/{relationshipTypeCategory}', [AdminlandRelationshipTypeCategoryController::class, 'destroy'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_type_categories.destroy');
 
             // relationship types
             Route::get('relationship-type-categories/{relationshipTypeCategory}/relationship-types/new', [AdminlandRelationshipTypeController::class, 'new'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_types.new');
-            Route::post('relationship-type-categories/{relationshipTypeCategory}/relationship-types', [AdminlandRelationshipTypeController::class, 'create'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_types.store');
+            Route::post('relationship-type-categories/{relationshipTypeCategory}/relationship-types', [AdminlandRelationshipTypeController::class, 'create'])->where('relationshipTypeCategory', '[1-9][0-9]*')->name('vault.adminland.relationship_types.create');
             Route::get('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}/edit', [AdminlandRelationshipTypeController::class, 'edit'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.edit');
             Route::put('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}', [AdminlandRelationshipTypeController::class, 'update'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.update');
             Route::put('relationship-type-categories/{relationshipTypeCategory}/relationship-types/{relationshipType}/position', [AdminlandRelationshipTypePositionController::class, 'update'])->where(['relationshipTypeCategory' => '[1-9][0-9]*', 'relationshipType' => '[1-9][0-9]*'])->name('vault.adminland.relationship_types.position.update');
@@ -103,8 +103,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::put('settings/security/password', [PasswordController::class, 'update'])->name('settings.security.password.update');
 
     // 2fa
-    Route::get('settings/security/2fa/create', [TwoFAController::class, 'create'])->name('settings.security.2fa.create');
-    Route::post('settings/security/2fa', [TwoFAController::class, 'store'])->name('settings.security.2fa.store');
+    Route::get('settings/security/2fa/new', [TwoFAController::class, 'new'])->name('settings.security.2fa.new');
+    Route::post('settings/security/2fa', [TwoFAController::class, 'create'])->name('settings.security.2fa.create');
     Route::delete('settings/security/2fa', [TwoFAController::class, 'destroy'])->name('settings.security.2fa.destroy');
     Route::get('settings/security/recovery-codes', [RecoveryCodeController::class, 'show'])->name('settings.security.recoverycodes.show');
 
@@ -112,8 +112,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::put('settings/security/auto-delete-account', [AutoDeleteAccountController::class, 'update'])->name('settings.security.auto-delete.update');
 
     // api
-    Route::get('settings/api-keys/create', [ApiKeyController::class, 'create'])->name('settings.api-keys.create');
-    Route::post('settings/api-keys', [ApiKeyController::class, 'store'])->name('settings.api-keys.store');
+    Route::get('settings/api-keys/new', [ApiKeyController::class, 'new'])->name('settings.api-keys.new');
+    Route::post('settings/api-keys', [ApiKeyController::class, 'create'])->name('settings.api-keys.create');
     Route::delete('settings/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->name('settings.api-keys.destroy');
 
     // account

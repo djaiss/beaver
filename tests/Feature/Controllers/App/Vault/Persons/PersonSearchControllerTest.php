@@ -36,7 +36,7 @@ class PersonSearchControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => 'MON',
             ]);
 
@@ -65,7 +65,7 @@ class PersonSearchControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => 'phee',
             ]);
 
@@ -91,7 +91,7 @@ class PersonSearchControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => 'greene',
             ]);
 
@@ -125,7 +125,7 @@ class PersonSearchControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => 'chandler',
             ]);
 
@@ -152,7 +152,7 @@ class PersonSearchControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => 'joey',
             ]);
 
@@ -178,7 +178,7 @@ class PersonSearchControllerTest extends TestCase
             ]);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => '0',
             ]);
 
@@ -198,7 +198,7 @@ class PersonSearchControllerTest extends TestCase
         $this->assignUserToVault($user, $vault);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => '',
             ]);
 
@@ -213,7 +213,7 @@ class PersonSearchControllerTest extends TestCase
         $this->assignUserToVault($user, $vault);
 
         $response = $this->actingAs($user)
-            ->post(route('vault.person.search', $vault->id), [
+            ->post(route('vault.person.search.create', $vault->id), [
                 'term' => str_repeat('a', 256),
             ]);
 

@@ -12,12 +12,12 @@ use Illuminate\View\View;
 
 class JoinVaultController extends Controller
 {
-    public function create(): View
+    public function new(): View
     {
         return view('app.vault.join.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'invitation_code' => [

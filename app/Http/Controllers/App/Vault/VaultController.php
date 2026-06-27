@@ -30,12 +30,12 @@ class VaultController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function new(): View
     {
         return view('app.vault.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'vault_name' => [

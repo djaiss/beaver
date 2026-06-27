@@ -36,11 +36,11 @@ class VaultControllerTest extends TestCase
     }
 
     #[Test]
-    public function it_shows_the_create_vault_page(): void
+    public function it_shows_the_new_vault_page(): void
     {
         $user = $this->createUser();
 
-        $response = $this->actingAs($user)->get('/vaults/create');
+        $response = $this->actingAs($user)->get('/vaults/new');
 
         $response->assertStatus(200);
         $response->assertViewIs('app.vault.create');

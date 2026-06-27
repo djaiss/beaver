@@ -13,12 +13,12 @@ use Illuminate\Http\Request;
 
 class ApiKeyController extends Controller
 {
-    public function create(): View
+    public function new(): View
     {
         return view('app.settings.security._api-create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'label' => ['required', 'string', 'min:3', 'max:255'],

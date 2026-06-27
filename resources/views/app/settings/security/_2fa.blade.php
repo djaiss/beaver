@@ -20,7 +20,7 @@
           </x-button.secondary>
         </x-form>
       @else
-        <x-button.secondary href="{{ route('settings.security.2fa.create') }}" x-target="authenticator-app" class="mr-2 text-sm">
+        <x-button.secondary href="{{ route('settings.security.2fa.new') }}" x-target="authenticator-app" class="mr-2 text-sm">
           {{ __('app/settings/security.two_factor.set_up') }}
         </x-button.secondary>
       @endif

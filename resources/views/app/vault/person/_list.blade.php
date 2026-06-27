@@ -1,6 +1,6 @@
 <div class="flex h-[calc(100vh-48px)] flex-col overflow-hidden bg-white rounded-bl-lg rounded-tl-lg">
   <!-- Search header - fixed -->
-  <form x-target="persons" action="{{ route('vault.person.search', [$vault->id]) }}" method="POST" class="shrink-0 border-b border-gray-200 p-3">
+  <form x-target="persons" action="{{ route('vault.person.search.create', [$vault->id]) }}" method="POST" class="shrink-0 border-b border-gray-200 p-3">
     @csrf
     @method('POST')
 

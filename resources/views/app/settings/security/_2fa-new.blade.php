@@ -1,4 +1,4 @@
-<x-form :action="route('settings.security.2fa.store')" method="post" id="authenticator-app" x-target="authenticator-app notifications" x-target.back="authenticator-app" class="border-b border-gray-200 p-4 dark:border-gray-700">
+<x-form :action="route('settings.security.2fa.create')" method="post" id="authenticator-app" x-target="authenticator-app notifications" x-target.back="authenticator-app" class="border-b border-gray-200 p-4 dark:border-gray-700">
   <div class="flex flex-col gap-y-4">
     <p>
       <span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-gray-400 text-sm">1</span>

@@ -64,7 +64,7 @@
       <p class="text-sm text-zinc-500">{{ __('app/settings/security.api.count', ['count' => $apiKeys->count()]) }}</p>
     @endif
 
-    <x-button.secondary href="{{ route('settings.api-keys.create') }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">
+    <x-button.secondary href="{{ route('settings.api-keys.new') }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">
       {{ __('app/settings/security.api.new') }}
     </x-button.secondary>
   </div>
