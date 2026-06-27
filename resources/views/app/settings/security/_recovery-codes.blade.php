@@ -4,9 +4,9 @@
     <div class="ms-5 flex w-full items-center justify-between">
       <div>
         <p class="font-semibold">
-          {{ __('app/settings/security.two_factor.recovery_codes') }}
+          {{ __('Recovery codes') }}
         </p>
-        <p class="text-xs text-gray-600">{{ __('app/settings/security.two_factor.recovery_codes_description') }}</p>
+        <p class="text-xs text-gray-600">{{ __('Use these codes to access your account if you lose access to your authenticator app.') }}</p>
       </div>
     </div>
   </div>

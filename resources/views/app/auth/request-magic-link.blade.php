@@ -6,7 +6,7 @@
         @if (config('app.show_marketing_site'))
           <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('app/auth.shared.back_to_marketing') }}</x-link>
+            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
           </p>
         @endif
 
@@ -19,29 +19,29 @@
               </div>
             </a>
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {{ __('app/auth.magic_link.title') }}
+              {{ __('Receive a link to login') }}
             </h1>
           </div>
-          <p class="text-sm text-gray-500">{{ __('app/auth.magic_link.subtitle') }}</p>
+          <p class="text-sm text-gray-500">{{ __('Enter your email below and we will send you a link to magically connect to your account.') }}</p>
         </div>
 
         <!-- Login form -->
         <x-box>
           <x-form method="post" :action="route('magic.link.store')" class="space-y-4">
             <!-- Email address -->
-            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('app/auth.shared.email_address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
+            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
 
             <div class="flex items-center justify-between">
-              <x-button data-test="send-button">{{ __('app/auth.magic_link.submit') }}</x-button>
+              <x-button data-test="send-button">{{ __('Email me a link to login') }}</x-button>
             </div>
           </x-form>
         </x-box>
 
         <!-- Register link -->
         <x-box class="text-center text-sm">
-          {{ __('app/auth.shared.use_password_instead') }}
+          {{ __('Want to use your password instead?') }}
           <x-link :href="route('login')" class="ml-1">
-            {{ __('app/shared.back_to_login') }}
+            {{ __('Back to login') }}
           </x-link>
         </x-box>
 

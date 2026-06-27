@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\UserActionEnum;
 use Carbon\Carbon;
 use Database\Factories\LogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -98,6 +99,8 @@ class Log extends Model
      */
     public function getTranslatedDescription(): string
     {
-        return __('app/settings/logs.user_action.'.$this->action, $this->parameters ?? []);
+        $translationKey = UserActionEnum::tryFrom($this->action)?->translationKey() ?? $this->action;
+
+        return __($translationKey, $this->parameters ?? []);
     }
 }

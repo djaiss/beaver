@@ -1,12 +1,12 @@
 <x-app-layout>
   <x-slot:title>
-    {{ __('app/settings/emails.title') }}
+    {{ __('Emails sent') }}
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
-    ['label' => __('app/breadcrumb.settings'), 'route' => route('settings.index')],
-    ['label' => __('app/breadcrumb.emails')]
+    ['label' => __('Dashboard'), 'route' => route('vault.index')],
+    ['label' => __('Settings'), 'route' => route('settings.index')],
+    ['label' => __('Emails sent')]
   ]" />
 
   <!-- settings layout -->
@@ -18,7 +18,7 @@
     <section class="p-4 sm:p-8">
       <div class="mx-auto max-w-4xl sm:px-0">
         <x-box id="emails-sent-container" x-merge="append" padding="p-0">
-          <x-slot:title>{{ __('app/settings/emails.title') }}</x-slot>
+          <x-slot:title>{{ __('Emails sent') }}</x-slot>
           <!-- last actions -->
           @foreach ($emails as $email)
             <div x-data="{ open: false, isLast: {{ $loop->last ? 'true' : 'false' }} }">
@@ -34,11 +34,11 @@
 
                   <div class="flex flex-col gap-1">
                     <div>
-                      <span class="font-light text-gray-500">{{ __('app/settings/emails.to') }}</span>
+                      <span class="font-light text-gray-500">{{ __('To:') }}</span>
                       {{ $email->email_address }}
                     </div>
                     <div>
-                      <span class="font-light text-gray-500">{{ __('app/settings/emails.subject') }}</span>
+                      <span class="font-light text-gray-500">{{ __('Subject:') }}</span>
                       {{ $email->subject }}
                     </div>
                   </div>
@@ -48,13 +48,13 @@
                   <!-- sent at && delivered at -->
                   <div class="flex flex-col gap-1">
                     <div>
-                      <span class="font-light text-gray-500">{{ __('app/settings/emails.sent_at') }}</span>
+                      <span class="font-light text-gray-500">{{ __('Sent at:') }}</span>
                       {{ $email->sent_at }}
                     </div>
 
                     @if ($email->delivered_at)
                       <div>
-                        <span class="font-light text-gray-500">{{ __('app/settings/emails.delivered_at') }}</span>
+                        <span class="font-light text-gray-500">{{ __('Delivered at:') }}</span>
                         {{ $email->delivered_at }}
                       </div>
                     @endif
@@ -67,7 +67,7 @@
               </div>
 
               <div x-cloak x-show="open" x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="-translate-y-2 transform opacity-0" x-transition:enter-end="translate-y-0 transform opacity-100" x-transition:leave="transition duration-200 ease-in" x-transition:leave-start="translate-y-0 transform opacity-100" x-transition:leave-end="-translate-y-2 transform opacity-0" class="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900" :class="{'rounded-b-lg border-b-0': isLast}">
-                <p class="p-2 text-center text-gray-600 italic">{{ __('app/settings/emails.removed_links') }}</p>
+                <p class="p-2 text-center text-gray-600 italic">{{ __('We automatically remove links in this email since they are probably invalid at this time') }}</p>
                 <div class="p-4">
                   {!! $email->body !!}
                 </div>
@@ -77,7 +77,7 @@
 
           @if ($emails->nextPageUrl())
             <div id="pagination" class="flex justify-center rounded-b-lg p-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-800">
-              <x-link x-target="emails-sent-container pagination" href="{{ $emails->nextPageUrl() }}" class="text-center">{{ __('app/shared.load_more') }}</x-link>
+              <x-link x-target="emails-sent-container pagination" href="{{ $emails->nextPageUrl() }}" class="text-center">{{ __('Load more') }}</x-link>
             </div>
           @endif
         </x-box>

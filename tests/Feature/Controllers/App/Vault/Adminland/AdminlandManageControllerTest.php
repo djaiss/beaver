@@ -48,7 +48,7 @@ class AdminlandManageControllerTest extends TestCase
         $response = $this->actingAs($user)->delete('/vaults/'.$vault->id.'/adminland/manage');
 
         $response->assertRedirect(route('vault.index'));
-        $response->assertSessionHas('status', __('app/shared.changes_saved'));
+        $response->assertSessionHas('status', __('Changes saved'));
         $this->assertDatabaseMissing('vaults', [
             'id' => $vault->id,
         ]);

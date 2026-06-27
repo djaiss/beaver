@@ -1,26 +1,26 @@
 <x-app-layout>
   <x-slot:title>
-    {{ __('app/vault.join.title') }}
+    {{ __('Join vault') }}
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
-    ['label' => __('app/breadcrumb.join_vault')]
+    ['label' => __('Dashboard'), 'route' => route('vault.index')],
+    ['label' => __('Join vault')]
   ]" />
 
   <div class="px-6 pt-12">
     <div class="mx-auto w-full max-w-xl items-start justify-center">
-      <x-box title="{{ __('app/vault.join.title') }}">
+      <x-box title="{{ __('Join vault') }}">
         <x-form method="post" :action="route('vault.join.create')" class="space-y-4">
-          <x-input id="invitation_code" name="invitation_code" :label="__('app/vault.join.invitation_code')" :help="__('app/vault.join.invitation_code_help')" :error="$errors->get('invitation_code')" required autofocus />
+          <x-input id="invitation_code" name="invitation_code" :label="__('Paste the invitation code')" :help="__('The invitation code is given by the vault administrator.')" :error="$errors->get('invitation_code')" required autofocus />
 
           <div class="flex items-center justify-between">
             <x-button.secondary href="{{ route('vault.index') }}" turbo="true">
-              {{ __('app/shared.cancel') }}
+              {{ __('Cancel') }}
             </x-button.secondary>
 
             <x-button type="submit">
-              {{ __('app/vault.join.submit') }}
+              {{ __('Join') }}
             </x-button>
           </div>
         </x-form>

@@ -39,6 +39,6 @@ class AdminlandGenderPositionController extends Controller
         )->execute();
 
         return to_route('vault.adminland.index', $vault->id)
-            ->with('status', __('app/shared.changes_saved'));
+            ->with('status', __('Changes saved'));
     }
 }

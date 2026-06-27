@@ -27,6 +27,6 @@ class AdminlandManageController extends Controller
         )->execute();
 
         return to_route('vault.index')
-            ->with('status', __('app/shared.changes_saved'));
+            ->with('status', __('Changes saved'));
     }
 }

@@ -12,20 +12,20 @@
               </div>
             </a>
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {{ __('app/auth.verify_email.title') }}
+              {{ __('Thanks for signing up!') }}
             </h1>
           </div>
         </div>
 
         <x-box class="mb-12">
-          <p class="text-gray-500">{{ __('app/auth.verify_email.body') }}</p>
+          <p class="text-gray-500">{{ __('Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}</p>
         </x-box>
 
         <x-box class="mb-12">
           <x-form method="post" action="{{ route('verification.store') }}" class="space-y-6">
             @if (session('status') == 'verification-link-sent')
               <p class="!dark:text-green-400 text-center font-medium !text-green-600">
-                {{ __('app/auth.verify_email.resent') }}
+                {{ __('A new verification link has been sent to the email address you provided during registration.') }}
               </p>
             @endif
 
@@ -33,11 +33,11 @@
               <x-form method="post" action="{{ route('verification.store') }}">
                 <x-button.secondary>
                   <x-phosphor-paper-plane-tilt class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-                  {{ __('app/auth.verify_email.resend') }}
+                  {{ __('Resend verification email') }}
                 </x-button.secondary>
               </x-form>
               <x-form method="post" action="{{ route('logout') }}">
-                <x-button variant="link">{{ __('app/auth.verify_email.logout') }}</x-button>
+                <x-button variant="link">{{ __('Log out') }}</x-button>
               </x-form>
             </div>
           </x-form>

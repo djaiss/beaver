@@ -6,7 +6,7 @@
         @if (config('app.show_marketing_site'))
           <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
-            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('app/auth.register.back_to_marketing') }}</x-link>
+            <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
           </p>
         @endif
 
@@ -22,10 +22,10 @@
               </div>
             </a>
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {{ __('app/auth.register.title') }}
+              {{ __('Sign up for an account') }}
             </h1>
           </div>
-          <p class="text-sm text-gray-500">{{ __('app/auth.register.subtitle') }}</p>
+          <p class="text-sm text-gray-500">{{ __('You will be the administrator of this account.') }}</p>
         </div>
 
         <!-- Registration form -->
@@ -34,39 +34,39 @@
             <!-- Name -->
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <div class="w-full">
-                <x-input type="text" id="first_name" value="{{ old('first_name') }}" :label="__('app/auth.register.first_name')" required placeholder="John" :error="$errors->get('first_name')" autocomplete="first_name" />
+                <x-input type="text" id="first_name" value="{{ old('first_name') }}" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" autocomplete="first_name" />
               </div>
 
               <div class="w-full">
-                <x-input type="text" id="last_name" value="{{ old('last_name') }}" :label="__('app/auth.register.last_name')" required placeholder="Doe" :error="$errors->get('last_name')" autocomplete="last_name" />
+                <x-input type="text" id="last_name" value="{{ old('last_name') }}" :label="__('Last name')" required placeholder="Doe" :error="$errors->get('last_name')" autocomplete="last_name" />
               </div>
             </div>
 
             <!-- Email address -->
-            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('app/auth.register.email_address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" help="{{ __('app/auth.register.email_help') }}" />
+            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" help="{{ __('We will never, ever send you marketing emails.') }}" />
 
             <!-- Password -->
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <div class="w-full">
-                <x-input type="password" id="password" :label="__('app/auth.register.password')" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="current-password" />
+                <x-input type="password" id="password" :label="__('Password')" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="current-password" />
               </div>
 
               <div class="w-full">
-                <x-input type="password" id="password_confirmation" :label="__('app/auth.register.confirm_password')" required :error="$errors->get('password_confirmation')" :passManagerDisabled="false" autocomplete="new-password" />
+                <x-input type="password" id="password_confirmation" :label="__('Confirm password')" required :error="$errors->get('password_confirmation')" :passManagerDisabled="false" autocomplete="new-password" />
               </div>
             </div>
 
             <div class="flex items-center justify-between">
-              <x-button class="w-full">{{ __('app/auth.register.submit') }}</x-button>
+              <x-button class="w-full">{{ __('Next step: validate your email address') }}</x-button>
             </div>
           </x-form>
         </x-box>
 
         <!-- Register link -->
         <x-box class="text-center text-sm">
-          {{ __('app/auth.register.already_have_account') }}
+          {{ __('Already have an account?') }}
           <x-link :href="'login'" class="ml-1">
-            {{ __('app/auth.register.sign_in_instead') }}
+            {{ __('Sign in instead') }}
           </x-link>
         </x-box>
 

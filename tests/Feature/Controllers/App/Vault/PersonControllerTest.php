@@ -88,10 +88,10 @@ class PersonControllerTest extends TestCase
         $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/persons');
 
         $response->assertOk();
-        $response->assertSee(__('app/person.blank.title', ['name' => config('app.name')]));
-        $response->assertSee(__('app/person.blank.description'));
-        $response->assertSee(__('app/person.blank.action'));
-        $response->assertSee(__('app/person.blank.help'));
+        $response->assertSee(__('Welcome to :name', ['name' => config('app.name')]));
+        $response->assertSee(__('Add your first contact to document your relationships.'));
+        $response->assertSee(__('Add your first person'));
+        $response->assertSee(__('You can add family members, friends, colleagues, or anyone else you want to keep in touch with.'));
     }
 
     #[Test]
@@ -113,8 +113,8 @@ class PersonControllerTest extends TestCase
         $response->assertOk();
         $response->assertSee('id="term"', false);
         $response->assertSee('name="term"', false);
-        $response->assertSee(__('app/person.list.search_placeholder'));
-        $response->assertSee(__('app/person.list.add'));
+        $response->assertSee(__('Search someone'));
+        $response->assertSee(__('Add person'));
     }
 
     #[Test]

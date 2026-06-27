@@ -75,7 +75,7 @@ class UpdateGenderTest extends TestCase
         $gender = Gender::factory()->create([
             'vault_id' => $vault->id,
             'name' => 'Male',
-            'name_translation_key' => 'app/shared.genders.man',
+            'name_translation_key' => 'Man',
             'position' => 2,
         ]);
 
@@ -87,7 +87,7 @@ class UpdateGenderTest extends TestCase
 
         $this->assertInstanceOf(Gender::class, $updatedGender);
         $this->assertEquals('Man', $updatedGender->name);
-        $this->assertEquals('app/shared.genders.man', $updatedGender->name_translation_key);
+        $this->assertEquals('Man', $updatedGender->name_translation_key);
         $this->assertEquals(2, $updatedGender->position);
 
         Queue::assertPushedOn(

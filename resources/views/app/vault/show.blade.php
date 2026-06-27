@@ -1,12 +1,12 @@
 <x-app-layout :vault="$vault">
   <x-slot:title>
-    {{ __('app/vault.show.title') }}
+    {{ __('Vault') }}
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('app/breadcrumb.dashboard'), 'route' => route('vault.index')],
-    ['label' => __('app/breadcrumb.vault')]
+    ['label' => __('Dashboard'), 'route' => route('vault.index')],
+    ['label' => __('Vault')]
   ]" />
 
-  {{ __('app/vault.show.placeholder') }}
+  {{ __('bla') }}
 </x-app-layout>

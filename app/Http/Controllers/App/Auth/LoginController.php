@@ -54,7 +54,7 @@ class LoginController extends Controller
             }
 
             throw ValidationException::withMessages([
-                'email' => trans('app/auth.failed'),
+                'email' => trans('These credentials do not match our records.'),
             ]);
         }
 
@@ -89,7 +89,7 @@ class LoginController extends Controller
         $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
         throw ValidationException::withMessages([
-            'email' => trans('app/auth.throttle', [
+            'email' => trans('Too many login attempts. Please try again in :seconds seconds.', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),

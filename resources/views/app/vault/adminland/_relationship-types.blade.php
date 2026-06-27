@@ -1,19 +1,19 @@
 <x-box padding="p-0">
-  <x-slot:title>{{ __('app/vault.adminland.relationship_types.title') }}</x-slot>
+  <x-slot:title>{{ __('Relationship types') }}</x-slot>
 
   <x-slot:description>
-    <p>{{ __('app/vault.adminland.relationship_types.description') }}</p>
+    <p>{{ __('Relationship type categories group the relationship types available when connecting people.') }}</p>
   </x-slot>
 
   <div id="add-relationship-type-category-form" class="flex items-center justify-between border-b border-gray-200 p-3 last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
     @if ($relationshipTypeCategories->isEmpty())
-      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app/vault.adminland.relationship_types.none') }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('No relationship type categories created') }}</p>
     @else
-      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app/vault.adminland.relationship_types.count', ['count' => $relationshipTypeCategories->count()]) }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __(':count relationship type category(ies)', ['count' => $relationshipTypeCategories->count()]) }}</p>
     @endif
 
     <x-button.secondary x-target="add-relationship-type-category-form" href="{{ route('vault.adminland.relationship_type_categories.new', ['vaultId' => $vault->id]) }}" class="mr-2 text-sm">
-      {{ __('app/vault.adminland.relationship_types.new_category') }}
+      {{ __('New category') }}
     </x-button.secondary>
   </div>
 
@@ -25,11 +25,11 @@
 
           <div class="flex flex-wrap justify-end gap-2">
             <x-button.invisible x-target="add-relationship-type-{{ $relationshipTypeCategory->id }}-form" href="{{ route('vault.adminland.relationship_types.new', ['vaultId' => $vault->id, 'relationshipTypeCategory' => $relationshipTypeCategory->id]) }}" class="invisible text-sm group-hover/category:visible">
-              {{ __('app/vault.adminland.relationship_types.new_type') }}
+              {{ __('New relationship type') }}
             </x-button.invisible>
 
             <x-button.invisible x-target="relationship-type-category-{{ $relationshipTypeCategory->id }}" href="{{ route('vault.adminland.relationship_type_categories.edit', ['vaultId' => $vault->id, 'relationshipTypeCategory' => $relationshipTypeCategory->id]) }}" class="invisible text-sm group-hover/category:visible">
-              {{ __('app/vault.adminland.relationship_types.edit_category') }}
+              {{ __('Edit category') }}
             </x-button.invisible>
 
             @if ($relationshipTypeCategory->can_be_deleted)
@@ -37,12 +37,12 @@
                 method="delete"
                 x-target="relationship-type-category-{{ $relationshipTypeCategory->id }} notifications"
                 x-on:ajax:before="
-                  confirm('{{ __('app/vault.adminland.relationship_types.confirm_delete_category') }}') ||
+                  confirm('{{ __('Are you sure you want to delete this category and all of its relationship types? This cannot be undone.') }}') ||
                     $event.preventDefault()
                 "
                 action="{{ route('vault.adminland.relationship_type_categories.destroy', ['vaultId' => $vault->id, 'relationshipTypeCategory' => $relationshipTypeCategory->id]) }}">
                 <x-button.invisible class="invisible text-sm group-hover/category:visible">
-                  {{ __('app/shared.delete') }}
+                  {{ __('Delete') }}
                 </x-button.invisible>
               </x-form>
             @endif
@@ -65,7 +65,7 @@
 
               <div class="flex shrink-0 gap-2">
                 <x-button.invisible x-target="relationship-type-{{ $relationshipType->id }}" href="{{ route('vault.adminland.relationship_types.edit', ['vaultId' => $vault->id, 'relationshipTypeCategory' => $relationshipTypeCategory->id, 'relationshipType' => $relationshipType->id]) }}" class="invisible text-sm group-hover/type:visible">
-                  {{ __('app/vault.adminland.relationship_types.edit_type') }}
+                  {{ __('Edit') }}
                 </x-button.invisible>
 
                 @if ($relationshipType->can_be_deleted)
@@ -73,19 +73,19 @@
                     method="delete"
                     x-target="relationship-type-{{ $relationshipType->id }} notifications"
                     x-on:ajax:before="
-                      confirm('{{ __('app/vault.adminland.relationship_types.confirm_delete_type') }}') ||
+                      confirm('{{ __('Are you sure you want to delete this relationship type? This cannot be undone.') }}') ||
                         $event.preventDefault()
                     "
                     action="{{ route('vault.adminland.relationship_types.destroy', ['vaultId' => $vault->id, 'relationshipTypeCategory' => $relationshipTypeCategory->id, 'relationshipType' => $relationshipType->id]) }}">
                     <x-button.invisible class="invisible text-sm group-hover/type:visible">
-                      {{ __('app/shared.delete') }}
+                      {{ __('Delete') }}
                     </x-button.invisible>
                   </x-form>
                 @endif
               </div>
             </div>
           @empty
-            <p class="px-7 py-4 text-sm text-gray-500 dark:text-gray-400">{{ __('app/vault.adminland.relationship_types.empty_category') }}</p>
+            <p class="px-7 py-4 text-sm text-gray-500 dark:text-gray-400">{{ __('No relationship types in this category.') }}</p>
           @endforelse
         </div>
       </section>
@@ -95,7 +95,7 @@
           <x-phosphor-users-three class="size-6 text-gray-600" />
         </x-slot>
 
-        {{ __('app/vault.adminland.relationship_types.empty') }}
+        {{ __('Get started by creating a relationship type category.') }}
       </x-empty-state>
     @endforelse
   </div>

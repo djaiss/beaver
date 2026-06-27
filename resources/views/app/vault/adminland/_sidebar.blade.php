@@ -8,14 +8,14 @@
     </a>
     <a data-turbo="true" href="{{ route('settings.security.index') }}" class="{{ request()->routeIs('settings.security.index') ? 'bg-gray-100 font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800' }} flex items-center gap-2 rounded-lg px-2 py-1 mb-4">
       <x-phosphor-key class="h-4 w-4 {{ request()->routeIs('settings.security.index') ? 'text-emerald-700' : 'text-gray-500' }}" />
-      {{ __('app/settings/sidebar.security_and_access') }}
+      {{ __('Security and access') }}
     </a>
 
     <!-- section: administration -->
-    <p class="mb-1 text-sm font-medium text-gray-500">{{ __('app/settings/sidebar.administration') }}</p>
+    <p class="mb-1 text-sm font-medium text-gray-500">{{ __('Administration') }}</p>
     <a data-turbo="true" href="{{ route('vault.adminland.manage.index', ['vaultId' => $vault->id]) }}" class="{{ request()->routeIs('vault.adminland.manage.index') ? 'bg-gray-100 font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100' : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800' }} flex items-center gap-2 rounded-lg px-2 py-1">
       <x-phosphor-gear class="h-4 w-4 {{ request()->routeIs('vault.adminland.manage.index') ? 'text-emerald-700' : 'text-gray-500' }}" />
-      {{ __('app/settings/sidebar.danger_zone') }}
+      {{ __('Danger zone') }}
     </a>
   </nav>
 </aside>

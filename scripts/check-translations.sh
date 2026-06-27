@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Check Translations Script
-# Verifies that PHP short-key language files do not contain empty strings.
+# Verifies that JSON source-string language files are complete and consistent.
 
 set -euo pipefail
 
@@ -28,82 +28,54 @@ if (! is_dir($langPath)) {
     exit(1);
 }
 
-$localePaths = array_values(array_filter(glob($langPath.'/*') ?: [], 'is_dir'));
+$localeFiles = glob($langPath.'/*.json') ?: [];
 
-if ($localePaths === []) {
-    fwrite(STDERR, "No locale directories found under {$langPath}.\n");
+if ($localeFiles === []) {
+    fwrite(STDERR, "No locale files found under {$langPath}.\n");
     exit(1);
 }
 
 $emptyTranslations = [];
-$checkedFiles = 0;
-$checkedStrings = 0;
+$invalidTranslations = [];
+$englishTranslations = json_decode((string) file_get_contents($langPath.'/en.json'), true, 512, JSON_THROW_ON_ERROR);
+$englishKeys = array_keys($englishTranslations);
 
-foreach ($localePaths as $localePath) {
-    $locale = basename($localePath);
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($localePath, FilesystemIterator::SKIP_DOTS),
-    );
+foreach ($localeFiles as $localeFile) {
+    $locale = pathinfo($localeFile, PATHINFO_FILENAME);
+    $translations = json_decode((string) file_get_contents($localeFile), true, 512, JSON_THROW_ON_ERROR);
 
-    foreach ($iterator as $fileInfo) {
-        if (! $fileInfo instanceof SplFileInfo || $fileInfo->getExtension() !== 'php') {
-            continue;
+    if (! is_array($translations)) {
+        fwrite(STDERR, "Translation file must contain a JSON object: lang/{$locale}.json\n");
+        exit(1);
+    }
+
+    if (array_keys($translations) !== $englishKeys) {
+        $invalidTranslations[] = "lang/{$locale}.json does not contain the same keys as lang/en.json";
+    }
+
+    foreach ($translations as $key => $value) {
+        if (! is_string($key) || ! is_string($value)) {
+            $invalidTranslations[] = "lang/{$locale}.json contains a non-string key or value";
+        } elseif (trim($value) === '') {
+            $emptyTranslations[] = "lang/{$locale}.json: {$key}";
         }
-
-        $relativePath = str_replace($localePath.DIRECTORY_SEPARATOR, '', $fileInfo->getPathname());
-        $relativePath = str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
-        $group = substr($relativePath, 0, -4);
-        $lines = require $fileInfo->getPathname();
-
-        if (! is_array($lines)) {
-            fwrite(STDERR, "Translation file must return an array: lang/{$locale}/{$relativePath}\n");
-            exit(1);
-        }
-
-        $checkedFiles++;
-
-        $walk = function (array $values, string $prefix = '') use (&$walk, &$emptyTranslations, &$checkedStrings, $locale, $relativePath, $group): void {
-            foreach ($values as $key => $value) {
-                $keyPath = $prefix === '' ? (string) $key : $prefix.'.'.$key;
-
-                if (is_array($value)) {
-                    $walk($value, $keyPath);
-
-                    continue;
-                }
-
-                $checkedStrings++;
-
-                if (trim((string) $value) === '') {
-                    $emptyTranslations[] = sprintf(
-                        'lang/%s/%s:%s.%s',
-                        $locale,
-                        $relativePath,
-                        str_replace('/', '.', $group),
-                        $keyPath,
-                    );
-                }
-            }
-        };
-
-        $walk($lines);
     }
 }
 
-if ($emptyTranslations !== []) {
-    echo "Found empty translation strings:\n\n";
+if ($invalidTranslations !== [] || $emptyTranslations !== []) {
+    echo "Found invalid translation strings:\n\n";
 
-    foreach ($emptyTranslations as $emptyTranslation) {
-        echo "  - {$emptyTranslation}\n";
+    foreach ([...$invalidTranslations, ...$emptyTranslations] as $error) {
+        echo "  - {$error}\n";
     }
 
     echo "\nPlease translate these keys or remove them if they are not needed.\n";
     exit(1);
 }
 
-echo "All PHP translations are complete.\n";
-echo "Files checked: {$checkedFiles}\n";
-echo "Strings checked: {$checkedStrings}\n";
+echo "All JSON translations are complete.\n";
+echo 'Files checked: '.count($localeFiles)."\n";
+echo 'Strings checked: '.(count($englishKeys) * count($localeFiles))."\n";
 PHP
 
 echo "Translation check completed successfully."

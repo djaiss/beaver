@@ -1,7 +1,7 @@
 <x-box padding="p-0">
-  <x-slot:title>{{ __('app/settings/logs.title') }}</x-slot>
+  <x-slot:title>{{ __('Logs') }}</x-slot>
   <x-slot:description>
-    <p>{{ __('app/settings/logs.description') }}</p>
+    <p>{{ __('All actions performed on your account are logged here.') }}</p>
   </x-slot>
 
   <!-- last actions -->
@@ -32,7 +32,7 @@
 
   @if ($hasMoreLogs)
     <div class="flex justify-center rounded-b-lg p-3 text-sm">
-      <x-link href="{{ route('settings.logs.index') }}" class="text-center">{{ __('app/settings/logs.browse_all') }}</x-link>
+      <x-link href="{{ route('settings.logs.index') }}" class="text-center">{{ __('Browse all activity') }}</x-link>
     </div>
   @endif
 </x-box>

@@ -50,7 +50,7 @@ class AdminlandGenderControllerTest extends TestCase
 
         $gender = Gender::query()->where('vault_id', $vault->id)->first();
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
-        $response->assertSessionHas('status', __('app/shared.changes_saved'));
+        $response->assertSessionHas('status', __('Changes saved'));
         $this->assertSame('Non-binary', $gender->name);
         $this->assertSame(1, $gender->position);
     }
@@ -99,7 +99,7 @@ class AdminlandGenderControllerTest extends TestCase
         ]);
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
-        $response->assertSessionHas('status', __('app/shared.changes_saved'));
+        $response->assertSessionHas('status', __('Changes saved'));
         $this->assertSame('Woman', $gender->refresh()->name);
         $this->assertSame(1, $gender->position);
     }
@@ -124,7 +124,7 @@ class AdminlandGenderControllerTest extends TestCase
         $response = $this->actingAs($user)->delete('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id);
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
-        $response->assertSessionHas('status', __('app/shared.changes_saved'));
+        $response->assertSessionHas('status', __('Changes saved'));
         $this->assertModelMissing($gender);
     }
 }

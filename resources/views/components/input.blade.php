@@ -36,7 +36,7 @@
     <div class="flex items-center space-x-2">
       <x-label :for="$id" :value="$label" />
       @if (! $required)
-        <span class="text-sm text-gray-500">({{ __('app/shared.optional') }})</span>
+        <span class="text-sm text-gray-500">({{ __('Optional') }})</span>
       @endif
     </div>
     <input id="{{ $id }}" name="{{ $id }}" type="{{ $type }}" {{ $attributes->class($classes) }} value="{{ $value }}" {{ $autocomplete ? 'autocomplete="' . $autocomplete . '"' : '' }} placeholder="{{ $placeholder ? $placeholder : '' }}" @if($passManagerDisabled) data-1p-ignore @endif {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} {{ $disabled ? 'disabled' : '' }} />

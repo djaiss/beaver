@@ -99,7 +99,7 @@ class PersonController extends Controller
         )->execute();
 
         return to_route('vault.person.show', ['vaultId' => $vault->id, 'slug' => $person->slug])
-            ->with('status', __('app/person.new.created'));
+            ->with('status', __('Person created successfully'));
     }
 
     public function show(Request $request): View

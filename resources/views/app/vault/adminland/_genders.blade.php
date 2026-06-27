@@ -1,20 +1,20 @@
 <x-box padding="p-0">
-  <x-slot:title>{{ __('app/vault.adminland.genders.title') }}</x-slot>
+  <x-slot:title>{{ __('All the genders in the vault') }}</x-slot>
 
   <x-slot:description>
-    <p>{{ __('app/vault.adminland.genders.description') }}</p>
+    <p>{{ __('Genders are used to identify the gender of a person.') }}</p>
   </x-slot>
 
   <!-- nb of genders + action -->
   <div id="add-gender-form" class="flex items-center justify-between border-b border-gray-200 p-3 last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
     @if ($genders->isEmpty())
-      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app/vault.adminland.genders.none') }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('No genders created') }}</p>
     @else
-      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('app/vault.adminland.genders.count', ['count' => $genders->count()]) }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">{{ __(':count gender(s)', ['count' => $genders->count()]) }}</p>
     @endif
 
     <x-button.secondary x-target="add-gender-form" href="{{ route('vault.adminland.genders.new', ['vaultId' => $vault->id]) }}" class="mr-2 text-sm">
-      {{ __('app/vault.adminland.genders.new') }}
+      {{ __('New gender') }}
     </x-button.secondary>
   </div>
 
@@ -54,19 +54,19 @@
 
         <div class="flex gap-2">
           <x-button.invisible x-target="gender-{{ $gender->id }}" href="{{ route('vault.adminland.genders.edit', ['vaultId' => $vault->id, 'gender' => $gender->id]) }}" class="invisible text-sm group-hover:visible">
-            {{ __('app/vault.adminland.genders.edit') }}
+            {{ __('Edit') }}
           </x-button.invisible>
 
           <x-form
             method="delete"
             x-target="gender-{{ $gender->id }}"
             x-on:ajax:before="
-            confirm('{{ __('app/vault.adminland.genders.confirm_delete') }}') ||
+            confirm('{{ __('Are you sure you want to proceed? This cannot be undone.') }}') ||
               $event.preventDefault()
           "
             action="{{ route('vault.adminland.genders.destroy', ['vaultId' => $vault->id, 'gender' => $gender->id]) }}">
             <x-button.invisible class="invisible text-sm group-hover:visible">
-              {{ __('app/shared.delete') }}
+              {{ __('Delete') }}
             </x-button.invisible>
           </x-form>
         </div>
@@ -77,7 +77,7 @@
           <x-phosphor-gender-intersex class="size-6 text-gray-600" />
         </x-slot>
 
-        {{ __('app/vault.adminland.genders.empty') }}
+        {{ __('Get started by creating a new gender.') }}
       </x-empty-state>
     @endforelse
   </div>

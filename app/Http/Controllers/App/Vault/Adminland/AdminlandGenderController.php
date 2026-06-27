@@ -37,7 +37,7 @@ class AdminlandGenderController extends Controller
         )->execute();
 
         return to_route('vault.adminland.index', $vault->id)
-            ->with('status', __('app/shared.changes_saved'));
+            ->with('status', __('Changes saved'));
     }
 
     public function edit(Request $request): View
@@ -80,7 +80,7 @@ class AdminlandGenderController extends Controller
         )->execute();
 
         return to_route('vault.adminland.index', $request->attributes->get('vault')->id)
-            ->with('status', __('app/shared.changes_saved'));
+            ->with('status', __('Changes saved'));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -100,6 +100,6 @@ class AdminlandGenderController extends Controller
         )->execute();
 
         return to_route('vault.adminland.index', $request->attributes->get('vault')->id)
-            ->with('status', __('app/shared.changes_saved'));
+            ->with('status', __('Changes saved'));
     }
 }
