@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault\Adminland;
 
@@ -25,9 +25,9 @@ class AdminlandManageControllerTest extends TestCase
             role: PermissionEnum::Owner->value,
         );
 
-        $response = $this->actingAs($user)->get("/vaults/{$vault->id}/adminland/manage");
+        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland/manage');
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertSee(route('vault.adminland.manage.destroy', ['vaultId' => $vault->id]), false);
         $response->assertSee('value="delete"', false);
         $response->assertSee('onsubmit="return confirm', false);
@@ -45,7 +45,7 @@ class AdminlandManageControllerTest extends TestCase
             role: PermissionEnum::Owner->value,
         );
 
-        $response = $this->actingAs($user)->delete("/vaults/{$vault->id}/adminland/manage");
+        $response = $this->actingAs($user)->delete('/vaults/'.$vault->id.'/adminland/manage');
 
         $response->assertRedirect(route('vault.index'));
         $response->assertSessionHas('status', __('app/shared.changes_saved'));

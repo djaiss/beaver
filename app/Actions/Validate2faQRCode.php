@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use PragmaRX\Google2FALaravel\Google2FA;
-use SensitiveParameter;
 
 /**
  * Validate the code from the QR code for 2FA setup.
@@ -18,7 +17,6 @@ readonly class Validate2faQRCode
 {
     public function __construct(
         private User $user,
-        #[SensitiveParameter]
         private string $token,
         private ?Google2FA $google2fa = null,
     ) {}
@@ -49,9 +47,6 @@ readonly class Validate2faQRCode
 
     private function generateRandomCodes(): array
     {
-        return collect()
-            ->times(8)
-            ->map(fn () => Str::random(10))
-            ->all();
+        return collect()->times(8)->map(fn () => Str::random(10))->all();
     }
 }

@@ -1,4 +1,4 @@
-@props ([
+@props([
   'level' => 0,
   'comma' => false,
   'key' => null,
@@ -27,7 +27,7 @@
     default => '',
   };
 
-  $displayValue = $type === 'string' ? "\"{$value}\"" : $value;
+  $displayValue = $type === 'string' ? '"' . $value . '"' : $value;
 @endphp
 
 <div {{ $attributes->class($pad) }}>

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Settings;
 
@@ -29,7 +29,46 @@ class SettingsControllerTest extends TestCase
         $response = $this->actingAs($user)
             ->get('/settings');
 
-        $response->assertOk();
+        $response
+            ->assertOk()
+            ->assertViewHasAll([
+                'user',
+                'logs',
+                'hasMoreLogs',
+                'emails',
+                'hasMoreEmails',
+            ]);
+
+        $response->assertViewHas(
+            'logs',
+            fn ($logs): bool => $logs->count() === 1
+            && $logs->every(
+                fn ($log): bool => isset(
+                    $log->username,
+                    $log->vault_name,
+                    $log->vault_link,
+                    $log->action,
+                    $log->description,
+                    $log->created_at,
+                    $log->created_at_human,
+                ),
+            ),
+        );
+
+        $response->assertViewHas(
+            'emails',
+            fn ($emails): bool => $emails->count() === 1
+            || $emails->every(
+                fn ($email): bool => isset(
+                    $email->email_address,
+                    $email->subject,
+                    $email->body,
+                    $email->sent_at,
+                    $email->delivered_at,
+                    $email->bounced_at,
+                ),
+            ),
+        );
     }
 
     #[Test]

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -75,7 +75,7 @@ class JoinVaultTest extends TestCase
         $this->assignUserToVault(
             user: $user,
             vault: $vault,
-            role: PermissionEnum::Viewer->value,
+            role: PermissionEnum::Viewer->value
         );
         $vault->update(['invitation_code' => 'ABC123']);
 

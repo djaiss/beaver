@@ -1,4 +1,4 @@
-@props ([
+@props([
   'name' => null,
   'level' => 0,
   'comma' => false,

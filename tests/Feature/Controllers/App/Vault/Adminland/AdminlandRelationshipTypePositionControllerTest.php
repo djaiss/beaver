@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault\Adminland;
 
@@ -31,12 +31,9 @@ class AdminlandRelationshipTypePositionControllerTest extends TestCase
         $unrelated = $this->createRelationshipType($vault->id, $otherCategory->id, 1);
 
         $response = $this->actingAs($user)
-            ->put(
-                "/vaults/{$vault->id}/adminland/relationship-type-categories/{$category->id}/relationship-types/{$first->id}/position",
-                [
-                    'position' => 3,
-                ],
-            );
+            ->put('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$category->id.'/relationship-types/'.$first->id.'/position', [
+                'position' => 3,
+            ]);
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
         $this->assertSame(3, $first->refresh()->position);
@@ -55,15 +52,12 @@ class AdminlandRelationshipTypePositionControllerTest extends TestCase
         $relationshipType = $this->createRelationshipType($vault->id, $category->id, 1);
 
         $response = $this->actingAs($user)
-            ->from("/vaults/{$vault->id}/adminland")
-            ->put(
-                "/vaults/{$vault->id}/adminland/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}/position",
-                [
-                    'position' => 0,
-                ],
-            );
+            ->from('/vaults/'.$vault->id.'/adminland')
+            ->put('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id.'/position', [
+                'position' => 0,
+            ]);
 
-        $response->assertRedirect("/vaults/{$vault->id}/adminland");
+        $response->assertRedirect('/vaults/'.$vault->id.'/adminland');
         $response->assertSessionHasErrors('position');
         $this->assertSame(1, $relationshipType->refresh()->position);
     }
@@ -79,12 +73,9 @@ class AdminlandRelationshipTypePositionControllerTest extends TestCase
         $relationshipType = $this->createRelationshipType($vault->id, $otherCategory->id, 1);
 
         $this->actingAs($user)
-            ->put(
-                "/vaults/{$vault->id}/adminland/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}/position",
-                [
-                    'position' => 1,
-                ],
-            )
+            ->put('/vaults/'.$vault->id.'/adminland/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id.'/position', [
+                'position' => 1,
+            ])
             ->assertNotFound();
     }
 

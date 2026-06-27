@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -113,11 +113,12 @@ class Validate2faQRCodeTest extends TestCase
                 google2fa: $google2faMock,
             )->execute();
         } catch (InvalidArgumentException) {
-            $user->refresh();
-
-            $this->assertNull($user->two_factor_confirmed_at);
-            $this->assertNull($user->two_factor_recovery_codes);
         }
+
+        $user->refresh();
+
+        $this->assertNull($user->two_factor_confirmed_at);
+        $this->assertNull($user->two_factor_recovery_codes);
 
         Queue::assertNothingPushed();
     }

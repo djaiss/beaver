@@ -122,7 +122,7 @@ class Person extends Model
                 $lastName = $this->last_name;
                 $separator = $firstName && $lastName ? ' ' : '';
 
-                return "{$firstName}{$separator}{$lastName}";
+                return $firstName.$separator.$lastName;
             },
         );
     }

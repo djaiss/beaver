@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -20,7 +20,7 @@ class LoginControllerTest extends TestCase
     {
         $response = $this->get('/login');
 
-        $response->assertOk();
+        $response->assertStatus(200);
     }
 
     #[Test]

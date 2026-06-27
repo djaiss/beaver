@@ -17,5 +17,7 @@
 
     {{ $options['title'] ?? 'Code' }}
   </div>
-  <div class="overflow-x-auto rounded-b-lg bg-gray-100 p-2 dark:bg-gray-800 [&_code]:text-sm [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0">{!! $content !!}</div>
+  <div class="overflow-x-auto rounded-b-lg bg-gray-100 p-2 dark:bg-gray-800 [&_code]:text-sm [&_pre]:m-0 [&_pre]:bg-transparent [&_pre]:p-0">
+    {!! $content !!}
+  </div>
 </div>

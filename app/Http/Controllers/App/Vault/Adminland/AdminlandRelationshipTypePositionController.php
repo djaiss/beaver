@@ -15,10 +15,10 @@ class AdminlandRelationshipTypePositionController extends Controller
     {
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
-        $relationshipType = $relationshipTypeCategory
-            ->relationshipTypes()
+        $relationshipType = $relationshipTypeCategory->relationshipTypes()
             ->where('vault_id', $vault->id)
             ->findOrFail($request->route()->parameter('relationshipType'));
 

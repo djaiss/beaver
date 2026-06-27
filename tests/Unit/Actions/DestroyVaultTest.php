@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -29,7 +29,7 @@ class DestroyVaultTest extends TestCase
         $this->assignUserToVault(
             user: $user,
             vault: $vault,
-            role: PermissionEnum::Owner->value,
+            role: PermissionEnum::Owner->value
         );
 
         new DestroyVault(
@@ -76,7 +76,7 @@ class DestroyVaultTest extends TestCase
         $this->assignUserToVault(
             user: $user,
             vault: $vault,
-            role: PermissionEnum::Viewer->value,
+            role: PermissionEnum::Viewer->value
         );
 
         new DestroyVault(

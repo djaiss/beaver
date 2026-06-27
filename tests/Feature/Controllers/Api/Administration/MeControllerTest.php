@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Administration;
 
@@ -30,8 +30,7 @@ class MeControllerTest extends TestCase
 
         $response = $this->json('GET', '/api/me');
 
-        $response->assertOk();
-        $appUrl = config('app.url');
+        $response->assertStatus(200);
 
         $this->assertEquals(
             $response->json()['data'],
@@ -47,7 +46,7 @@ class MeControllerTest extends TestCase
                     'time_format_24h' => true,
                 ],
                 'links' => [
-                    'self' => "{$appUrl}/api/me",
+                    'self' => config('app.url').'/api/me',
                 ],
             ],
         );
@@ -76,8 +75,7 @@ class MeControllerTest extends TestCase
             'time_format_24h' => 'true',
         ]);
 
-        $response->assertOk();
-        $appUrl = config('app.url');
+        $response->assertStatus(200);
 
         $this->assertEquals(
             [
@@ -92,7 +90,7 @@ class MeControllerTest extends TestCase
                     'time_format_24h' => true,
                 ],
                 'links' => [
-                    'self' => "{$appUrl}/api/me",
+                    'self' => config('app.url').'/api/me',
                 ],
             ],
             $response->json()['data'],

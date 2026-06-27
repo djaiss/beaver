@@ -12,7 +12,6 @@ use App\Jobs\PopulateVault;
 use App\Models\Member;
 use App\Models\User;
 use App\Models\Vault;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -33,13 +32,11 @@ class CreateVault
     {
         $this->sanitize();
         $this->validate();
-
-        DB::transaction(function (): void {
-            $this->create();
-            $this->addMembership();
-            $this->populate();
-            $this->log();
-        });
+        $this->create();
+        $this->generateInvitationCode();
+        $this->addMembership();
+        $this->populate();
+        $this->log();
 
         return $this->vault;
     }
@@ -71,8 +68,13 @@ class CreateVault
     {
         $this->vault = Vault::query()->create([
             'name' => $this->name,
-            'invitation_code' => Str::random(64),
         ]);
+    }
+
+    private function generateInvitationCode(): void
+    {
+        $this->vault->invitation_code = Str::random(64);
+        $this->vault->save();
     }
 
     private function addMembership(): void

@@ -46,11 +46,8 @@ class UpdateRelationshipTypeCategory
             throw new ModelNotFoundException('Permission denied');
         }
 
-        $maxPosition = $this->relationshipTypeCategory
-            ->vault
-            ->relationshipTypeCategories()
-            ->max('position') ?? 0;
-        if ($this->position !== null && ($this->position < 1 || $this->position > ($maxPosition + 1))) {
+        $maxPosition = $this->relationshipTypeCategory->vault->relationshipTypeCategories()->max('position') ?? 0;
+        if ($this->position !== null && ($this->position < 1 || $this->position > $maxPosition + 1)) {
             throw new ModelNotFoundException('Invalid position');
         }
     }
@@ -74,20 +71,17 @@ class UpdateRelationshipTypeCategory
         $oldPosition = $this->relationshipTypeCategory->position;
         $newPosition = $this->position;
 
-        if ($oldPosition === $newPosition) {
-            return;
+        if ($newPosition > $oldPosition) {
+            $this->relationshipTypeCategory->vault->relationshipTypeCategories()
+                ->where('id', '!=', $this->relationshipTypeCategory->id)
+                ->whereBetween('position', [$oldPosition + 1, $newPosition])
+                ->decrement('position');
+        } elseif ($newPosition < $oldPosition) {
+            $this->relationshipTypeCategory->vault->relationshipTypeCategories()
+                ->where('id', '!=', $this->relationshipTypeCategory->id)
+                ->whereBetween('position', [$newPosition, $oldPosition - 1])
+                ->increment('position');
         }
-
-        $this->relationshipTypeCategory
-            ->vault
-            ->relationshipTypeCategories()
-            ->where('id', '!=', $this->relationshipTypeCategory->id)
-            ->when($newPosition > $oldPosition, function ($query) use ($oldPosition, $newPosition): void {
-                $query->whereBetween('position', [$oldPosition + 1, $newPosition])->decrement('position');
-            })
-            ->when($newPosition < $oldPosition, function ($query) use ($oldPosition, $newPosition): void {
-                $query->whereBetween('position', [$newPosition, $oldPosition - 1])->increment('position');
-            });
     }
 
     private function log(): void

@@ -7,8 +7,6 @@ namespace App\Http\Controllers\App\Settings;
 use App\Actions\CreateApiKey;
 use App\Actions\DestroyApiKey;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\App\Settings\StoreApiKeyRequest;
-use App\ViewModels\Settings\ApiKeyCreateViewModel;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,16 +15,14 @@ class ApiKeyController extends Controller
 {
     public function create(): View
     {
-        $view = new ApiKeyCreateViewModel;
-
-        return view('app.settings.security._api-create', [
-            'view' => $view,
-        ]);
+        return view('app.settings.security._api-create');
     }
 
-    public function store(StoreApiKeyRequest $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'label' => ['required', 'string', 'min:3', 'max:255'],
+        ]);
 
         $apiKey = new CreateApiKey(
             user: $request->user(),
@@ -40,8 +36,7 @@ class ApiKeyController extends Controller
 
     public function destroy(Request $request, int $apiKeyId): RedirectResponse
     {
-        $apiKey = $request
-            ->user()
+        $apiKey = $request->user()
             ->tokens()
             ->where('id', $apiKeyId)
             ->first();

@@ -7,7 +7,9 @@
         </div>
 
         <div class="min-w-0 flex-1">
-          <p class="text-sm font-medium">{{ $message }}</p>
+          <p class="text-sm font-medium">
+            {{ $message }}
+          </p>
         </div>
       </div>
     @endif

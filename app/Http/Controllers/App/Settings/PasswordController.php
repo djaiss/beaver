@@ -6,14 +6,24 @@ namespace App\Http\Controllers\App\Settings;
 
 use App\Actions\UpdateUserPassword;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\App\Settings\UpdatePasswordRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
 {
-    public function update(UpdatePasswordRequest $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'current_password' => ['required', 'string', 'max:255'],
+            'new_password' => [
+                'required',
+                'string',
+                'max:255',
+                'confirmed',
+                Password::min(8)->uncompromised(),
+            ],
+        ]);
 
         new UpdateUserPassword(
             user: $request->user(),

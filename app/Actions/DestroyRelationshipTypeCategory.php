@@ -20,8 +20,7 @@ class DestroyRelationshipTypeCategory
         private readonly User $user,
         private readonly RelationshipTypeCategory $relationshipTypeCategory,
     ) {
-        $this->relationshipTypeCategoryName =
-            $this->relationshipTypeCategory->name ?? $this->relationshipTypeCategory->key;
+        $this->relationshipTypeCategoryName = $this->relationshipTypeCategory->name ?? $this->relationshipTypeCategory->key;
     }
 
     public function execute(): void

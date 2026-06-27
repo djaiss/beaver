@@ -7,7 +7,6 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use SensitiveParameter;
 
 class BrunoCommand extends Command
 {
@@ -45,8 +44,7 @@ class BrunoCommand extends Command
             ->first();
 
         if ($user === null) {
-            $adminEmail = self::ADMIN_EMAIL;
-            $this->error("The seeded user {$adminEmail} was not found.");
+            $this->error(sprintf('The seeded user %s was not found.', self::ADMIN_EMAIL));
 
             return self::FAILURE;
         }
@@ -68,7 +66,7 @@ class BrunoCommand extends Command
     private function readBrunoCollection(string $collectionPath): ?string
     {
         if (! File::isFile($collectionPath)) {
-            $this->error("The Bruno collection was not found at {$collectionPath}.");
+            $this->error(sprintf('The Bruno collection was not found at %s.', $collectionPath));
 
             return null;
         }
@@ -84,12 +82,12 @@ class BrunoCommand extends Command
         return $collection;
     }
 
-    private function replaceApiKey(string $collection, #[SensitiveParameter] string $apiKey): ?string
+    private function replaceApiKey(string $collection, string $apiKey): ?string
     {
         $replacementCount = 0;
         $updatedCollection = preg_replace_callback(
             '/(?<prefix>auth:bearer\s*\{\s*token:\s*)[^\r\n}]*/',
-            static fn (array $matches): string => "{$matches['prefix']}{$apiKey}",
+            static fn (array $matches): string => $matches['prefix'].$apiKey,
             $collection,
             1,
             $replacementCount,

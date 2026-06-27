@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -21,7 +21,7 @@ class SendMagicLinkControllerTest extends TestCase
     {
         $response = $this->get('/send-magic-link');
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertViewIs('app.auth.request-magic-link');
     }
 
@@ -38,7 +38,7 @@ class SendMagicLinkControllerTest extends TestCase
             'email' => 'chandler.bing@friends.com',
         ]);
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertViewIs('app.auth.magic-link-sent');
 
         Queue::assertPushed(
@@ -59,7 +59,7 @@ class SendMagicLinkControllerTest extends TestCase
             'email' => 'nonexistent@example.com',
         ]);
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertViewIs('app.auth.magic-link-sent');
 
         Queue::assertNotPushed(SendEmail::class);

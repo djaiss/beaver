@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault\Persons;
 
@@ -185,13 +185,8 @@ class PersonSearchControllerTest extends TestCase
         $response->assertOk();
         $response->assertViewHas(
             'persons',
-            fn (Collection $filteredPersons): bool => (
-                $filteredPersons->pluck('id')->sort()->values()->all() === $persons
-                    ->pluck('id')
-                    ->sort()
-                    ->values()
-                    ->all()
-            ),
+            fn (Collection $filteredPersons): bool => $filteredPersons->pluck('id')->sort()->values()->all()
+                === $persons->pluck('id')->sort()->values()->all(),
         );
     }
 

@@ -98,6 +98,6 @@ class Log extends Model
      */
     public function getTranslatedDescription(): string
     {
-        return __("app/settings/logs.user_action.{$this->action}", $this->parameters ?? []);
+        return __('app/settings/logs.user_action.'.$this->action, $this->parameters ?? []);
     }
 }

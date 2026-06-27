@@ -27,7 +27,12 @@ class VaultControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get('/vaults');
 
-        $response->assertOk();
+        $response->assertStatus(200);
+        $response->assertViewHas(
+            'vaults',
+            fn ($vaults): bool => $vaults->count() === 1
+            && $vaults->every(fn ($vault): bool => isset($vault->name, $vault->link, $vault->avatar)),
+        );
     }
 
     #[Test]
@@ -37,7 +42,8 @@ class VaultControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get('/vaults/create');
 
-        $response->assertOk();
+        $response->assertStatus(200);
+        $response->assertViewIs('app.vault.create');
     }
 
     #[Test]
@@ -50,7 +56,7 @@ class VaultControllerTest extends TestCase
         ]);
 
         $vault = Vault::query()->latest()->first();
-        $response->assertRedirect("/vaults/{$vault->id}");
+        $response->assertRedirect('/vaults/'.$vault->id);
         $response->assertSessionHas('status', 'Vault created successfully');
     }
 
@@ -66,9 +72,9 @@ class VaultControllerTest extends TestCase
         );
 
         $response = $this->actingAs($user)
-            ->get("/vaults/{$vault->id}");
+            ->get('/vaults/'.$vault->id);
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertViewIs('app.vault.show');
         $response->assertViewHas('vault');
     }

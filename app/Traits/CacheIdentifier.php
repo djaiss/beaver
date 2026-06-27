@@ -10,6 +10,6 @@ trait CacheIdentifier
 
     public function getKey(): string
     {
-        return str_replace('%s', (string) $this->identifier, $this->key);
+        return sprintf($this->key, $this->identifier);
     }
 }

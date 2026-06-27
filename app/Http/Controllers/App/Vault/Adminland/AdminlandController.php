@@ -17,8 +17,7 @@ class AdminlandController extends Controller
     {
         $vault = $request->attributes->get('vault');
 
-        $genders = Gender::query()
-            ->where('vault_id', $vault->id)
+        $genders = Gender::query()->where('vault_id', $vault->id)
             ->orderBy('position')
             ->get()
             ->map(fn (Gender $gender) => (object) [
@@ -27,8 +26,7 @@ class AdminlandController extends Controller
                 'position' => $gender->position,
             ]);
 
-        $relationshipTypeCategories = $vault
-            ->relationshipTypeCategories()
+        $relationshipTypeCategories = $vault->relationshipTypeCategories()
             ->with(['relationshipTypes' => function ($query): void {
                 $query->orderBy('position');
             }])

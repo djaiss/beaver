@@ -34,8 +34,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('vaults', [VaultController::class, 'index'])->name('vault.index');
 
     // create
-    Route::get('vaults/create', [VaultController::class, 'new'])->name('vault.new');
-    Route::post('vaults', [VaultController::class, 'create'])->name('vault.create');
+    Route::get('vaults/create', [VaultController::class, 'create'])->name('vault.create');
+    Route::post('vaults', [VaultController::class, 'store'])->name('vault.store');
 
     // join
     Route::get('vaults/join', [JoinVaultController::class, 'create'])->name('vault.join.create');
@@ -103,7 +103,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::put('settings/security/password', [PasswordController::class, 'update'])->name('settings.security.password.update');
 
     // 2fa
-    Route::get('settings/security/2fa/new', [TwoFAController::class, 'new'])->name('settings.security.2fa.new');
+    Route::get('settings/security/2fa/create', [TwoFAController::class, 'create'])->name('settings.security.2fa.create');
     Route::post('settings/security/2fa', [TwoFAController::class, 'store'])->name('settings.security.2fa.store');
     Route::delete('settings/security/2fa', [TwoFAController::class, 'destroy'])->name('settings.security.2fa.destroy');
     Route::get('settings/security/recovery-codes', [RecoveryCodeController::class, 'show'])->name('settings.security.recoverycodes.show');

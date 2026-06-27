@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -29,14 +29,10 @@ class DestroyRelationshipTypeTest extends TestCase
         new DestroyRelationshipType($user, $relationshipType)->execute();
 
         $this->assertModelMissing($relationshipType);
-        Queue::assertPushedOn(
-            'low',
-            LogUserAction::class,
-            fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::RelationshipTypeDeletion
-                && $job->parameters === ['name' => 'Parent']
-            ),
-        );
+        Queue::assertPushedOn('low', LogUserAction::class, fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::RelationshipTypeDeletion
+            && $job->parameters === ['name' => 'Parent']
+        ));
     }
 
     #[Test]
@@ -50,10 +46,7 @@ class DestroyRelationshipTypeTest extends TestCase
 
         new DestroyRelationshipType($user, $relationshipType)->execute();
 
-        Queue::assertPushed(
-            LogUserAction::class,
-            fn (LogUserAction $job): bool => $job->parameters === ['name' => 'Parent'],
-        );
+        Queue::assertPushed(LogUserAction::class, fn (LogUserAction $job): bool => $job->parameters === ['name' => 'Parent']);
     }
 
     #[Test]

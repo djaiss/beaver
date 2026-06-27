@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Vault;
 
@@ -49,16 +49,14 @@ class PersonControllerTest extends TestCase
         $user = $this->createUser();
         $vault = $this->createVault();
         $this->assignUserToVault($user, $vault);
-        Person::factory()
-            ->count(2)
-            ->create([
-                'vault_id' => $vault->id,
-                'gender_id' => null,
-            ]);
+        Person::factory()->count(2)->create([
+            'vault_id' => $vault->id,
+            'gender_id' => null,
+        ]);
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', "/api/vaults/{$vault->id}/persons");
+        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/persons');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -77,7 +75,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', "/api/vaults/{$vault->id}/persons");
+        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/persons');
 
         $response->assertForbidden();
     }
@@ -95,7 +93,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', "/api/vaults/{$vault->id}/persons/{$person->id}");
+        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/persons/'.$person->id);
 
         $response->assertOk();
         $response->assertJsonStructure($this->jsonStructure);
@@ -115,7 +113,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', "/api/vaults/{$vault->id}/persons/{$person->id}");
+        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/persons/'.$person->id);
 
         $response->assertNotFound();
     }
@@ -132,7 +130,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('POST', "/api/vaults/{$vault->id}/persons", [
+        $response = $this->json('POST', '/api/vaults/'.$vault->id.'/persons', [
             'gender_id' => $gender->id,
             'kids_status' => 'has_kids',
             'first_name' => 'Regis',
@@ -159,7 +157,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('POST', "/api/vaults/{$vault->id}/persons", [
+        $response = $this->json('POST', '/api/vaults/'.$vault->id.'/persons', [
             'first_name' => 'Regis',
         ]);
 
@@ -180,7 +178,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('PUT', "/api/vaults/{$vault->id}/persons/{$person->id}", [
+        $response = $this->json('PUT', '/api/vaults/'.$vault->id.'/persons/'.$person->id, [
             'first_name' => 'Updated',
             'last_name' => 'Person',
         ]);
@@ -204,7 +202,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('PUT', "/api/vaults/{$vault->id}/persons/{$person->id}", [
+        $response = $this->json('PUT', '/api/vaults/'.$vault->id.'/persons/'.$person->id, [
             'first_name' => 'Updated',
         ]);
 
@@ -225,7 +223,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', "/api/vaults/{$vault->id}/persons/{$person->id}");
+        $response = $this->json('DELETE', '/api/vaults/'.$vault->id.'/persons/'.$person->id);
 
         $response->assertNoContent();
     }
@@ -243,7 +241,7 @@ class PersonControllerTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', "/api/vaults/{$vault->id}/persons/{$person->id}");
+        $response = $this->json('DELETE', '/api/vaults/'.$vault->id.'/persons/'.$person->id);
 
         $response->assertNotFound();
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault\Adminland;
 
@@ -26,9 +26,9 @@ class AdminlandGenderControllerTest extends TestCase
             role: PermissionEnum::Owner->value,
         );
 
-        $response = $this->actingAs($user)->get("/vaults/{$vault->id}/adminland/genders/new");
+        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland/genders/new');
 
-        $response->assertOk();
+        $response->assertStatus(200);
     }
 
     #[Test]
@@ -44,7 +44,7 @@ class AdminlandGenderControllerTest extends TestCase
             role: PermissionEnum::Owner->value,
         );
 
-        $response = $this->actingAs($user)->post("/vaults/{$vault->id}/adminland/genders", [
+        $response = $this->actingAs($user)->post('/vaults/'.$vault->id.'/adminland/genders', [
             'name' => 'Non-binary',
         ]);
 
@@ -71,9 +71,9 @@ class AdminlandGenderControllerTest extends TestCase
             'position' => 1,
         ]);
 
-        $response = $this->actingAs($user)->get("/vaults/{$vault->id}/adminland/genders/{$gender->id}/edit");
+        $response = $this->actingAs($user)->get('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id.'/edit');
 
-        $response->assertOk();
+        $response->assertStatus(200);
     }
 
     #[Test]
@@ -94,7 +94,7 @@ class AdminlandGenderControllerTest extends TestCase
             'position' => 1,
         ]);
 
-        $response = $this->actingAs($user)->put("/vaults/{$vault->id}/adminland/genders/{$gender->id}", [
+        $response = $this->actingAs($user)->put('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id, [
             'name' => 'Woman',
         ]);
 
@@ -121,7 +121,7 @@ class AdminlandGenderControllerTest extends TestCase
             'position' => 1,
         ]);
 
-        $response = $this->actingAs($user)->delete("/vaults/{$vault->id}/adminland/genders/{$gender->id}");
+        $response = $this->actingAs($user)->delete('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id);
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
         $response->assertSessionHas('status', __('app/shared.changes_saved'));

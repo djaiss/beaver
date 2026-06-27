@@ -75,6 +75,7 @@ class CreatePerson
         if ($this->gender instanceof Gender && $this->gender->vault_id !== $this->vault->id) {
             throw new ModelNotFoundException('Gender not found');
         }
+
     }
 
     private function create(): void
@@ -97,9 +98,8 @@ class CreatePerson
 
     private function generateSlug(): void
     {
-        $name = "{$this->person->first_name} {$this->person->last_name}";
-        $sluggedName = Str::of($name)->slug('-');
-        $slug = "{$this->person->id}-{$sluggedName}";
+        $name = $this->person->first_name.' '.$this->person->last_name;
+        $slug = $this->person->id.'-'.Str::of($name)->slug('-');
 
         $this->person->slug = $slug;
         $this->person->save();

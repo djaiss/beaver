@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Models\Member;
+use App\Models\Vault;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -23,13 +23,10 @@ class CheckVault
         $id = (int) $request->route()->parameter('vaultId');
 
         try {
-            $member = Member::query()
-                ->with('vault')
-                ->where('vault_id', $id)
-                ->where('user_id', $request->user()->id)
-                ->firstOrFail();
+            $vault = Vault::query()->findOrFail($id);
 
-            $vault = $member->vault;
+            $member = $request->user()->memberOf($vault);
+            abort_unless($member !== null, 403);
 
             $request->attributes->add(['vault' => $vault]);
             $request->attributes->add(['member' => $member]);

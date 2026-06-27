@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Settings;
 
@@ -19,9 +19,14 @@ class TwoFAControllerTest extends TestCase
         $user = $this->createUser();
 
         $response = $this->actingAs($user)
-            ->get('/settings/security/2fa/new');
+            ->get('/settings/security/2fa/create');
 
-        $response->assertOk();
+        $response->assertStatus(200);
+        $response->assertViewIs('app.settings.security._2fa-new');
+        $response->assertViewHas('secret');
+        $response->assertViewHas('qrCodeSvg');
+        $user->refresh();
+        $this->assertNotNull($user->two_factor_secret);
     }
 
     #[Test]
@@ -37,13 +42,41 @@ class TwoFAControllerTest extends TestCase
         $validToken = $google2fa->getCurrentOtp($secret);
 
         $response = $this->actingAs($user)
-            ->from('/settings/security/2fa/new')
+            ->from('/settings/security/2fa/create')
             ->post('/settings/security/2fa', [
                 'token' => $validToken,
             ]);
 
         $response->assertRedirect('/settings/security');
         $response->assertSessionHas('status', 'Two-factor authentication has been enabled successfully.');
+
+        $user->refresh();
+        $this->assertNotNull($user->two_factor_confirmed_at);
+        $this->assertNotNull($user->two_factor_recovery_codes);
+        $this->assertCount(8, $user->two_factor_recovery_codes);
+    }
+
+    #[Test]
+    public function it_rejects_invalid_token(): void
+    {
+        $google2fa = new Google2FA(request());
+        $secret = $google2fa->generateSecretKey();
+
+        $user = $this->createUser([
+            'two_factor_secret' => $secret,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->from('/settings/security/2fa/create')
+            ->post('/settings/security/2fa', [
+                'token' => '000000',
+            ]);
+
+        $response->assertRedirect('/settings/security/2fa/create');
+        $response->assertSessionHasErrors(['token' => 'The provided token is invalid.']);
+
+        $user->refresh();
+        $this->assertNull($user->two_factor_confirmed_at);
     }
 
     #[Test]

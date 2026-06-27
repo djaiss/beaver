@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Vault\Adminland;
 
@@ -43,12 +43,9 @@ class AdminlandGenderPositionControllerTest extends TestCase
             'position' => 3,
         ]);
 
-        $response = $this->actingAs($user)->put(
-            "/vaults/{$vault->id}/adminland/genders/{$firstGender->id}/position",
-            [
-                'position' => '3',
-            ],
-        );
+        $response = $this->actingAs($user)->put('/vaults/'.$vault->id.'/adminland/genders/'.$firstGender->id.'/position', [
+            'position' => '3',
+        ]);
 
         $response->assertRedirect(route('vault.adminland.index', $vault->id));
         $this->assertSame(3, $firstGender->refresh()->position);
@@ -72,12 +69,12 @@ class AdminlandGenderPositionControllerTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->from("/vaults/{$vault->id}/adminland")
-            ->put("/vaults/{$vault->id}/adminland/genders/{$gender->id}/position", [
+            ->from('/vaults/'.$vault->id.'/adminland')
+            ->put('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id.'/position', [
                 'position' => 0,
             ]);
 
-        $response->assertRedirect("/vaults/{$vault->id}/adminland");
+        $response->assertRedirect('/vaults/'.$vault->id.'/adminland');
         $response->assertSessionHasErrors('position');
         $this->assertSame(1, $gender->refresh()->position);
     }
@@ -97,7 +94,7 @@ class AdminlandGenderPositionControllerTest extends TestCase
             'position' => 1,
         ]);
 
-        $response = $this->actingAs($user)->put("/vaults/{$vault->id}/adminland/genders/{$gender->id}/position", [
+        $response = $this->actingAs($user)->put('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id.'/position', [
             'position' => 2,
         ]);
 
@@ -121,7 +118,7 @@ class AdminlandGenderPositionControllerTest extends TestCase
             'position' => 1,
         ]);
 
-        $response = $this->actingAs($user)->put("/vaults/{$vault->id}/adminland/genders/{$gender->id}/position", [
+        $response = $this->actingAs($user)->put('/vaults/'.$vault->id.'/adminland/genders/'.$gender->id.'/position', [
             'position' => 1,
         ]);
 

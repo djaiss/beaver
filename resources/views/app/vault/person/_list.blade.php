@@ -2,7 +2,7 @@
   <!-- Search header - fixed -->
   <form x-target="persons" action="{{ route('vault.person.search', [$vault->id]) }}" method="POST" class="shrink-0 border-b border-gray-200 p-3">
     @csrf
-    @method ('POST')
+    @method('POST')
 
     <div class="relative">
       <x-phosphor-magnifying-glass class="pointer-events-none absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 text-gray-500" />

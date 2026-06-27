@@ -1,14 +1,14 @@
-<x-form :action="$view->url()->store" method="post" id="authenticator-app" x-target="authenticator-app notifications" x-target.back="authenticator-app" class="border-b border-gray-200 p-4 dark:border-gray-700">
+<x-form :action="route('settings.security.2fa.store')" method="post" id="authenticator-app" x-target="authenticator-app notifications" x-target.back="authenticator-app" class="border-b border-gray-200 p-4 dark:border-gray-700">
   <div class="flex flex-col gap-y-4">
     <p>
       <span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-gray-400 text-sm">1</span>
       {{ __('app/settings/security.two_factor.scan_description') }}
     </p>
     <div class="mx-auto w-full">
-      <div class="mb-2 flex h-36 w-36 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-900">{!! $view->secret()->qrCodeSvg !!}</div>
+      <div class="mb-2 flex h-36 w-36 items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-900">{!! $qrCodeSvg !!}</div>
       <p class="mb-4 text-sm">
         {{ __('app/settings/security.two_factor.setup_key') }}
-        <code>{{ $view->secret()->secret }}</code>
+        <code>{{ $secret }}</code>
       </p>
     </div>
   </div>
@@ -17,35 +17,38 @@
     x-data="{
       digits: ['', '', '', '', '', ''],
       handleInput(index, event) {
-        const value = event.target.value;
+        const value = event.target.value
         if (value.length > 0 && /^[0-9]$/.test(value)) {
-          this.digits[index] = value;
-          this.updateToken();
+          this.digits[index] = value
+          this.updateToken()
           if (index < 5) {
-            this.$refs['digit' + (index + 1)].focus();
+            this.$refs['digit' + (index + 1)].focus()
           }
         }
       },
       handleKeydown(index, event) {
         if (event.key === 'Backspace' && this.digits[index] === '' && index > 0) {
-          this.$refs['digit' + (index - 1)].focus();
+          this.$refs['digit' + (index - 1)].focus()
         }
       },
       handlePaste(event) {
-        event.preventDefault();
-        const paste = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+        event.preventDefault()
+        const paste = event.clipboardData
+          .getData('text')
+          .replace(/\D/g, '')
+          .slice(0, 6)
         for (let i = 0; i < paste.length; i++) {
-          this.digits[i] = paste[i];
+          this.digits[i] = paste[i]
         }
-        this.updateToken();
+        this.updateToken()
         if (paste.length === 6) {
-          this.$refs['digit5'].focus();
+          this.$refs['digit5'].focus()
         } else if (paste.length > 0) {
-          this.$refs['digit' + (paste.length - 1)].focus();
+          this.$refs['digit' + (paste.length - 1)].focus()
         }
       },
       updateToken() {
-        this.$refs.tokenInput.value = this.digits.join('');
+        this.$refs.tokenInput.value = this.digits.join('')
       },
     }">
     <p>
@@ -53,7 +56,9 @@
       {{ __('app/settings/security.two_factor.code_description') }}
     </p>
     <div class="mb-4">
-      <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('app/settings/security.two_factor.token_label') }}</label>
+      <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+        {{ __('app/settings/security.two_factor.token_label') }}
+      </label>
       <div class="flex gap-2">
         @for ($i = 0; $i < 6; $i++)
           <input type="text" x-ref="digit{{ $i }}" x-model="digits[{{ $i }}]" @input="handleInput({{ $i }}, $event)" @keydown="handleKeydown({{ $i }}, $event)" @paste="handlePaste($event)" maxlength="1" inputmode="numeric" pattern="[0-9]" {{ $i === 0 ? 'autofocus' : '' }} required class="h-12 w-12 rounded-lg border border-gray-300 text-center text-lg font-semibold focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400" />
@@ -66,8 +71,12 @@
     </div>
   </div>
   <div class="flex justify-between">
-    <x-button.secondary href="{{ $view->url()->settings }}" x-target="authenticator-app">{{ __('app/shared.cancel') }}</x-button.secondary>
+    <x-button.secondary href="{{ route('settings.security.index') }}" x-target="authenticator-app">
+      {{ __('app/shared.cancel') }}
+    </x-button.secondary>
 
-    <x-button>{{ __('app/shared.save') }}</x-button>
+    <x-button>
+      {{ __('app/shared.save') }}
+    </x-button>
   </div>
 </x-form>

@@ -50,11 +50,8 @@ class UpdateGender
 
         // position should not be less than 1 and not greater than the max position + 1 of the vault
         if ($this->position !== null) {
-            $maxPosition = $this->gender
-                ->vault
-                ->genders()
-                ->max('position') ?? 0;
-            if ($this->position < 1 || $this->position > ($maxPosition + 1)) {
+            $maxPosition = $this->gender->vault->genders()->max('position') ?? 0;
+            if ($this->position < 1 || $this->position > $maxPosition + 1) {
                 throw new ModelNotFoundException('Invalid position');
             }
         }
@@ -79,20 +76,20 @@ class UpdateGender
         $oldPosition = $this->gender->position;
         $newPosition = $this->position;
 
-        if ($oldPosition === $newPosition) {
-            return;
+        // Moving down (e.g., from position 2 to position 5)
+        if ($newPosition > $oldPosition) {
+            $this->gender->vault->genders()
+                ->where('id', '!=', $this->gender->id)
+                ->whereBetween('position', [$oldPosition + 1, $newPosition])
+                ->decrement('position');
         }
-
-        $this->gender
-            ->vault
-            ->genders()
-            ->where('id', '!=', $this->gender->id)
-            ->when($newPosition > $oldPosition, function ($query) use ($oldPosition, $newPosition): void {
-                $query->whereBetween('position', [$oldPosition + 1, $newPosition])->decrement('position');
-            })
-            ->when($newPosition < $oldPosition, function ($query) use ($oldPosition, $newPosition): void {
-                $query->whereBetween('position', [$newPosition, $oldPosition - 1])->increment('position');
-            });
+        // Moving up (e.g., from position 5 to position 2)
+        elseif ($newPosition < $oldPosition) {
+            $this->gender->vault->genders()
+                ->where('id', '!=', $this->gender->id)
+                ->whereBetween('position', [$newPosition, $oldPosition - 1])
+                ->increment('position');
+        }
     }
 
     private function log(): void

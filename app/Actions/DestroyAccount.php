@@ -33,8 +33,7 @@ class DestroyAccount
     private function deleteVaultsWhereUserIsOnlyOwner(): void
     {
         // Get all vaults where the user is an owner
-        $ownerMemberships = $this->user
-            ->memberships()
+        $ownerMemberships = $this->user->memberships()
             ->where('role', PermissionEnum::Owner->value)
             ->with('vault')
             ->get();
@@ -43,8 +42,7 @@ class DestroyAccount
             $vault = $membership->vault;
 
             // Count how many owners this vault has
-            $ownerCount = $vault
-                ->members()
+            $ownerCount = $vault->members()
                 ->where('role', PermissionEnum::Owner->value)
                 ->count();
 

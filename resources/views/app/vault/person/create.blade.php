@@ -1,7 +1,7 @@
 <x-app-layout :vault="$vault">
   <x-slot:title>
     {{ __('app/person.new.title') }}
-  </x-slot:title>
+  </x-slot>
 
   <div class="px-6 pt-12">
     <div class="mx-auto w-full max-w-xl items-start justify-center">
@@ -54,7 +54,7 @@
             <div x-cloak x-show="showKids" x-transition class="rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-blue-900">
               @foreach (['' => 'unknown', 'no_kids' => 'no_kids', 'maybe_kids' => 'maybe_kids', 'has_kids' => 'has_kids'] as $value => $label)
                 <div class="flex items-center gap-x-3 p-3 not-last:border-b not-last:border-gray-200 dark:not-last:border-gray-700">
-                  <input id="kids-status-{{ $label }}" value="{{ $value }}" name="kids_status" type="radio" @checked (old('kids_status', '') === $value) x-on:click="selectedKidsStatus = @js(__('app/person.options.' . $label))" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 forced-colors:appearance-auto forced-colors:before:hidden" />
+                  <input id="kids-status-{{ $label }}" value="{{ $value }}" name="kids_status" type="radio" @checked(old('kids_status', '') === $value) x-on:click="selectedKidsStatus = @js(__('app/person.options.' . $label))" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 forced-colors:appearance-auto forced-colors:before:hidden" />
                   <label for="kids-status-{{ $label }}" class="block text-sm/6 font-medium text-gray-900 dark:text-gray-100">{{ __('app/person.options.' . $label) }}</label>
                 </div>
               @endforeach
@@ -82,12 +82,7 @@
 
             <div class="flex flex-wrap text-xs">
               @foreach ([['state' => 'showPrefix', 'ref' => 'prefix', 'label' => 'prefix'], ['state' => 'showMiddleName', 'ref' => 'middleName', 'label' => 'middle_name'], ['state' => 'showSuffix', 'ref' => 'suffix', 'label' => 'suffix'], ['state' => 'showNickname', 'ref' => 'nickname', 'label' => 'nickname'], ['state' => 'showMaidenName', 'ref' => 'maidenName', 'label' => 'maiden_name']] as $field)
-                <button
-                  type="button"
-                  x-cloak
-                  x-show="! {{ $field['state'] }}"
-                  class="me-2 mb-2 flex cursor-pointer flex-wrap rounded-lg border border-slate-300 bg-slate-200 px-1 py-1 hover:bg-slate-300 dark:border-gray-600 dark:bg-slate-500 dark:hover:bg-slate-400"
-                  x-on:click="
+                <button type="button" x-cloak x-show="! {{ $field['state'] }}" class="me-2 mb-2 flex cursor-pointer flex-wrap rounded-lg border border-slate-300 bg-slate-200 px-1 py-1 hover:bg-slate-300 dark:border-gray-600 dark:bg-slate-500 dark:hover:bg-slate-400" x-on:click="
                   {{ $field['state'] }} = true
                   $nextTick(() => $refs.{{ $field['ref'] }}.focus())
                 ">
@@ -96,15 +91,21 @@
               @endforeach
 
               @if ($genders->count() > 1)
-                <button type="button" x-cloak x-show="!showGender" x-on:click="showGender = true" class="me-2 mb-2 flex cursor-pointer flex-wrap rounded-lg border border-slate-300 bg-slate-200 px-1 py-1 hover:bg-slate-300 dark:border-gray-600 dark:bg-slate-500 dark:hover:bg-slate-400">{{ __('app/person.add_field.gender') }}</button>
+                <button type="button" x-cloak x-show="! showGender" x-on:click="showGender = true" class="me-2 mb-2 flex cursor-pointer flex-wrap rounded-lg border border-slate-300 bg-slate-200 px-1 py-1 hover:bg-slate-300 dark:border-gray-600 dark:bg-slate-500 dark:hover:bg-slate-400">
+                  {{ __('app/person.add_field.gender') }}
+                </button>
               @endif
             </div>
           </div>
 
           <div class="flex justify-between">
-            <x-button.secondary href="{{ route('vault.person.index', $vault->id) }}" turbo="true">{{ __('app/shared.cancel') }}</x-button.secondary>
+            <x-button.secondary href="{{ route('vault.person.index', $vault->id) }}" turbo="true">
+              {{ __('app/shared.cancel') }}
+            </x-button.secondary>
 
-            <x-button type="submit">{{ __('app/shared.save') }}</x-button>
+            <x-button type="submit">
+              {{ __('app/shared.save') }}
+            </x-button>
           </div>
         </x-form>
       </x-box>

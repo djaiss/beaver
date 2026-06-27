@@ -39,24 +39,21 @@ class DocNavigationBuilder
         $items = [];
 
         foreach ($this->getSortedEntries($dir) as $entry) {
-            $fullPath = "{$dir}/{$entry}";
+            $fullPath = $dir.'/'.$entry;
 
             if (is_dir($fullPath)) {
                 $slug = strtolower($this->stripPrefix($entry));
-                $urlPath = $urlPrefix !== '' ? "{$urlPrefix}/{$slug}" : $slug;
+                $urlPath = $urlPrefix !== '' ? $urlPrefix.'/'.$slug : $slug;
+                $children = $this->scanDirectory($fullPath, $urlPath);
 
                 $items[] = [
                     'label' => $this->toLabel($entry),
                     'url' => null,
-                    'children' => $this->scanDirectory($fullPath, $urlPath),
+                    'children' => $children,
                 ];
-
-                continue;
-            }
-
-            if ($this->isDocFile($entry)) {
+            } elseif ($this->isDocFile($entry)) {
                 $slug = $this->toSlug($entry);
-                $urlPath = $urlPrefix !== '' ? "{$urlPrefix}/{$slug}" : $slug;
+                $urlPath = $urlPrefix !== '' ? $urlPrefix.'/'.$slug : $slug;
 
                 $items[] = [
                     'label' => $this->toLabel($entry),
@@ -78,18 +75,16 @@ class DocNavigationBuilder
         $segment = array_shift($segments);
 
         foreach ($this->getSortedEntries($currentDir) as $entry) {
-            $fullPath = "{$currentDir}/{$entry}";
+            $fullPath = $currentDir.'/'.$entry;
 
             if (is_dir($fullPath)) {
                 if (strtolower($this->stripPrefix($entry)) === $segment) {
                     return $this->resolveSegments($fullPath, $segments);
                 }
-
-                continue;
-            }
-
-            if ($segments === [] && $this->isDocFile($entry) && $this->toSlug($entry) === $segment) {
-                return $fullPath;
+            } elseif ($segments === [] && $this->isDocFile($entry)) {
+                if ($this->toSlug($entry) === $segment) {
+                    return $fullPath;
+                }
             }
         }
 
@@ -110,8 +105,8 @@ class DocNavigationBuilder
         }
 
         $entries = array_values(array_filter(
-            scandir($dir),
-            fn (string $e): bool => $e !== '.' && $e !== '..' && ! str_starts_with($e, '_'),
+            scandir($dir) ?: [],
+            fn (string $e): bool => $e !== '.' && $e !== '..' && ! str_starts_with($e, '_')
         ));
 
         usort($entries, function (string $a, string $b): int {

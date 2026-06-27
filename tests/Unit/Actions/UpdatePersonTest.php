@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -60,7 +60,7 @@ class UpdatePersonTest extends TestCase
         )->execute();
 
         $this->assertSame('Regis', $updatedPerson->first_name);
-        $this->assertSame("{$updatedPerson->id}-regis-smith", $updatedPerson->slug);
+        $this->assertSame($updatedPerson->id.'-regis-smith', $updatedPerson->slug);
         $this->assertFalse($updatedPerson->can_be_deleted);
         $this->assertFalse($updatedPerson->is_listed);
 

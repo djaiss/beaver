@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -54,7 +54,7 @@ class CreatePersonTest extends TestCase
 
         $this->assertInstanceOf(Person::class, $person);
         $this->assertSame('Regis', $person->first_name);
-        $this->assertSame("{$person->id}-regis-smith", $person->slug);
+        $this->assertSame($person->id.'-regis-smith', $person->slug);
         $this->assertDatabaseHas('persons', [
             'id' => $person->id,
             'vault_id' => $vault->id,

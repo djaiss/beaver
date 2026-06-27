@@ -44,7 +44,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
         return view('app.vault.adminland._relationship-type-category-edit', [
             'relationshipTypeCategory' => $relationshipTypeCategory,
@@ -57,7 +58,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'min:3', 'max:100'],
@@ -79,7 +81,8 @@ class AdminlandRelationshipTypeCategoryController extends Controller
         $vault = $request->attributes->get('vault');
         $id = $request->route()->parameter('relationshipTypeCategory');
 
-        $relationshipTypeCategory = $vault->relationshipTypeCategories()->findOrFail($id);
+        $relationshipTypeCategory = $vault->relationshipTypeCategories()
+            ->findOrFail($id);
 
         new DestroyRelationshipTypeCategory(
             user: $request->user(),

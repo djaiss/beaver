@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\App\Auth;
 
@@ -19,7 +19,7 @@ class PasswordResetLinkControllerTest extends TestCase
     {
         $response = $this->get('/forgot-password');
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertViewIs('app.auth.forgot-password');
     }
 

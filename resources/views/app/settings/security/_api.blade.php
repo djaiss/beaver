@@ -1,17 +1,9 @@
-<?php
-/**
- * @var \App\ViewModels\Settings\SecurityIndexViewModel $view
- */
-?>
-
 <x-box padding="p-0">
-  <x-slot:title>
-    {{ __('app/settings/security.api.title') }}
-  </x-slot:title>
+  <x-slot:title>{{ __('app/settings/security.api.title') }}</x-slot>
   <x-slot:description>
     <p>{{ __('app/settings/security.api.description') }}</p>
     <p>{{ __('app/settings/security.api.private_description') }}</p>
-  </x-slot:description>
+  </x-slot>
 
   <div id="api-key-notification">
     @if (session('apiKey'))
@@ -25,11 +17,11 @@
             <h3 class="text-sm font-medium text-green-800">{{ __('app/settings/security.api.create_success') }}</h3>
 
             <div class="mt-2">
-              <div class="text-sm text-green-700">{{ __('app/settings/security.api.warning') }}</div>
+              <div class="text-sm text-green-700">
+                {{ __('app/settings/security.api.warning') }}
+              </div>
 
-              <div
-                class="mt-3"
-                x-data="{
+              <div class="mt-3" x-data="{
                 copied: false,
                 copyToClipboard() {
                   const el = document.createElement('textarea')
@@ -50,8 +42,7 @@
                   <button @click="copyToClipboard()" class="inline-flex cursor-pointer items-center rounded-md border border-green-200 bg-white px-3 py-2 text-sm font-semibold text-green-600 shadow-sm hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:border-green-700 dark:bg-gray-900 dark:text-green-300 dark:hover:bg-gray-800">
                     <x-phosphor-check x-show="copied" class="mr-1 h-4 w-4" />
                     <x-phosphor-copy x-show="!copied" class="mr-1 h-4 w-4" />
-                    <span
-                      x-text="
+                    <span x-text="
                       copied
                         ? '{{ __('app/settings/security.api.copied') }}'
                         : '{{ __('app/settings/security.api.copy') }}'
@@ -67,18 +58,20 @@
   </div>
 
   <div id="new-api-key-form" class="flex items-center justify-between rounded-t-lg p-3 last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:hover:bg-gray-800">
-    @if ($view->tokens()->isEmpty())
+    @if ($apiKeys->isEmpty())
       <p class="text-sm text-zinc-500">{{ __('app/settings/security.api.empty') }}</p>
     @else
-      <p class="text-sm text-zinc-500">{{ __('app/settings/security.api.count', ['count' => $view->tokens()->count()]) }}</p>
+      <p class="text-sm text-zinc-500">{{ __('app/settings/security.api.count', ['count' => $apiKeys->count()]) }}</p>
     @endif
 
-    <x-button.secondary href="{{ $view->url()->createApiKey }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">{{ __('app/settings/security.api.new') }}</x-button.secondary>
+    <x-button.secondary href="{{ route('settings.api-keys.create') }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">
+      {{ __('app/settings/security.api.new') }}
+    </x-button.secondary>
   </div>
 
-  @if (! $view->tokens()->isEmpty())
+  @if (! $apiKeys->isEmpty())
     <div id="api-key-list">
-      @foreach ($view->tokens() as $apiKey)
+      @foreach ($apiKeys as $apiKey)
         <div class="group flex items-center justify-between border-b border-gray-200 p-3 first:border-t last:rounded-b-lg last:border-b-0 dark:border-gray-700">
           <div class="flex items-center justify-between gap-3">
             <div class="rounded-sm bg-zinc-100 p-2 dark:bg-gray-800">
@@ -93,13 +86,15 @@
 
           <x-form
             x-target="api-key-list"
-            action="{{ $apiKey->url }}"
+            action="{{ route('settings.api-keys.destroy', $apiKey->id) }}"
             method="delete"
             x-on:ajax:before="
             confirm('{{ __('app/settings/security.api.confirm_delete') }}') ||
               $event.preventDefault()
           ">
-            <x-button x-target="api-key-list" class="text-sm">{{ __('app/shared.delete') }}</x-button>
+            <x-button x-target="api-key-list" class="text-sm" data-test="delete-api-key-{{ $apiKey->id }}">
+              {{ __('app/shared.delete') }}
+            </x-button>
           </x-form>
         </div>
       @endforeach

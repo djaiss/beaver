@@ -1,7 +1,5 @@
 <x-box padding="p-0">
-  <x-slot:title>
-    {{ __('app/vault.adminland.edit_title') }}
-  </x-slot:title>
+  <x-slot:title>{{ __('app/vault.adminland.edit_title') }}</x-slot>
 
   <x-form method="put" action="{{ route('vault.adminland.update', ['vaultId' => $vault->id]) }}" x-target="vault-details notifications header-vault-name" x-target.back="vault-details">
     <!-- name -->

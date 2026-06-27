@@ -47,8 +47,7 @@ class DatabaseSeeder extends Seeder
         $this->command->line('| username: blank@blank.com');
         $this->command->line('| password: blank123');
         $this->command->line('|----------------------------');
-        $appUrl = config('app.url');
-        $this->command->line("| URL:      {$appUrl}");
+        $this->command->line('| URL:      '.config('app.url'));
         $this->command->info('-----------------------------');
         $this->command->info('Setup is done. Have fun.');
     }

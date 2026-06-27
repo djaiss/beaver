@@ -20,8 +20,7 @@ class VaultController extends Controller
     {
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
-        $vaults = $request
-            ->user()
+        $vaults = $request->user()
             ->vaults()
             ->orderBy('id')
             ->paginate($perPage);

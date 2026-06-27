@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Unit\Actions;
 
@@ -40,14 +40,10 @@ class UpdateRelationshipTypeTest extends TestCase
         $this->assertSame('Parent', $updated->forward_name);
         $this->assertSame('Child', $updated->reverse_name);
         $this->assertTrue($updated->is_directed);
-        Queue::assertPushedOn(
-            'low',
-            LogUserAction::class,
-            fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::RelationshipTypeUpdate
-                && $job->parameters === ['name' => 'Parent / child']
-            ),
-        );
+        Queue::assertPushedOn('low', LogUserAction::class, fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::RelationshipTypeUpdate
+            && $job->parameters === ['name' => 'Parent / child']
+        ));
     }
 
     #[Test]

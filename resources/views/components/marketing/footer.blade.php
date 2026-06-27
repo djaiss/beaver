@@ -11,9 +11,11 @@
           <p class="text-xs text-gray-600">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved. Actually, our trademark is not registered, but we probably should write that to do like the big boys.</p>
         </div>
 
-        <p class="text-xs text-gray-600">This site is inspired by the magnificent and funny
-        <x-link href="https://posthog.com" target="_blank">Posthog website</x-link>
-        .</p>
+        <p class="text-xs text-gray-600">
+          This site is inspired by the magnificent and funny
+          <x-link href="https://posthog.com" target="_blank">Posthog website</x-link>
+          .
+        </p>
       </div>
 
       <div class="mt-6 sm:mt-0">

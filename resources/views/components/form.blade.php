@@ -1,4 +1,4 @@
-@props ([
+@props([
   'method' => 'get',
   'action' => '',
   'upload' => false,

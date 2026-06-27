@@ -1,5 +1,4 @@
-<x-marketing-docs-layout
-  :breadcrumbItems="[
+<x-marketing-docs-layout :breadcrumbItems="[
   ['label' => 'Home', 'route' => route('marketing.index')],
   ['label' => 'Documentation'],
 ]">

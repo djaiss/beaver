@@ -21,7 +21,9 @@
                 <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
               </div>
             </a>
-            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">{{ __('app/auth.register.title') }}</h1>
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {{ __('app/auth.register.title') }}
+            </h1>
           </div>
           <p class="text-sm text-gray-500">{{ __('app/auth.register.subtitle') }}</p>
         </div>
@@ -63,7 +65,9 @@
         <!-- Register link -->
         <x-box class="text-center text-sm">
           {{ __('app/auth.register.already_have_account') }}
-          <x-link :href="'login'" class="ml-1">{{ __('app/auth.register.sign_in_instead') }}</x-link>
+          <x-link :href="'login'" class="ml-1">
+            {{ __('app/auth.register.sign_in_instead') }}
+          </x-link>
         </x-box>
 
         <ul class="text-xs text-gray-600">
@@ -73,6 +77,6 @@
     </div>
 
     <!-- Right side -->
-    @include ('partials.quotes', ['quote' => $quote])
+    @include('partials.quotes', ['quote' => $quote])
   </div>
 </x-guest-layout>

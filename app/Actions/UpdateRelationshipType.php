@@ -55,11 +55,8 @@ class UpdateRelationshipType
             throw new ModelNotFoundException('Relationship type category not found');
         }
 
-        $maxPosition = $this->relationshipType
-            ->relationshipTypeCategory
-            ->relationshipTypes()
-            ->max('position') ?? 0;
-        if ($this->position !== null && ($this->position < 1 || $this->position > ($maxPosition + 1))) {
+        $maxPosition = $this->relationshipType->relationshipTypeCategory->relationshipTypes()->max('position') ?? 0;
+        if ($this->position !== null && ($this->position < 1 || $this->position > $maxPosition + 1)) {
             throw new ModelNotFoundException('Invalid position');
         }
     }
@@ -69,13 +66,14 @@ class UpdateRelationshipType
         $data = [
             'name' => $this->name,
             'is_directed' => $this->isDirected,
-            'forward_name' => $this->forwardName,
-            'reverse_name' => $this->reverseName,
         ];
 
         if ($this->isDirected === false) {
             $data['forward_name'] = null;
             $data['reverse_name'] = null;
+        } elseif ($this->forwardName !== null && $this->reverseName !== null) {
+            $data['forward_name'] = $this->forwardName;
+            $data['reverse_name'] = $this->reverseName;
         }
 
         if ($this->position !== null && $this->position !== $this->relationshipType->position) {
@@ -90,21 +88,18 @@ class UpdateRelationshipType
     {
         $oldPosition = $this->relationshipType->position;
         $newPosition = $this->position;
+        $relationshipTypes = $this->relationshipType->relationshipTypeCategory->relationshipTypes()
+            ->where('id', '!=', $this->relationshipType->id);
 
-        if ($oldPosition === $newPosition) {
-            return;
+        if ($newPosition > $oldPosition) {
+            $relationshipTypes
+                ->whereBetween('position', [$oldPosition + 1, $newPosition])
+                ->decrement('position');
+        } elseif ($newPosition < $oldPosition) {
+            $relationshipTypes
+                ->whereBetween('position', [$newPosition, $oldPosition - 1])
+                ->increment('position');
         }
-
-        $this->relationshipType
-            ->relationshipTypeCategory
-            ->relationshipTypes()
-            ->where('id', '!=', $this->relationshipType->id)
-            ->when($newPosition > $oldPosition, function ($query) use ($oldPosition, $newPosition): void {
-                $query->whereBetween('position', [$oldPosition + 1, $newPosition])->decrement('position');
-            })
-            ->when($newPosition < $oldPosition, function ($query) use ($oldPosition, $newPosition): void {
-                $query->whereBetween('position', [$newPosition, $oldPosition - 1])->increment('position');
-            });
     }
 
     private function log(): void

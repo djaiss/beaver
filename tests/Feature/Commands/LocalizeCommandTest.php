@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Commands;
 
@@ -56,44 +56,35 @@ class LocalizeCommandTest extends TestCase
             $this->artisan('lifeos:localize en,fr_FR')
                 ->assertSuccessful();
 
-            $this->assertSame(
-                [
-                    'existing' => 'Valeur française existante',
+            $this->assertSame([
+                'existing' => 'Valeur française existante',
+                'new' => '',
+                'nested' => [
+                    'existing' => 'Valeur française imbriquée existante',
                     'new' => '',
-                    'nested' => [
-                        'existing' => 'Valeur française imbriquée existante',
-                        'new' => '',
-                    ],
                 ],
-                require lang_path('fr_FR/localize-test.php'),
-            );
+            ], require lang_path('fr_FR/localize-test.php'));
 
-            $this->assertSame(
-                [
-                    'title' => '',
-                ],
-                require lang_path('fr_FR/localize-test/nested.php'),
-            );
+            $this->assertSame([
+                'title' => '',
+            ], require lang_path('fr_FR/localize-test/nested.php'));
 
             $this->assertFileDoesNotExist(lang_path('fr_FR/localize-test-stale.php'));
         } finally {
             foreach ($originalFiles as $path => $contents) {
-                if ($contents === null && is_file($path)) {
-                    unlink($path);
+                if ($contents === null) {
+                    if (is_file($path)) {
+                        unlink($path);
+                    }
+
+                    continue;
                 }
 
-                if ($contents !== null) {
-                    $this->writeRawFile($path, $contents);
-                }
+                $this->writeRawFile($path, $contents);
             }
 
-            if (is_dir($enDir = lang_path('en/localize-test'))) {
-                rmdir($enDir);
-            }
-
-            if (is_dir($frDir = lang_path('fr_FR/localize-test'))) {
-                rmdir($frDir);
-            }
+            @rmdir(lang_path('en/localize-test'));
+            @rmdir(lang_path('fr_FR/localize-test'));
         }
     }
 
@@ -109,18 +100,18 @@ class LocalizeCommandTest extends TestCase
      */
     private function writeLanguageFile(string $path, array $lines): void
     {
-        $exportedLines = var_export($lines, true);
-
         $this->writeRawFile(
             $path,
-            "<?php\n\ndeclare(strict_types=1);\n\nreturn {$exportedLines};\n",
+            "<?php\n\n"
+                ."declare(strict_types=1);\n\n"
+                .'return '.var_export($lines, true).";\n",
         );
     }
 
     private function writeRawFile(string $path, string $contents): void
     {
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0o755, true);
+        if (! is_dir(dirname($path))) {
+            mkdir(dirname($path), 0755, true);
         }
 
         file_put_contents($path, $contents);

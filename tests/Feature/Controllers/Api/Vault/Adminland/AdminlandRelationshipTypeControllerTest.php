@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Vault\Adminland;
 
@@ -44,10 +44,8 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
     #[Test]
     public function it_uses_the_create_controller_method(): void
     {
-        $controller = AdminlandRelationshipTypeController::class;
-
         $this->assertSame(
-            "{$controller}@create",
+            AdminlandRelationshipTypeController::class.'@create',
             Route::getRoutes()->getByName('api.vault.relationship_type.create')->getActionName(),
         );
     }
@@ -70,10 +68,7 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $response = $this->json(
-            'GET',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types",
-        );
+        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types');
 
         $response->assertOk();
         $response->assertJsonStructure(['data' => ['*' => $this->jsonStructure['data']]]);
@@ -90,10 +85,7 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         $category = RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'GET',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types",
-        )
+        $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types')
             ->assertForbidden();
     }
 
@@ -107,10 +99,7 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'GET',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}",
-        )
+        $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id)
             ->assertOk()
             ->assertJsonStructure($this->jsonStructure);
     }
@@ -127,10 +116,7 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'GET',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}",
-        )
+        $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id)
             ->assertNotFound();
     }
 
@@ -140,16 +126,12 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         [$user, $vault, $category] = $this->createMemberAndCategory(PermissionEnum::Owner->value);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'POST',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types",
-            [
-                'name' => 'Parent / child',
-                'is_directed' => true,
-                'forward_name' => 'Parent',
-                'reverse_name' => 'Child',
-            ],
-        )
+        $this->json('POST', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types', [
+            'name' => 'Parent / child',
+            'is_directed' => true,
+            'forward_name' => 'Parent',
+            'reverse_name' => 'Child',
+        ])
             ->assertCreated()
             ->assertJsonStructure($this->jsonStructure)
             ->assertJsonPath('data.attributes.name', 'Parent / child')
@@ -164,13 +146,9 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         [$user, $vault, $category] = $this->createMemberAndCategory();
         Sanctum::actingAs($user);
 
-        $this->json(
-            'POST',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types",
-            [
-                'name' => 'Friend',
-            ],
-        )->assertNotFound();
+        $this->json('POST', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types', [
+            'name' => 'Friend',
+        ])->assertNotFound();
     }
 
     #[Test]
@@ -188,17 +166,13 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'PUT',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}",
-            [
-                'name' => 'Guardian / ward',
-                'is_directed' => true,
-                'forward_name' => 'Guardian',
-                'reverse_name' => 'Ward',
-                'position' => 1,
-            ],
-        )
+        $this->json('PUT', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id, [
+            'name' => 'Guardian / ward',
+            'is_directed' => true,
+            'forward_name' => 'Guardian',
+            'reverse_name' => 'Ward',
+            'position' => 1,
+        ])
             ->assertOk()
             ->assertJsonStructure($this->jsonStructure)
             ->assertJsonPath('data.attributes.name', 'Guardian / ward')
@@ -216,13 +190,9 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'PUT',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}",
-            [
-                'name' => 'Friend',
-            ],
-        )->assertNotFound();
+        $this->json('PUT', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id, [
+            'name' => 'Friend',
+        ])->assertNotFound();
     }
 
     #[Test]
@@ -236,10 +206,7 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'DELETE',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}",
-        )
+        $this->json('DELETE', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id)
             ->assertNoContent();
     }
 
@@ -253,10 +220,7 @@ class AdminlandRelationshipTypeControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json(
-            'DELETE',
-            "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}/relationship-types/{$relationshipType->id}",
-        )
+        $this->json('DELETE', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id.'/relationship-types/'.$relationshipType->id)
             ->assertNotFound();
     }
 

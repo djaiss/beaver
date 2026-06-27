@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Auth;
 
@@ -27,7 +27,7 @@ class LoginControllerTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertJsonStructure([
             'message',
             'status',
@@ -52,7 +52,7 @@ class LoginControllerTest extends TestCase
 
         $response = $this->json('DELETE', '/api/logout');
 
-        $response->assertOk();
+        $response->assertStatus(200);
         $response->assertJsonStructure([
             'message',
             'status',

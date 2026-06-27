@@ -21,15 +21,22 @@ class PersonController extends Controller
     {
         $member = $request->attributes->get('member');
 
-        if (Person::query()->where('vault_id', $member->vault_id)->doesntExist()) {
+        $personsCount = Person::query()->where('vault_id', $member->vault_id)
+            ->count();
+
+        if ($personsCount === 0) {
             return view('app.vault.person.blank');
         }
 
-        $person = Person::query()
-            ->where('vault_id', $member->vault_id)
-            ->when($member->last_person_seen_id, fn ($query, $lastSeenId) => $query->where('id', $lastSeenId))
-            ->latest()
-            ->first(['slug']);
+        if ($member->last_person_seen_id) {
+            $person = Person::query()->where('vault_id', $member->vault_id)
+                ->where('id', $member->last_person_seen_id)
+                ->select('slug')
+                ->first();
+        } else {
+            $person = Person::query()->where('vault_id', $member->vault_id)->latest()
+                ->first();
+        }
 
         return to_route('vault.person.show', [
             'vaultId' => $member->vault_id,
@@ -41,8 +48,7 @@ class PersonController extends Controller
     {
         $vault = $request->attributes->get('vault');
 
-        $genders = $vault
-            ->genders()
+        $genders = $vault->genders()
             ->orderBy('position')
             ->get()
             ->mapWithKeys(fn (Gender $gender): array => [$gender->id => $gender->name]);

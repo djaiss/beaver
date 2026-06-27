@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Vault\Adminland;
 
@@ -39,10 +39,8 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
     #[Test]
     public function it_uses_the_create_controller_method(): void
     {
-        $controller = AdminlandRelationshipTypeCategoryController::class;
-
         $this->assertSame(
-            "{$controller}@create",
+            AdminlandRelationshipTypeCategoryController::class.'@create',
             Route::getRoutes()->getByName('api.vault.relationship_type_category.create')->getActionName(),
         );
     }
@@ -57,7 +55,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id, 'name' => 'First', 'position' => 1]);
         Sanctum::actingAs($user);
 
-        $response = $this->json('GET', "/api/vaults/{$vault->id}/relationship-type-categories");
+        $response = $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories');
 
         $response->assertOk();
         $response->assertJsonStructure(['data' => ['*' => $this->jsonStructure['data']]]);
@@ -73,7 +71,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $vault = $this->createVault();
         Sanctum::actingAs($user);
 
-        $this->json('GET', "/api/vaults/{$vault->id}/relationship-type-categories")
+        $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories')
             ->assertForbidden();
     }
 
@@ -86,7 +84,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $category = RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id]);
         Sanctum::actingAs($user);
 
-        $this->json('GET', "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}")
+        $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id)
             ->assertOk()
             ->assertJsonStructure($this->jsonStructure);
     }
@@ -101,7 +99,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $category = RelationshipTypeCategory::factory()->create(['vault_id' => $otherVault->id]);
         Sanctum::actingAs($user);
 
-        $this->json('GET', "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}")
+        $this->json('GET', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id)
             ->assertNotFound();
     }
 
@@ -113,7 +111,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $this->assignUserToVault($user, $vault, PermissionEnum::Owner->value);
         Sanctum::actingAs($user);
 
-        $this->json('POST', "/api/vaults/{$vault->id}/relationship-type-categories", [
+        $this->json('POST', '/api/vaults/'.$vault->id.'/relationship-type-categories', [
             'name' => 'Extended family',
         ])
             ->assertCreated()
@@ -130,7 +128,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $this->assignUserToVault($user, $vault);
         Sanctum::actingAs($user);
 
-        $this->json('POST', "/api/vaults/{$vault->id}/relationship-type-categories", [
+        $this->json('POST', '/api/vaults/'.$vault->id.'/relationship-type-categories', [
             'name' => 'Extended family',
         ])->assertNotFound();
     }
@@ -148,7 +146,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json('PUT', "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}", [
+        $this->json('PUT', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id, [
             'name' => 'Close family',
             'position' => 1,
         ])
@@ -166,7 +164,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $category = RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id]);
         Sanctum::actingAs($user);
 
-        $this->json('PUT', "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}", [
+        $this->json('PUT', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id, [
             'name' => 'Close family',
         ])->assertNotFound();
     }
@@ -183,7 +181,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         ]);
         Sanctum::actingAs($user);
 
-        $this->json('DELETE', "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}")
+        $this->json('DELETE', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id)
             ->assertNoContent();
     }
 
@@ -196,7 +194,7 @@ class AdminlandRelationshipTypeCategoryControllerTest extends TestCase
         $category = RelationshipTypeCategory::factory()->create(['vault_id' => $vault->id]);
         Sanctum::actingAs($user);
 
-        $this->json('DELETE', "/api/vaults/{$vault->id}/relationship-type-categories/{$category->id}")
+        $this->json('DELETE', '/api/vaults/'.$vault->id.'/relationship-type-categories/'.$category->id)
             ->assertNotFound();
     }
 }
