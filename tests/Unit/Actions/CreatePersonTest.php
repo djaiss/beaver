@@ -55,6 +55,7 @@ class CreatePersonTest extends TestCase
         $this->assertInstanceOf(Person::class, $person);
         $this->assertSame('Regis', $person->first_name);
         $this->assertSame($person->id.'-regis-smith', $person->slug);
+        $this->assertSame($person->slug, $person->fresh()->slug);
         $this->assertDatabaseHas('persons', [
             'id' => $person->id,
             'vault_id' => $vault->id,

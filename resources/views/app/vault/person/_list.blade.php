@@ -22,7 +22,7 @@
     <div id="persons" class="divide-y divide-gray-200">
       @foreach ($persons as $currentPerson)
         <a href="{{ route('vault.person.show', [$vault->id, $currentPerson['slug']]) }}" data-turbo="true" class="{{ isset($person) && $person && $currentPerson['id'] === $person->id ? 'bg-blue-50' : '' }} flex cursor-pointer items-center gap-3 p-3 hover:bg-blue-50">
-          <div class="shrink-0">x</div>
+          <x-avatar name="{{ $currentPerson['name'] }}" size="24" />
           <div class="min-w-0">
             <p class="truncate font-medium">{{ $currentPerson['name'] }}</p>
           </div>

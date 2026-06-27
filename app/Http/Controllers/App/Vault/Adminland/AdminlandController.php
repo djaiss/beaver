@@ -20,7 +20,7 @@ class AdminlandController extends Controller
         $genders = Gender::query()->where('vault_id', $vault->id)
             ->orderBy('position')
             ->get()
-            ->map(fn (Gender $gender) => (object) [
+            ->map(fn(Gender $gender) => (object) [
                 'id' => $gender->id,
                 'name' => $gender->name,
                 'position' => $gender->position,
