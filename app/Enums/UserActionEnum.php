@@ -9,6 +9,8 @@ enum UserActionEnum: string
     case AccountCreation = 'account_created';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
+    case WebhookEndpointCreation = 'webhook_endpoint_created';
+    case WebhookEndpointDeletion = 'webhook_endpoint_deleted';
     case MagicLinkCreated = 'magic_link_created';
     case VaultCreation = 'vault_created';
     case VaultUpdate = 'vault_updated';
@@ -38,6 +40,8 @@ enum UserActionEnum: string
             self::AccountCreation => 'Created an account',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
+            self::WebhookEndpointCreation => 'Created a webhook endpoint',
+            self::WebhookEndpointDeletion => 'Deleted a webhook endpoint',
             self::MagicLinkCreated => 'Sent a magic link',
             self::VaultCreation => 'Created a vault called :name',
             self::VaultUpdate => 'Updated the vault called :name',

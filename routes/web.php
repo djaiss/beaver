@@ -12,6 +12,7 @@ use App\Http\Controllers\App\Settings\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\SecurityController;
 use App\Http\Controllers\App\Settings\SettingsController;
 use App\Http\Controllers\App\Settings\TwoFAController;
+use App\Http\Controllers\App\Settings\WebhookController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderController;
 use App\Http\Controllers\App\Vault\Adminland\AdminlandGenderPositionController;
@@ -115,6 +116,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('settings/api-keys/new', [ApiKeyController::class, 'new'])->name('settings.api-keys.new');
     Route::post('settings/api-keys', [ApiKeyController::class, 'create'])->name('settings.api-keys.create');
     Route::delete('settings/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->name('settings.api-keys.destroy');
+
+    // webhooks
+    Route::get('settings/webhooks', [WebhookController::class, 'index'])->name('settings.webhooks.index');
+    Route::get('settings/webhooks/new', [WebhookController::class, 'new'])->name('settings.webhooks.new');
+    Route::post('settings/webhooks', [WebhookController::class, 'create'])->name('settings.webhooks.create');
+    Route::delete('settings/webhooks/{webhookEndpoint}', [WebhookController::class, 'destroy'])->where('webhookEndpoint', '[1-9][0-9]*')->name('settings.webhooks.destroy');
 
     // account
     Route::get('settings/account', [AccountController::class, 'index'])->name('settings.account.index');
