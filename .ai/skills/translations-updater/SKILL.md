@@ -1,11 +1,12 @@
 ---
-name: translations-updater
+name: translations
 description: Update Laravel PHP translation files by fixing missing or empty translations in lang/**/*.php. Use when UI copy changes, new keys are added, or locale files are out of sync. Trigger whenever translation keys, lang files, i18n, or __() / @lang() strings are mentioned.
 ---
 
 # Translations Updater
 
 This skill keeps Laravel translation files consistent and complete.
+
 ## Key conventions
 
 This project uses **translations keys** in JSON files.
@@ -38,47 +39,21 @@ When we are translating logs, match the convention for each language:
    ```
 2. Confirm the command completes successfully before making any edits.
 
-### Step 2: Add or remove supported locales
+### Step 2: Identify missing or empty translations
 
-When adding a new locale, use ISO 15897 names for region-specific languages, e.g. `fr_FR` for French from France and `es_ES` for Spanish from Spain.
-
-1. Update `config/app.php`:
-   ```php
-   'supported_locales' => ['en', 'fr_FR', 'es_ES'],
-   ```
-2. Update the `composer.json` `lifeos:locale` script with the same locale list:
-   ```json
-   "lifeos:locale": "php artisan lifeos:localize en,fr_FR,es_ES"
-   ```
-3. Add any user-facing locale option labels to the English source language file.
-4. Update UI controls that expose locale choices, such as `resources/views/app/settings/_detail.blade.php`.
-5. Run `composer lifeos:locale`.
-6. Fill the new locale files completely; do not leave the generated empty strings in place.
-
-### Step 3: Fix translations
-
-1. **Do not remove keys** unless they are confirmed unused.
-
-2. **For empty or invalid values** — replace with an appropriate human-readable translation.
-
-4. **Preserve placeholders exactly** — do not alter tokens like `:name`, `:count`, `:seconds`, `{value}`.
-
-5. **Preserve embedded HTML or Markdown** — structure must be identical across locales.
-
-6. **Consistency rules:**
+- For each new entry in the `en.json` file, check all other locale files of the project and fix any missing or empty translations.
+- **Do not remove keys** unless they are confirmed unused.
+- **For empty or invalid values** — replace with an appropriate human-readable translation.
+- **Preserve placeholders exactly** — do not alter tokens like `:name`, `:count`, `:seconds`, `{value}`.
+- **Preserve embedded HTML or Markdown** — structure must be identical across locales.
+- **Consistency rules:**
    - Same tense and tone as surrounding keys
    - Same terminology used elsewhere in the locale file
    - No informal register unless the file already uses it
 
-### Step 5: Quality checks
+### Step 3: Quality checks
 
 1. No empty strings, null values, or `TODO` placeholders remain.
 2. If a translation is uncertain, prefer literal and conservative wording.
 3. Maintain existing key order unless the project explicitly requires sorting.
 4. Run `bash scripts/check-translations.sh` after translation changes; it checks all PHP short-key language files and fails on empty strings.
-
-## Best practices
-
-- Never rename translation keys without corresponding code changes
-- Never translate or alter placeholders (`:name`, `:count`, etc.)
-- Favor consistency over stylistic variation
