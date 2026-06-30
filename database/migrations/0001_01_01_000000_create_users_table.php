@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('email')->unique()->comment('user\'s email address');
             $table->timestamp('email_verified_at')->nullable()->comment('email verification timestamp');
             $table->string('password')->comment('user\'s password');
-            $table->text('two_factor_secret')->nullable()->comment('user\'s two factor authentication secret');
-            $table->text('two_factor_recovery_codes')->nullable()->comment('user\'s two factor recovery codes');
+            $table->text('two_factor_secret')->nullable()->comment('user\'s two factor authentication secret (encrypted)');
+            $table->text('two_factor_recovery_codes')->nullable()->comment('user\'s two factor recovery codes (encrypted)');
             $table->timestamp('two_factor_confirmed_at')->nullable()->comment('two factor confirmation timestamp');
             $table->datetime('trial_ends_at')->nullable()->comment('trial end timestamp');
             $table->text('last_used_ip')->nullable()->comment('last used IP address');

@@ -96,8 +96,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'last_activity_at' => 'datetime',
             'time_format_24h' => 'boolean',
+            'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
-            'two_factor_recovery_codes' => 'array',
+            'two_factor_recovery_codes' => 'encrypted:array',
             'auto_delete_account' => 'boolean',
         ];
     }
