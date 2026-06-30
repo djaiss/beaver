@@ -116,8 +116,3 @@ Load and follow the **`api-docs-writer`** skill.
 - Create `app/Http/Controllers/Marketing/Docs/Api{Resource}Controller.php`.
 - Add the markdown document in the appropriate location.
 - Create the test, matching `tests/Feature/Controllers/Marketing/Docs/ApiVaultManagementControllerTest.php` — only assert the page loads, to avoid brittle tests.
-
-## Step 7 — Bruno documentation
-
-- Create a folder in `docs/Bruno`, following the existing pattern.
-- Create one `.bru` file per API method, following the existing pattern.

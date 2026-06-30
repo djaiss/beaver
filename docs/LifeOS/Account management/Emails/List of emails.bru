@@ -1,0 +1,15 @@
+meta {
+  name: List of emails
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{URL}}/administration/emails?per_page=100
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 100
+}
