@@ -44,7 +44,7 @@ class CheckPerson
 
             return $next($request);
         } catch (ModelNotFoundException) {
-            abort(401);
+            abort(404);
         }
     }
 }

@@ -41,6 +41,10 @@ class ApiKeyController extends Controller
             ->where('id', $apiKeyId)
             ->first();
 
+        if ($apiKey === null) {
+            abort(404);
+        }
+
         new DestroyApiKey(
             user: $request->user(),
             tokenId: $apiKey->id,

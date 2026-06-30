@@ -39,4 +39,15 @@ class ApiKeyControllerTest extends TestCase
         $response->assertRedirect('/settings/security');
         $response->assertSessionHas('status', 'API key deleted');
     }
+
+    #[Test]
+    public function it_returns_not_found_when_deleting_an_unknown_api_token(): void
+    {
+        $user = $this->createUser();
+
+        $response = $this->actingAs($user)
+            ->delete('/settings/api-keys/9999');
+
+        $response->assertNotFound();
+    }
 }
