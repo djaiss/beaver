@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Administration\AdministrationApiController;
 use App\Http\Controllers\Api\Administration\AdministrationLogsController;
 use App\Http\Controllers\Api\Administration\EmailSentController;
 use App\Http\Controllers\Api\Administration\MeController;
+use App\Http\Controllers\Api\Adminland\MemberController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Vault\Adminland\AdminlandGenderController;
@@ -32,6 +33,10 @@ Route::name('api.')->group(function (): void {
         // vaults
         Route::post('vaults', [VaultController::class, 'create'])->name('vault.create');
         Route::get('vaults', [VaultController::class, 'index'])->name('vault.index');
+
+        // join a vault by invitation code
+        Route::post('vaults/join', [MemberController::class, 'create'])->name('vault.join');
+
         Route::middleware(['vault.api'])->where(['id' => '[1-9][0-9]*'])->prefix('vaults/{id}')->group(function (): void {
             Route::get('', [VaultController::class, 'show'])->name('vault.show');
             Route::put('', [VaultController::class, 'update'])->name('vault.update');
@@ -64,6 +69,10 @@ Route::name('api.')->group(function (): void {
             Route::post('persons', [PersonController::class, 'create'])->name('vault.person.create');
             Route::put('persons/{person}', [PersonController::class, 'update'])->where('person', '[1-9][0-9]*')->name('vault.person.update');
             Route::delete('persons/{person}', [PersonController::class, 'destroy'])->where('person', '[1-9][0-9]*')->name('vault.person.destroy');
+
+            // members
+            Route::get('members', [MemberController::class, 'index'])->name('vault.adminland.member');
+            Route::get('members/{memberId}', [MemberController::class, 'show'])->where('memberId', '[1-9][0-9]*')->name('vault.adminland.member.show');
         });
 
         // api keys

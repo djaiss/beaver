@@ -1,0 +1,15 @@
+meta {
+  name: Join a vault
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{URL}}/vaults/join?invitation_code=COULD-THIS-BE-ANY-MORE-OF-A-CODE
+  body: none
+  auth: inherit
+}
+
+params:query {
+  invitation_code: COULD-THIS-BE-ANY-MORE-OF-A-CODE
+}
