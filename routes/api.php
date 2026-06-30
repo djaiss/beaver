@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\Api\Administration\AdministrationApiController;
 use App\Http\Controllers\Api\Administration\AdministrationLogsController;
+use App\Http\Controllers\Api\Administration\EmailSentController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\HealthController;
@@ -74,5 +75,9 @@ Route::name('api.')->group(function (): void {
         // logs
         Route::get('administration/logs', [AdministrationLogsController::class, 'index'])->name('administration.logs');
         Route::get('administration/logs/{log}', [AdministrationLogsController::class, 'show'])->where('log', '[1-9][0-9]*')->name('administration.logs.show');
+
+        // emails
+        Route::get('administration/emails', [EmailSentController::class, 'index'])->name('administration.emails');
+        Route::get('administration/emails/{email}', [EmailSentController::class, 'show'])->where('email', '[1-9][0-9]*')->name('administration.emails.show');
     });
 });
