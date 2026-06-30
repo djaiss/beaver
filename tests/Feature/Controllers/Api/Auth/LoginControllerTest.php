@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
+use PragmaRX\Google2FALaravel\Google2FA;
 use Tests\TestCase;
 
 class LoginControllerTest extends TestCase
@@ -38,6 +39,122 @@ class LoginControllerTest extends TestCase
 
         $responseData = $response->json();
         $this->assertNotEmpty($responseData['data']['token']);
+    }
+
+    #[Test]
+    public function it_rejects_invalid_credentials(): void
+    {
+        User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertStatus(401);
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    #[Test]
+    public function it_requires_a_2fa_code_when_two_factor_is_enabled(): void
+    {
+        $google2fa = new Google2FA(request());
+        $secret = $google2fa->generateSecretKey();
+
+        User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+            'two_factor_secret' => $secret,
+            'two_factor_confirmed_at' => now(),
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(401);
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    #[Test]
+    public function it_rejects_an_invalid_2fa_code(): void
+    {
+        $google2fa = new Google2FA(request());
+        $secret = $google2fa->generateSecretKey();
+
+        User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+            'two_factor_secret' => $secret,
+            'two_factor_confirmed_at' => now(),
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+            'code' => '000000',
+        ]);
+
+        $response->assertStatus(401);
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+    }
+
+    #[Test]
+    public function it_issues_a_token_with_a_valid_2fa_code(): void
+    {
+        $google2fa = new Google2FA(request());
+        $secret = $google2fa->generateSecretKey();
+
+        User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+            'two_factor_secret' => $secret,
+            'two_factor_confirmed_at' => now(),
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+            'code' => $google2fa->getCurrentOtp($secret),
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'status',
+            'data' => ['token'],
+        ]);
+        $this->assertNotEmpty($response->json('data.token'));
+    }
+
+    #[Test]
+    public function it_authenticates_with_a_recovery_code(): void
+    {
+        $google2fa = new Google2FA(request());
+        $secret = $google2fa->generateSecretKey();
+
+        $user = User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+            'two_factor_secret' => $secret,
+            'two_factor_confirmed_at' => now(),
+            'two_factor_recovery_codes' => ['ABC123', 'DEF456'],
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+            'code' => 'ABC123',
+        ]);
+
+        $response->assertStatus(200);
+
+        $user->refresh();
+        $this->assertNotContains('ABC123', $user->two_factor_recovery_codes);
     }
 
     #[Test]

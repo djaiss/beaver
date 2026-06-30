@@ -35,7 +35,9 @@ Route::middleware('guest')->group(function (): void {
 
     Route::get('/2fa-challenge', [TwoFAChallengeController::class, 'create'])->name('2fa.challenge.create');
 
-    Route::post('/2fa-challenge', [TwoFAChallengeController::class, 'store'])->name('2fa.challenge.store');
+    Route::post('/2fa-challenge', [TwoFAChallengeController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('2fa.challenge.store');
 });
 
 Route::middleware('auth')->group(function (): void {

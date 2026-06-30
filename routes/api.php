@@ -18,7 +18,7 @@ Route::name('api.')->group(function (): void {
     Route::get('health', [HealthController::class, 'show'])->middleware('throttle:60,1');
 
     // login
-    Route::post('login', [LoginController::class, 'store'])->name('login');
+    Route::post('login', [LoginController::class, 'store'])->middleware('throttle:6,1')->name('login');
 
     Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function (): void {
         // logout
