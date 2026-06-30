@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\WebhookEventEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Jobs\PopulateVault;
@@ -37,6 +38,7 @@ class CreateVault
         $this->addMembership();
         $this->populate();
         $this->log();
+        $this->notifyWebhooks();
 
         return $this->vault;
     }
@@ -100,5 +102,17 @@ class CreateVault
             action: UserActionEnum::VaultCreation,
             parameters: ['name' => $this->name],
         )->onQueue('low');
+    }
+
+    private function notifyWebhooks(): void
+    {
+        new SendWebhook(
+            user: $this->user,
+            event: WebhookEventEnum::VaultCreated,
+            data: [
+                'id' => $this->vault->id,
+                'name' => $this->name,
+            ],
+        )->execute();
     }
 }

@@ -124,6 +124,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the webhook endpoints associated with the user.
+     *
+     * @return HasMany<WebhookEndpoint, $this>
+     */
+    public function webhookEndpoints(): HasMany
+    {
+        return $this->hasMany(WebhookEndpoint::class);
+    }
+
+    /**
      * Get the vaults associated with the user.
      *
      * @return HasManyThrough<Vault, Member, $this>

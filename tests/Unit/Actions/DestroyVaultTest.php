@@ -10,10 +10,12 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\User;
 use App\Models\Vault;
+use App\Models\WebhookEndpoint;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\WebhookServer\CallWebhookJob;
 use Tests\TestCase;
 
 class DestroyVaultTest extends TestCase
@@ -48,6 +50,40 @@ class DestroyVaultTest extends TestCase
                 $job->action === UserActionEnum::VaultDeletion
                 && $job->user->id === $user->id
                 && $job->parameters === ['name' => $vault->name]
+            ),
+        );
+    }
+
+    #[Test]
+    public function it_sends_a_webhook_when_a_vault_is_destroyed(): void
+    {
+        Queue::fake();
+        $user = $this->createUser();
+        $vault = $this->createVault();
+        $this->assignUserToVault(
+            user: $user,
+            vault: $vault,
+            role: PermissionEnum::Owner->value
+        );
+        WebhookEndpoint::factory()->create([
+            'user_id' => $user->id,
+            'url' => 'https://central-perk.test/webhooks',
+        ]);
+
+        $vaultId = $vault->id;
+        $vaultName = $vault->name;
+
+        new DestroyVault(
+            user: $user,
+            vault: $vault,
+        )->execute();
+
+        Queue::assertPushed(
+            CallWebhookJob::class,
+            fn (CallWebhookJob $job): bool => (
+                $job->webhookUrl === 'https://central-perk.test/webhooks'
+                && $job->payload['event'] === 'vault.destroyed'
+                && $job->payload['data'] === ['id' => $vaultId, 'name' => $vaultName]
             ),
         );
     }

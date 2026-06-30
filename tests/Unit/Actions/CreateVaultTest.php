@@ -9,10 +9,12 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Jobs\PopulateVault;
 use App\Models\Vault;
+use App\Models\WebhookEndpoint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\WebhookServer\CallWebhookJob;
 use Tests\TestCase;
 
 class CreateVaultTest extends TestCase
@@ -56,6 +58,32 @@ class CreateVaultTest extends TestCase
             queue: 'low',
             job: PopulateVault::class,
             callback: fn (PopulateVault $job): bool => $job->vault->id === $vault->id,
+        );
+    }
+
+    #[Test]
+    public function it_sends_a_webhook_when_a_vault_is_created(): void
+    {
+        Queue::fake();
+
+        $user = $this->createUser();
+        WebhookEndpoint::factory()->create([
+            'user_id' => $user->id,
+            'url' => 'https://central-perk.test/webhooks',
+        ]);
+
+        $vault = new CreateVault(
+            user: $user,
+            name: 'Central Perk',
+        )->execute();
+
+        Queue::assertPushed(
+            CallWebhookJob::class,
+            fn (CallWebhookJob $job): bool => (
+                $job->webhookUrl === 'https://central-perk.test/webhooks'
+                && $job->payload['event'] === 'vault.created'
+                && $job->payload['data'] === ['id' => $vault->id, 'name' => 'Central Perk']
+            ),
         );
     }
 

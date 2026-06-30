@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\WebhookEventEnum;
 use App\Jobs\LogUserAction;
 use App\Models\User;
 use App\Models\Vault;
@@ -13,12 +14,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DestroyVault
 {
+    private readonly int $vaultId;
+
     private readonly string $vaultName;
 
     public function __construct(
         private readonly User $user,
         private readonly Vault $vault,
     ) {
+        $this->vaultId = $this->vault->id;
         $this->vaultName = $this->vault->name;
     }
 
@@ -27,6 +31,7 @@ class DestroyVault
         $this->validate();
         $this->delete();
         $this->log();
+        $this->notifyWebhooks();
     }
 
     private function validate(): void
@@ -55,5 +60,17 @@ class DestroyVault
             action: UserActionEnum::VaultDeletion,
             parameters: ['name' => $this->vaultName],
         )->onQueue('low');
+    }
+
+    private function notifyWebhooks(): void
+    {
+        new SendWebhook(
+            user: $this->user,
+            event: WebhookEventEnum::VaultDestroyed,
+            data: [
+                'id' => $this->vaultId,
+                'name' => $this->vaultName,
+            ],
+        )->execute();
     }
 }
