@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $vault_id
  * @property int $person_id
  * @property bool $should_be_reminded
+ * @property bool $is_approximate
  * @property int|null $year
  * @property int|null $month
  * @property int|null $day
@@ -34,6 +35,7 @@ class SpecialDate extends Model
         'vault_id',
         'person_id',
         'should_be_reminded',
+        'is_approximate',
         'year',
         'month',
         'day',
@@ -43,6 +45,7 @@ class SpecialDate extends Model
     /** @var array<string, mixed> */
     protected $attributes = [
         'should_be_reminded' => false,
+        'is_approximate' => false,
     ];
 
     /** @return array<string, string> */
@@ -50,6 +53,7 @@ class SpecialDate extends Model
     {
         return [
             'should_be_reminded' => 'boolean',
+            'is_approximate' => 'boolean',
             'year' => 'integer',
             'month' => 'integer',
             'day' => 'integer',

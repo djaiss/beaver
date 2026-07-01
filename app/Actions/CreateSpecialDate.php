@@ -24,6 +24,7 @@ class CreateSpecialDate
         private readonly Person $person,
         private string $name,
         private readonly bool $shouldBeReminded = false,
+        private readonly bool $isApproximate = false,
         private readonly ?int $year = null,
         private readonly ?int $month = null,
         private readonly ?int $day = null,
@@ -63,6 +64,10 @@ class CreateSpecialDate
 
     private function validateDate(): void
     {
+        if ($this->year === null && $this->month === null && $this->day === null) {
+            throw new ModelNotFoundException('A special date needs at least a year, a month or a day');
+        }
+
         if ($this->year !== null && ($this->year < 1 || $this->year > 9999)) {
             throw new ModelNotFoundException('Invalid year');
         }
@@ -83,6 +88,7 @@ class CreateSpecialDate
             'person_id' => $this->person->id,
             'name' => $this->name,
             'should_be_reminded' => $this->shouldBeReminded,
+            'is_approximate' => $this->isApproximate,
             'year' => $this->year,
             'month' => $this->month,
             'day' => $this->day,

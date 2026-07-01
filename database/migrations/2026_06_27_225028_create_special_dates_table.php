@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('vault_id')->comment('vault the special date belongs to');
             $table->unsignedBigInteger('person_id')->comment('person associated with the special date');
             $table->boolean('should_be_reminded')->default(false)->comment('whether members should be reminded of the special date');
+            $table->boolean('is_approximate')->default(false)->comment('whether the date is an approximation, e.g. a guessed age');
             $table->integer('year')->nullable()->comment('year of the special date');
             $table->integer('month')->nullable()->comment('month of the special date');
             $table->integer('day')->nullable()->comment('day of the special date');

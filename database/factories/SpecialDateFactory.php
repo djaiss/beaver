@@ -24,6 +24,7 @@ class SpecialDateFactory extends Factory
             'person_id' => Person::factory(),
             'vault_id' => fn (array $attributes): int => Person::query()->findOrFail($attributes['person_id'])->vault_id,
             'should_be_reminded' => $this->faker->boolean(),
+            'is_approximate' => $this->faker->boolean(),
             'year' => $this->faker->optional()->numberBetween(1900, 2100),
             'month' => $this->faker->numberBetween(1, 12),
             'day' => $this->faker->numberBetween(1, 28),

@@ -39,6 +39,7 @@ class UpdateSpecialDateTest extends TestCase
             specialDate: $specialDate,
             name: ' <em>Wedding anniversary</em> ',
             shouldBeReminded: true,
+            isApproximate: true,
             year: 2020,
             month: 6,
             day: 20,
@@ -47,6 +48,7 @@ class UpdateSpecialDateTest extends TestCase
         $this->assertSame($specialDate->id, $updatedSpecialDate->id);
         $this->assertSame('Wedding anniversary', $updatedSpecialDate->name);
         $this->assertTrue($updatedSpecialDate->should_be_reminded);
+        $this->assertTrue($updatedSpecialDate->is_approximate);
         $this->assertSame(2020, $updatedSpecialDate->year);
         $this->assertSame(6, $updatedSpecialDate->month);
         $this->assertSame(20, $updatedSpecialDate->day);
@@ -117,6 +119,23 @@ class UpdateSpecialDateTest extends TestCase
             name: 'Birthday',
             shouldBeReminded: false,
             month: 13,
+        )->execute();
+    }
+
+    #[Test]
+    public function it_fails_when_no_date_part_is_provided(): void
+    {
+        $user = $this->createUser();
+        $specialDate = SpecialDate::factory()->create();
+        $this->assignUserToVault($user, $specialDate->vault, PermissionEnum::Editor->value);
+
+        $this->expectException(ModelNotFoundException::class);
+
+        new UpdateSpecialDate(
+            user: $user,
+            specialDate: $specialDate,
+            name: 'Birthday',
+            shouldBeReminded: false,
         )->execute();
     }
 }

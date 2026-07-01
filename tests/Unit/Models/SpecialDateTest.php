@@ -28,4 +28,20 @@ class SpecialDateTest extends TestCase
 
         $this->assertTrue($specialDate->person()->exists());
     }
+
+    #[Test]
+    public function it_casts_is_approximate_to_a_boolean(): void
+    {
+        $specialDate = SpecialDate::factory()->make(['is_approximate' => true]);
+
+        $this->assertTrue($specialDate->is_approximate);
+    }
+
+    #[Test]
+    public function it_defaults_is_approximate_to_false(): void
+    {
+        $specialDate = new SpecialDate;
+
+        $this->assertFalse($specialDate->is_approximate);
+    }
 }
