@@ -20,9 +20,10 @@ You must send the API key in the `Authorization` header. The value must be `Bear
 
 Authenticated API requests on our instance are limited to 60 requests per minute. On your instance, you can change this setting in the [API routes configuration](https://github.com/djaiss/lifeOS/blob/main/routes/api.php).
 
-There are two ways to get an API key:
+There are three ways to get an API key:
 
 - Create an API key in the settings section of your account.
+- Register a new account through the registration API route described below. Creating an account returns an API key straight away, so a freshly registered user is authenticated immediately.
 - Use the login API route described below. Logging in with your email and password returns an API key that you can use to authenticate subsequent requests.
   :::/column
 
@@ -32,6 +33,80 @@ There are two ways to get an API key:
 ```bash
 curl -X GET "{{app.url}}/api/vaults" \
   -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+:::/code
+:::/column
+:::/section
+
+:::section columns divided
+:::column
+
+## Register
+
+:::description
+This endpoint creates a new account and returns an API key. Registration is public, so it does not require authentication. The returned API key authenticates the new user immediately, without a separate login call.
+:::/description
+
+:::parameters title="URL parameters" empty="This endpoint does not have any parameters."
+:::/parameters
+
+:::parameters title="Query parameters"
+:::attribute name="first_name" type="string" required
+The first name of the user. Maximum 100 characters.
+:::/attribute
+
+:::attribute name="last_name" type="string" required
+The last name of the user. Maximum 100 characters.
+:::/attribute
+
+:::attribute name="email" type="string" required
+The email address of the user. Must be a valid, non-disposable email address that is not already in use. Maximum 255 characters.
+:::/attribute
+
+:::attribute name="password" type="string" required
+The password of the user. Must be at least 8 characters and must not appear in a known data breach. Maximum 255 characters.
+:::/attribute
+
+:::attribute name="password_confirmation" type="string" required
+A confirmation of the password. Must match the `password` field.
+:::/attribute
+
+:::attribute name="device_name" type="string"
+The name of the device registering, for example `Rachel iPhone 15`. Used to name the issued token so each device is clearly identifiable in your list of API keys. Maximum 255 characters.
+:::/attribute
+:::/parameters
+
+:::parameters title="Response attributes"
+:::attribute name="message" type="string"
+The message of the response.
+:::/attribute
+
+:::attribute name="status" type="integer"
+The HTTP status code of the response.
+:::/attribute
+
+:::attribute name="data" type="object"
+The data of the response.
+:::/attribute
+
+:::attribute name="data.token" type="string"
+The API key of the newly created user.
+:::/attribute
+:::/parameters
+:::/column
+
+:::column
+:::code title="/api/register" verb="POST"
+
+```json
+{
+  "message": "Account created",
+  "status": 201,
+  "data": {
+    "token": "1|1234567890"
+  }
+}
 ```
 
 :::/code

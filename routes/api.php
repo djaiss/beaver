@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Administration\EmailSentController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Adminland\MemberController;
 use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\Auth\RegistrationController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Vault\Adminland\AdminlandGenderController;
 use App\Http\Controllers\Api\Vault\Adminland\AdminlandRelationshipTypeCategoryController;
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function (): void {
     Route::get('health', [HealthController::class, 'show'])->middleware('throttle:60,1');
+
+    // registration
+    Route::post('register', [RegistrationController::class, 'store'])->middleware('throttle:6,1')->name('register');
 
     // login
     Route::post('login', [LoginController::class, 'store'])->middleware('throttle:6,1')->name('login');
