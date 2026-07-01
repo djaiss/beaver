@@ -1,10 +1,10 @@
 <x-app-layout :vault="$vault">
   @php
     $kidsStatuses = [
-        '' => 'Unknown',
-        'no_kids' => 'Does not have kids',
-        'maybe_kids' => 'May have kids',
-        'has_kids' => 'Has kids',
+      '' => 'Unknown',
+      'no_kids' => 'Does not have kids',
+      'maybe_kids' => 'May have kids',
+      'has_kids' => 'Has kids',
     ];
   @endphp
 

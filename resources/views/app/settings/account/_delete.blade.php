@@ -56,7 +56,11 @@
       async handleSubmit() {
         if (! this.isValid) return
 
-        if (await confirm('{{ __('Are you absolutely sure? This action cannot be undone.') }}')) {
+        if (
+          await confirm(
+            '{{ __('Are you absolutely sure? This action cannot be undone.') }}',
+          )
+        ) {
           $el.submit()
         }
       },

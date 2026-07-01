@@ -9,6 +9,7 @@ use App\Models\Member;
 use App\Models\Person;
 use App\Models\RelationshipType;
 use App\Models\RelationshipTypeCategory;
+use App\Models\SpecialDate;
 use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -67,6 +68,14 @@ class VaultTest extends TestCase
         RelationshipType::factory()->create(['vault_id' => $vault->id]);
 
         $this->assertTrue($vault->relationshipTypes()->exists());
+    }
+
+    #[Test]
+    public function it_has_many_special_dates(): void
+    {
+        $specialDate = SpecialDate::factory()->create();
+
+        $this->assertTrue($specialDate->vault->specialDates()->exists());
     }
 
     #[Test]

@@ -27,15 +27,20 @@ class WebControllerActionConventionTest extends TestCase
 
         foreach ($routes as $route) {
             $action = $route->getActionName();
-
-            if (! in_array('web', $route->middleware(), true)
-                || $action === 'Closure'
-                || ! str_starts_with($action, 'App\\Http\\Controllers\\')
-                || str_starts_with($action, 'App\\Http\\Controllers\\App\\Auth\\')) {
+            if (! in_array('web', $route->middleware(), true)) {
+                continue;
+            }
+            if ($action === 'Closure') {
+                continue;
+            }
+            if (! str_starts_with((string) $action, 'App\\Http\\Controllers\\')) {
+                continue;
+            }
+            if (str_starts_with((string) $action, 'App\\Http\\Controllers\\App\\Auth\\')) {
                 continue;
             }
 
-            [, $method] = explode('@', $action, 2);
+            [, $method] = explode('@', (string) $action, 2);
 
             $this->assertContains($method, self::ALLOWED_METHODS, $action);
             $this->assertNotNull($route->getName(), $action);

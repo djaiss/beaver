@@ -104,6 +104,12 @@ class Vault extends Model
         return $this->hasMany(RelationshipType::class);
     }
 
+    /** @return HasMany<SpecialDate, $this> */
+    public function specialDates(): HasMany
+    {
+        return $this->hasMany(SpecialDate::class);
+    }
+
     /**
      * Gets the avatar of the vault.
      */

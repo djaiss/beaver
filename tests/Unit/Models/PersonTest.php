@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Models;
 
 use App\Models\Person;
+use App\Models\SpecialDate;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -27,6 +28,18 @@ class PersonTest extends TestCase
         $person = Person::factory()->create();
 
         $this->assertTrue($person->gender()->exists());
+    }
+
+    #[Test]
+    public function it_has_many_special_dates(): void
+    {
+        $person = Person::factory()->create();
+        SpecialDate::factory()->create([
+            'vault_id' => $person->vault_id,
+            'person_id' => $person->id,
+        ]);
+
+        $this->assertTrue($person->specialDates()->exists());
     }
 
     #[Test]

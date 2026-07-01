@@ -28,6 +28,9 @@ enum UserActionEnum: string
     case PersonCreation = 'person_created';
     case PersonUpdate = 'person_updated';
     case PersonDeletion = 'person_deleted';
+    case SpecialDateCreation = 'special_date_created';
+    case SpecialDateUpdate = 'special_date_updated';
+    case SpecialDateDeletion = 'special_date_deleted';
     case PersonalProfileUpdate = 'user_profile_updated';
     case UpdateUserPassword = 'user_password_updated';
     case AutoDeleteAccountUpdate = 'user_auto_delete_updated';
@@ -59,6 +62,9 @@ enum UserActionEnum: string
             self::PersonCreation => 'Created a person called :name',
             self::PersonUpdate => 'Updated a person called :name',
             self::PersonDeletion => 'Deleted the person called :name',
+            self::SpecialDateCreation => 'Created a special date called :name',
+            self::SpecialDateUpdate => 'Updated a special date called :name',
+            self::SpecialDateDeletion => 'Deleted the special date called :name',
             self::PersonalProfileUpdate => 'Updated their personal profile',
             self::UpdateUserPassword => 'Updated their password',
             self::AutoDeleteAccountUpdate => 'Updated auto delete account setting to :status',

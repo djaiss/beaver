@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 class CreateAvatarSVG
 {
-    private string $initials;
-    private string $background;
-    private string $foreground;
+    private readonly string $initials;
+
+    private readonly string $background;
+
+    private readonly string $foreground;
 
     public function __construct(
         string $initials,
-        private int $size = 64,
+        private readonly int $size = 64,
     ) {
         $this->initials = htmlspecialchars(strtoupper(substr($initials, 0, 2)), ENT_XML1);
         $this->background = $this->deriveBackground($this->initials);
@@ -41,7 +45,7 @@ class CreateAvatarSVG
 
     public function toDataUri(): string
     {
-        return 'data:image/svg+xml;base64,' . base64_encode($this->render());
+        return 'data:image/svg+xml;base64,'.base64_encode($this->render());
     }
 
     private function deriveBackground(string $initials): string
@@ -73,12 +77,12 @@ class CreateAvatarSVG
         $m = $l - $c / 2;
 
         [$r, $g, $b] = match (true) {
-            $h < 60  => [$c, $x, 0],
+            $h < 60 => [$c, $x, 0],
             $h < 120 => [$x, $c, 0],
             $h < 180 => [0, $c, $x],
             $h < 240 => [0, $x, $c],
             $h < 300 => [$x, 0, $c],
-            default  => [$c, 0, $x],
+            default => [$c, 0, $x],
         };
 
         return sprintf(
