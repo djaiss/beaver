@@ -96,4 +96,30 @@ class MeControllerTest extends TestCase
             $response->json()['data'],
         );
     }
+
+    #[Test]
+    public function it_updates_the_profile_when_no_nickname_is_provided(): void
+    {
+        $user = User::factory()->create([
+            'first_name' => 'Dwight',
+            'last_name' => 'Schrute',
+            'email' => 'dwight.schrute@dundermifflin.com',
+            'nickname' => 'Dwight',
+            'locale' => 'en',
+            'time_format_24h' => false,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->json('PUT', '/api/me', [
+            'first_name' => 'Michael',
+            'last_name' => 'Scott',
+            'email' => 'michael.scott@dundermifflin.com',
+            'locale' => 'fr_FR',
+            'time_format_24h' => 'true',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertNull($response->json()['data']['attributes']['nickname']);
+    }
 }

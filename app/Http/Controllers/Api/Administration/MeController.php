@@ -48,7 +48,7 @@ class MeController extends Controller
             email: mb_strtolower((string) $validated['email']),
             firstName: $validated['first_name'],
             lastName: $validated['last_name'],
-            nickname: $validated['nickname'],
+            nickname: $validated['nickname'] ?? null,
             locale: $validated['locale'],
             timeFormat24h: $validated['time_format_24h'] === 'true',
         )->execute();
