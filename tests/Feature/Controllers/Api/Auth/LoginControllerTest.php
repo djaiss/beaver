@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Controllers\Api\Auth;
 
+use App\Enums\EmailType;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
+use App\Jobs\SendEmail;
+use App\Mail\NewLoginDetected;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Attributes\Test;
 use PragmaRX\Google2FALaravel\Google2FA;
@@ -39,6 +45,67 @@ class LoginControllerTest extends TestCase
 
         $responseData = $response->json();
         $this->assertNotEmpty($responseData['data']['token']);
+    }
+
+    #[Test]
+    public function it_logs_the_token_creation_and_notifies_of_the_new_login(): void
+    {
+        Queue::fake();
+
+        $user = User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+            'device_name' => 'Rachel iPhone 15',
+        ])->assertStatus(200);
+
+        Queue::assertPushedOn(
+            queue: 'low',
+            job: LogUserAction::class,
+            callback: fn (LogUserAction $job): bool => (
+                $job->action === UserActionEnum::ApiKeyCreation
+                && $job->user->id === $user->id
+            ),
+        );
+
+        Queue::assertPushedOn(
+            queue: 'high',
+            job: SendEmail::class,
+            callback: fn (SendEmail $job): bool => (
+                $job->mailable instanceof NewLoginDetected
+                && $job->mailable->device === 'Rachel iPhone 15'
+                && $job->user->id === $user->id
+                && $job->emailType === EmailType::NewLogin
+            ),
+        );
+    }
+
+    #[Test]
+    public function it_labels_the_new_login_notification_for_an_unknown_device(): void
+    {
+        Queue::fake();
+
+        User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+        ])->assertStatus(200);
+
+        Queue::assertPushed(
+            SendEmail::class,
+            fn (SendEmail $job): bool => (
+                $job->mailable instanceof NewLoginDetected
+                && $job->mailable->device === 'an unknown device'
+            ),
+        );
     }
 
     #[Test]

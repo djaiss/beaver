@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Actions\CreateApiKeyForLogin;
 use App\Actions\VerifyTwoFactorCode;
-use App\Helpers\TextSanitizer;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ApiResponses;
@@ -51,28 +51,14 @@ class LoginController extends Controller
             }
         }
 
-        $token = $user->createToken($this->tokenName($validated['device_name'] ?? null))->plainTextToken;
+        $token = new CreateApiKeyForLogin(
+            user: $user,
+            deviceName: $validated['device_name'] ?? null,
+        )->execute();
 
         return $this->success('Authenticated', 200, [
             'token' => $token,
         ]);
-    }
-
-    /**
-     * Build a human-readable name for the issued token. Naming it after the
-     * device the user signed in from means each token is clearly
-     * identifiable in the list of personal access tokens, instead of every
-     * login producing the same generic label.
-     */
-    private function tokenName(?string $deviceName): string
-    {
-        $deviceName = TextSanitizer::plainText((string) $deviceName);
-
-        if ($deviceName === '') {
-            return 'Login from an unknown device';
-        }
-
-        return 'Login from '.$deviceName;
     }
 
     public function destroy(Request $request): JsonResponse
