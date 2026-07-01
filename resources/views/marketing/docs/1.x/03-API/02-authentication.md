@@ -58,6 +58,14 @@ The email address of the user. Maximum 255 characters.
 :::attribute name="password" type="string" required
 The password of the user. Maximum 255 characters.
 :::/attribute
+
+:::attribute name="code" type="string"
+The two-factor authentication code. Required only when the user has enabled two-factor authentication. Accepts a TOTP code or a recovery code. Maximum 255 characters.
+:::/attribute
+
+:::attribute name="device_name" type="string"
+The name of the device signing in, for example `Rachel iPhone 15`. Used to name the issued token so each device is clearly identifiable in your list of API keys. Maximum 255 characters.
+:::/attribute
 :::/parameters
 
 :::parameters title="Response attributes"

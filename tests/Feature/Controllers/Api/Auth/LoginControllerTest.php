@@ -42,6 +42,47 @@ class LoginControllerTest extends TestCase
     }
 
     #[Test]
+    public function it_names_the_token_after_the_device(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+            'device_name' => 'Rachel iPhone 15',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_id' => $user->id,
+            'name' => 'Login from Rachel iPhone 15',
+        ]);
+    }
+
+    #[Test]
+    public function it_names_the_token_when_no_device_is_provided(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'rachel.green@friends.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        $response = $this->json('POST', '/api/login', [
+            'email' => 'rachel.green@friends.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_id' => $user->id,
+            'name' => 'Login from an unknown device',
+        ]);
+    }
+
+    #[Test]
     public function it_rejects_invalid_credentials(): void
     {
         User::factory()->create([
