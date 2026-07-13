@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use Database\Factories\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -56,25 +55,13 @@ class Account extends Model
     }
 
     /**
-     * Get the users who are members of the account.
+     * Get the users who belong to the account.
      *
-     * @return BelongsToMany<User, $this>
+     * @return HasMany<User, $this>
      */
-    public function users(): BelongsToMany
+    public function users(): HasMany
     {
-        return $this->belongsToMany(User::class, 'account_user')
-            ->withPivot('role', 'invited_by', 'joined_at')
-            ->withTimestamps();
-    }
-
-    /**
-     * Get the membership rows of the account.
-     *
-     * @return HasMany<AccountMember, $this>
-     */
-    public function members(): HasMany
-    {
-        return $this->hasMany(AccountMember::class);
+        return $this->hasMany(User::class);
     }
 
     /**
@@ -90,19 +77,19 @@ class Account extends Model
     /**
      * Get the users who administer the account.
      *
-     * @return BelongsToMany<User, $this>
+     * @return HasMany<User, $this>
      */
-    public function administrators(): BelongsToMany
+    public function administrators(): HasMany
     {
-        return $this->users()->wherePivot('role', PermissionEnum::Owner->value);
+        return $this->users()->where('role', PermissionEnum::Owner->value);
     }
 
     /**
-     * Check whether the given user is a member of the account.
+     * Check whether the given user belongs to the account.
      */
     public function hasMember(User $user): bool
     {
-        return $this->members()->where('user_id', $user->id)->exists();
+        return $user->account_id === $this->id;
     }
 
     /**
@@ -110,6 +97,6 @@ class Account extends Model
      */
     public function roleFor(User $user): ?string
     {
-        return $this->members()->where('user_id', $user->id)->value('role');
+        return $user->account_id === $this->id ? $user->role : null;
     }
 }

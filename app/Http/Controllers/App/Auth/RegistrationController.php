@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App\Auth;
 
-use App\Actions\SignUp;
+use App\Actions\CreateAccount;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -49,7 +49,7 @@ class RegistrationController extends Controller
             ],
         ]);
 
-        $user = new SignUp(
+        $user = new CreateAccount(
             email: mb_strtolower((string) $validated['email']),
             password: $validated['password'],
             firstName: $validated['first_name'],

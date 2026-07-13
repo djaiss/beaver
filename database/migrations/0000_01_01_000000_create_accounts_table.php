@@ -13,7 +13,10 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->text('name')->comment('name of the account');
-            $table->author();
+            $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the account');
+            $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
+            $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the account');
+            $table->text('updated_by_name')->nullable()->comment('name of the last editor at the time');
             $table->timestamps();
         });
     }

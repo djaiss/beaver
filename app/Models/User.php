@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PermissionEnum;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,6 +20,8 @@ use Laravel\Sanctum\HasApiTokens;
  * Class User
  *
  * @property int $id
+ * @property int $account_id
+ * @property string $role
  * @property string $first_name
  * @property string $last_name
  * @property string $nickname
@@ -52,6 +55,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
+        'account_id',
+        'role',
         'first_name',
         'last_name',
         'nickname',
@@ -147,48 +152,20 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get the accounts the user is a member of.
+     * Get the account the user belongs to.
      *
-     * @return BelongsToMany<Account, $this>
+     * @return BelongsTo<Account, $this>
      */
-    public function accounts(): BelongsToMany
+    public function account(): BelongsTo
     {
-        return $this->belongsToMany(Account::class, 'account_user')
-            ->withPivot('role', 'invited_by', 'joined_at')
-            ->withTimestamps();
+        return $this->belongsTo(Account::class);
     }
 
     /**
-     * Get the account membership rows of the user.
-     *
-     * @return HasMany<AccountMember, $this>
+     * Check if the user is an owner of their account.
      */
-    public function accountMemberships(): HasMany
+    public function isOwner(): bool
     {
-        return $this->hasMany(AccountMember::class);
-    }
-
-    /**
-     * Check if the user is a member of a specific account.
-     */
-    public function isMemberOf(Account $account): bool
-    {
-        return $this->accountMemberships()->where('account_id', $account->id)->exists();
-    }
-
-    /**
-     * Return the membership object for the user in the given account.
-     */
-    public function memberFor(Account $account): ?AccountMember
-    {
-        return $this->accountMemberships()->where('account_id', $account->id)->first();
-    }
-
-    /**
-     * Return the role the user holds in the given account, if any.
-     */
-    public function roleOn(Account $account): ?string
-    {
-        return $this->accountMemberships()->where('account_id', $account->id)->value('role');
+        return $this->role === PermissionEnum::Owner->value;
     }
 }

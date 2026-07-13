@@ -4,31 +4,32 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\UserActionEnum;
+use App\Enums\PermissionEnum;
 use App\Helpers\TextSanitizer;
-use App\Jobs\LogUserAction;
+use App\Models\Account;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * Create a user. Only an access to the instance.
+ * Create a user. A user always belongs to an account, with a role.
  */
 class CreateUser
 {
     private User $user;
 
     public function __construct(
+        private readonly Account $account,
         private string $email,
         private readonly string $password,
         private string $firstName,
         private string $lastName,
+        private string $role = PermissionEnum::Viewer->value,
     ) {}
 
     public function execute(): User
     {
         $this->sanitize();
         $this->create();
-        $this->log();
 
         return $this->user;
     }
@@ -43,19 +44,13 @@ class CreateUser
     private function create(): void
     {
         $this->user = User::query()->create([
+            'account_id' => $this->account->id,
+            'role' => $this->role,
             'first_name' => $this->firstName,
             'last_name' => $this->lastName,
             'email' => $this->email,
             'password' => Hash::make($this->password),
             'trial_ends_at' => now()->addDays(30),
         ]);
-    }
-
-    private function log(): void
-    {
-        LogUserAction::dispatch(
-            user: $this->user,
-            action: UserActionEnum::AccountCreation,
-        )->onQueue('low');
     }
 }

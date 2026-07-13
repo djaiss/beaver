@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Actions\SignUp;
+use App\Actions\CreateAccount;
 use App\Helpers\TextSanitizer;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -42,7 +42,7 @@ class RegistrationController extends Controller
             'device_name' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $user = new SignUp(
+        $user = new CreateAccount(
             email: mb_strtolower((string) $validated['email']),
             password: $validated['password'],
             firstName: $validated['first_name'],
