@@ -18,7 +18,7 @@ On our instance, all API requests must be made over HTTPS. Calls made over plain
 
 You must send the API key in the `Authorization` header. The value must be `Bearer`, followed by a space and then the API key.
 
-Authenticated API requests on our instance are limited to 60 requests per minute. On your instance, you can change this setting in the [API routes configuration](https://github.com/djaiss/lifeOS/blob/main/routes/api.php).
+Authenticated API requests on our instance are limited to 60 requests per minute. On your instance, you can change this setting in the [API routes configuration](https://github.com/djaiss/beaver/blob/main/routes/api.php).
 
 There are three ways to get an API key:
 
@@ -31,7 +31,7 @@ There are three ways to get an API key:
 :::code title="Authenticated request"
 
 ```bash
-curl -X GET "{{app.url}}/api/vaults" \
+curl -X GET "{{app.url}}/api/me" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 

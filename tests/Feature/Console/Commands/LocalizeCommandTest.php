@@ -48,7 +48,7 @@ BLADE
                 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE).PHP_EOL,
             );
 
-            $this->artisan('lifeos:localize en,fr_FR')
+            $this->artisan('beaver:localize en,fr_FR')
                 ->assertSuccessful();
 
             $enTranslations = json_decode((string) file_get_contents($enPath), true);

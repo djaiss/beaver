@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Represents a log entry in the system for tracking user actions and events.
  *
  * @property int $id
- * @property int|null $vault_id
  * @property int|null $user_id
  * @property string $user_name
  * @property string $action
@@ -43,7 +42,6 @@ class Log extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'vault_id',
         'user_id',
         'user_name',
         'action',
@@ -60,16 +58,6 @@ class Log extends Model
         'action' => 'encrypted',
         'parameters' => 'array',
     ];
-
-    /**
-     * Get the vault associated with the log.
-     *
-     * @return BelongsTo<Vault, $this>
-     */
-    public function vault(): BelongsTo
-    {
-        return $this->belongsTo(Vault::class);
-    }
 
     /**
      * Get the user associated with the log.

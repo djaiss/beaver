@@ -14,7 +14,7 @@ class LocalizeCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'lifeos:localize {locales}';
+    protected $signature = 'beaver:localize {locales}';
 
     /**
      * @var string

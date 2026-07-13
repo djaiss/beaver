@@ -45,8 +45,6 @@ class SettingsControllerTest extends TestCase
             && $logs->every(
                 fn ($log): bool => isset(
                     $log->username,
-                    $log->vault_name,
-                    $log->vault_link,
                     $log->action,
                     $log->description,
                     $log->created_at,

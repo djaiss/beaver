@@ -57,7 +57,6 @@ class Generate2faQRCode
     private function logUserAction(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::TwoFaQrCodeGeneration,
         )->onQueue('low');

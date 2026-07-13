@@ -77,12 +77,12 @@ class DocumentationMarkdownRendererTest extends TestCase
                 :::/view-as-markdown
                 :::/markdown-actions
                 MARKDOWN,
-            ['docs.markdown_url' => 'https://lifeos.test/docs/1.x/api/profile.md'],
+            ['docs.markdown_url' => 'https://beaver.test/docs/1.x/api/profile.md'],
         );
 
         $this->assertStringContainsString('Copy for LLM', $html);
         $this->assertStringContainsString('View as Markdown', $html);
-        $this->assertStringContainsString('https://lifeos.test/docs/1.x/api/profile.md', $html);
+        $this->assertStringContainsString('https://beaver.test/docs/1.x/api/profile.md', $html);
         $this->assertStringNotContainsString(':::markdown-actions', $html);
     }
 }

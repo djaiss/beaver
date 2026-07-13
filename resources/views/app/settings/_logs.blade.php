@@ -13,11 +13,6 @@
           <p class="items-center gap-2 sm:flex">
             <span class="">{{ $log->username }}</span>
             |
-            @if ($log->vault_name)
-              <x-link href="{{ $log->vault_link }}">{{ $log->vault_name }}</x-link>
-              |
-            @endif
-
             <span class="font-mono text-xs">{{ $log->action }}</span>
           </p>
           <p class="">{{ $log->description }}</p>

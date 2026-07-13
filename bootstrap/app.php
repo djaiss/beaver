@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\CheckAdminland;
+use App\Http\Middleware\CheckAccount;
+use App\Http\Middleware\CheckAccountOwner;
 use App\Http\Middleware\CheckMarketing;
-use App\Http\Middleware\CheckPerson;
-use App\Http\Middleware\CheckVault;
-use App\Http\Middleware\CheckVaultAPI;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,11 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'set.locale' => SetLocale::class,
-            'vault' => CheckVault::class,
+            'account' => CheckAccount::class,
+            'account.owner' => CheckAccountOwner::class,
             'marketing' => CheckMarketing::class,
-            'vault.api' => CheckVaultAPI::class,
-            'vault.adminland' => CheckAdminland::class,
-            'person' => CheckPerson::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

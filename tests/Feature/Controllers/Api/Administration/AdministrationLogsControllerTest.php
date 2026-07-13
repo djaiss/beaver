@@ -6,7 +6,6 @@ namespace Tests\Feature\Controllers\Api\Administration;
 
 use App\Models\Log;
 use App\Models\User;
-use App\Models\Vault;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Laravel\Sanctum\Sanctum;
@@ -22,8 +21,6 @@ class AdministrationLogsControllerTest extends TestCase
         'id',
         'attributes' => [
             'user_name',
-            'vault_id',
-            'vault_name',
             'action',
             'parameters',
             'description',
@@ -43,15 +40,11 @@ class AdministrationLogsControllerTest extends TestCase
             'first_name' => 'Chandler',
             'last_name' => 'Bing',
         ]);
-        $vault = Vault::factory()->create([
-            'name' => 'Central Perk',
-        ]);
         $log = Log::factory()->create([
-            'vault_id' => $vault->id,
             'user_id' => $user->id,
             'user_name' => 'Chandler Bing',
-            'action' => 'vault_created',
-            'parameters' => ['name' => 'Central Perk'],
+            'action' => 'magic_link_created',
+            'parameters' => null,
         ]);
 
         $anotherUser = User::factory()->create();
@@ -75,11 +68,8 @@ class AdministrationLogsControllerTest extends TestCase
             ])
             ->assertJsonPath('data.0.id', (string) $log->id)
             ->assertJsonPath('data.0.attributes.user_name', 'Chandler Bing')
-            ->assertJsonPath('data.0.attributes.vault_id', (string) $vault->id)
-            ->assertJsonPath('data.0.attributes.vault_name', 'Central Perk')
-            ->assertJsonPath('data.0.attributes.action', 'vault_created')
-            ->assertJsonPath('data.0.attributes.parameters.name', 'Central Perk')
-            ->assertJsonPath('data.0.attributes.description', 'Created a vault called Central Perk')
+            ->assertJsonPath('data.0.attributes.action', 'magic_link_created')
+            ->assertJsonPath('data.0.attributes.description', 'Sent a magic link')
             ->assertJsonPath('data.0.attributes.created_at', 1751284800)
             ->assertJsonMissing(['id' => (string) $anotherLog->id]);
     }
@@ -112,7 +102,6 @@ class AdministrationLogsControllerTest extends TestCase
             'last_name' => 'Bing',
         ]);
         $log = Log::factory()->create([
-            'vault_id' => null,
             'user_id' => $user->id,
             'user_name' => 'Chandler Bing',
             'action' => 'user_profile_updated',
@@ -131,8 +120,6 @@ class AdministrationLogsControllerTest extends TestCase
             ->assertJsonPath('data.type', 'log')
             ->assertJsonPath('data.id', (string) $log->id)
             ->assertJsonPath('data.attributes.user_name', 'Chandler Bing')
-            ->assertJsonPath('data.attributes.vault_id', null)
-            ->assertJsonPath('data.attributes.vault_name', null)
             ->assertJsonPath('data.attributes.action', 'user_profile_updated')
             ->assertJsonPath('data.attributes.parameters', null)
             ->assertJsonPath('data.attributes.description', 'Updated their personal profile')

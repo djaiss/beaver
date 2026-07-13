@@ -59,7 +59,7 @@ fi
 
 trap cleanup EXIT
 
-STAGING_PATH="$(mktemp -d "${TMPDIR:-/tmp}/lifeos-sync-skills.XXXXXX")"
+STAGING_PATH="$(mktemp -d "${TMPDIR:-/tmp}/beaver-sync-skills.XXXXXX")"
 mkdir -p "$STAGING_PATH/source" "$STAGING_PATH/replacements" "$STAGING_PATH/backups"
 
 rsync -aL --delete "$SOURCE_PATH/" "$STAGING_PATH/source/"

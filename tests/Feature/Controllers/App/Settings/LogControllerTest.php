@@ -21,7 +21,6 @@ class LogControllerTest extends TestCase
         $user = $this->createUser();
 
         Log::factory()->create([
-            'vault_id' => null,
             'user_id' => $user->id,
             'action' => 'log.user.profile_updated',
         ]);
@@ -42,7 +41,6 @@ class LogControllerTest extends TestCase
         Log::factory()
             ->count(15)
             ->create([
-                'vault_id' => null,
                 'user_id' => $user->id,
             ]);
 

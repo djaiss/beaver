@@ -8,8 +8,8 @@ use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -33,7 +33,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $trial_ends_at
  * @property string $locale
  * @property bool $time_format_24h
- * @property bool $auto_delete_account
+ * @property bool $auto_delete_user
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -66,7 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_activity_at',
         'locale',
         'time_format_24h',
-        'auto_delete_account',
+        'auto_delete_user',
     ];
 
     /**
@@ -99,7 +99,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_recovery_codes' => 'encrypted:array',
-            'auto_delete_account' => 'boolean',
+            'auto_delete_user' => 'boolean',
         ];
     }
 
@@ -114,16 +114,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get the memberships associated with the user.
-     *
-     * @return HasMany<Member, $this>
-     */
-    public function memberships(): HasMany
-    {
-        return $this->hasMany(Member::class);
-    }
-
-    /**
      * Get the webhook endpoints associated with the user.
      *
      * @return HasMany<WebhookEndpoint, $this>
@@ -131,23 +121,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function webhookEndpoints(): HasMany
     {
         return $this->hasMany(WebhookEndpoint::class);
-    }
-
-    /**
-     * Get the vaults associated with the user.
-     *
-     * @return HasManyThrough<Vault, Member, $this>
-     */
-    public function vaults(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Vault::class,
-            Member::class,
-            'user_id',          // Foreign key on members table...
-            'id',               // Foreign key on vaults table...
-            'id',               // Local key on users table...
-            'vault_id',         // Local key on members table...
-        );
     }
 
     /**
@@ -174,18 +147,48 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check if the user is part of a specific vault.
+     * Get the accounts the user is a member of.
+     *
+     * @return BelongsToMany<Account, $this>
      */
-    public function isPartOfVault(Vault $vault): bool
+    public function accounts(): BelongsToMany
     {
-        return $this->memberships()->where('vault_id', $vault->id)->exists();
+        return $this->belongsToMany(Account::class, 'account_user')
+            ->withPivot('role', 'invited_by', 'joined_at')
+            ->withTimestamps();
     }
 
     /**
-     * Return the member object for the user in the given vault.
+     * Get the account membership rows of the user.
+     *
+     * @return HasMany<AccountMember, $this>
      */
-    public function memberOf(Vault $vault): ?Member
+    public function accountMemberships(): HasMany
     {
-        return $this->memberships()->where('vault_id', $vault->id)->first();
+        return $this->hasMany(AccountMember::class);
+    }
+
+    /**
+     * Check if the user is a member of a specific account.
+     */
+    public function isMemberOf(Account $account): bool
+    {
+        return $this->accountMemberships()->where('account_id', $account->id)->exists();
+    }
+
+    /**
+     * Return the membership object for the user in the given account.
+     */
+    public function memberFor(Account $account): ?AccountMember
+    {
+        return $this->accountMemberships()->where('account_id', $account->id)->first();
+    }
+
+    /**
+     * Return the role the user holds in the given account, if any.
+     */
+    public function roleOn(Account $account): ?string
+    {
+        return $this->accountMemberships()->where('account_id', $account->id)->value('role');
     }
 }

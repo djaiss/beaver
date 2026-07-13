@@ -32,7 +32,7 @@ class EmailVerificationControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get('/verify-email');
 
-        $response->assertRedirect(route('vault.index', absolute: false));
+        $response->assertRedirect(route('accounts.index', absolute: false));
     }
 
     #[Test]

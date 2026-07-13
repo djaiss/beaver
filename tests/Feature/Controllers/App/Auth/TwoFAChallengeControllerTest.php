@@ -50,7 +50,7 @@ class TwoFAChallengeControllerTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(route('vault.index', absolute: false));
+        $response->assertRedirect(route('accounts.index', absolute: false));
 
         $this->assertFalse(session()->has('2fa:user:id'));
 
@@ -82,7 +82,7 @@ class TwoFAChallengeControllerTest extends TestCase
 
         $this->assertAuthenticated();
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect(route('vault.index', absolute: false));
+        $response->assertRedirect(route('accounts.index', absolute: false));
 
         $user->refresh();
         $this->assertNotContains('ABC123', $user->two_factor_recovery_codes);

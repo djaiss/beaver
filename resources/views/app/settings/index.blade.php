@@ -4,7 +4,7 @@
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.index')],
+    ['label' => __('Accounts'), 'route' => route('accounts.index')],
     ['label' => __('Settings')]
   ]" />
 

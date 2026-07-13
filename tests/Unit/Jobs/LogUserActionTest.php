@@ -25,7 +25,6 @@ class LogUserActionTest extends TestCase
             'last_activity_at' => null,
         ]);
         LogUserAction::dispatch(
-            vault: null,
             user: $user,
             action: UserActionEnum::PersonalProfileUpdate,
         );

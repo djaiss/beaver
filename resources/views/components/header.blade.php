@@ -5,22 +5,6 @@
       <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
     </a>
 
-    <!-- selectors -->
-    @if (isset($vault))
-      <div class="flex items-center gap-1">
-        <a href="{{ route('vault.index') }}" data-turbo="true" class="rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800">{{ __('Dashboard') }}</a>
-        <span class="text-gray-500">/</span>
-        <div class="flex items-center pl-2" id="header-vault-name">
-          {{ $vault->name }}
-        </div>
-      </div>
-
-      <div class="ml-4 flex items-center gap-2">
-        <a href="{{ route('vault.person.index', $vault) }}" data-turbo="true" class="rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800">{{ __('Persons') }}</a>
-        <a href="{{ route('vault.adminland.index', $vault) }}" data-turbo="true" class="rounded-md border border-transparent px-2 py-1 font-medium hover:border-gray-200 hover:bg-gray-100 dark:hover:border-gray-700 dark:hover:bg-gray-800">{{ __('Adminland') }}</a>
-      </div>
-    @endif
-
     <!-- separator -->
     <div class="-ml-4 flex-1"></div>
 
@@ -46,6 +30,13 @@
           <a @click="menuOpen = false" href="" class="relative flex w-full cursor-pointer items-center rounded px-2 py-1.5 outline-none select-none hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100">
             <x-phosphor-user class="mr-2 size-4 text-gray-600" />
             {{ __('Instance administration') }}
+          </a>
+
+          <div class="-mx-1 my-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+
+          <a @click="menuOpen = false" href="{{ route('accounts.index') }}" class="relative flex w-full cursor-pointer items-center rounded px-2 py-1.5 outline-none select-none hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-100">
+            <x-phosphor-building-office class="mr-2 size-4 text-gray-600" />
+            {{ __('Accounts') }}
           </a>
 
           <div class="-mx-1 my-1 h-px bg-gray-200 dark:bg-gray-700"></div>

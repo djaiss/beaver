@@ -14,14 +14,14 @@ class EmailVerificationController extends Controller
     public function index(Request $request): RedirectResponse|View
     {
         return $request->user()->hasVerifiedEmail()
-            ? redirect()->intended(route('vault.index', absolute: false))
+            ? redirect()->intended(route('accounts.index', absolute: false))
             : view('app.auth.verify-email');
     }
 
     public function store(Request $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('vault.index', absolute: false));
+            return redirect()->intended(route('accounts.index', absolute: false));
         }
 
         $request->user()->sendEmailVerificationNotification();

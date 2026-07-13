@@ -4,7 +4,7 @@
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.index')],
+    ['label' => __('Accounts'), 'route' => route('accounts.index')],
     ['label' => __('Webhooks')],
   ]" />
 
@@ -19,7 +19,7 @@
         <x-box padding="p-0">
           <x-slot:title>{{ __('Webhook endpoints') }}</x-slot>
           <x-slot:description>
-            <p>{{ __('Webhooks let an external service receive a notification when something happens in your account, such as creating or deleting a vault.') }}</p>
+            <p>{{ __('Webhooks let an external service receive a notification when something happens in your account.') }}</p>
             <p>{{ __('We sign every webhook with the endpoint\'s secret so the receiving service can verify the request came from us.') }}</p>
           </x-slot>
 

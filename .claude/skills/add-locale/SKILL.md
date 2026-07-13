@@ -11,11 +11,11 @@ When adding a new locale, use ISO 15897 names for region-specific languages, e.g
    ```php
    'supported_locales' => ['en', 'fr_FR', 'es_ES'],
    ```
-2. Update the `composer.json` `lifeos:locale` script with the same locale list:
+2. Update the `composer.json` `beaver:locale` script with the same locale list:
    ```json
-   "lifeos:locale": "php artisan lifeos:localize en,fr_FR,es_ES"
+   "beaver:locale": "php artisan beaver:localize en,fr_FR,es_ES"
    ```
 3. Add any user-facing locale option labels to the English source language file.
 4. Update UI controls that expose locale choices, such as `resources/views/app/settings/_detail.blade.php`.
-5. Run `composer lifeos:locale`.
+5. Run `composer beaver:locale`.
 6. Fill the new locale files completely; do not leave the generated empty strings in place.

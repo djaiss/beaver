@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App\Auth;
 
-use App\Actions\CreateAccount;
+use App\Actions\SignUp;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -49,7 +49,7 @@ class RegistrationController extends Controller
             ],
         ]);
 
-        $user = new CreateAccount(
+        $user = new SignUp(
             email: mb_strtolower((string) $validated['email']),
             password: $validated['password'],
             firstName: $validated['first_name'],
@@ -60,6 +60,6 @@ class RegistrationController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('vault.index', absolute: false));
+        return redirect(route('accounts.index', absolute: false));
     }
 }

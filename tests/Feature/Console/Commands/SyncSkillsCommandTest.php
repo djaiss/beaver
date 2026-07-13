@@ -19,7 +19,7 @@ class SyncSkillsCommandTest extends TestCase
         parent::setUp();
 
         $this->originalBasePath = $this->app->basePath();
-        $this->temporaryBasePath = sys_get_temp_dir().'/lifeos-sync-skills-'.bin2hex(random_bytes(8));
+        $this->temporaryBasePath = sys_get_temp_dir().'/beaver-sync-skills-'.bin2hex(random_bytes(8));
 
         File::makeDirectory($this->temporaryBasePath, 0755, true);
         File::ensureDirectoryExists($this->temporaryBasePath.'/scripts');
@@ -47,7 +47,7 @@ class SyncSkillsCommandTest extends TestCase
         $this->writeFile('.agents/skills/stale/SKILL.md', 'stale agent skill');
         $this->writeFile('.ai/skills/stale/SKILL.md', 'stale AI skill');
 
-        $this->artisan('lifeos:sync-skills')
+        $this->artisan('beaver:sync-skills')
             ->expectsOutput('Skills synchronized.')
             ->assertSuccessful();
 
@@ -68,7 +68,7 @@ class SyncSkillsCommandTest extends TestCase
         $this->writeFile('.agents/skills/existing/SKILL.md', 'agent skill');
         $this->writeFile('.ai/skills/existing/SKILL.md', 'AI skill');
 
-        $this->artisan('lifeos:sync-skills')
+        $this->artisan('beaver:sync-skills')
             ->expectsOutputToContain('The source skills directory was not found')
             ->assertFailed();
 
@@ -86,7 +86,7 @@ class SyncSkillsCommandTest extends TestCase
             base_path('.github/skills/tailwindcss-development'),
         );
 
-        $this->artisan('lifeos:sync-skills')
+        $this->artisan('beaver:sync-skills')
             ->expectsOutput('Skills synchronized.')
             ->assertSuccessful();
 
@@ -113,7 +113,7 @@ class SyncSkillsCommandTest extends TestCase
         $this->writeFile('.ai/skills/existing/SKILL.md', 'AI skill');
         File::makeDirectory(base_path('.sync-skills.lock'));
 
-        $this->artisan('lifeos:sync-skills')
+        $this->artisan('beaver:sync-skills')
             ->expectsOutputToContain('Another skills synchronization is already running')
             ->assertFailed();
 

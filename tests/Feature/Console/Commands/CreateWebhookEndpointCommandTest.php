@@ -18,7 +18,7 @@ class CreateWebhookEndpointCommandTest extends TestCase
     {
         $user = $this->createUser(['email' => 'rachel@central-perk.test']);
 
-        $this->artisan('lifeos:create-webhook-endpoint', [
+        $this->artisan('beaver:create-webhook-endpoint', [
             'email' => 'rachel@central-perk.test',
             'url' => 'https://rachel.test/webhooks',
             '--label' => 'Rachel',
@@ -35,7 +35,7 @@ class CreateWebhookEndpointCommandTest extends TestCase
     #[Test]
     public function it_fails_when_no_user_matches_the_email(): void
     {
-        $this->artisan('lifeos:create-webhook-endpoint', [
+        $this->artisan('beaver:create-webhook-endpoint', [
             'email' => 'gunther@central-perk.test',
             'url' => 'https://gunther.test/webhooks',
         ])->assertFailed();

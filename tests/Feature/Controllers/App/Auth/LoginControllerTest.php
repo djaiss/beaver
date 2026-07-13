@@ -35,7 +35,7 @@ class LoginControllerTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('vault.index', absolute: false));
+        $response->assertRedirect(route('accounts.index', absolute: false));
     }
 
     #[Test]

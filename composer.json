@@ -1,13 +1,13 @@
 {
   "$schema": "https://getcomposer.org/schema.json",
-  "name": "djaiss/lifeos",
+  "name": "djaiss/beaver",
   "type": "project",
   "description": "The operating system for managing your life.",
   "keywords": [
     "laravel",
     "framework",
     "blade",
-    "lifeos"
+    "beaver"
   ],
   "license": "MIT",
   "require": {
@@ -89,27 +89,27 @@
     "pre-package-uninstall": [
       "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
     ],
-    "lifeos:unit": "rm -f database/test.sqlite_test* && php artisan migrate:fresh --database=testing && php artisan test --parallel",
-    "lifeos:locale": "php artisan lifeos:localize en,fr_FR,es_ES,de_DE",
-    "lifeos:bruno": "php artisan lifeos:bruno",
-    "lifeos:sync-skills": "php artisan lifeos:sync-skills",
-    "lifeos:prettier": "npx prettier --write resources/",
-    "lifeos:pint": "./vendor/bin/pint",
-    "lifeos:rector": "./vendor/bin/rector",
-    "lifeos:update": "composer update && bun update && bun upgrade",
-    "lifeos:update-blacklist-domains": "php artisan erag:sync-disposable-email-list",
+    "beaver:unit": "rm -f database/test.sqlite_test* && php artisan migrate:fresh --database=testing && php artisan test --parallel",
+    "beaver:locale": "php artisan beaver:localize en,fr_FR,es_ES,de_DE",
+    "beaver:bruno": "php artisan beaver:bruno",
+    "beaver:sync-skills": "php artisan beaver:sync-skills",
+    "beaver:prettier": "npx prettier --write resources/",
+    "beaver:pint": "./vendor/bin/pint",
+    "beaver:rector": "./vendor/bin/rector",
+    "beaver:update": "composer update && bun update && bun upgrade",
+    "beaver:update-blacklist-domains": "php artisan erag:sync-disposable-email-list",
     "lint": [
-      "@lifeos:prettier",
-      "@lifeos:pint",
-      "@lifeos:rector"
+      "@beaver:prettier",
+      "@beaver:pint",
+      "@beaver:rector"
     ],
     "precommit": [
-      "@lifeos:unit",
-      "@lifeos:locale",
+      "@beaver:unit",
+      "@beaver:locale",
       "@lint",
-      "@lifeos:update-blacklist-domains",
-      "@lifeos:update",
-      "@lifeos:sync-skills"
+      "@beaver:update-blacklist-domains",
+      "@beaver:update",
+      "@beaver:sync-skills"
     ]
   },
   "extra": {

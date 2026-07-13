@@ -4,7 +4,7 @@
   </x-slot>
 
   <x-breadcrumb :items="[
-    ['label' => __('Dashboard'), 'route' => route('vault.index')],
+    ['label' => __('Accounts'), 'route' => route('accounts.index')],
     ['label' => __('Settings'), 'route' => route('settings.index')],
     ['label' => __('Logs')]
   ]" />
@@ -28,11 +28,6 @@
                   <p class="items-center gap-2 sm:flex">
                     <span class="">{{ $log->username }}</span>
                     |
-                    @if ($log->vault_name)
-                      <x-link href="{{ $log->vault_link }}">{{ $log->vault_name }}</x-link>
-                      |
-                    @endif
-
                     <span class="font-mono text-xs">{{ $log->action }}</span>
                   </p>
                   <p class="">{{ $log->description }}</p>

@@ -15,14 +15,6 @@ class LogTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function it_belongs_to_a_vault(): void
-    {
-        $log = Log::factory()->create();
-
-        $this->assertTrue($log->vault()->exists());
-    }
-
-    #[Test]
     public function it_belongs_to_a_user(): void
     {
         $log = Log::factory()->create();

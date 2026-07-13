@@ -53,7 +53,7 @@
     <!-- Right side - user menu -->
     @if (Auth::check())
       <div class="relative ms-3 flex items-center gap-x-3">
-        <a href="{{ route('vault.index') }}" data-turbo="true" class="group flex items-center gap-x-2 rounded-sm border border-b-3 border-gray-400 px-2 py-1 text-sm transition-colors duration-150 hover:bg-white dark:border-slate-500 dark:text-slate-100 dark:hover:bg-gray-700/60">
+        <a href="{{ route('accounts.index') }}" data-turbo="true" class="group flex items-center gap-x-2 rounded-sm border border-b-3 border-gray-400 px-2 py-1 text-sm transition-colors duration-150 hover:bg-white dark:border-slate-500 dark:text-slate-100 dark:hover:bg-gray-700/60">
           <x-phosphor-door class="h-4 w-4 text-gray-500" />
           Go to your account
         </a>

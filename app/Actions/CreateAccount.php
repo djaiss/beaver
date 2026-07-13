@@ -4,60 +4,43 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
-use App\Jobs\LogUserAction;
+use App\Models\Account;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 /**
- * Create an account for the user. That does not create a vault. Only an access
- * to the instance.
+ * Create an account (the top-level shared space). The author becomes the record
+ * that created it; membership is added separately.
  */
 class CreateAccount
 {
-    private User $user;
+    private Account $account;
 
     public function __construct(
-        private string $email,
-        private readonly string $password,
-        private string $firstName,
-        private string $lastName,
+        private readonly User $author,
+        private string $name,
     ) {}
 
-    public function execute(): User
+    public function execute(): Account
     {
         $this->sanitize();
         $this->create();
-        $this->log();
 
-        return $this->user;
+        return $this->account;
     }
 
     private function sanitize(): void
     {
-        $this->firstName = TextSanitizer::plainText($this->firstName);
-        $this->lastName = TextSanitizer::plainText($this->lastName);
-        $this->email = mb_strtolower(TextSanitizer::plainText($this->email));
+        $this->name = TextSanitizer::plainText($this->name);
     }
 
     private function create(): void
     {
-        $this->user = User::query()->create([
-            'first_name' => $this->firstName,
-            'last_name' => $this->lastName,
-            'email' => $this->email,
-            'password' => Hash::make($this->password),
-            'trial_ends_at' => now()->addDays(30),
-        ]);
-    }
-
-    private function log(): void
-    {
-        LogUserAction::dispatch(
-            vault: null,
-            user: $this->user,
-            action: UserActionEnum::AccountCreation,
-        )->onQueue('low');
+        $this->account = new Account(['name' => $this->name]);
+        $this->account->created_by_id = $this->author->id;
+        $this->account->created_by_name = $this->author->getFullName();
+        $this->account->updated_by_id = $this->author->id;
+        $this->account->updated_by_name = $this->author->getFullName();
+        $this->account->save();
     }
 }

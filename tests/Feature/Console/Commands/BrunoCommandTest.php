@@ -13,13 +13,13 @@ class BrunoCommandTest extends TestCase
     #[Test]
     public function it_refreshes_and_seeds_the_database_then_updates_the_bruno_api_key(): void
     {
-        $collectionPath = base_path('docs/LifeOS/collection.bru');
+        $collectionPath = base_path('docs/beaver/collection.bru');
         $originalCollection = file_get_contents($collectionPath);
 
         $this->assertIsString($originalCollection);
 
         try {
-            $this->artisan('lifeos:bruno')
+            $this->artisan('beaver:bruno')
                 ->assertSuccessful();
 
             $user = User::query()

@@ -18,7 +18,7 @@ class AdministrationLogsController extends Controller
 
         $logs = Log::query()
             ->where('user_id', $request->user()->id)
-            ->with(['user', 'vault'])
+            ->with('user')
             ->latest()
             ->paginate($perPage);
 
@@ -31,7 +31,7 @@ class AdministrationLogsController extends Controller
 
         $logEntry = Log::query()
             ->where('user_id', $request->user()->id)
-            ->with(['user', 'vault'])
+            ->with('user')
             ->findOrFail($id);
 
         return new LogResource($logEntry);
