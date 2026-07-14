@@ -13,6 +13,9 @@ enum UserActionEnum: string
     case InvitationAccepted = 'invitation_accepted';
     case MemberRemoved = 'member_removed';
     case MemberRoleUpdated = 'member_role_updated';
+    case CollectionCreation = 'collection_created';
+    case CollectionUpdate = 'collection_updated';
+    case CollectionDeletion = 'collection_deleted';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -34,6 +37,9 @@ enum UserActionEnum: string
             self::InvitationAccepted => 'Joined the account called :name',
             self::MemberRemoved => 'Removed a member from the account',
             self::MemberRoleUpdated => 'Updated a member\'s role to :role',
+            self::CollectionCreation => 'Created the collection called :name',
+            self::CollectionUpdate => 'Updated the collection called :name',
+            self::CollectionDeletion => 'Deleted the collection called :name',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',

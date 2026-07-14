@@ -75,6 +75,16 @@ class Account extends Model
     }
 
     /**
+     * Get the collections that belong to the account.
+     *
+     * @return HasMany<Collection, $this>
+     */
+    public function collections(): HasMany
+    {
+        return $this->hasMany(Collection::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>
