@@ -3,12 +3,19 @@
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
+use App\Models\Account;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
+
+it('defaults its currency to USD', function () {
+    $account = Account::query()->create(['name' => 'Central Perk']);
+
+    expect($account->fresh()->currency_code)->toBe('USD');
+});
 
 it('has many users', function () {
     $account = $this->createAccount();

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @property int $id
  * @property string $name
+ * @property string $currency_code
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -40,6 +41,7 @@ class Account extends Model
      */
     protected $fillable = [
         'name',
+        'currency_code',
     ];
 
     /**

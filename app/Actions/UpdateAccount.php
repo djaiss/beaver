@@ -11,9 +11,10 @@ use App\Jobs\LogUserAction;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 /**
- * Rename an account. Only an owner may do so.
+ * Rename an account and set its default currency. Only an owner may do so.
  */
 class UpdateAccount
 {
@@ -21,6 +22,7 @@ class UpdateAccount
         private readonly User $user,
         private readonly Account $account,
         private string $name,
+        private string $currencyCode = 'USD',
     ) {}
 
     public function execute(): Account
@@ -38,6 +40,10 @@ class UpdateAccount
         if ($this->account->roleFor($this->user) !== PermissionEnum::Owner->value) {
             throw new ModelNotFoundException('Account not found');
         }
+
+        if (! array_key_exists($this->currencyCode, config('currencies'))) {
+            throw ValidationException::withMessages(['currency_code' => 'Invalid currency']);
+        }
     }
 
     private function sanitize(): void
@@ -48,6 +54,7 @@ class UpdateAccount
     private function update(): void
     {
         $this->account->name = $this->name;
+        $this->account->currency_code = $this->currencyCode;
         $this->account->updated_by_id = $this->user->id;
         $this->account->updated_by_name = $this->user->getFullName();
         $this->account->save();
