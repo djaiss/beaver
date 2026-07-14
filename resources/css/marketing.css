@@ -26,23 +26,26 @@ pre[class*='language-'] {
     font-weight: 500;
   }
 
-  not(.toc) > ul {
+  /* The table of contents and the LLM actions bring their own styles, so the
+     prose rules below exclude anything nested inside them. */
+
+  ul:not(.toc ul) {
     margin-block: 1rem;
     padding-left: 1.5rem;
     list-style-position: outside;
     list-style-type: disc;
   }
 
-  not(.toc) > ul ul {
+  ul:not(.toc ul) ul {
     margin-block: 0.5rem;
     list-style-type: circle;
   }
 
-  not(.toc) > li + li {
+  li:not(.toc li) + li {
     margin-top: 0.5rem;
   }
 
-  not(.llm) > a {
+  a:not(.llm a) {
     color: #2563eb; /* blue-600 */
     text-underline-offset: 4px;
     text-decoration-line: underline;
@@ -52,19 +55,19 @@ pre[class*='language-'] {
     transition-duration: 200ms;
   }
 
-  not(.llm) > a:hover {
+  a:not(.llm a):hover {
     text-decoration-thickness: 1.15px;
     color: #2563eb; /* blue-600 */
     text-decoration-color: #60a5fa; /* blue-400 */
   }
+}
 
-  not(.llm) > .dark a {
-    color: #d1d5db; /* gray-300 */
-    text-decoration-color: #4b5563; /* gray-600 */
-  }
+.dark .documentation a:not(.llm a) {
+  color: #d1d5db; /* gray-300 */
+  text-decoration-color: #4b5563; /* gray-600 */
+}
 
-  not(.llm) > .dark a:hover {
-    color: #60a5fa; /* blue-400 */
-    text-decoration-color: #60a5fa; /* blue-400 */
-  }
+.dark .documentation a:not(.llm a):hover {
+  color: #60a5fa; /* blue-400 */
+  text-decoration-color: #60a5fa; /* blue-400 */
 }
