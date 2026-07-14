@@ -32,7 +32,7 @@
             <div class="flex items-center justify-between">
               <x-form method="post" action="{{ route('verification.store') }}">
                 <x-button.secondary>
-                  <x-phosphor-paper-plane-tilt class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
+                  <x-lucide-send class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
                   {{ __('Resend verification email') }}
                 </x-button.secondary>
               </x-form>

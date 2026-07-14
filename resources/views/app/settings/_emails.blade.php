@@ -42,8 +42,8 @@
           </div>
 
           <!-- arrow -->
-          <x-phosphor-caret-down x-show="!open" class="h-4 w-4 text-muted transition-transform duration-200" />
-          <x-phosphor-caret-up x-show="open" class="h-4 w-4 text-muted transition-transform duration-200" />
+          <x-lucide-chevron-down x-show="!open" class="h-4 w-4 text-muted transition-transform duration-200" />
+          <x-lucide-chevron-up x-show="open" class="h-4 w-4 text-muted transition-transform duration-200" />
         </div>
       </div>
 
@@ -57,7 +57,7 @@
   @empty
     <x-empty-state>
       <x-slot:icon>
-        <x-phosphor-building-office class="size-6 text-muted" />
+        <x-lucide-building-2 class="size-6 text-muted" />
       </x-slot>
       {{ __('No emails have been sent yet.') }}
     </x-empty-state>

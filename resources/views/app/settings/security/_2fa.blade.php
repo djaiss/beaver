@@ -2,7 +2,7 @@
   <x-slot:title>{{ __('Two-factor authentication') }}</x-slot>
   <!-- Authenticator app -->
   <div id="authenticator-app" class="flex items-center p-3">
-    <x-phosphor-device-mobile class="h-5 w-5 text-muted" />
+    <x-lucide-smartphone class="h-5 w-5 text-muted" />
     <div class="ms-5 flex w-full items-center justify-between">
       <div>
         <p class="font-semibold text-ink">
@@ -31,7 +31,7 @@
   <!-- recovery codes -->
   @if ($has2fa)
     <div id="recovery-codes" class="flex items-center border-t border-hairline-soft p-3">
-      <x-phosphor-toolbox class="h-5 w-5 text-muted" />
+      <x-lucide-wrench class="h-5 w-5 text-muted" />
       <div class="ms-5 flex w-full items-center justify-between">
         <div>
           <p class="font-semibold text-ink">

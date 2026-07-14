@@ -15,8 +15,8 @@
     <div class="flex lg:hidden">
       <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" class="inline-flex items-center justify-center rounded-md p-2 text-gray-700 dark:text-slate-200">
         <span class="sr-only">Open main menu</span>
-        <x-phosphor-list class="h-6 w-6" x-show="!mobileMenuOpen" />
-        <x-phosphor-x class="h-6 w-6" x-show="mobileMenuOpen" />
+        <x-lucide-list class="h-6 w-6" x-show="!mobileMenuOpen" />
+        <x-lucide-x class="h-6 w-6" x-show="mobileMenuOpen" />
       </button>
     </div>
 
@@ -24,27 +24,27 @@
     <div class="hidden flex-1 justify-center lg:flex">
       <div class="flex items-center gap-x-2">
         <a href="" data-turbo="true" class="group flex items-center gap-x-2 rounded-sm border border-b-3 border-transparent px-2 py-1 transition-colors duration-150 hover:border-gray-400 hover:bg-white dark:hover:border-slate-500 dark:hover:bg-gray-700/60">
-          <x-phosphor-squares-four class="h-4 w-4 text-purple-600 group-hover:text-purple-700" />
+          <x-lucide-layout-grid class="h-4 w-4 text-purple-600 group-hover:text-purple-700" />
           <p class="text-sm text-gray-700 group-hover:text-gray-900 dark:text-slate-200 dark:group-hover:text-white">Modules</p>
         </a>
 
         <a href="" data-turbo="true" class="group flex items-center gap-x-2 rounded-sm border border-b-3 border-transparent px-2 py-1 transition-colors duration-150 hover:border-gray-400 hover:bg-white dark:hover:border-slate-500 dark:hover:bg-gray-700/60">
-          <x-phosphor-credit-card class="h-4 w-4 text-green-600 group-hover:text-green-700" />
+          <x-lucide-credit-card class="h-4 w-4 text-green-600 group-hover:text-green-700" />
           <p class="text-sm text-gray-700 group-hover:text-gray-900 dark:text-slate-200 dark:group-hover:text-white">Pricing</p>
         </a>
 
         <a href="" data-turbo="true" class="{{ str_starts_with( request()->route()->getName(),'marketing.docs.',) ? 'border border-b-3 border-gray-400 bg-white dark:border-slate-500 dark:bg-gray-700/60' : 'border border-b-3 border-transparent' }} group flex items-center gap-x-2 rounded-sm px-2 py-1 transition-colors duration-150 hover:border-gray-400 hover:bg-white dark:hover:border-slate-500 dark:hover:bg-gray-700/60">
-          <x-phosphor-book-open class="h-4 w-4 text-amber-600 group-hover:text-amber-700" />
+          <x-lucide-book-open class="h-4 w-4 text-amber-600 group-hover:text-amber-700" />
           <p class="text-sm text-gray-700 group-hover:text-gray-900 dark:text-slate-200 dark:group-hover:text-white">Docs</p>
         </a>
 
         <a href="" data-turbo="true" class="{{ str_starts_with( request()->route()->getName(),'marketing.company.',) ? 'border border-b-3 border-gray-400 bg-white dark:border-slate-500 dark:bg-gray-700/60' : 'border border-b-3 border-transparent' }} group flex items-center gap-x-2 rounded-sm px-2 py-1 transition-colors duration-150 hover:border-gray-400 hover:bg-white dark:hover:border-slate-500 dark:hover:bg-gray-700/60">
-          <x-phosphor-building class="h-4 w-4 text-indigo-600 group-hover:text-indigo-700" />
+          <x-lucide-building class="h-4 w-4 text-indigo-600 group-hover:text-indigo-700" />
           <p class="text-sm text-gray-700 group-hover:text-gray-900 dark:text-slate-200 dark:group-hover:text-white">Company</p>
         </a>
 
         <a href="https://github.com/djaiss/libraryOS" data-turbo="true" class="group flex items-center gap-x-2 rounded-sm border border-b-3 border-transparent px-2 py-1 transition-colors duration-150 hover:border-gray-400 hover:bg-white dark:hover:border-slate-500 dark:hover:bg-gray-700/60">
-          <x-phosphor-github-logo class="h-4 w-4 text-orange-600 group-hover:text-orange-700 dark:text-orange-400 dark:group-hover:text-orange-300" />
+          <x-lucide-github class="h-4 w-4 text-orange-600 group-hover:text-orange-700 dark:text-orange-400 dark:group-hover:text-orange-300" />
           <p class="text-sm text-gray-700 group-hover:text-gray-900 dark:text-slate-200 dark:group-hover:text-white">Github</p>
         </a>
       </div>
@@ -54,7 +54,7 @@
     @if (Auth::check())
       <div class="relative ms-3 flex items-center gap-x-3">
         <a href="{{ route('accounts.index') }}" data-turbo="true" class="group flex items-center gap-x-2 rounded-sm border border-b-3 border-gray-400 px-2 py-1 text-sm transition-colors duration-150 hover:bg-white dark:border-slate-500 dark:text-slate-100 dark:hover:bg-gray-700/60">
-          <x-phosphor-door class="h-4 w-4 text-gray-500" />
+          <x-lucide-door-closed class="h-4 w-4 text-gray-500" />
           Go to your account
         </a>
       </div>
@@ -73,7 +73,7 @@
       <!-- Add this button for closing -->
       <div class="mb-4 flex justify-end">
         <button @click="mobileMenuOpen = false" class="rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-gray-800">
-          <x-phosphor-x class="h-6 w-6" />
+          <x-lucide-x class="h-6 w-6" />
           <span class="sr-only">Close menu</span>
         </button>
       </div>

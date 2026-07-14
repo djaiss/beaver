@@ -53,8 +53,8 @@
                 </div>
 
                 <!-- arrow -->
-                <x-phosphor-caret-down x-show="!open" class="h-4 w-4 text-muted transition-transform duration-200" />
-                <x-phosphor-caret-up x-show="open" class="h-4 w-4 text-muted transition-transform duration-200" />
+                <x-lucide-chevron-down x-show="!open" class="h-4 w-4 text-muted transition-transform duration-200" />
+                <x-lucide-chevron-up x-show="open" class="h-4 w-4 text-muted transition-transform duration-200" />
               </div>
             </div>
 

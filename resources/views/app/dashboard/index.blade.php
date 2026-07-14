@@ -21,7 +21,7 @@
       </div>
       <x-button href="{{ route('collections.index') }}" turbo="true">
         <x-slot:icon>
-          <x-phosphor-plus-bold class="size-4" />
+          <x-lucide-plus class="size-4" />
         </x-slot>
         {{ __('New collection') }}
       </x-button>
@@ -47,7 +47,7 @@
         <div class="rounded-lg border border-hairline">
           <x-empty-state>
             <x-slot:icon>
-              <x-phosphor-stack class="size-6 text-muted" />
+              <x-lucide-layers class="size-6 text-muted" />
             </x-slot>
             {{ __('No collections yet. Collections are coming soon.') }}
           </x-empty-state>
@@ -73,7 +73,7 @@
             @empty
               <x-empty-state>
                 <x-slot:icon>
-                  <x-phosphor-pulse class="size-6 text-muted" />
+                  <x-lucide-activity class="size-6 text-muted" />
                 </x-slot>
                 {{ __('No activity yet.') }}
               </x-empty-state>
@@ -86,7 +86,7 @@
           <div class="rounded-lg border border-hairline">
             <x-empty-state>
               <x-slot:icon>
-                <x-phosphor-squares-four class="size-6 text-muted" />
+                <x-lucide-layout-grid class="size-6 text-muted" />
               </x-slot>
               {{ __('Track set completion once collections arrive.') }}
             </x-empty-state>

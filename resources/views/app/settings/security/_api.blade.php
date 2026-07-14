@@ -10,7 +10,7 @@
       <div class="m-4 rounded-lg border border-success/30 bg-success/10 p-4">
         <div class="flex items-start">
           <div class="flex-shrink-0">
-            <x-phosphor-check-circle class="h-5 w-5 text-success" />
+            <x-lucide-circle-check class="h-5 w-5 text-success" />
           </div>
 
           <div class="ml-3 w-full">
@@ -40,8 +40,8 @@
                 <div class="flex items-center gap-x-2">
                   <code class="flex-1 rounded border border-hairline bg-canvas px-3 py-2 text-center font-mono text-sm text-ink">{{ session('apiKey') }}</code>
                   <button @click="copyToClipboard()" class="inline-flex cursor-pointer items-center rounded-md border border-hairline bg-canvas px-3 py-2 text-sm font-semibold text-success hover:bg-card focus:ring-2 focus:ring-success focus:ring-offset-2 focus:outline-none">
-                    <x-phosphor-check x-show="copied" class="mr-1 h-4 w-4" />
-                    <x-phosphor-copy x-show="!copied" class="mr-1 h-4 w-4" />
+                    <x-lucide-check x-show="copied" class="mr-1 h-4 w-4" />
+                    <x-lucide-copy x-show="!copied" class="mr-1 h-4 w-4" />
                     <span x-text="copied ? '{{ __('Copied') }}' : '{{ __('Copy') }}'"></span>
                   </button>
                 </div>
@@ -71,7 +71,7 @@
         <div class="group flex items-center justify-between border-b border-hairline-soft p-3 first:border-t last:border-b-0">
           <div class="flex items-center justify-between gap-3">
             <div class="rounded-sm bg-card p-2">
-              <x-phosphor-key class="h-4 w-4 text-muted" />
+              <x-lucide-key class="h-4 w-4 text-muted" />
             </div>
 
             <div class="flex flex-col">

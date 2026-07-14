@@ -3,7 +3,7 @@
     @if ($message = Session::get('status'))
       <div x-data="{ show: true }" x-transition.duration.300ms x-show="show" x-init="setTimeout(() => (show = false), 3000)" x-transition:enter-start="translate-y-12 opacity-0" x-transition:enter-end="translate-y-0 opacity-100" x-transition:leave-end="scale-90 opacity-0" class="flex items-center gap-3 rounded-lg border border-success/20 bg-canvas p-4 text-success shadow-lg">
         <div class="flex-shrink-0">
-          <x-phosphor-check-fat class="h-5 w-5 text-success" />
+          <x-lucide-check class="h-5 w-5 text-success" />
         </div>
 
         <div class="min-w-0 flex-1">

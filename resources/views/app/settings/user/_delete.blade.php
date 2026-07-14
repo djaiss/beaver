@@ -1,5 +1,5 @@
 <div class="mb-2 flex items-center gap-x-2">
-  <x-phosphor-warning class="h-4 w-4 text-error" />
+  <x-lucide-triangle-alert class="h-4 w-4 text-error" />
   <h2 class="mb-1 text-lg font-semibold text-error">
     {{ __('Delete your account') }}
   </h2>
@@ -40,7 +40,7 @@
 
       <div class="mt-4 flex items-center justify-end gap-x-3">
         <button type="submit" x-bind:disabled="!isValid" x-bind:class="! isValid ? 'opacity-50 cursor-not-allowed' : ''" class="inline-flex items-center gap-x-2 rounded-md bg-error px-3.5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-error/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error">
-          <x-phosphor-trash class="h-4 w-4" />
+          <x-lucide-trash-2 class="h-4 w-4" />
           {{ __('Delete my account') }}
         </button>
       </div>

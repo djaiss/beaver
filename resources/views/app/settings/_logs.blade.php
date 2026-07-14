@@ -8,7 +8,7 @@
   @foreach ($logs as $log)
     <div class="flex items-center justify-between border-b border-hairline-soft p-3 text-sm last:border-b-0">
       <div class="flex items-center gap-3">
-        <x-phosphor-pulse class="size-3 min-w-3 text-muted-soft" />
+        <x-lucide-activity class="size-3 min-w-3 text-muted-soft" />
         <div class="flex flex-col gap-y-2">
           <p class="items-center gap-2 text-body sm:flex">
             <span class="font-semibold text-ink">{{ $log->username }}</span>

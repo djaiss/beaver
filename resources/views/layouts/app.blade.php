@@ -28,7 +28,7 @@
             class="flex size-9 items-center justify-center rounded-md border border-hairline bg-canvas text-muted"
             aria-label="{{ __('Open menu') }}"
           >
-            @svg('phosphor-list', 'size-5')
+            @svg('lucide-list', 'size-5')
           </button>
           <span class="text-base font-semibold text-ink">{{ config('app.name') }}</span>
         </div>

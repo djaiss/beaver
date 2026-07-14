@@ -31,7 +31,7 @@
               <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                   <div class="rounded-sm bg-card p-2">
-                    <x-phosphor-webhooks-logo class="h-4 w-4 text-muted" />
+                    <x-lucide-webhook class="h-4 w-4 text-muted" />
                   </div>
 
                   <div class="flex flex-col">
@@ -74,8 +74,8 @@
                 <span class="text-xs text-muted">{{ __('Secret') }}</span>
                 <code class="flex-1 truncate rounded border border-hairline bg-card px-2 py-1 font-mono text-xs text-body">{{ $endpoint->secret }}</code>
                 <button type="button" @click="copyToClipboard()" class="inline-flex cursor-pointer items-center rounded-md border border-hairline bg-canvas px-2 py-1 text-xs font-semibold text-muted hover:bg-card">
-                  <x-phosphor-check x-show="copied" class="mr-1 h-4 w-4" />
-                  <x-phosphor-copy x-show="!copied" class="mr-1 h-4 w-4" />
+                  <x-lucide-check x-show="copied" class="mr-1 h-4 w-4" />
+                  <x-lucide-copy x-show="!copied" class="mr-1 h-4 w-4" />
                   <span x-text="
                     copied
                       ? '{{ __('Copied') }}'

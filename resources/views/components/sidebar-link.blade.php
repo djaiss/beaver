@@ -11,7 +11,7 @@
     ]) }}
 >
     @if ($icon)
-        @svg('phosphor-'.$icon, 'size-4 shrink-0 '.($active ? 'text-ink' : 'text-muted'))
+        @svg('lucide-'.$icon, 'size-4 shrink-0 '.($active ? 'text-ink' : 'text-muted'))
     @endif
     <span class="truncate">{{ $slot }}</span>
 </a>
