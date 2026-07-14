@@ -71,7 +71,6 @@ class CollectionTypeController extends Controller
 
         return view('app.types.edit', [
             'type' => $type,
-            'collections' => $account->collections()->get(),
             'fieldTypes' => $this->fieldTypeOptions(),
             'palette' => self::PALETTE,
         ]);
