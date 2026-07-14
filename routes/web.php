@@ -37,20 +37,6 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('locations', fn () => view('app._placeholder', ['title' => __('Locations'), 'body' => __('Track where your items are stored. This is coming soon.')]))->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
-    // collection types — owners and editors define the custom fields available on items
-    Route::get('types', [CollectionTypeController::class, 'index'])->name('types.index');
-    Route::post('types', [CollectionTypeController::class, 'create'])->name('types.create');
-    Route::get('types/{collectionType}/edit', [CollectionTypeController::class, 'edit'])->where('collectionType', '[1-9][0-9]*')->name('types.edit');
-    Route::put('types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('types.update');
-    Route::delete('types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('types.destroy');
-
-    // a type's custom fields and the collections that may use it (edited inline, saved as you go)
-    Route::post('types/{collectionType}/fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('types.fields.create');
-    Route::put('types/{collectionType}/fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('types.fields.update');
-    Route::delete('types/{collectionType}/fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('types.fields.destroy');
-    Route::put('types/{collectionType}/fields/{customField}/order', [CustomFieldOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('types.fields.order.update');
-    Route::put('types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('types.collections.update');
-
     // personal profile — each user manages their own (any authenticated user)
     Route::get('profile', [SettingsController::class, 'index'])->name('profile.index');
     Route::put('profile', [SettingsController::class, 'update'])->name('profile.update');
@@ -81,7 +67,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('profile/user', [UserController::class, 'index'])->name('profile.user.index');
     Route::delete('profile/user', [UserController::class, 'destroy'])->name('profile.user.destroy');
 
-    // account settings — the account and its members (owners/admins only)
+    // account settings — the account and its members (owners only)
     Route::middleware(['owner'])->group(function (): void {
         Route::get('settings', [AccountController::class, 'index'])->name('settings.index');
         Route::put('settings', [AccountController::class, 'update'])->name('settings.update');
@@ -91,6 +77,22 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('settings/members', [MemberController::class, 'create'])->name('settings.members.create');
         Route::put('settings/members/{userId}', [MemberController::class, 'update'])->where('userId', '[1-9][0-9]*')->name('settings.members.update');
         Route::delete('settings/members/{userId}', [MemberController::class, 'destroy'])->where('userId', '[1-9][0-9]*')->name('settings.members.destroy');
+    });
+
+    // account settings: collection types — owners and editors define the custom fields available on items
+    Route::middleware(['editor'])->group(function (): void {
+        Route::get('settings/types', [CollectionTypeController::class, 'index'])->name('settings.types.index');
+        Route::post('settings/types', [CollectionTypeController::class, 'create'])->name('settings.types.create');
+        Route::get('settings/types/{collectionType}/edit', [CollectionTypeController::class, 'edit'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.edit');
+        Route::put('settings/types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.update');
+        Route::delete('settings/types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.destroy');
+
+        // a type's custom fields and the collections that may use it (edited inline, saved as you go)
+        Route::post('settings/types/{collectionType}/fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.fields.create');
+        Route::put('settings/types/{collectionType}/fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('settings.types.fields.update');
+        Route::delete('settings/types/{collectionType}/fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('settings.types.fields.destroy');
+        Route::put('settings/types/{collectionType}/fields/{customField}/order', [CustomFieldOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('settings.types.fields.order.update');
+        Route::put('settings/types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.collections.update');
     });
 });
 

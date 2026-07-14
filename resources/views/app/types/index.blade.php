@@ -11,7 +11,7 @@
           <p class="mt-1 max-w-lg text-sm text-muted">{{ __('Types define the custom fields available on items, and which collections can use them.') }}</p>
         </div>
 
-        <x-form method="post" :action="route('types.create')" class="shrink-0">
+        <x-form method="post" :action="route('settings.types.create')" class="shrink-0">
           <x-button type="submit" data-test="new-type-button">{{ __('New type') }}</x-button>
         </x-form>
       </div>
@@ -19,7 +19,7 @@
       <x-box padding="p-0">
         @forelse ($types as $type)
           <a
-            href="{{ route('types.edit', $type->id) }}"
+            href="{{ route('settings.types.edit', $type->id) }}"
             data-turbo="true"
             data-test="type-row-{{ $type->id }}"
             class="flex items-center gap-4 border-b border-hairline-soft px-5 py-4 transition-colors first:rounded-t-lg last:rounded-b-lg last:border-b-0 hover:bg-card"

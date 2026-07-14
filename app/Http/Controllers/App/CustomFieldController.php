@@ -27,7 +27,7 @@ class CustomFieldController extends Controller
             name: '',
         )->execute();
 
-        return to_route('types.edit', $type->id)
+        return to_route('settings.types.edit', $type->id)
             ->with('status', __('Field added'));
     }
 
@@ -66,7 +66,7 @@ class CustomFieldController extends Controller
             position: $field->position,
         )->execute();
 
-        return to_route('types.edit', $type->id)
+        return to_route('settings.types.edit', $type->id)
             ->with('status', __('Field updated'));
     }
 
@@ -85,7 +85,7 @@ class CustomFieldController extends Controller
             customField: $field,
         )->execute();
 
-        return to_route('types.edit', $type->id)
+        return to_route('settings.types.edit', $type->id)
             ->with('status', __('Field removed'));
     }
 

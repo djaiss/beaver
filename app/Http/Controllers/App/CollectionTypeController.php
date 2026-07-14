@@ -25,8 +25,6 @@ class CollectionTypeController extends Controller
     {
         $account = $request->user()->account;
 
-        abort_unless($account->allowsManagementBy($request->user()), 404);
-
         $types = $account->collectionTypes()
             ->with('customFields')
             ->withCount('collections')
@@ -56,14 +54,12 @@ class CollectionTypeController extends Controller
             color: self::PALETTE[0],
         )->execute();
 
-        return to_route('types.edit', $type->id);
+        return to_route('settings.types.edit', $type->id);
     }
 
     public function edit(Request $request, int $collectionType): View
     {
         $account = $request->user()->account;
-
-        abort_unless($account->allowsManagementBy($request->user()), 404);
 
         try {
             $type = $account->collectionTypes()
@@ -103,7 +99,7 @@ class CollectionTypeController extends Controller
             color: $validated['color'],
         )->execute();
 
-        return to_route('types.edit', $type->id)
+        return to_route('settings.types.edit', $type->id)
             ->with('status', __('Type updated'));
     }
 
@@ -122,7 +118,7 @@ class CollectionTypeController extends Controller
             collectionType: $type,
         )->execute();
 
-        return to_route('types.index')
+        return to_route('settings.types.index')
             ->with('status', __('Type deleted'));
     }
 

@@ -26,6 +26,14 @@ it('forbids a non owner from viewing the account settings', function () {
     $response->assertForbidden();
 });
 
+it('forbids an editor from viewing the account settings', function () {
+    $user = $this->createUser(['role' => PermissionEnum::Editor->value]);
+
+    $response = $this->actingAs($user)->get('settings');
+
+    $response->assertForbidden();
+});
+
 it('renames the account and sets its currency for an owner', function () {
     Queue::fake();
 

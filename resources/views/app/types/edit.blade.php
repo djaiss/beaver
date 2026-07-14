@@ -15,7 +15,13 @@
     <div class="mx-auto w-full max-w-3xl">
       {{-- Breadcrumb --}}
       <div class="mb-6 flex items-center gap-2 text-xs text-muted-soft">
-        <a href="{{ route('types.index') }}" data-turbo="true" class="font-medium transition-colors hover:text-ink">{{ __('Collection types') }}</a>
+        @if (auth()->user()->isOwner())
+          <a href="{{ route('settings.index') }}" data-turbo="true" class="font-medium transition-colors hover:text-ink">{{ __('Account settings') }}</a>
+        @else
+          <span>{{ __('Account settings') }}</span>
+        @endif
+        <span>/</span>
+        <a href="{{ route('settings.types.index') }}" data-turbo="true" class="font-medium transition-colors hover:text-ink">{{ __('Collection types') }}</a>
         <span>/</span>
         <span class="font-medium text-ink">{{ $type->name !== '' ? $type->name : __('Untitled type') }}</span>
       </div>
@@ -25,7 +31,7 @@
         <div class="flex shrink-0 flex-col items-center gap-2.5">
           <span class="size-14 rounded-full" style="background-color: {{ $type->color }}"></span>
 
-          <x-form method="put" :action="route('types.update', $type->id)" data-turbo="true" class="flex gap-1.5">
+          <x-form method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex gap-1.5">
             <input type="hidden" name="name" value="{{ $type->name }}" />
             @foreach ($palette as $swatch)
               <button
@@ -45,7 +51,7 @@
             <h1 class="truncate text-2xl font-semibold tracking-tight text-ink">{{ $type->name !== '' ? $type->name : __('Untitled type') }}</h1>
           </div>
 
-          <x-form id="name-edit" hidden method="put" :action="route('types.update', $type->id)" data-turbo="true" class="flex items-center gap-2">
+          <x-form id="name-edit" hidden method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex items-center gap-2">
             <input type="hidden" name="color" value="{{ $type->color }}" />
             <input
               id="type-name-input"
@@ -73,7 +79,7 @@
             onclick="document.getElementById('name-display').hidden=true;document.getElementById('name-edit').hidden=false;document.getElementById('type-name-input').focus();this.hidden=true"
           >{{ __('Edit name') }}</x-button>
 
-          <x-form method="delete" :action="route('types.destroy', $type->id)" data-turbo="true" onsubmit="return confirm('{{ __('Delete this type? This cannot be undone.') }}')">
+          <x-form method="delete" :action="route('settings.types.destroy', $type->id)" data-turbo="true" onsubmit="return confirm('{{ __('Delete this type? This cannot be undone.') }}')">
             <x-button.secondary type="submit" data-test="delete-type-button" class="border-error/40 text-error hover:bg-error/5">{{ __('Delete type') }}</x-button.secondary>
           </x-form>
         </div>
@@ -89,7 +95,7 @@
       <div class="mb-3.5 flex items-center justify-between">
         <h2 class="text-lg font-semibold text-ink">{{ __('Custom fields') }}</h2>
 
-        <x-form method="post" :action="route('types.fields.create', $type->id)" data-turbo="true">
+        <x-form method="post" :action="route('settings.types.fields.create', $type->id)" data-turbo="true">
           <button type="submit" data-test="add-field-button" class="cursor-pointer rounded-md border border-dashed border-hairline px-3 py-2 text-xs font-semibold text-ink transition-colors hover:bg-card">+ {{ __('Add field') }}</button>
         </x-form>
       </div>
@@ -98,15 +104,15 @@
         @forelse ($type->customFields as $field)
           <div id="field-row-{{ $field->id }}" class="rounded-xl border border-hairline bg-canvas p-4" data-test="field-row-{{ $field->id }}">
             {{-- Separate action forms for reorder and delete; their buttons live in the row below via the form= attribute. --}}
-            <x-form method="put" :action="route('types.fields.order.update', [$type->id, $field->id])" id="field-up-{{ $field->id }}" data-turbo="true" class="hidden">
+            <x-form method="put" :action="route('settings.types.fields.order.update', [$type->id, $field->id])" id="field-up-{{ $field->id }}" data-turbo="true" class="hidden">
               <input type="hidden" name="direction" value="up" />
             </x-form>
-            <x-form method="put" :action="route('types.fields.order.update', [$type->id, $field->id])" id="field-down-{{ $field->id }}" data-turbo="true" class="hidden">
+            <x-form method="put" :action="route('settings.types.fields.order.update', [$type->id, $field->id])" id="field-down-{{ $field->id }}" data-turbo="true" class="hidden">
               <input type="hidden" name="direction" value="down" />
             </x-form>
-            <x-form method="delete" :action="route('types.fields.destroy', [$type->id, $field->id])" id="field-delete-{{ $field->id }}" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete this custom field? The data stored in it on every item will be permanently deleted. This cannot be undone.') }}')"></x-form>
+            <x-form method="delete" :action="route('settings.types.fields.destroy', [$type->id, $field->id])" id="field-delete-{{ $field->id }}" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete this custom field? The data stored in it on every item will be permanently deleted. This cannot be undone.') }}')"></x-form>
 
-            <x-form method="put" :action="route('types.fields.update', [$type->id, $field->id])" data-turbo="true" onchange="this.requestSubmit()">
+            <x-form method="put" :action="route('settings.types.fields.update', [$type->id, $field->id])" data-turbo="true" onchange="this.requestSubmit()">
               {{-- Top row: name, type, reorder, delete. Stays fixed even when options appear below. --}}
               <div class="flex items-end gap-2.5">
                 <div class="min-w-0 flex-1">
@@ -172,7 +178,7 @@
       @if ($collections->isEmpty())
         <p class="text-sm text-muted">{{ __('No collections yet.') }}</p>
       @else
-        <x-form method="put" :action="route('types.collections.update', $type->id)" data-turbo="true" onchange="this.requestSubmit()" class="flex flex-wrap gap-2">
+        <x-form method="put" :action="route('settings.types.collections.update', $type->id)" data-turbo="true" onchange="this.requestSubmit()" class="flex flex-wrap gap-2">
           @foreach ($collections as $collection)
             @php($checked = $type->collections->contains($collection->id))
             <label class="flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium text-ink transition-colors {{ $checked ? 'border-ink bg-card' : 'border-hairline hover:bg-card' }}">
