@@ -8,31 +8,24 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
-env:
-  default-php-version: '8.4'
-
 concurrency:
   group: Static ${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   phpstan:
-    name: PHPStan (PHP ${{ matrix.php-version }})
+    name: PHPStan
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php-version: ['8.4', '8.5']
+    timeout-minutes: 10
 
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
 
-      - name: Setup PHP ${{ matrix.php-version }}
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.5'
           coverage: none
 
       # Composer
@@ -43,10 +36,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
+          key: ${{ runner.os }}-composer-8.5-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
-            ${{ runner.os }}-composer-${{ matrix.php-version }}
+            ${{ runner.os }}-composer-8.5
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
@@ -54,3 +46,37 @@ jobs:
 
       - name: Run phpstan
         run: vendor/bin/phpstan analyse
+
+  code-style:
+    name: Code style (Pint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+
+      # Composer
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache composer files
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.5-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.5
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Check code style
+        run: vendor/bin/pint --test

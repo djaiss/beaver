@@ -5,7 +5,6 @@ APP_KEY=base64:NTrXToqFZJlv48dgPc+kNpc3SBt333TfDnF1mDShsBg=
 APP_DEBUG=true
 APP_URL=https://beaver.test
 
-DB_CONNECTION=pgsql
 DB_HOST=localhost
 DB_PORT=5432
 DB_DATABASE=beaver
