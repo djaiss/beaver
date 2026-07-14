@@ -9,14 +9,20 @@ use App\Actions\UpdateAccount;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AccountController extends Controller
 {
     public function index(Request $request): View
     {
+        $currencies = collect(config('currencies'))
+            ->map(fn (array $currency, string $code): string => $currency['flag'].' '.$code)
+            ->all();
+
         return view('app.settings.account.index', [
             'account' => $request->user()->account,
+            'currencies' => $currencies,
         ]);
     }
 
@@ -24,12 +30,14 @@ class AccountController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
+            'currency_code' => ['required', 'string', Rule::in(array_keys(config('currencies')))],
         ]);
 
         new UpdateAccount(
             user: $request->user(),
             account: $request->user()->account,
             name: $validated['name'],
+            currencyCode: $validated['currency_code'],
         )->execute();
 
         return to_route('settings.index')
