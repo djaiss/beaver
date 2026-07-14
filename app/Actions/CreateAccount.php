@@ -8,6 +8,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
+use App\Jobs\PopulateAccount;
 use App\Models\Account;
 use App\Models\User;
 
@@ -34,6 +35,7 @@ class CreateAccount
         $this->createAccount();
         $this->createFirstUser();
         $this->stampAuthor();
+        $this->populate();
         $this->log();
 
         return $this->user;
@@ -71,6 +73,11 @@ class CreateAccount
         $this->account->updated_by_id = $this->user->id;
         $this->account->updated_by_name = $this->user->getFullName();
         $this->account->save();
+    }
+
+    private function populate(): void
+    {
+        PopulateAccount::dispatch($this->account)->onQueue('low');
     }
 
     private function log(): void
