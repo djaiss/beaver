@@ -10,6 +10,7 @@ it('renders the api profile page', function () {
 
     $response->assertOk();
 });
+
 it('returns the profile document as markdown', function () {
     $response = $this->get('/docs/1.x/api/account/profile.md');
 

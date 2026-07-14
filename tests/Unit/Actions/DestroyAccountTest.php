@@ -39,6 +39,7 @@ it('destroys an account and cascades its relations', function () {
         callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AccountDeletion,
     );
 });
+
 it('throws when the user is not an owner', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);

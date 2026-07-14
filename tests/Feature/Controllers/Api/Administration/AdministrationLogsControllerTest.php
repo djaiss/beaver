@@ -66,6 +66,7 @@ it('lists the logs of the current user', function () {
         ->assertJsonPath('data.0.attributes.created_at', 1751284800)
         ->assertJsonMissing(['id' => (string) $anotherLog->id]);
 });
+
 it('paginates the logs', function () {
     $user = User::factory()->create();
 
@@ -82,6 +83,7 @@ it('paginates the logs', function () {
         ->assertJsonCount(10, 'data')
         ->assertJsonPath('meta.total', 15);
 });
+
 it('shows a log', function () {
     Date::setTestNow('2025-06-30 12:00:00');
     $user = User::factory()->create([
@@ -114,6 +116,7 @@ it('shows a log', function () {
         ->assertJsonPath('data.attributes.updated_at', 1751284800)
         ->assertJsonPath('data.links.self', route('api.administration.logs.show', $log));
 });
+
 it('cannot show another users log', function () {
     $user = User::factory()->create();
     $anotherLog = Log::factory()->create();

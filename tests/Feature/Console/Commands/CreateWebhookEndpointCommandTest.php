@@ -22,6 +22,7 @@ it('creates a webhook endpoint for a user', function () {
     expect($endpoint->label)->toBe('Rachel');
     expect($endpoint->is_active)->toBeTrue();
 });
+
 it('fails when no user matches the email', function () {
     $this->artisan('beaver:create-webhook-endpoint', [
         'email' => 'gunther@central-perk.test',

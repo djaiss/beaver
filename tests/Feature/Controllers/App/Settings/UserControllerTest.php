@@ -16,6 +16,7 @@ it('displays the account page', function () {
     $response->assertOk();
     $response->assertViewIs('app.settings.user.index');
 });
+
 it('deletes the account', function () {
     Queue::fake();
     Mail::fake();

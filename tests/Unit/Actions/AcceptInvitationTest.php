@@ -26,6 +26,7 @@ it('accepts a pending invitation', function () {
 
     expect($invitation->fresh()->accepted_at)->not->toBeNull();
 });
+
 it('throws when the invitation is not pending', function () {
     Queue::fake();
     $this->expectException(ValidationException::class);
@@ -40,6 +41,7 @@ it('throws when the invitation is not pending', function () {
         user: $user,
     )->execute();
 });
+
 it('throws when the email does not match', function () {
     Queue::fake();
     $this->expectException(ValidationException::class);

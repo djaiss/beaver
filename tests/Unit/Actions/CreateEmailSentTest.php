@@ -33,6 +33,7 @@ it('creates an email sent', function () {
 
     expect($emailSent)->toBeInstanceOf(EmailSent::class);
 });
+
 it('sanitizes the body and strips any links', function () {
     $user = $this->createUser();
 
@@ -49,6 +50,7 @@ it('sanitizes the body and strips any links', function () {
         'id' => $emailSent->id,
     ]);
 });
+
 it('creates an email sent with a uuid', function () {
     $user = $this->createUser();
     $uuid = Str::uuid();

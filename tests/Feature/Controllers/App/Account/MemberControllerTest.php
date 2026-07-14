@@ -19,6 +19,7 @@ it('lists the members for an owner', function () {
     $response->assertOk();
     $response->assertViewIs('app.settings.members.index');
 });
+
 it('forbids a non owner from listing the members', function () {
     $user = $this->createUser();
     $account = $this->createAccount();
@@ -28,6 +29,7 @@ it('forbids a non owner from listing the members', function () {
 
     $response->assertForbidden();
 });
+
 it('sends an invitation', function () {
     Queue::fake();
     Mail::fake();
@@ -49,6 +51,7 @@ it('sends an invitation', function () {
     ]);
     Mail::assertQueued(AccountInvitation::class);
 });
+
 it('updates the role of a member', function () {
     Queue::fake();
 
@@ -69,6 +72,7 @@ it('updates the role of a member', function () {
     $response->assertRedirect(route('settings.members.index', absolute: false));
     expect($member->fresh()->role)->toBe(PermissionEnum::Editor->value);
 });
+
 it('removes a member', function () {
     Queue::fake();
 
@@ -87,6 +91,7 @@ it('removes a member', function () {
     $response->assertRedirect(route('settings.members.index', absolute: false));
     $this->assertModelMissing($member);
 });
+
 it('returns not found for a member of another account', function () {
     $owner = $this->createUser();
     $account = $this->createAccount();
@@ -103,6 +108,7 @@ it('returns not found for a member of another account', function () {
 
     $response->assertNotFound();
 });
+
 it('cannot remove the last owner', function () {
     Queue::fake();
 
@@ -115,6 +121,7 @@ it('cannot remove the last owner', function () {
     $response->assertSessionHasErrors('member');
     $this->assertDatabaseHas('users', ['id' => $member->id]);
 });
+
 it('cannot demote the last owner', function () {
     Queue::fake();
 

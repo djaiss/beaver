@@ -52,6 +52,7 @@ it('creates a token logs the sign in and notifies the user', function () {
         ),
     );
 });
+
 it('falls back to an unknown device label', function () {
     Queue::fake();
 

@@ -15,6 +15,7 @@ it('loads the verify email view', function () {
     $response->assertStatus(200);
     $response->assertViewIs('app.auth.verify-email');
 });
+
 it('redirects to the dashboard if the email is verified', function () {
     $user = $this->createUser();
 
@@ -22,6 +23,7 @@ it('redirects to the dashboard if the email is verified', function () {
 
     $response->assertRedirect(route('dashboard.index', absolute: false));
 });
+
 it('resends a verification email', function () {
     Notification::fake();
 

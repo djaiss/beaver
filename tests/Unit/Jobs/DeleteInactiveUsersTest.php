@@ -31,6 +31,7 @@ it('deletes users inactive for six months', function () {
         fn (UserAutomaticallyDeleted $mail): bool => $mail->hasTo('admin@example.com'),
     );
 });
+
 it('does not delete users inactive for less than six months', function () {
     Mail::fake();
 
@@ -48,6 +49,7 @@ it('does not delete users inactive for less than six months', function () {
 
     Mail::assertNotQueued(UserAutomaticallyDeleted::class);
 });
+
 it('does not delete users without auto delete enabled', function () {
     Mail::fake();
 
@@ -65,6 +67,7 @@ it('does not delete users without auto delete enabled', function () {
 
     Mail::assertNotQueued(UserAutomaticallyDeleted::class);
 });
+
 it('does not delete users with null last activity', function () {
     Mail::fake();
 

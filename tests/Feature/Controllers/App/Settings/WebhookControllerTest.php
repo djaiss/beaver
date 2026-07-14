@@ -20,6 +20,7 @@ it('lists the users webhook endpoints', function () {
     $response->assertSee('https://central-perk.test/webhooks');
     $response->assertSee($endpoint->secret);
 });
+
 it('does not list another users endpoints', function () {
     $user = $this->createUser();
     $otherEndpoint = WebhookEndpoint::factory()->create([
@@ -31,6 +32,7 @@ it('does not list another users endpoints', function () {
     $response->assertOk();
     $response->assertDontSee('https://gunther.test/webhooks');
 });
+
 it('shows the create form', function () {
     $user = $this->createUser();
 
@@ -39,6 +41,7 @@ it('shows the create form', function () {
     $response->assertOk();
     $response->assertSee('Endpoint URL');
 });
+
 it('creates a webhook endpoint', function () {
     Queue::fake();
 
@@ -61,6 +64,7 @@ it('creates a webhook endpoint', function () {
     expect($endpoint->label)->toBe('Central Perk');
     expect($endpoint->secret)->not->toBeEmpty();
 });
+
 it('validates the url when creating', function () {
     $user = $this->createUser();
 
@@ -73,6 +77,7 @@ it('validates the url when creating', function () {
     $response->assertSessionHasErrors('url');
     $this->assertDatabaseCount('webhook_endpoints', 0);
 });
+
 it('deletes a webhook endpoint', function () {
     Queue::fake();
 
@@ -88,6 +93,7 @@ it('deletes a webhook endpoint', function () {
     $response->assertSessionHas('status', 'Webhook endpoint deleted');
     $this->assertModelMissing($endpoint);
 });
+
 it('cannot delete another users endpoint', function () {
     $user = $this->createUser();
     $otherEndpoint = WebhookEndpoint::factory()->create();

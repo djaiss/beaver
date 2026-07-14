@@ -35,6 +35,7 @@ it('renames an account for an owner', function () {
         callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AccountUpdate,
     );
 });
+
 it('throws when the user is not an owner', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);

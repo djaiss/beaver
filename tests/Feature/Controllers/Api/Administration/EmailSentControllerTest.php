@@ -73,6 +73,7 @@ it('lists the emails of the current user', function () {
         ->assertJsonPath('data.0.attributes.bounced_at', null)
         ->assertJsonMissing(['id' => (string) $anotherEmail->id]);
 });
+
 it('paginates the emails', function () {
     $user = User::factory()->create();
 
@@ -89,6 +90,7 @@ it('paginates the emails', function () {
         ->assertJsonCount(10, 'data')
         ->assertJsonPath('meta.total', 15);
 });
+
 it('shows an email', function () {
     Date::setTestNow('2025-06-30 12:00:00');
     $user = User::factory()->create();
@@ -125,6 +127,7 @@ it('shows an email', function () {
         ->assertJsonPath('data.attributes.updated_at', 1751284800)
         ->assertJsonPath('data.links.self', route('api.administration.emails.show', $email));
 });
+
 it('cannot show another users email', function () {
     $user = User::factory()->create();
     $anotherEmail = EmailSent::factory()->create();

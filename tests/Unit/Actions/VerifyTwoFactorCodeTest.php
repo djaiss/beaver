@@ -20,6 +20,7 @@ it('verifies a rescue code and updates last activity', function () {
     expect($result)->toBeTrue();
     expect($user->refresh()->two_factor_recovery_codes)->not->toContain('code-one');
 });
+
 it('returns false and skips activity update for invalid codes', function () {
     $user = User::factory()->create([
         'two_factor_recovery_codes' => ['code-one'],

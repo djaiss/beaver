@@ -37,6 +37,7 @@ it('updates the role of a member', function () {
 
     Queue::assertPushedOn(queue: 'low', job: LogUserAction::class);
 });
+
 it('throws when the user is not an owner', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);
@@ -58,6 +59,7 @@ it('throws when the user is not an owner', function () {
         role: PermissionEnum::Editor->value,
     )->execute();
 });
+
 it('throws when the member belongs to another account', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);
@@ -80,6 +82,7 @@ it('throws when the member belongs to another account', function () {
         role: PermissionEnum::Editor->value,
     )->execute();
 });
+
 it('throws when the role is invalid', function () {
     Queue::fake();
     $this->expectException(ValidationException::class);
@@ -101,6 +104,7 @@ it('throws when the role is invalid', function () {
         role: 'superhero',
     )->execute();
 });
+
 it('throws when demoting the last owner', function () {
     Queue::fake();
     $this->expectException(ValidationException::class);

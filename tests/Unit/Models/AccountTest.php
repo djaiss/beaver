@@ -17,6 +17,7 @@ it('has many users', function () {
     expect($account->users()->exists())->toBeTrue();
     expect($account->users()->first())->toBeInstanceOf(User::class);
 });
+
 it('has many invitations', function () {
     $account = $this->createAccount();
     Invitation::factory()->create(['account_id' => $account->id]);
@@ -24,6 +25,7 @@ it('has many invitations', function () {
     expect($account->invitations()->exists())->toBeTrue();
     expect($account->invitations()->first())->toBeInstanceOf(Invitation::class);
 });
+
 it('lists only owners as administrators', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
@@ -37,6 +39,7 @@ it('lists only owners as administrators', function () {
     expect($administrators->contains('id', $owner->id))->toBeTrue();
     expect($administrators->contains('id', $viewer->id))->toBeFalse();
 });
+
 it('knows whether a user is a member', function () {
     $account = $this->createAccount();
     $member = $this->createUser();
@@ -46,6 +49,7 @@ it('knows whether a user is a member', function () {
     expect($account->hasMember($member))->toBeTrue();
     expect($account->hasMember($stranger))->toBeFalse();
 });
+
 it('returns the role for a member', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
@@ -55,6 +59,7 @@ it('returns the role for a member', function () {
     expect($account->roleFor($owner))->toBe(PermissionEnum::Owner->value);
     expect($account->roleFor($stranger))->toBeNull();
 });
+
 it('encrypts the name at rest', function () {
     $account = $this->createAccount(name: 'Central Perk');
 

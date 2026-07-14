@@ -17,6 +17,7 @@ it('stamps the author when a record is created', function () {
     expect($account->updated_by_id)->toBe($user->id);
     expect($account->updated_by_name)->toBe('Rachel Green');
 });
+
 it('refreshes only the updater when a record is updated', function () {
     $creator = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
@@ -34,6 +35,7 @@ it('refreshes only the updater when a record is updated', function () {
     expect($account->updated_by_id)->toBe($editor->id);
     expect($account->updated_by_name)->toBe('Ross Geller');
 });
+
 it('keeps the author name snapshot after the author is deleted', function () {
     $creator = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);

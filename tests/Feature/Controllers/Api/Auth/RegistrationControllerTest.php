@@ -38,6 +38,7 @@ it('registers a user', function () {
         'tokenable_id' => $user->id,
     ]);
 });
+
 it('names the token after the device', function () {
     $response = $this->json('POST', '/api/register', [
         'first_name' => 'Chandler',
@@ -56,6 +57,7 @@ it('names the token after the device', function () {
         'name' => 'Login from Chandler iPhone 15',
     ]);
 });
+
 it('requires a unique email', function () {
     User::factory()->create([
         'email' => 'chandler.bing@friends.com',
@@ -72,6 +74,7 @@ it('requires a unique email', function () {
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors('email');
 });
+
 it('requires a matching password confirmation', function () {
     $response = $this->json('POST', '/api/register', [
         'first_name' => 'Chandler',
@@ -84,6 +87,7 @@ it('requires a matching password confirmation', function () {
     $response->assertUnprocessable();
     $response->assertJsonValidationErrors('password');
 });
+
 it('requires the mandatory fields', function () {
     $response = $this->json('POST', '/api/register', []);
 

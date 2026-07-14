@@ -13,6 +13,7 @@ it('renders the login screen', function () {
 
     $response->assertStatus(200);
 });
+
 it('authenticates a user', function () {
     config(['app.show_marketing_site' => false]);
     $user = $this->createUser();
@@ -25,6 +26,7 @@ it('authenticates a user', function () {
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard.index', absolute: false));
 });
+
 it('sends an email on failed login', function () {
     Queue::fake();
     config(['app.show_marketing_site' => false]);
@@ -41,6 +43,7 @@ it('sends an email on failed login', function () {
         fn (SendEmail $job): bool => $job->emailType === EmailType::LoginFailed && $job->user->id === $user->id,
     );
 });
+
 it('does not authenticate a user with invalid password', function () {
     config(['app.show_marketing_site' => false]);
     $user = $this->createUser();
@@ -52,6 +55,7 @@ it('does not authenticate a user with invalid password', function () {
 
     $this->assertGuest();
 });
+
 it('logs out a user', function () {
     $user = $this->createUser();
 

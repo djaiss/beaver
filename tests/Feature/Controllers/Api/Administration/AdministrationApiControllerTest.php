@@ -64,6 +64,7 @@ it('can list the api keys of the current user', function () {
 
     $response->assertJsonCount(2, 'data');
 });
+
 it('can create a new api key', function () {
     $user = User::factory()->create();
 
@@ -83,6 +84,7 @@ it('can create a new api key', function () {
 
     $response->assertJsonStructure($this->singleJsonStructure);
 });
+
 test('user can delete their api key', function () {
     $user = User::factory()->create();
     $token = $user->createToken('Test API Key');

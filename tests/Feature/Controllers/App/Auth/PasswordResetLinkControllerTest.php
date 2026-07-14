@@ -13,6 +13,7 @@ it('renders the forgot password screen', function () {
     $response->assertStatus(200);
     $response->assertViewIs('app.auth.forgot-password');
 });
+
 it('sends a password reset link', function () {
     Notification::fake();
 

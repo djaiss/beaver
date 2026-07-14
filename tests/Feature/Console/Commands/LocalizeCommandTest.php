@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 it('synchronizes json locale files', function () {
     $viewPath = resource_path('views/test-localize-command.blade.php');
     $enPath = lang_path('en.json');

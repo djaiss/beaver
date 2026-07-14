@@ -41,6 +41,7 @@ it('validates the 2fa qr code and generates recovery codes', function () {
         expect(mb_strlen($code))->toEqual(10);
     }
 });
+
 it('throws exception when token is invalid', function () {
     Queue::fake();
 
@@ -71,6 +72,7 @@ it('throws exception when token is invalid', function () {
 
     Queue::assertNothingPushed();
 });
+
 it('does not update recovery codes when token is invalid', function () {
     Queue::fake();
 

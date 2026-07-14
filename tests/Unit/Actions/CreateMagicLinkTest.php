@@ -33,6 +33,7 @@ it('returns a string', function () {
         ),
     );
 });
+
 it('contains the app url with magic link structure', function () {
     $user = User::factory()->create([
         'email' => 'test@example.com',
@@ -46,6 +47,7 @@ it('contains the app url with magic link structure', function () {
     expect($magicLinkUrl)->toStartWith($appUrl.'/magiclink/');
     expect($magicLinkUrl)->toMatch('/\/magiclink\/[a-f0-9-]+%3A[A-Za-z0-9]+/');
 });
+
 it('throws an exception if user not found', function () {
     $nonExistentEmail = 'nonexistent@example.com';
 

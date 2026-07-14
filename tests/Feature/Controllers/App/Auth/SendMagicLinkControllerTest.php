@@ -15,6 +15,7 @@ it('renders the request magic link screen', function () {
     $response->assertStatus(200);
     $response->assertViewIs('app.auth.request-magic-link');
 });
+
 it('sends a magic link for existing user', function () {
     Queue::fake();
 
@@ -37,6 +38,7 @@ it('sends a magic link for existing user', function () {
         ),
     );
 });
+
 it('does not reveal if user does not exist', function () {
     Queue::fake();
 

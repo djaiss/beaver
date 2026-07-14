@@ -19,6 +19,7 @@ it('displays the 2fa setup page', function () {
     $user->refresh();
     expect($user->two_factor_secret)->not->toBeNull();
 });
+
 it('enables 2fa with valid token', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();
@@ -43,6 +44,7 @@ it('enables 2fa with valid token', function () {
     expect($user->two_factor_recovery_codes)->not->toBeNull();
     expect($user->two_factor_recovery_codes)->toHaveCount(8);
 });
+
 it('rejects invalid token', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();
@@ -63,6 +65,7 @@ it('rejects invalid token', function () {
     $user->refresh();
     expect($user->two_factor_confirmed_at)->toBeNull();
 });
+
 it('removes 2fa from user account', function () {
     $user = $this->createUser([
         'two_factor_secret' => 'test-secret',

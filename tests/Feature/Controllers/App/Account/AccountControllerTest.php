@@ -16,6 +16,7 @@ it('shows the account settings page for an owner', function () {
     $response->assertViewIs('app.settings.account.index');
     $response->assertViewHas('account');
 });
+
 it('forbids a non owner from viewing the account settings', function () {
     $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
 
@@ -23,6 +24,7 @@ it('forbids a non owner from viewing the account settings', function () {
 
     $response->assertForbidden();
 });
+
 it('renames the account for an owner', function () {
     Queue::fake();
 
@@ -35,6 +37,7 @@ it('renames the account for an owner', function () {
     $response->assertRedirect(route('settings.index', absolute: false));
     expect($user->account->fresh()->name)->toBe('Central Perk');
 });
+
 it('forbids a non owner from renaming the account', function () {
     $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
 
@@ -44,6 +47,7 @@ it('forbids a non owner from renaming the account', function () {
 
     $response->assertForbidden();
 });
+
 it('deletes the account for an owner', function () {
     Queue::fake();
 
@@ -55,6 +59,7 @@ it('deletes the account for an owner', function () {
     $response->assertRedirect(route('register', absolute: false));
     $this->assertDatabaseMissing('accounts', ['id' => $accountId]);
 });
+
 it('forbids a non owner from deleting the account', function () {
     $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
     $accountId = $user->account_id;

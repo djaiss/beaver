@@ -37,6 +37,7 @@ it('logs in a user', function () {
     $responseData = $response->json();
     expect($responseData['data']['token'])->not->toBeEmpty();
 });
+
 it('logs the token creation and notifies of the new login', function () {
     Queue::fake();
 
@@ -71,6 +72,7 @@ it('logs the token creation and notifies of the new login', function () {
         ),
     );
 });
+
 it('labels the new login notification for an unknown device', function () {
     Queue::fake();
 
@@ -92,6 +94,7 @@ it('labels the new login notification for an unknown device', function () {
         ),
     );
 });
+
 it('names the token after the device', function () {
     $user = User::factory()->create([
         'email' => 'rachel.green@friends.com',
@@ -110,6 +113,7 @@ it('names the token after the device', function () {
         'name' => 'Login from Rachel iPhone 15',
     ]);
 });
+
 it('names the token when no device is provided', function () {
     $user = User::factory()->create([
         'email' => 'rachel.green@friends.com',
@@ -127,6 +131,7 @@ it('names the token when no device is provided', function () {
         'name' => 'Login from an unknown device',
     ]);
 });
+
 it('rejects invalid credentials', function () {
     User::factory()->create([
         'email' => 'rachel.green@friends.com',
@@ -141,6 +146,7 @@ it('rejects invalid credentials', function () {
     $response->assertStatus(401);
     $this->assertDatabaseCount('personal_access_tokens', 0);
 });
+
 it('requires a 2fa code when two factor is enabled', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();
@@ -160,6 +166,7 @@ it('requires a 2fa code when two factor is enabled', function () {
     $response->assertStatus(401);
     $this->assertDatabaseCount('personal_access_tokens', 0);
 });
+
 it('rejects an invalid 2fa code', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();
@@ -180,6 +187,7 @@ it('rejects an invalid 2fa code', function () {
     $response->assertStatus(401);
     $this->assertDatabaseCount('personal_access_tokens', 0);
 });
+
 it('issues a token with a valid 2fa code', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();
@@ -205,6 +213,7 @@ it('issues a token with a valid 2fa code', function () {
     ]);
     expect($response->json('data.token'))->not->toBeEmpty();
 });
+
 it('authenticates with a recovery code', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();
@@ -228,6 +237,7 @@ it('authenticates with a recovery code', function () {
     $user->refresh();
     expect($user->two_factor_recovery_codes)->not->toContain('ABC123');
 });
+
 it('logs out a user', function () {
     $user = User::factory()->create([
         'email' => 'rachel.green@friends.com',

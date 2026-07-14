@@ -35,6 +35,7 @@ it('deletes a webhook endpoint', function () {
         ),
     );
 });
+
 it('throws an exception if the endpoint does not belong to the user', function () {
     $this->expectException(ModelNotFoundException::class);
 

@@ -12,6 +12,7 @@ it('shows the create account page', function () {
     $response = $this->get('/register');
     $response->assertStatus(200);
 });
+
 it('creates a user with their own account', function () {
     $response = $this->post('/register', [
         'first_name' => 'Chandler',

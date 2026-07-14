@@ -32,6 +32,7 @@ it('renders api documentation directives and configuration values', function () 
     $this->assertStringContainsString('GET', $html);
     $this->assertStringNotContainsString(':::section', $html);
 });
+
 it('preserves indentation inside fenced code blocks', function () {
     $html = resolve(DocumentationMarkdownRenderer::class)->render(<<<'MARKDOWN'
             :::code title="Pagination"
@@ -51,6 +52,7 @@ it('preserves indentation inside fenced code blocks', function () {
         $html,
     );
 });
+
 it('renders markdown action directives', function () {
     $html = resolve(DocumentationMarkdownRenderer::class)->render(
         <<<'MARKDOWN'

@@ -59,6 +59,7 @@ it('shows the settings page', function () {
         ),
     );
 });
+
 it('updates the profile information', function () {
     $user = $this->createUser();
 

@@ -12,6 +12,7 @@ it('belongs to a user', function () {
 
     expect($log->user()->exists())->toBeTrue();
 });
+
 it('gets the name of the user', function () {
     $user = User::factory()->create([
         'first_name' => 'Ross',

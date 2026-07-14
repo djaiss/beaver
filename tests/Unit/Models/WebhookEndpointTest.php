@@ -15,6 +15,7 @@ it('belongs to a user', function () {
 
     expect($endpoint->user()->exists())->toBeTrue();
 });
+
 it('encrypts the url and secret', function () {
     $endpoint = WebhookEndpoint::factory()->create([
         'url' => 'https://chandler.test/webhooks',

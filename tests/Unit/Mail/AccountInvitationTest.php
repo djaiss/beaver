@@ -15,6 +15,7 @@ it('has the correct envelope subject', function () {
 
     $this->assertStringContainsString('invited', $mailable->envelope()->subject);
 });
+
 it('renders the account name and the accept link', function () {
     $account = $this->createAccount(name: 'Central Perk');
     $invitation = Invitation::factory()->create(['account_id' => $account->id]);

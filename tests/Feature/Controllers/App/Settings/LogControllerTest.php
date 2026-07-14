@@ -23,6 +23,7 @@ it('shows all the logs', function () {
     $response->assertViewIs('app.settings.logs.index');
     $response->assertViewHas('logs');
 });
+
 it('shows a pagination', function () {
     $user = $this->createUser();
 

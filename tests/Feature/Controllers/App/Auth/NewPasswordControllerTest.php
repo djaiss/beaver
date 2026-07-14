@@ -16,6 +16,7 @@ it('renders the reset password screen', function () {
     $response->assertStatus(200);
     $response->assertViewIs('app.auth.reset-password');
 });
+
 it('resets password with valid token', function () {
     Event::fake();
 
@@ -38,6 +39,7 @@ it('resets password with valid token', function () {
     expect(Hash::check('SecureP@ssw0rd!2024', $user->fresh()->password))->toBeTrue();
     Event::assertDispatched(PasswordReset::class);
 });
+
 it('rejects invalid token', function () {
     $user = User::factory()->create([
         'email' => 'chandler.bing@friends.com',

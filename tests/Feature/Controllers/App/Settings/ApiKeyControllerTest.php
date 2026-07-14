@@ -17,6 +17,7 @@ it('can create a new api token', function () {
     $response->assertRedirect('/profile/security');
     $response->assertSessionHas('status', 'API key created');
 });
+
 it('can delete an api token', function () {
     $user = $this->createUser();
     $token = $user->createToken('Test API Token');
@@ -27,6 +28,7 @@ it('can delete an api token', function () {
     $response->assertRedirect('/profile/security');
     $response->assertSessionHas('status', 'API key deleted');
 });
+
 it('returns not found when deleting an unknown api token', function () {
     $user = $this->createUser();
 

@@ -26,6 +26,7 @@ it('verifies the email with valid link', function () {
     Event::assertDispatched(Verified::class);
     $response->assertRedirect(route('dashboard.index', absolute: false).'?verified=1');
 });
+
 it('redirects to dashboard if email is already verified', function () {
     Event::fake();
 
@@ -42,6 +43,7 @@ it('redirects to dashboard if email is already verified', function () {
     Event::assertNotDispatched(Verified::class);
     $response->assertRedirect(route('dashboard.index', absolute: false).'?verified=1');
 });
+
 it('rejects invalid verification links', function () {
     $user = User::factory()->unverified()->create();
 

@@ -42,6 +42,7 @@ it('creates a webhook endpoint with a generated secret', function () {
         ),
     );
 });
+
 it('stores a null label when none is given', function () {
     Queue::fake();
 

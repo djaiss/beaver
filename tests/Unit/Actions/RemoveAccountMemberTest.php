@@ -34,6 +34,7 @@ it('removes a member from an account', function () {
 
     Queue::assertPushedOn(queue: 'low', job: LogUserAction::class);
 });
+
 it('throws when the user is not an owner', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);
@@ -54,6 +55,7 @@ it('throws when the user is not an owner', function () {
         member: $member,
     )->execute();
 });
+
 it('throws when the member belongs to another account', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);
@@ -75,6 +77,7 @@ it('throws when the member belongs to another account', function () {
         member: $foreignMember,
     )->execute();
 });
+
 it('throws when removing the last owner', function () {
     Queue::fake();
     $this->expectException(ValidationException::class);

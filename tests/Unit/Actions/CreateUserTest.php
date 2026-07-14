@@ -34,6 +34,7 @@ it('creates a user in an account', function () {
         'trial_ends_at' => '2018-01-31 00:00:00',
     ]);
 });
+
 it('cant create a user with the same email', function () {
     $account = Account::factory()->create();
 

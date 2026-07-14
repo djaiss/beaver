@@ -15,6 +15,7 @@ it('belongs to an account', function () {
     expect($invitation->account()->exists())->toBeTrue();
     expect($invitation->account)->toBeInstanceOf(Account::class);
 });
+
 it('belongs to the user who sent it', function () {
     $inviter = $this->createUser();
     $invitation = Invitation::factory()->create(['invited_by' => $inviter->id]);
@@ -23,6 +24,7 @@ it('belongs to the user who sent it', function () {
     expect($invitation->invitedBy)->toBeInstanceOf(User::class);
     expect($invitation->invitedBy->id)->toBe($inviter->id);
 });
+
 it('knows when it is expired', function () {
     $pending = Invitation::factory()->create();
     $expired = Invitation::factory()->expired()->create();
@@ -30,16 +32,19 @@ it('knows when it is expired', function () {
     expect($pending->isExpired())->toBeFalse();
     expect($expired->isExpired())->toBeTrue();
 });
+
 it('is pending when not accepted and not expired', function () {
     $invitation = Invitation::factory()->create();
 
     expect($invitation->isPending())->toBeTrue();
 });
+
 it('is not pending when expired', function () {
     $invitation = Invitation::factory()->expired()->create();
 
     expect($invitation->isPending())->toBeFalse();
 });
+
 it('is not pending when accepted', function () {
     $invitation = Invitation::factory()->accepted()->create();
 

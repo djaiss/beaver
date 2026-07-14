@@ -16,6 +16,7 @@ it('can update locale', function () {
     expect(session('locale'))->toEqual('de_DE');
     expect(App::getLocale())->toEqual('de_DE');
 });
+
 it('updates authenticated user locale', function () {
     $user = $this->createUser([
         'locale' => 'en',

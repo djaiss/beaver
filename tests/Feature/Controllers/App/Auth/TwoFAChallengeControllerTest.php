@@ -18,6 +18,7 @@ it('displays the 2fa challenge page', function () {
     $response->assertViewIs('app.auth.2fa');
     $response->assertViewHas('quote');
 });
+
 it('authenticates user with valid totp code', function () {
     Queue::fake();
 
@@ -48,6 +49,7 @@ it('authenticates user with valid totp code', function () {
         callback: fn (CheckLastLogin $job): bool => $job->user->id === $user->id,
     );
 });
+
 it('authenticates user with valid recovery code', function () {
     Queue::fake();
 
@@ -78,6 +80,7 @@ it('authenticates user with valid recovery code', function () {
         job: CheckLastLogin::class,
     );
 });
+
 it('rejects invalid code', function () {
     $google2fa = new Google2FA(request());
     $secret = $google2fa->generateSecretKey();

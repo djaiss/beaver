@@ -16,6 +16,7 @@ it('has many emails sent', function () {
 
     expect($user->emailsSent()->exists())->toBeTrue();
 });
+
 it('gets the initials', function () {
     $ross = User::factory()->create([
         'first_name' => 'Ross',
@@ -24,6 +25,7 @@ it('gets the initials', function () {
 
     expect($ross->initials())->toEqual('RG');
 });
+
 it('gets the full name', function () {
     $user = User::factory()->create([
         'first_name' => 'Ross',
@@ -32,6 +34,7 @@ it('gets the full name', function () {
 
     expect($user->getFullName())->toEqual('Ross Geller');
 });
+
 it('encrypts the two factor secret and recovery codes at rest', function () {
     $secret = 'JBSWY3DPEHPK3PXP';
     $recoveryCodes = ['ABC123', 'DEF456'];

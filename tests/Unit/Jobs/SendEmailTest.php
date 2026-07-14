@@ -41,6 +41,7 @@ it('sends email the traditional way', function () {
     expect($emailSent->email_address)->toEqual('chandler.bing@friends.com');
     expect($emailSent->subject)->toEqual('Login attempt on beaver');
 });
+
 it('sends email with resend facade', function () {
     Config::set('app.use_resend', true);
     Config::set('app.name', 'beaver');

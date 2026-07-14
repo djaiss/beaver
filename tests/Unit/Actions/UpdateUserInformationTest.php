@@ -49,6 +49,7 @@ it('updates user information', function () {
         ),
     );
 });
+
 it('triggers email verification when email changes', function () {
     Event::fake();
 
@@ -73,6 +74,7 @@ it('triggers email verification when email changes', function () {
     );
     expect($user->refresh()->email_verified_at)->toBeNull();
 });
+
 it('does not trigger email verification when email stays same', function () {
     Event::fake();
 

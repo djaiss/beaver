@@ -20,6 +20,7 @@ afterEach(function () {
     File::deleteDirectory($this->temporaryBasePath);
 
 });
+
 it('replaces agent and ai skills with github skills', function () {
     writeFile('.github/skills/actions/SKILL.md', 'actions skill');
     writeFile('.github/skills/actions/references/example.md', 'reference');
@@ -38,6 +39,7 @@ it('replaces agent and ai skills with github skills', function () {
         expect(File::get(base_path($targetDirectory.'/controllers/SKILL.md')))->toBe('controllers skill');
     }
 });
+
 it('fails without removing existing skills when the source directory is missing', function () {
     writeFile('.agents/skills/existing/SKILL.md', 'agent skill');
     writeFile('.ai/skills/existing/SKILL.md', 'AI skill');
@@ -49,6 +51,7 @@ it('fails without removing existing skills when the source directory is missing'
     expect(File::get(base_path('.agents/skills/existing/SKILL.md')))->toBe('agent skill');
     expect(File::get(base_path('.ai/skills/existing/SKILL.md')))->toBe('AI skill');
 });
+
 it('stages source skills before removing linked target directories', function () {
     writeFile('.agents/skills/tailwindcss-development/SKILL.md', 'tailwind skill');
     File::ensureDirectoryExists(base_path('.github/skills'));
@@ -66,6 +69,7 @@ it('stages source skills before removing linked target directories', function ()
     expect(File::get(base_path('.agents/skills/tailwindcss-development/SKILL.md')))->toBe('tailwind skill');
     expect(File::get(base_path('.ai/skills/tailwindcss-development/SKILL.md')))->toBe('tailwind skill');
 });
+
 it('does not touch targets when another sync is running', function () {
     writeFile('.github/skills/actions/SKILL.md', 'new skill');
     writeFile('.agents/skills/existing/SKILL.md', 'agent skill');

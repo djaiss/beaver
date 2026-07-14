@@ -14,6 +14,7 @@ it('renders the docs index page', function () {
     $response->assertSee('lg:grid-cols-[300px_1fr]', false);
     $response->assertDontSee('lg:grid-cols-[300px_1fr_250px]', false);
 });
+
 it('renders a right sidebar when its slot is provided', function () {
     Route::get('/docs-with-right-sidebar', fn (): string => Blade::render(<<<'BLADE'
                 <x-marketing-docs-layout>

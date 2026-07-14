@@ -45,6 +45,7 @@ it('invites a person to an account', function () {
 
     Queue::assertPushedOn(queue: 'low', job: LogUserAction::class);
 });
+
 it('throws when the user is not an owner', function () {
     Mail::fake();
     $this->expectException(ModelNotFoundException::class);
@@ -59,6 +60,7 @@ it('throws when the user is not an owner', function () {
         email: 'phoebe.buffay@friends.com',
     )->execute();
 });
+
 it('throws when the role is invalid', function () {
     Mail::fake();
     $this->expectException(ValidationException::class);
@@ -74,6 +76,7 @@ it('throws when the role is invalid', function () {
         role: 'superhero',
     )->execute();
 });
+
 it('throws when the email is already a member', function () {
     Mail::fake();
     $this->expectException(ValidationException::class);
@@ -91,6 +94,7 @@ it('throws when the email is already a member', function () {
         email: 'phoebe.buffay@friends.com',
     )->execute();
 });
+
 it('throws when a pending invitation already exists', function () {
     Mail::fake();
     $this->expectException(ValidationException::class);

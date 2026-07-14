@@ -31,6 +31,7 @@ it('sends email when ip address changes', function () {
 
     expect($user->fresh()->last_used_ip)->toEqual('192.168.1.2');
 });
+
 it('does not send email when ip address does not change', function () {
     Queue::fake();
 
@@ -49,6 +50,7 @@ it('does not send email when ip address does not change', function () {
 
     expect($user->fresh()->last_used_ip)->toEqual('192.168.1.1');
 });
+
 it('does not send email on first login', function () {
     Queue::fake();
 

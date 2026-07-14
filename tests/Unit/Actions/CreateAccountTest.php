@@ -35,6 +35,7 @@ it('creates an account and its first owner', function () {
     expect($account->created_by_name)->toBe('Monica Geller');
     expect($account->updated_by_name)->toBe('Monica Geller');
 });
+
 it('sanitizes the name it derives the account from', function () {
     Queue::fake();
 

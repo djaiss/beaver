@@ -18,6 +18,7 @@ it('shows a valid invitation', function () {
     $response->assertViewIs('app.account.invitations.show');
     $response->assertViewHas('invitation');
 });
+
 it('shows an expired invitation', function () {
     $invitation = Invitation::factory()->expired()->create();
 
@@ -26,11 +27,13 @@ it('shows an expired invitation', function () {
     $response->assertOk();
     expect($invitation->isPending())->toBeFalse();
 });
+
 it('returns not found for an unknown token', function () {
     $response = $this->get('invitations/unknown-token');
 
     $response->assertNotFound();
 });
+
 it('registers and accepts a guest with a new email', function () {
     Queue::fake();
 
@@ -56,6 +59,7 @@ it('registers and accepts a guest with a new email', function () {
     expect($user->role)->toBe(PermissionEnum::Viewer->value);
     expect($invitation->fresh()->accepted_at)->not->toBeNull();
 });
+
 it('redirects a guest to login when the email already has a user', function () {
     $this->createUser(['email' => 'chandler.bing@friends.com']);
     $invitation = Invitation::factory()->create([
@@ -66,6 +70,7 @@ it('redirects a guest to login when the email already has a user', function () {
 
     $response->assertRedirect(route('login', absolute: false));
 });
+
 it('redirects a logged in user to login', function () {
     $account = $this->createAccount();
     $user = $this->createUser(['email' => 'ross.geller@friends.com']);

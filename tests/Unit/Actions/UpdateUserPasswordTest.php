@@ -37,6 +37,7 @@ it('updates user password', function () {
         ),
     );
 });
+
 it('throws exception when current password is incorrect', function () {
     $user = User::factory()->create([
         'password' => Hash::make('current-password'),

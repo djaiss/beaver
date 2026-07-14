@@ -39,6 +39,7 @@ it('returns the information about the logged user', function () {
         ],
     ])->toEqual($response->json()['data']);
 });
+
 it('updates the profile', function () {
     $user = User::factory()->create([
         'first_name' => 'Dwight',
@@ -78,6 +79,7 @@ it('updates the profile', function () {
         ],
     ]);
 });
+
 it('updates the profile when no nickname is provided', function () {
     $user = User::factory()->create([
         'first_name' => 'Dwight',
