@@ -6,6 +6,7 @@
 
 <aside
     x-cloak
+    data-morph-skip
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
     class="fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 flex-col gap-6 border-r border-hairline bg-sidebar px-4 py-5 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
 >
@@ -58,6 +59,9 @@
             <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.index')" :active="request()->routeIs('collections.*')" icon="layers">{{ __('Collections') }}</x-sidebar-link>
             <x-sidebar-link :href="route('locations.index')" :active="request()->routeIs('locations.*')" icon="map-pin">{{ __('Locations') }}</x-sidebar-link>
+            @if ($user->account->allowsManagementBy($user))
+                <x-sidebar-link :href="route('types.index')" :active="request()->routeIs('types.*')" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
+            @endif
             @if ($user->isOwner())
                 <x-sidebar-link :href="route('settings.index')" :active="false" icon="settings">{{ __('Account settings') }}</x-sidebar-link>
             @endif

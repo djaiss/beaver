@@ -1,6 +1,7 @@
 @props([
   'href',
   'turbo' => false,
+  'type' => 'submit',
 ])
 
 @php
@@ -18,7 +19,7 @@
     {{ $slot }}
   </a>
 @else
-  <button type="submit" {{ $attributes->merge(['class' => $classes]) }}>
+  <button type="{{ $type }}" {{ $attributes->merge(['class' => $classes]) }}>
     @isset($icon)
       <span class="shrink-0">{{ $icon }}</span>
     @endisset
