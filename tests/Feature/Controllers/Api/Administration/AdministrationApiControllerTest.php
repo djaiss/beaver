@@ -8,6 +8,45 @@ use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->collectionJsonStructure = [
+        'data' => [
+            '*' => [
+                'type',
+                'id',
+                'attributes' => [
+                    'name',
+                    'token',
+                    'last_used_at',
+                    'created_at',
+                    'updated_at',
+                ],
+                'links' => [
+                    'self',
+                ],
+            ],
+        ],
+    ];
+
+    $this->singleJsonStructure = [
+        'data' => [
+            'type',
+            'id',
+            'attributes' => [
+                'name',
+                'token',
+                'last_used_at',
+                'created_at',
+                'updated_at',
+            ],
+            'links' => [
+                'self',
+            ],
+        ],
+        'token',
+    ];
+});
+
 it('can list the api keys of the current user', function () {
     Date::setTestNow('2025-07-01 00:00:00');
     $user = User::factory()->create();

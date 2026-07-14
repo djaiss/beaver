@@ -14,7 +14,7 @@ it('lists the users webhook endpoints', function () {
         'url' => 'https://central-perk.test/webhooks',
     ]);
 
-    $response = $this->actingAs($user)->get('/settings/webhooks');
+    $response = $this->actingAs($user)->get('/profile/webhooks');
 
     $response->assertOk();
     $response->assertSee('https://central-perk.test/webhooks');
@@ -26,7 +26,7 @@ it('does not list another users endpoints', function () {
         'url' => 'https://gunther.test/webhooks',
     ]);
 
-    $response = $this->actingAs($user)->get('/settings/webhooks');
+    $response = $this->actingAs($user)->get('/profile/webhooks');
 
     $response->assertOk();
     $response->assertDontSee('https://gunther.test/webhooks');
@@ -34,7 +34,7 @@ it('does not list another users endpoints', function () {
 it('shows the create form', function () {
     $user = $this->createUser();
 
-    $response = $this->actingAs($user)->get('/settings/webhooks/new');
+    $response = $this->actingAs($user)->get('/profile/webhooks/new');
 
     $response->assertOk();
     $response->assertSee('Endpoint URL');
@@ -45,13 +45,13 @@ it('creates a webhook endpoint', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->from('/settings/webhooks/new')
-        ->post('/settings/webhooks', [
+        ->from('/profile/webhooks/new')
+        ->post('/profile/webhooks', [
             'url' => 'https://central-perk.test/webhooks',
             'label' => 'Central Perk',
         ]);
 
-    $response->assertRedirect('/settings/webhooks');
+    $response->assertRedirect('/profile/webhooks');
     $response->assertSessionHas('status', 'Webhook endpoint created');
 
     $this->assertDatabaseCount('webhook_endpoints', 1);
@@ -65,8 +65,8 @@ it('validates the url when creating', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->from('/settings/webhooks/new')
-        ->post('/settings/webhooks', [
+        ->from('/profile/webhooks/new')
+        ->post('/profile/webhooks', [
             'url' => 'not-a-valid-url',
         ]);
 
@@ -82,9 +82,9 @@ it('deletes a webhook endpoint', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->delete('/settings/webhooks/'.$endpoint->id);
+        ->delete('/profile/webhooks/'.$endpoint->id);
 
-    $response->assertRedirect('/settings/webhooks');
+    $response->assertRedirect('/profile/webhooks');
     $response->assertSessionHas('status', 'Webhook endpoint deleted');
     $this->assertModelMissing($endpoint);
 });
@@ -93,7 +93,7 @@ it('cannot delete another users endpoint', function () {
     $otherEndpoint = WebhookEndpoint::factory()->create();
 
     $response = $this->actingAs($user)
-        ->delete('/settings/webhooks/'.$otherEndpoint->id);
+        ->delete('/profile/webhooks/'.$otherEndpoint->id);
 
     $response->assertNotFound();
     $this->assertModelExists($otherEndpoint);

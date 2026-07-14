@@ -17,7 +17,7 @@ it('shows all the logs', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->get('/settings/logs');
+        ->get('/profile/logs');
 
     $response->assertStatus(200);
     $response->assertViewIs('app.settings.logs.index');
@@ -33,7 +33,7 @@ it('shows a pagination', function () {
         ]);
 
     $response = $this->actingAs($user)
-        ->get('/settings/logs');
+        ->get('/profile/logs');
 
     $response->assertStatus(200);
     expect($response['logs'])->toHaveCount(10);

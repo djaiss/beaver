@@ -7,112 +7,60 @@ use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
-it('lists the accounts of the user', function () {
+it('shows the account settings page for an owner', function () {
     $user = $this->createUser();
-    $account = $this->createAccount(name: 'Central Perk');
-    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Owner->value);
 
-    $response = $this->actingAs($user)->get('accounts');
+    $response = $this->actingAs($user)->get('settings');
 
     $response->assertOk();
-    $response->assertViewIs('app.account.index');
-    $response->assertViewHas('accounts');
+    $response->assertViewIs('app.settings.account.index');
+    $response->assertViewHas('account');
 });
-it('shows the create account page', function () {
-    $user = $this->createUser();
+it('forbids a non owner from viewing the account settings', function () {
+    $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
 
-    $response = $this->actingAs($user)->get('accounts/new');
-
-    $response->assertOk();
-});
-it('creates an account with an owner membership', function () {
-    Queue::fake();
-
-    $user = $this->createUser();
-
-    $response = $this->actingAs($user)->post('accounts', [
-        'name' => 'Central Perk',
-    ]);
-
-    $account = $user->accounts()->firstOrFail();
-
-    $response->assertRedirect(route('accounts.show', $account->id, absolute: false));
-    expect($account->name)->toBe('Central Perk');
-    $this->assertDatabaseHas('account_user', [
-        'account_id' => $account->id,
-        'user_id' => $user->id,
-        'role' => PermissionEnum::Owner->value,
-    ]);
-});
-it('shows an account to a member', function () {
-    $user = $this->createUser();
-    $account = $this->createAccount();
-    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
-
-    $response = $this->actingAs($user)->get("accounts/{$account->id}");
-
-    $response->assertOk();
-    $response->assertViewIs('app.account.show');
-});
-it('forbids a non member from viewing an account', function () {
-    $user = $this->createUser();
-    $account = $this->createAccount();
-
-    $response = $this->actingAs($user)->get("accounts/{$account->id}");
+    $response = $this->actingAs($user)->get('settings');
 
     $response->assertForbidden();
 });
-it('returns not found for a missing account', function () {
-    $user = $this->createUser();
-
-    $response = $this->actingAs($user)->get('accounts/999999');
-
-    $response->assertNotFound();
-});
-it('renames an account for an owner', function () {
+it('renames the account for an owner', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $account = $this->createAccount(name: 'Old name');
-    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Owner->value);
 
-    $response = $this->actingAs($user)->put("accounts/{$account->id}", [
+    $response = $this->actingAs($user)->put('settings', [
         'name' => 'Central Perk',
     ]);
 
-    $response->assertRedirect(route('accounts.show', $account->id, absolute: false));
-    expect($account->fresh()->name)->toBe('Central Perk');
+    $response->assertRedirect(route('settings.index', absolute: false));
+    expect($user->account->fresh()->name)->toBe('Central Perk');
 });
-it('forbids a non owner from renaming an account', function () {
-    $user = $this->createUser();
-    $account = $this->createAccount();
-    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
+it('forbids a non owner from renaming the account', function () {
+    $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
 
-    $response = $this->actingAs($user)->put("accounts/{$account->id}", [
+    $response = $this->actingAs($user)->put('settings', [
         'name' => 'Central Perk',
     ]);
 
     $response->assertForbidden();
 });
-it('deletes an account for an owner', function () {
+it('deletes the account for an owner', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $account = $this->createAccount();
-    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Owner->value);
+    $accountId = $user->account_id;
 
-    $response = $this->actingAs($user)->delete("accounts/{$account->id}");
+    $response = $this->actingAs($user)->delete('settings');
 
-    $response->assertRedirect(route('accounts.index', absolute: false));
-    $this->assertDatabaseMissing('accounts', ['id' => $account->id]);
+    $response->assertRedirect(route('register', absolute: false));
+    $this->assertDatabaseMissing('accounts', ['id' => $accountId]);
 });
-it('forbids a non owner from deleting an account', function () {
-    $user = $this->createUser();
-    $account = $this->createAccount();
-    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
+it('forbids a non owner from deleting the account', function () {
+    $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
+    $accountId = $user->account_id;
 
-    $response = $this->actingAs($user)->delete("accounts/{$account->id}");
+    $response = $this->actingAs($user)->delete('settings');
 
     $response->assertForbidden();
-    $this->assertDatabaseHas('accounts', ['id' => $account->id]);
+    $this->assertDatabaseHas('accounts', ['id' => $accountId]);
 });

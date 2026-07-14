@@ -18,7 +18,7 @@ it('shows the settings page', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->get('/settings');
+        ->get('/profile');
 
     $response
         ->assertOk()
@@ -63,7 +63,7 @@ it('updates the profile information', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->put('/settings/profile', [
+        ->put('/profile', [
             'first_name' => 'Chandler',
             'last_name' => 'Bing',
             'nickname' => 'Chan',
@@ -74,5 +74,5 @@ it('updates the profile information', function () {
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/settings');
+        ->assertRedirect('/profile');
 });

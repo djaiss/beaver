@@ -11,10 +11,10 @@ it('enables auto delete user', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->from('/settings/security')
-        ->put('/settings/security/auto-delete-account', [
+        ->from('/profile/security')
+        ->put('/profile/security/auto-delete-account', [
             'auto_delete_user' => 'yes',
         ]);
 
-    $response->assertRedirect('/settings/security');
+    $response->assertRedirect('/profile/security');
 });

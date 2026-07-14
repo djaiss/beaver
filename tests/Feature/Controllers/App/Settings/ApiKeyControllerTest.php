@@ -9,12 +9,12 @@ it('can create a new api token', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->from('/settings/security/create')
-        ->post('/settings/api-keys', [
+        ->from('/profile/security/create')
+        ->post('/profile/api-keys', [
             'label' => 'My API Token',
         ]);
 
-    $response->assertRedirect('/settings/security');
+    $response->assertRedirect('/profile/security');
     $response->assertSessionHas('status', 'API key created');
 });
 it('can delete an api token', function () {
@@ -22,16 +22,16 @@ it('can delete an api token', function () {
     $token = $user->createToken('Test API Token');
 
     $response = $this->actingAs($user)
-        ->delete('/settings/api-keys/'.$token->accessToken->id);
+        ->delete('/profile/api-keys/'.$token->accessToken->id);
 
-    $response->assertRedirect('/settings/security');
+    $response->assertRedirect('/profile/security');
     $response->assertSessionHas('status', 'API key deleted');
 });
 it('returns not found when deleting an unknown api token', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->delete('/settings/api-keys/9999');
+        ->delete('/profile/api-keys/9999');
 
     $response->assertNotFound();
 });

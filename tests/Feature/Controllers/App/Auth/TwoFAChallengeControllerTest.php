@@ -38,7 +38,7 @@ it('authenticates user with valid totp code', function () {
 
     $this->assertAuthenticated();
     $this->assertAuthenticatedAs($user);
-    $response->assertRedirect(route('accounts.index', absolute: false));
+    $response->assertRedirect(route('dashboard.index', absolute: false));
 
     expect(session()->has('2fa:user:id'))->toBeFalse();
 
@@ -67,7 +67,7 @@ it('authenticates user with valid recovery code', function () {
 
     $this->assertAuthenticated();
     $this->assertAuthenticatedAs($user);
-    $response->assertRedirect(route('accounts.index', absolute: false));
+    $response->assertRedirect(route('dashboard.index', absolute: false));
 
     $user->refresh();
     expect($user->two_factor_recovery_codes)->not->toContain('ABC123');

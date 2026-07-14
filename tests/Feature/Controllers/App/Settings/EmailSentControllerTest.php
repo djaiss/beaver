@@ -19,7 +19,7 @@ it('shows all the emails', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->get('/settings/emails');
+        ->get('/profile/emails');
 
     $response->assertStatus(200);
     $response->assertViewIs('app.settings.emails.index');

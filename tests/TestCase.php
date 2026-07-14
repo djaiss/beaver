@@ -6,7 +6,6 @@ namespace Tests;
 
 use App\Enums\PermissionEnum;
 use App\Models\Account;
-use App\Models\AccountMember;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -31,12 +30,13 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    protected function assignUserToAccount(User $user, Account $account, string $role = PermissionEnum::Viewer->value): AccountMember
+    protected function assignUserToAccount(User $user, Account $account, string $role = PermissionEnum::Viewer->value): User
     {
-        return AccountMember::factory()->create([
-            'user_id' => $user->id,
+        $user->update([
             'account_id' => $account->id,
             'role' => $role,
         ]);
+
+        return $user;
     }
 }

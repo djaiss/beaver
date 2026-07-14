@@ -31,27 +31,6 @@ it('returns not found for an unknown token', function () {
 
     $response->assertNotFound();
 });
-it('lets a logged in invited user accept', function () {
-    Queue::fake();
-
-    $account = $this->createAccount();
-    $user = $this->createUser(['email' => 'ross.geller@friends.com']);
-    $invitation = Invitation::factory()->create([
-        'account_id' => $account->id,
-        'email' => 'ross.geller@friends.com',
-        'role' => PermissionEnum::Editor->value,
-    ]);
-
-    $response = $this->actingAs($user)->post("invitations/{$invitation->token}/accept");
-
-    $response->assertRedirect(route('accounts.show', $account->id, absolute: false));
-    $this->assertDatabaseHas('account_user', [
-        'account_id' => $account->id,
-        'user_id' => $user->id,
-        'role' => PermissionEnum::Editor->value,
-    ]);
-    expect($invitation->fresh()->accepted_at)->not->toBeNull();
-});
 it('registers and accepts a guest with a new email', function () {
     Queue::fake();
 
@@ -69,15 +48,13 @@ it('registers and accepts a guest with a new email', function () {
         'password_confirmation' => '5UTHSmdj',
     ]);
 
-    $response->assertRedirect(route('accounts.show', $account->id, absolute: false));
+    $response->assertRedirect(route('dashboard.index', absolute: false));
     $this->assertAuthenticated();
 
     $user = User::query()->where('email', 'phoebe.buffay@friends.com')->firstOrFail();
-    $this->assertDatabaseHas('account_user', [
-        'account_id' => $account->id,
-        'user_id' => $user->id,
-        'role' => PermissionEnum::Viewer->value,
-    ]);
+    expect($user->account_id)->toBe($account->id);
+    expect($user->role)->toBe(PermissionEnum::Viewer->value);
+    expect($invitation->fresh()->accepted_at)->not->toBeNull();
 });
 it('redirects a guest to login when the email already has a user', function () {
     $this->createUser(['email' => 'chandler.bing@friends.com']);
@@ -86,6 +63,18 @@ it('redirects a guest to login when the email already has a user', function () {
     ]);
 
     $response = $this->post("invitations/{$invitation->token}/accept");
+
+    $response->assertRedirect(route('login', absolute: false));
+});
+it('redirects a logged in user to login', function () {
+    $account = $this->createAccount();
+    $user = $this->createUser(['email' => 'ross.geller@friends.com']);
+    $invitation = Invitation::factory()->create([
+        'account_id' => $account->id,
+        'email' => 'ross.geller@friends.com',
+    ]);
+
+    $response = $this->actingAs($user)->post("invitations/{$invitation->token}/accept");
 
     $response->assertRedirect(route('login', absolute: false));
 });

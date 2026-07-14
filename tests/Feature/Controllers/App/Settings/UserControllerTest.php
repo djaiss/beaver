@@ -11,7 +11,7 @@ it('displays the account page', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->get('/settings/user');
+        ->get('/profile/user');
 
     $response->assertOk();
     $response->assertViewIs('app.settings.user.index');
@@ -23,7 +23,7 @@ it('deletes the account', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->delete('/settings/user', [
+        ->delete('/profile/user', [
             'feedback' => 'I no longer need this service',
         ]);
 

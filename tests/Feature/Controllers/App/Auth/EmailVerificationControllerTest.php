@@ -20,7 +20,7 @@ it('redirects to the dashboard if the email is verified', function () {
 
     $response = $this->actingAs($user)->get('/verify-email');
 
-    $response->assertRedirect(route('accounts.index', absolute: false));
+    $response->assertRedirect(route('dashboard.index', absolute: false));
 });
 it('resends a verification email', function () {
     Notification::fake();

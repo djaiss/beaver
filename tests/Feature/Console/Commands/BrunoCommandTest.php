@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 
 it('refreshes and seeds the database then updates the bruno api key', function () {
     $collectionPath = base_path('docs/beaver/collection.bru');
@@ -35,5 +36,9 @@ it('refreshes and seeds the database then updates the bruno api key', function (
         expect($user->tokens->first()->token)->toBe(hash('sha256', $matches['token']));
     } finally {
         file_put_contents($collectionPath, $originalCollection);
+
+        // The command seeds demo data outside a transaction, so reset the
+        // database to keep the following tests isolated in sequential runs.
+        Artisan::call('migrate:fresh');
     }
 });

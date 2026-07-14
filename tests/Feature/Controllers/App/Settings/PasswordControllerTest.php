@@ -11,12 +11,12 @@ it('allows the user to update their password', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->from('/settings/security')
-        ->put('/settings/security/password', [
+        ->from('/profile/security')
+        ->put('/profile/security/password', [
             'current_password' => '5UTHSmdj',
             'new_password' => 'new-5UTHSmdj',
             'new_password_confirmation' => 'new-5UTHSmdj',
         ]);
 
-    $response->assertRedirect('/settings/security');
+    $response->assertRedirect('/profile/security');
 });

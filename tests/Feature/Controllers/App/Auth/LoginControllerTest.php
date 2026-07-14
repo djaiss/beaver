@@ -23,7 +23,7 @@ it('authenticates a user', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('accounts.index', absolute: false));
+    $response->assertRedirect(route('dashboard.index', absolute: false));
 });
 it('sends an email on failed login', function () {
     Queue::fake();

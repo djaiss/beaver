@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Actions\UpdateMemberRole;
 use App\Enums\PermissionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\AccountMember;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -32,7 +32,7 @@ it('updates the role of a member', function () {
         role: PermissionEnum::Editor->value,
     )->execute();
 
-    expect($result)->toBeInstanceOf(AccountMember::class);
+    expect($result)->toBeInstanceOf(User::class);
     expect($member->fresh()->role)->toBe(PermissionEnum::Editor->value);
 
     Queue::assertPushedOn(queue: 'low', job: LogUserAction::class);

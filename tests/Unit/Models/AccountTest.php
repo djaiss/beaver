@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\AccountMember;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,13 +16,6 @@ it('has many users', function () {
 
     expect($account->users()->exists())->toBeTrue();
     expect($account->users()->first())->toBeInstanceOf(User::class);
-});
-it('has many members', function () {
-    $account = $this->createAccount();
-    AccountMember::factory()->create(['account_id' => $account->id]);
-
-    expect($account->members()->exists())->toBeTrue();
-    expect($account->members()->first())->toBeInstanceOf(AccountMember::class);
 });
 it('has many invitations', function () {
     $account = $this->createAccount();

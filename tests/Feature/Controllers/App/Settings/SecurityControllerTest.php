@@ -9,7 +9,7 @@ it('displays the security page', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->get('/settings/security');
+        ->get('/profile/security');
 
     $response->assertStatus(200);
     $response->assertViewIs('app.settings.security.index');

@@ -10,7 +10,7 @@ it('displays the 2fa setup page', function () {
     $user = $this->createUser();
 
     $response = $this->actingAs($user)
-        ->get('/settings/security/2fa/new');
+        ->get('/profile/security/2fa/new');
 
     $response->assertStatus(200);
     $response->assertViewIs('app.settings.security._2fa-new');
@@ -30,12 +30,12 @@ it('enables 2fa with valid token', function () {
     $validToken = $google2fa->getCurrentOtp($secret);
 
     $response = $this->actingAs($user)
-        ->from('/settings/security/2fa/new')
-        ->post('/settings/security/2fa', [
+        ->from('/profile/security/2fa/new')
+        ->post('/profile/security/2fa', [
             'token' => $validToken,
         ]);
 
-    $response->assertRedirect('/settings/security');
+    $response->assertRedirect('/profile/security');
     $response->assertSessionHas('status', 'Two-factor authentication has been enabled successfully.');
 
     $user->refresh();
@@ -52,12 +52,12 @@ it('rejects invalid token', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->from('/settings/security/2fa/new')
-        ->post('/settings/security/2fa', [
+        ->from('/profile/security/2fa/new')
+        ->post('/profile/security/2fa', [
             'token' => '000000',
         ]);
 
-    $response->assertRedirect('/settings/security/2fa/new');
+    $response->assertRedirect('/profile/security/2fa/new');
     $response->assertSessionHasErrors(['token' => 'The provided token is invalid.']);
 
     $user->refresh();
@@ -71,8 +71,8 @@ it('removes 2fa from user account', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->from('/settings/security')
-        ->delete('/settings/security/2fa');
+        ->from('/profile/security')
+        ->delete('/profile/security/2fa');
 
-    $response->assertRedirect('/settings/security');
+    $response->assertRedirect('/profile/security');
 });

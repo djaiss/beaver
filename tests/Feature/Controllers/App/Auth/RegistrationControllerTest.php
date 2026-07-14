@@ -22,15 +22,13 @@ it('creates a user with their own account', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('accounts.index', absolute: false));
+    $response->assertRedirect(route('dashboard.index', absolute: false));
 
     $user = User::query()->where('email', 'chandler.bing@friends.com')->firstOrFail();
 
     // A single account was created, owned by the new user.
-    expect($user->accounts()->get())->toHaveCount(1);
-
-    $account = $user->accounts()->firstOrFail();
-    expect($account->pivot->role)->toBe(PermissionEnum::Owner->value);
+    $account = $user->account;
+    expect($user->role)->toBe(PermissionEnum::Owner->value);
     expect($account->name)->toBe('Chandler Bing');
     expect($account->created_by_id)->toBe($user->id);
     expect(Account::query()->count())->toBe(1);

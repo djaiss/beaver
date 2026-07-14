@@ -11,7 +11,7 @@ it('shows the recovery codes', function () {
     ]);
 
     $response = $this->actingAs($user)
-        ->get('/settings/security/recovery-codes');
+        ->get('/profile/security/recovery-codes');
 
     $response->assertOk();
 });
