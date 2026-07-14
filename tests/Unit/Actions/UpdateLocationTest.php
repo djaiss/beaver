@@ -38,6 +38,24 @@ it('updates a location and stamps the editor', function () {
     );
 });
 
+it('updates the emoji', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $location = Location::factory()->create(['account_id' => $account->id, 'emoji' => '📦']);
+
+    new UpdateLocation(
+        user: $owner,
+        location: $location,
+        name: 'Shelf A',
+        emoji: '🏠',
+    )->execute();
+
+    expect($location->fresh()->emoji)->toBe('🏠');
+});
+
 it('moves a location under a new parent', function () {
     Queue::fake();
 

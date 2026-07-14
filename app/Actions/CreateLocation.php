@@ -25,6 +25,7 @@ class CreateLocation
         private readonly Account $account,
         private string $name,
         private ?int $parentId = null,
+        private ?string $emoji = null,
     ) {}
 
     public function execute(): Location
@@ -52,6 +53,7 @@ class CreateLocation
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+        $this->emoji = TextSanitizer::nullablePlainText($this->emoji);
     }
 
     private function create(): void
@@ -60,6 +62,7 @@ class CreateLocation
             'account_id' => $this->account->id,
             'parent_id' => $this->parentId,
             'name' => $this->name,
+            'emoji' => $this->emoji,
         ]);
     }
 

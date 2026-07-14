@@ -13,10 +13,14 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class LocationController extends Controller
 {
+    /** @var list<string> */
+    private const array EMOJI_OPTIONS = ['📦', '🏠', '🚪', '🛋️', '🗄️', '📚', '🧰', '🏢', '🚗', '🗃️', '🖼️', '🎁'];
+
     public function index(Request $request): View
     {
         $account = $request->user()->account;
@@ -25,7 +29,8 @@ class LocationController extends Controller
 
         return view('app.locations.index', [
             'tree' => $this->buildTree($locations),
-            'parentOptions' => ['' => __('No parent')] + $locations->sortBy('name')->pluck('name', 'id')->all(),
+            'parentOptions' => ['' => __('No parent (top level)')] + $locations->sortBy('name')->pluck('name', 'id')->all(),
+            'emojiOptions' => self::EMOJI_OPTIONS,
         ]);
     }
 
@@ -34,6 +39,7 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer'],
+            'emoji' => ['nullable', 'string', Rule::in(self::EMOJI_OPTIONS)],
         ]);
 
         new CreateLocation(
@@ -41,6 +47,7 @@ class LocationController extends Controller
             account: $request->user()->account,
             name: $validated['name'],
             parentId: isset($validated['parent_id']) ? (int) $validated['parent_id'] : null,
+            emoji: $validated['emoji'] ?? null,
         )->execute();
 
         return to_route('locations.index')
@@ -60,6 +67,7 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer'],
+            'emoji' => ['nullable', 'string', Rule::in(self::EMOJI_OPTIONS)],
         ]);
 
         new UpdateLocation(
@@ -67,6 +75,7 @@ class LocationController extends Controller
             location: $locationModel,
             name: $validated['name'],
             parentId: isset($validated['parent_id']) ? (int) $validated['parent_id'] : null,
+            emoji: $validated['emoji'] ?? null,
         )->execute();
 
         return to_route('locations.index')

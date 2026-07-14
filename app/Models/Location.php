@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $account_id
  * @property int|null $parent_id
  * @property string $name
+ * @property string|null $emoji
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -47,6 +48,7 @@ class Location extends Model
         'account_id',
         'parent_id',
         'name',
+        'emoji',
     ];
 
     /**

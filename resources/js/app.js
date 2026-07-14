@@ -7,12 +7,19 @@ Turbo.session.drive = false; // explicit (enabled by default)
 
 // --- Alpine ---
 import Alpine from 'alpinejs';
+import morph from '@alpinejs/morph';
 import ajax from '@imacrayon/alpine-ajax';
 import Popover from './components/popover';
 import RelationshipTypeSorter from './components/relationship-type-sorter';
 
 window.Alpine = Alpine;
+Alpine.plugin(morph);
 Alpine.plugin(ajax);
+// Morph preserves DOM/Alpine state for elements that persist between requests,
+// instead of discarding and recreating them — needed so a form nested inside
+// its own x-target region stays connected (and keeps firing ajax:* events)
+// after the region it lives in gets updated.
+ajax.configure({ mergeStrategy: 'morph' });
 Alpine.data('popover', Popover);
 Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
 

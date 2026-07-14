@@ -24,6 +24,7 @@ class LocationFactory extends Factory
             'account_id' => Account::factory(),
             'parent_id' => null,
             'name' => fake()->randomElement(['Shelf A', 'Shelf B', 'Box 1', 'Display case', 'Attic', 'Garage']),
+            'emoji' => fake()->randomElement(['📦', '🏠', '🚪', '🛋️', '🗄️', '📚']),
         ];
     }
 }

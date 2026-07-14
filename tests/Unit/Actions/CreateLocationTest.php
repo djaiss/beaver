@@ -46,6 +46,23 @@ it('creates a location and stamps the author', function () {
     );
 });
 
+it('creates a location with an emoji', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $location = new CreateLocation(
+        user: $owner,
+        account: $account,
+        name: 'Garage',
+        emoji: '🚪',
+    )->execute();
+
+    expect($location->emoji)->toBe('🚪');
+});
+
 it('creates a nested location', function () {
     Queue::fake();
 

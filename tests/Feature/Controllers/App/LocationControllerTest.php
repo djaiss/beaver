@@ -77,6 +77,29 @@ it('creates a nested location from a form-encoded parent id', function () {
     expect($box->name)->toBe('Box 1');
 });
 
+it('creates a location with an emoji', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+
+    $this->actingAs($user)->post('/locations', [
+        'name' => 'Garage',
+        'emoji' => '🚪',
+    ]);
+
+    $location = Location::query()->first();
+    expect($location->emoji)->toBe('🚪');
+});
+
+it('rejects an emoji outside the allowed set', function () {
+    $user = $this->createUser();
+
+    $this->actingAs($user)->post('/locations', [
+        'name' => 'Garage',
+        'emoji' => '💩',
+    ])->assertSessionHasErrors('emoji');
+});
+
 it('forbids viewers from creating a location', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();

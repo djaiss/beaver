@@ -23,6 +23,7 @@ class UpdateLocation
         private readonly Location $location,
         private string $name,
         private ?int $parentId = null,
+        private ?string $emoji = null,
     ) {}
 
     public function execute(): Location
@@ -82,12 +83,14 @@ class UpdateLocation
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+        $this->emoji = TextSanitizer::nullablePlainText($this->emoji);
     }
 
     private function update(): void
     {
         $this->location->name = $this->name;
         $this->location->parent_id = $this->parentId;
+        $this->location->emoji = $this->emoji;
         $this->location->updated_by_id = $this->user->id;
         $this->location->updated_by_name = $this->user->getFullName();
         $this->location->save();
