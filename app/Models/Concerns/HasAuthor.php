@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models\Concerns;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,12 +17,12 @@ trait HasAuthor
 {
     public static function bootHasAuthor(): void
     {
-        static::creating(function (Model $model): void {
+        static::creating(function (self $model): void {
             $model->stampAuthorWhenMissing('created_by');
             $model->stampAuthorWhenMissing('updated_by');
         });
 
-        static::updating(function (Model $model): void {
+        static::updating(function (self $model): void {
             $model->stampAuthorFromAuth('updated_by');
         });
     }
