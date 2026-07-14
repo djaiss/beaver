@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
+use App\Models\Collection;
 use App\Models\Account;
 use App\Models\Invitation;
 use App\Models\User;
@@ -31,6 +32,14 @@ it('has many invitations', function () {
 
     expect($account->invitations()->exists())->toBeTrue();
     expect($account->invitations()->first())->toBeInstanceOf(Invitation::class);
+});
+
+it('has many collections', function () {
+    $account = $this->createAccount();
+    Collection::factory()->create(['account_id' => $account->id]);
+
+    expect($account->collections()->exists())->toBeTrue();
+    expect($account->collections()->first())->toBeInstanceOf(Collection::class);
 });
 
 it('lists only owners as administrators', function () {
