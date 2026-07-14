@@ -97,6 +97,16 @@ class Account extends Model
     }
 
     /**
+     * Get the locations that belong to the account.
+     *
+     * @return HasMany<Location, $this>
+     */
+    public function locations(): HasMany
+    {
+        return $this->hasMany(Location::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>

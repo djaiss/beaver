@@ -11,6 +11,7 @@ use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
 use App\Http\Controllers\App\Settings\EmailSentController;
@@ -36,13 +37,20 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // placeholder sections for the future collection domain
     Route::get('collections', [CollectionController::class, 'index'])->name('collections.index');
     Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
-    Route::get('locations', fn () => view('app._placeholder', ['title' => __('Locations'), 'body' => __('Track where your items are stored. This is coming soon.')]))->name('locations.index');
+    Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
     // collections — owners and editors may create new collections
     Route::middleware(['editor'])->group(function (): void {
         Route::get('collections/new', [CollectionController::class, 'new'])->name('collections.new');
         Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
+    });
+
+    // locations — owners and editors may create, update and delete locations
+    Route::middleware(['editor'])->group(function (): void {
+        Route::post('locations', [LocationController::class, 'create'])->name('locations.create');
+        Route::put('locations/{location}', [LocationController::class, 'update'])->where('location', '[1-9][0-9]*')->name('locations.update');
+        Route::delete('locations/{location}', [LocationController::class, 'destroy'])->where('location', '[1-9][0-9]*')->name('locations.destroy');
     });
 
     // personal profile — each user manages their own (any authenticated user)
