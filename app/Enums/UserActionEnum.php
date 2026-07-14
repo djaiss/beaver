@@ -22,6 +22,9 @@ enum UserActionEnum: string
     case CustomFieldCreation = 'custom_field_created';
     case CustomFieldUpdate = 'custom_field_updated';
     case CustomFieldDeletion = 'custom_field_deleted';
+    case LocationCreation = 'location_created';
+    case LocationUpdate = 'location_updated';
+    case LocationDeletion = 'location_deleted';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -52,6 +55,9 @@ enum UserActionEnum: string
             self::CustomFieldCreation => 'Created the custom field called :name',
             self::CustomFieldUpdate => 'Updated the custom field called :name',
             self::CustomFieldDeletion => 'Deleted the custom field called :name',
+            self::LocationCreation => 'Created the location called :name',
+            self::LocationUpdate => 'Updated the location called :name',
+            self::LocationDeletion => 'Deleted the location called :name',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',
