@@ -1,73 +1,59 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Auth;
-
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class NewPasswordControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_renders_the_reset_password_screen(): void
-    {
-        $response = $this->get('/reset-password/fake-token');
+it('renders the reset password screen', function () {
+    $response = $this->get('/reset-password/fake-token');
 
-        $response->assertStatus(200);
-        $response->assertViewIs('app.auth.reset-password');
-    }
+    $response->assertStatus(200);
+    $response->assertViewIs('app.auth.reset-password');
+});
 
-    #[Test]
-    public function it_resets_password_with_valid_token(): void
-    {
-        Event::fake();
+it('resets password with valid token', function () {
+    Event::fake();
 
-        $user = User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-        ]);
+    $user = User::factory()->create([
+        'email' => 'chandler.bing@friends.com',
+    ]);
 
-        $token = Password::createToken($user);
+    $token = Password::createToken($user);
 
-        $response = $this->post('/reset-password', [
-            'token' => $token,
-            'email' => 'chandler.bing@friends.com',
-            'password' => 'SecureP@ssw0rd!2024',
-            'password_confirmation' => 'SecureP@ssw0rd!2024',
-        ]);
+    $response = $this->post('/reset-password', [
+        'token' => $token,
+        'email' => 'chandler.bing@friends.com',
+        'password' => 'SecureP@ssw0rd!2024',
+        'password_confirmation' => 'SecureP@ssw0rd!2024',
+    ]);
 
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHas('status');
+    $response->assertRedirect(route('login'));
+    $response->assertSessionHas('status');
 
-        $this->assertTrue(Hash::check('SecureP@ssw0rd!2024', $user->fresh()->password));
-        Event::assertDispatched(PasswordReset::class);
-    }
+    expect(Hash::check('SecureP@ssw0rd!2024', $user->fresh()->password))->toBeTrue();
+    Event::assertDispatched(PasswordReset::class);
+});
 
-    #[Test]
-    public function it_rejects_invalid_token(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-        ]);
+it('rejects invalid token', function () {
+    $user = User::factory()->create([
+        'email' => 'chandler.bing@friends.com',
+    ]);
 
-        $response = $this->post('/reset-password', [
-            'token' => 'invalid-token',
-            'email' => 'chandler.bing@friends.com',
-            'password' => 'SecureP@ssw0rd!2024',
-            'password_confirmation' => 'SecureP@ssw0rd!2024',
-        ]);
+    $response = $this->post('/reset-password', [
+        'token' => 'invalid-token',
+        'email' => 'chandler.bing@friends.com',
+        'password' => 'SecureP@ssw0rd!2024',
+        'password_confirmation' => 'SecureP@ssw0rd!2024',
+    ]);
 
-        $response->assertRedirect();
-        $response->assertSessionHasErrors(['email']);
+    $response->assertRedirect();
+    $response->assertSessionHasErrors(['email']);
 
-        $this->assertFalse(Hash::check('SecureP@ssw0rd!2024', $user->fresh()->password));
-    }
-}
+    expect(Hash::check('SecureP@ssw0rd!2024', $user->fresh()->password))->toBeFalse();
+});

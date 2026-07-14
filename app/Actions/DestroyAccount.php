@@ -5,67 +5,43 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\PermissionEnum;
-use App\Mail\AccountDestroyed;
-use App\Models\AccountDeletionReason;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
+use App\Models\Account;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Before deleting the account, we need to check which vaults the user is owner
- * of. If the user is the only owner of a vault, we need to delete the vault as
- * well.
+ * Delete an entire account. Cascades to its members, invitations and everything
+ * the account owns. Only an owner may do so.
  */
 class DestroyAccount
 {
     public function __construct(
         private readonly User $user,
-        private readonly string $reason,
+        private readonly Account $account,
     ) {}
 
     public function execute(): void
     {
-        $this->deleteVaultsWhereUserIsOnlyOwner();
-        $this->user->delete();
-        $this->sendMail();
-        $this->logAccountDeletion();
+        $this->validate();
+        $this->log();
+        $this->account->delete();
     }
 
-    private function deleteVaultsWhereUserIsOnlyOwner(): void
+    private function validate(): void
     {
-        // Get all vaults where the user is an owner
-        $ownerMemberships = $this->user->memberships()
-            ->where('role', PermissionEnum::Owner->value)
-            ->with('vault')
-            ->get();
-
-        foreach ($ownerMemberships as $membership) {
-            $vault = $membership->vault;
-
-            // Count how many owners this vault has
-            $ownerCount = $vault->members()
-                ->where('role', PermissionEnum::Owner->value)
-                ->count();
-
-            // If this user is the only owner, delete the vault
-            if ($ownerCount === 1) {
-                $vault->delete();
-            }
+        if ($this->account->roleFor($this->user) !== PermissionEnum::Owner->value) {
+            throw new ModelNotFoundException('Account not found');
         }
     }
 
-    private function sendMail(): void
+    private function log(): void
     {
-        Mail::to(config('app.account_deletion_notification_email'))
-            ->queue(new AccountDestroyed(
-                reason: $this->reason,
-                activeSince: $this->user->created_at->format('Y-m-d'),
-            ));
-    }
-
-    private function logAccountDeletion(): void
-    {
-        AccountDeletionReason::query()->create([
-            'reason' => $this->reason,
-        ]);
+        LogUserAction::dispatch(
+            user: $this->user,
+            action: UserActionEnum::AccountDeletion,
+            parameters: ['name' => $this->account->name],
+        )->onQueue('low');
     }
 }

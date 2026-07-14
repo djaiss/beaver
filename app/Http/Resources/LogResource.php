@@ -25,8 +25,6 @@ class LogResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'user_name' => $this->getUserName(),
-                'vault_id' => $this->vault_id === null ? null : (string) $this->vault_id,
-                'vault_name' => $this->vault?->name,
                 'action' => $this->action,
                 'parameters' => $this->parameters,
                 'description' => $this->getTranslatedDescription(),

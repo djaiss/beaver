@@ -14,7 +14,7 @@ class CreateWebhookEndpointCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'lifeos:create-webhook-endpoint
+    protected $signature = 'beaver:create-webhook-endpoint
         {email : The email of the user who owns the endpoint}
         {url : The url the webhook is sent to}
         {--label= : An optional human readable name for the endpoint}';

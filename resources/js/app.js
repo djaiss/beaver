@@ -16,6 +16,19 @@ Alpine.plugin(ajax);
 Alpine.data('popover', Popover);
 Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
 
+// --- Light/dark theme ---
+// The initial class is set before paint by the inline script in partials/meta.
+Alpine.store('theme', {
+  dark: document.documentElement.classList.contains('dark'),
+  toggle() {
+    this.dark = !this.dark;
+    document.documentElement.classList.toggle('dark', this.dark);
+    try {
+      localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+    } catch (e) {}
+  },
+});
+
 // Start Alpine on the initial load (once)
 document.addEventListener('DOMContentLoaded', () => {
   if (!document.documentElement.__alpined) {

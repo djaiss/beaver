@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\Log;
 use App\Models\User;
-use App\Models\Vault;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +21,6 @@ class LogFactory extends Factory
     public function definition(): array
     {
         return [
-            'vault_id' => Vault::factory(),
             'user_id' => User::factory(),
             'user_name' => fake()->name(),
             'action' => 'log.test.action',

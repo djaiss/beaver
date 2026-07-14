@@ -1,9 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\Api\Auth;
-
 use App\Enums\EmailType;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -13,280 +10,253 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
-use PHPUnit\Framework\Attributes\Test;
 use PragmaRX\Google2FALaravel\Google2FA;
-use Tests\TestCase;
 
-class LoginControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_logs_in_a_user(): void
-    {
-        User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+it('logs in a user', function () {
+    User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+    ]);
 
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'message',
-            'status',
-            'data' => [
-                'token',
-            ],
-        ]);
+    $response->assertStatus(200);
+    $response->assertJsonStructure([
+        'message',
+        'status',
+        'data' => [
+            'token',
+        ],
+    ]);
 
-        $responseData = $response->json();
-        $this->assertNotEmpty($responseData['data']['token']);
-    }
+    $responseData = $response->json();
+    expect($responseData['data']['token'])->not->toBeEmpty();
+});
 
-    #[Test]
-    public function it_logs_the_token_creation_and_notifies_of_the_new_login(): void
-    {
-        Queue::fake();
+it('logs the token creation and notifies of the new login', function () {
+    Queue::fake();
 
-        $user = User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+    $user = User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-            'device_name' => 'Rachel iPhone 15',
-        ])->assertStatus(200);
+    $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+        'device_name' => 'Rachel iPhone 15',
+    ])->assertStatus(200);
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::ApiKeyCreation
-                && $job->user->id === $user->id
-            ),
-        );
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::ApiKeyCreation
+            && $job->user->id === $user->id
+        ),
+    );
 
-        Queue::assertPushedOn(
-            queue: 'high',
-            job: SendEmail::class,
-            callback: fn (SendEmail $job): bool => (
-                $job->mailable instanceof NewLoginDetected
-                && $job->mailable->device === 'Rachel iPhone 15'
-                && $job->user->id === $user->id
-                && $job->emailType === EmailType::NewLogin
-            ),
-        );
-    }
+    Queue::assertPushedOn(
+        queue: 'high',
+        job: SendEmail::class,
+        callback: fn (SendEmail $job): bool => (
+            $job->mailable instanceof NewLoginDetected
+            && $job->mailable->device === 'Rachel iPhone 15'
+            && $job->user->id === $user->id
+            && $job->emailType === EmailType::NewLogin
+        ),
+    );
+});
 
-    #[Test]
-    public function it_labels_the_new_login_notification_for_an_unknown_device(): void
-    {
-        Queue::fake();
+it('labels the new login notification for an unknown device', function () {
+    Queue::fake();
 
-        User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+    User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-        ])->assertStatus(200);
+    $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+    ])->assertStatus(200);
 
-        Queue::assertPushed(
-            SendEmail::class,
-            fn (SendEmail $job): bool => (
-                $job->mailable instanceof NewLoginDetected
-                && $job->mailable->device === 'an unknown device'
-            ),
-        );
-    }
+    Queue::assertPushed(
+        SendEmail::class,
+        fn (SendEmail $job): bool => (
+            $job->mailable instanceof NewLoginDetected
+            && $job->mailable->device === 'an unknown device'
+        ),
+    );
+});
 
-    #[Test]
-    public function it_names_the_token_after_the_device(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+it('names the token after the device', function () {
+    $user = User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-            'device_name' => 'Rachel iPhone 15',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+        'device_name' => 'Rachel iPhone 15',
+    ]);
 
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('personal_access_tokens', [
-            'tokenable_id' => $user->id,
-            'name' => 'Login from Rachel iPhone 15',
-        ]);
-    }
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('personal_access_tokens', [
+        'tokenable_id' => $user->id,
+        'name' => 'Login from Rachel iPhone 15',
+    ]);
+});
 
-    #[Test]
-    public function it_names_the_token_when_no_device_is_provided(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+it('names the token when no device is provided', function () {
+    $user = User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+    ]);
 
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('personal_access_tokens', [
-            'tokenable_id' => $user->id,
-            'name' => 'Login from an unknown device',
-        ]);
-    }
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('personal_access_tokens', [
+        'tokenable_id' => $user->id,
+        'name' => 'Login from an unknown device',
+    ]);
+});
 
-    #[Test]
-    public function it_rejects_invalid_credentials(): void
-    {
-        User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+it('rejects invalid credentials', function () {
+    User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'wrong-password',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'wrong-password',
+    ]);
 
-        $response->assertStatus(401);
-        $this->assertDatabaseCount('personal_access_tokens', 0);
-    }
+    $response->assertStatus(401);
+    $this->assertDatabaseCount('personal_access_tokens', 0);
+});
 
-    #[Test]
-    public function it_requires_a_2fa_code_when_two_factor_is_enabled(): void
-    {
-        $google2fa = new Google2FA(request());
-        $secret = $google2fa->generateSecretKey();
+it('requires a 2fa code when two factor is enabled', function () {
+    $google2fa = new Google2FA(request());
+    $secret = $google2fa->generateSecretKey();
 
-        User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-            'two_factor_secret' => $secret,
-            'two_factor_confirmed_at' => now(),
-        ]);
+    User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+        'two_factor_secret' => $secret,
+        'two_factor_confirmed_at' => now(),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+    ]);
 
-        $response->assertStatus(401);
-        $this->assertDatabaseCount('personal_access_tokens', 0);
-    }
+    $response->assertStatus(401);
+    $this->assertDatabaseCount('personal_access_tokens', 0);
+});
 
-    #[Test]
-    public function it_rejects_an_invalid_2fa_code(): void
-    {
-        $google2fa = new Google2FA(request());
-        $secret = $google2fa->generateSecretKey();
+it('rejects an invalid 2fa code', function () {
+    $google2fa = new Google2FA(request());
+    $secret = $google2fa->generateSecretKey();
 
-        User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-            'two_factor_secret' => $secret,
-            'two_factor_confirmed_at' => now(),
-        ]);
+    User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+        'two_factor_secret' => $secret,
+        'two_factor_confirmed_at' => now(),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-            'code' => '000000',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+        'code' => '000000',
+    ]);
 
-        $response->assertStatus(401);
-        $this->assertDatabaseCount('personal_access_tokens', 0);
-    }
+    $response->assertStatus(401);
+    $this->assertDatabaseCount('personal_access_tokens', 0);
+});
 
-    #[Test]
-    public function it_issues_a_token_with_a_valid_2fa_code(): void
-    {
-        $google2fa = new Google2FA(request());
-        $secret = $google2fa->generateSecretKey();
+it('issues a token with a valid 2fa code', function () {
+    $google2fa = new Google2FA(request());
+    $secret = $google2fa->generateSecretKey();
 
-        User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-            'two_factor_secret' => $secret,
-            'two_factor_confirmed_at' => now(),
-        ]);
+    User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+        'two_factor_secret' => $secret,
+        'two_factor_confirmed_at' => now(),
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-            'code' => $google2fa->getCurrentOtp($secret),
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+        'code' => $google2fa->getCurrentOtp($secret),
+    ]);
 
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'message',
-            'status',
-            'data' => ['token'],
-        ]);
-        $this->assertNotEmpty($response->json('data.token'));
-    }
+    $response->assertStatus(200);
+    $response->assertJsonStructure([
+        'message',
+        'status',
+        'data' => ['token'],
+    ]);
+    expect($response->json('data.token'))->not->toBeEmpty();
+});
 
-    #[Test]
-    public function it_authenticates_with_a_recovery_code(): void
-    {
-        $google2fa = new Google2FA(request());
-        $secret = $google2fa->generateSecretKey();
+it('authenticates with a recovery code', function () {
+    $google2fa = new Google2FA(request());
+    $secret = $google2fa->generateSecretKey();
 
-        $user = User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-            'two_factor_secret' => $secret,
-            'two_factor_confirmed_at' => now(),
-            'two_factor_recovery_codes' => ['ABC123', 'DEF456'],
-        ]);
+    $user = User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+        'two_factor_secret' => $secret,
+        'two_factor_confirmed_at' => now(),
+        'two_factor_recovery_codes' => ['ABC123', 'DEF456'],
+    ]);
 
-        $response = $this->json('POST', '/api/login', [
-            'email' => 'rachel.green@friends.com',
-            'password' => 'password',
-            'code' => 'ABC123',
-        ]);
+    $response = $this->json('POST', '/api/login', [
+        'email' => 'rachel.green@friends.com',
+        'password' => 'password',
+        'code' => 'ABC123',
+    ]);
 
-        $response->assertStatus(200);
+    $response->assertStatus(200);
 
-        $user->refresh();
-        $this->assertNotContains('ABC123', $user->two_factor_recovery_codes);
-    }
+    $user->refresh();
+    expect($user->two_factor_recovery_codes)->not->toContain('ABC123');
+});
 
-    #[Test]
-    public function it_logs_out_a_user(): void
-    {
-        $user = User::factory()->create([
-            'email' => 'rachel.green@friends.com',
-            'password' => bcrypt('password'),
-        ]);
+it('logs out a user', function () {
+    $user = User::factory()->create([
+        'email' => 'rachel.green@friends.com',
+        'password' => bcrypt('password'),
+    ]);
 
-        Sanctum::actingAs($user);
+    Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', '/api/logout');
+    $response = $this->json('DELETE', '/api/logout');
 
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'message',
-            'status',
-        ]);
+    $response->assertStatus(200);
+    $response->assertJsonStructure([
+        'message',
+        'status',
+    ]);
 
-        $responseData = $response->json();
-        $this->assertEquals('Logged out successfully', $responseData['message']);
-        $this->assertDatabaseMissing('personal_access_tokens', [
-            'tokenable_id' => $user->id,
-        ]);
-    }
-}
+    $responseData = $response->json();
+    expect($responseData['message'])->toEqual('Logged out successfully');
+    $this->assertDatabaseMissing('personal_access_tokens', [
+        'tokenable_id' => $user->id,
+    ]);
+});

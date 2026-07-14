@@ -136,7 +136,7 @@ Pagination information, including the current page, page size, and total number 
       "attributes": {
         "email_type": "welcome",
         "email_address": "chandler.bing@friends.test",
-        "subject": "Welcome to LifeOS",
+        "subject": "Welcome to beaver",
         "body": "Could this BE any more of a welcome email?",
         "sent_at": 1751284800,
         "delivered_at": 1751284800,
@@ -261,7 +261,7 @@ The URL of the individual email endpoint.
     "attributes": {
       "email_type": "welcome",
       "email_address": "monica.geller@friends.test",
-      "subject": "Welcome to LifeOS",
+      "subject": "Welcome to beaver",
       "body": "I know!",
       "sent_at": 1751284800,
       "delivered_at": 1751284800,

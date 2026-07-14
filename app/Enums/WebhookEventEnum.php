@@ -6,6 +6,5 @@ namespace App\Enums;
 
 enum WebhookEventEnum: string
 {
-    case VaultCreated = 'vault.created';
-    case VaultDestroyed = 'vault.destroyed';
+    // Webhook events will be added here as the new collection domain is built.
 }

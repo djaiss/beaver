@@ -1,21 +1,15 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\Api\Administration;
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Laravel\Sanctum\Sanctum;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class AdministrationApiControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    private array $collectionJsonStructure = [
+beforeEach(function () {
+    $this->collectionJsonStructure = [
         'data' => [
             '*' => [
                 'type',
@@ -34,7 +28,7 @@ class AdministrationApiControllerTest extends TestCase
         ],
     ];
 
-    private array $singleJsonStructure = [
+    $this->singleJsonStructure = [
         'data' => [
             'type',
             'id',
@@ -51,64 +45,58 @@ class AdministrationApiControllerTest extends TestCase
         ],
         'token',
     ];
+});
 
-    #[Test]
-    public function it_can_list_the_api_keys_of_the_current_user(): void
-    {
-        Date::setTestNow('2025-07-01 00:00:00');
-        $user = User::factory()->create();
+it('can list the api keys of the current user', function () {
+    Date::setTestNow('2025-07-01 00:00:00');
+    $user = User::factory()->create();
 
-        $user->createToken('Test API Key 1');
-        $token2AccessToken = $user->createToken('Test API Key 2')->accessToken;
-        $token2AccessToken->last_used_at = Date::now()->subDays(5);
-        $token2AccessToken->save();
+    $user->createToken('Test API Key 1');
+    $token2AccessToken = $user->createToken('Test API Key 2')->accessToken;
+    $token2AccessToken->last_used_at = Date::now()->subDays(5);
+    $token2AccessToken->save();
 
-        Sanctum::actingAs($user);
+    Sanctum::actingAs($user);
 
-        $response = $this->json('GET', '/api/administration/api');
+    $response = $this->json('GET', '/api/administration/api');
 
-        $response->assertJsonStructure($this->collectionJsonStructure);
+    $response->assertJsonStructure($this->collectionJsonStructure);
 
-        $response->assertJsonCount(2, 'data');
-    }
+    $response->assertJsonCount(2, 'data');
+});
 
-    #[Test]
-    public function it_can_create_a_new_api_key(): void
-    {
-        $user = User::factory()->create();
+it('can create a new api key', function () {
+    $user = User::factory()->create();
 
-        Sanctum::actingAs($user);
+    Sanctum::actingAs($user);
 
-        $response = $this->json('POST', '/api/administration/api', [
-            'label' => 'New API Key',
-        ]);
+    $response = $this->json('POST', '/api/administration/api', [
+        'label' => 'New API Key',
+    ]);
 
-        $response->assertStatus(201);
+    $response->assertStatus(201);
 
-        $this->assertDatabaseHas('personal_access_tokens', [
-            'name' => 'New API Key',
-            'tokenable_id' => $user->id,
-            'tokenable_type' => User::class,
-        ]);
+    $this->assertDatabaseHas('personal_access_tokens', [
+        'name' => 'New API Key',
+        'tokenable_id' => $user->id,
+        'tokenable_type' => User::class,
+    ]);
 
-        $response->assertJsonStructure($this->singleJsonStructure);
-    }
+    $response->assertJsonStructure($this->singleJsonStructure);
+});
 
-    #[Test]
-    public function user_can_delete_their_api_key(): void
-    {
-        $user = User::factory()->create();
-        $token = $user->createToken('Test API Key');
-        $tokenId = $token->accessToken->id;
+test('user can delete their api key', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('Test API Key');
+    $tokenId = $token->accessToken->id;
 
-        Sanctum::actingAs($user);
+    Sanctum::actingAs($user);
 
-        $response = $this->json('DELETE', "/api/administration/api/{$tokenId}");
+    $response = $this->json('DELETE', "/api/administration/api/{$tokenId}");
 
-        $response->assertStatus(204);
+    $response->assertStatus(204);
 
-        $this->assertDatabaseMissing('personal_access_tokens', [
-            'id' => $tokenId,
-        ]);
-    }
-}
+    $this->assertDatabaseMissing('personal_access_tokens', [
+        'id' => $tokenId,
+    ]);
+});

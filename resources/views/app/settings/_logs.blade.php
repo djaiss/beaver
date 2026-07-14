@@ -6,33 +6,28 @@
 
   <!-- last actions -->
   @foreach ($logs as $log)
-    <div class="flex items-center justify-between border-b border-gray-200 p-3 text-sm first:rounded-t-lg last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
+    <div class="flex items-center justify-between border-b border-hairline-soft p-3 text-sm last:border-b-0">
       <div class="flex items-center gap-3">
-        <x-phosphor-pulse class="size-3 min-w-3 text-zinc-600 dark:text-zinc-400" />
+        <x-lucide-activity class="size-3 min-w-3 text-muted-soft" />
         <div class="flex flex-col gap-y-2">
-          <p class="items-center gap-2 sm:flex">
-            <span class="">{{ $log->username }}</span>
+          <p class="items-center gap-2 text-body sm:flex">
+            <span class="font-semibold text-ink">{{ $log->username }}</span>
             |
-            @if ($log->vault_name)
-              <x-link href="{{ $log->vault_link }}">{{ $log->vault_name }}</x-link>
-              |
-            @endif
-
             <span class="font-mono text-xs">{{ $log->action }}</span>
           </p>
-          <p class="">{{ $log->description }}</p>
+          <p class="text-body">{{ $log->description }}</p>
         </div>
       </div>
 
       <x-tooltip text="{{ $log->created_at }}">
-        <p class="font-mono text-xs">{{ $log->created_at_human }}</p>
+        <p class="font-mono text-xs text-muted-soft">{{ $log->created_at_human }}</p>
       </x-tooltip>
     </div>
   @endforeach
 
   @if ($hasMoreLogs)
-    <div class="flex justify-center rounded-b-lg p-3 text-sm">
-      <x-link href="{{ route('settings.logs.index') }}" class="text-center">{{ __('Browse all activity') }}</x-link>
+    <div class="flex justify-center p-3 text-sm">
+      <x-link href="{{ route('profile.logs.index') }}" class="text-center">{{ __('Browse all activity') }}</x-link>
     </div>
   @endif
 </x-box>

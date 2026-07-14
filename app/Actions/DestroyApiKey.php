@@ -39,7 +39,6 @@ class DestroyApiKey
     private function log(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::ApiKeyDeletion,
         )->onQueue('low');

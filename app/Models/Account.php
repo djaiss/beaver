@@ -1,0 +1,102 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Enums\PermissionEnum;
+use App\Models\Concerns\HasAuthor;
+use Carbon\Carbon;
+use Database\Factories\AccountFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+/**
+ * Class Account
+ *
+ * @property int $id
+ * @property string $name
+ * @property int|null $created_by_id
+ * @property string|null $created_by_name
+ * @property int|null $updated_by_id
+ * @property string|null $updated_by_name
+ * @property Carbon $created_at
+ * @property Carbon|null $updated_at
+ */
+class Account extends Model
+{
+    use HasAuthor;
+
+    /** @use HasFactory<AccountFactory> */
+    use HasFactory;
+
+    protected $table = 'accounts';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'name' => 'encrypted',
+        ];
+    }
+
+    /**
+     * Get the users who belong to the account.
+     *
+     * @return HasMany<User, $this>
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
+    /**
+     * Get the pending and past invitations of the account.
+     *
+     * @return HasMany<Invitation, $this>
+     */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(Invitation::class);
+    }
+
+    /**
+     * Get the users who administer the account.
+     *
+     * @return HasMany<User, $this>
+     */
+    public function administrators(): HasMany
+    {
+        return $this->users()->where('role', PermissionEnum::Owner->value);
+    }
+
+    /**
+     * Check whether the given user belongs to the account.
+     */
+    public function hasMember(User $user): bool
+    {
+        return $user->account_id === $this->id;
+    }
+
+    /**
+     * Return the role the given user holds in the account, if any.
+     */
+    public function roleFor(User $user): ?string
+    {
+        return $user->account_id === $this->id ? $user->role : null;
+    }
+}

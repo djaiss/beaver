@@ -44,7 +44,7 @@ The {{app.name}} API doesn’t support bulk updates. You can work on only one ob
 
 If you want to test the API yourself, we provide two convenient tools for you to use: [Bruno](https://www.usebruno.com/).
 
-The documentation is included in the GitHub repository, under the [docs](https://github.com/djaiss/lifeOS/tree/main/docs) folder.
+The documentation is included in the GitHub repository, under the [docs](https://github.com/djaiss/beaver/tree/main/docs) folder.
 
 Why these tools? Because they're fresh, new, free and open source under the MIT license, and I really like their ethos.
 :::/section

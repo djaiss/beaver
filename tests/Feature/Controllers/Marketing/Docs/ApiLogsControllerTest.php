@@ -2,26 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Controllers\Marketing\Docs;
+it('renders the api logs page', function () {
+    $response = $this->get('/docs/1.x/api/account/logs');
 
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+    $response->assertOk();
+});
 
-class ApiLogsControllerTest extends TestCase
-{
-    #[Test]
-    public function it_renders_the_api_logs_page(): void
-    {
-        $response = $this->get('/docs/1.x/api/account/logs');
+it('returns the logs document as markdown', function () {
+    $response = $this->get('/docs/1.x/api/account/logs.md');
 
-        $response->assertOk();
-    }
-
-    #[Test]
-    public function it_returns_the_logs_document_as_markdown(): void
-    {
-        $response = $this->get('/docs/1.x/api/account/logs.md');
-
-        $response->assertOk();
-    }
-}
+    $response->assertOk();
+});

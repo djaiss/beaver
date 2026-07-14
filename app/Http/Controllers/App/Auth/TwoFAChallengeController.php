@@ -53,6 +53,6 @@ class TwoFAChallengeController extends Controller
 
         CheckLastLogin::dispatch(user: $request->user(), ip: $request->ip())->onQueue('low');
 
-        return redirect()->intended(route('vault.index', absolute: false));
+        return redirect()->intended(route('dashboard.index', absolute: false));
     }
 }

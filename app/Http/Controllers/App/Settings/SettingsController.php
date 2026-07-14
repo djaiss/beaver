@@ -22,14 +22,11 @@ class SettingsController extends Controller
         $logs = Log::query()
             ->where('user_id', $request->user()->id)
             ->with('user')
-            ->with('vault')
             ->latest()
             ->limit(5)
             ->get()
             ->map(fn (Log $log) => (object) [
                 'username' => $log->getUserName(),
-                'vault_name' => $log->vault?->name,
-                'vault_link' => $log->vault ? route('vault.show', $log->vault_id) : null,
                 'action' => $log->action,
                 'description' => $log->getTranslatedDescription(),
                 'created_at' => $log->created_at->format('Y-m-d H:i:s'),
@@ -103,7 +100,7 @@ class SettingsController extends Controller
             timeFormat24h: $validated['time_format_24h'] === 'true',
         )->execute();
 
-        return to_route('settings.index')
+        return to_route('profile.index')
             ->with('status', __('Changes saved'));
     }
 }

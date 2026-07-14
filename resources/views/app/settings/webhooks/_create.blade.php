@@ -1,4 +1,4 @@
-<x-form id="new-webhook-form" x-target="webhook-list new-webhook-form notifications" x-target.back="new-webhook-form" action="{{ route('settings.webhooks.create') }}" method="post" class="space-y-5 rounded-t-lg p-4 first:rounded-t-lg last:rounded-b-lg last:border-0 hover:bg-blue-50 dark:hover:bg-gray-800">
+<x-form id="new-webhook-form" x-target="webhook-list new-webhook-form notifications" x-target.back="new-webhook-form" action="{{ route('profile.webhooks.create') }}" method="post" class="space-y-5 p-4">
   <div class="space-y-4">
     <x-input id="url" :label="__('Endpoint URL')" type="url" name="url" placeholder="https://example.com/webhooks" required autofocus :error="$errors->get('url')" />
 
@@ -6,7 +6,7 @@
   </div>
 
   <div class="flex justify-between">
-    <x-button.secondary href="{{ route('settings.webhooks.index') }}" turbo="true" x-target="new-webhook-form">
+    <x-button.secondary href="{{ route('profile.webhooks.index') }}" turbo="true" x-target="new-webhook-form">
       {{ __('Cancel') }}
     </x-button.secondary>
 

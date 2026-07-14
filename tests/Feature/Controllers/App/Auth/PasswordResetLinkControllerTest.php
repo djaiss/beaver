@@ -1,42 +1,30 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Auth;
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class PasswordResetLinkControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_renders_the_forgot_password_screen(): void
-    {
-        $response = $this->get('/forgot-password');
+it('renders the forgot password screen', function () {
+    $response = $this->get('/forgot-password');
 
-        $response->assertStatus(200);
-        $response->assertViewIs('app.auth.forgot-password');
-    }
+    $response->assertStatus(200);
+    $response->assertViewIs('app.auth.forgot-password');
+});
 
-    #[Test]
-    public function it_sends_a_password_reset_link(): void
-    {
-        Notification::fake();
+it('sends a password reset link', function () {
+    Notification::fake();
 
-        User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-        ]);
+    User::factory()->create([
+        'email' => 'chandler.bing@friends.com',
+    ]);
 
-        $response = $this->post('/forgot-password', [
-            'email' => 'chandler.bing@friends.com',
-        ]);
+    $response = $this->post('/forgot-password', [
+        'email' => 'chandler.bing@friends.com',
+    ]);
 
-        $response->assertRedirect();
-        $response->assertSessionHas('status');
-    }
-}
+    $response->assertRedirect();
+    $response->assertSessionHas('status');
+});

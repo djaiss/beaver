@@ -6,16 +6,38 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
-  <body class="flex min-h-screen flex-col font-sans text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100">
-    <x-header :vault="$vault" />
+  <body class="min-h-screen bg-page font-sans text-body antialiased">
+    <div x-data="{ sidebarOpen: false }" class="min-h-screen lg:flex">
+      {{-- Mobile backdrop --}}
+      <div
+        x-cloak
+        x-show="sidebarOpen"
+        x-transition.opacity
+        @click="sidebarOpen = false"
+        class="fixed inset-0 z-30 bg-black/40 lg:hidden"
+      ></div>
 
-    <main class="flex flex-1 flex-col px-2 py-px">
-      <div class="mx-auto flex w-full grow flex-col items-stretch rounded-lg bg-gray-50 shadow-xs ring-1 ring-[#E6E7E9] dark:bg-gray-950 dark:ring-gray-800">
-        {{ $slot }}
+      <x-sidebar />
+
+      <div class="flex min-w-0 flex-1 flex-col">
+        {{-- Mobile top bar --}}
+        <div class="flex items-center gap-3 border-b border-hairline bg-page px-4 py-3 lg:hidden">
+          <button
+            type="button"
+            @click="sidebarOpen = true"
+            class="flex size-9 items-center justify-center rounded-md border border-hairline bg-canvas text-muted"
+            aria-label="{{ __('Open menu') }}"
+          >
+            @svg('lucide-list', 'size-5')
+          </button>
+          <span class="text-base font-semibold text-ink">{{ config('app.name') }}</span>
+        </div>
+
+        <main class="min-w-0 flex-1">
+          {{ $slot }}
+        </main>
       </div>
-    </main>
-
-    <x-footer />
+    </div>
 
     <x-toaster />
   </body>

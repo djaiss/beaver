@@ -1,9 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\UpdateUserInformation;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -12,101 +9,90 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class UpdateUserInformationTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_updates_user_information(): void
-    {
-        Queue::fake();
+it('updates user information', function () {
+    Queue::fake();
 
-        $user = User::factory()->create([
-            'first_name' => 'Monica',
-            'last_name' => 'Geller',
-            'email' => 'monica.geller@friends.com',
-        ]);
+    $user = User::factory()->create([
+        'first_name' => 'Monica',
+        'last_name' => 'Geller',
+        'email' => 'monica.geller@friends.com',
+    ]);
 
-        $updatedUser = new UpdateUserInformation(
-            user: $user,
-            email: 'chandler.bing@friends.com',
-            firstName: 'Chandler',
-            lastName: 'Bing',
-            nickname: 'Chan',
-            locale: 'fr_FR',
-            timeFormat24h: false,
-        )->execute();
+    $updatedUser = new UpdateUserInformation(
+        user: $user,
+        email: 'chandler.bing@friends.com',
+        firstName: 'Chandler',
+        lastName: 'Bing',
+        nickname: 'Chan',
+        locale: 'fr_FR',
+        timeFormat24h: false,
+    )->execute();
 
-        $this->assertInstanceOf(User::class, $updatedUser);
+    expect($updatedUser)->toBeInstanceOf(User::class);
 
-        $this->assertEquals('chandler.bing@friends.com', $updatedUser->email);
-        $this->assertEquals('Chandler', $updatedUser->first_name);
-        $this->assertEquals('Bing', $updatedUser->last_name);
-        $this->assertEquals('Chan', $updatedUser->nickname);
-        $this->assertEquals('fr_FR', $updatedUser->locale);
-        $this->assertFalse($updatedUser->time_format_24h);
+    expect($updatedUser->email)->toEqual('chandler.bing@friends.com');
+    expect($updatedUser->first_name)->toEqual('Chandler');
+    expect($updatedUser->last_name)->toEqual('Bing');
+    expect($updatedUser->nickname)->toEqual('Chan');
+    expect($updatedUser->locale)->toEqual('fr_FR');
+    expect($updatedUser->time_format_24h)->toBeFalse();
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::PersonalProfileUpdate
-                && $job->user->id === $user->id
-            ),
-        );
-    }
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::PersonalProfileUpdate
+            && $job->user->id === $user->id
+        ),
+    );
+});
 
-    #[Test]
-    public function it_triggers_email_verification_when_email_changes(): void
-    {
-        Event::fake();
+it('triggers email verification when email changes', function () {
+    Event::fake();
 
-        $user = User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-            'email_verified_at' => now(),
-        ]);
+    $user = User::factory()->create([
+        'email' => 'chandler.bing@friends.com',
+        'email_verified_at' => now(),
+    ]);
 
-        new UpdateUserInformation(
-            user: $user,
-            email: 'ross.geller@friends.com',
-            firstName: 'Ross',
-            lastName: 'Geller',
-            nickname: 'Ross',
-            locale: 'fr_FR',
-            timeFormat24h: true,
-        )->execute();
+    new UpdateUserInformation(
+        user: $user,
+        email: 'ross.geller@friends.com',
+        firstName: 'Ross',
+        lastName: 'Geller',
+        nickname: 'Ross',
+        locale: 'fr_FR',
+        timeFormat24h: true,
+    )->execute();
 
-        Event::assertDispatched(
-            event: Registered::class,
-            callback: fn (Registered $event): bool => $event->user->email === 'ross.geller@friends.com',
-        );
-        $this->assertNull($user->refresh()->email_verified_at);
-    }
+    Event::assertDispatched(
+        event: Registered::class,
+        callback: fn (Registered $event): bool => $event->user->email === 'ross.geller@friends.com',
+    );
+    expect($user->refresh()->email_verified_at)->toBeNull();
+});
 
-    #[Test]
-    public function it_does_not_trigger_email_verification_when_email_stays_same(): void
-    {
-        Event::fake();
+it('does not trigger email verification when email stays same', function () {
+    Event::fake();
 
-        $user = User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-            'email_verified_at' => now(),
-        ]);
+    $user = User::factory()->create([
+        'email' => 'chandler.bing@friends.com',
+        'email_verified_at' => now(),
+    ]);
 
-        new UpdateUserInformation(
-            user: $user,
-            email: 'chandler.bing@friends.com',
-            firstName: 'Ross',
-            lastName: 'Geller',
-            nickname: 'Ross',
-            locale: 'fr_FR',
-            timeFormat24h: true,
-        )->execute();
+    new UpdateUserInformation(
+        user: $user,
+        email: 'chandler.bing@friends.com',
+        firstName: 'Ross',
+        lastName: 'Geller',
+        nickname: 'Ross',
+        locale: 'fr_FR',
+        timeFormat24h: true,
+    )->execute();
 
-        Event::assertNotDispatched(Registered::class);
-        $this->assertNotNull($user->refresh()->email_verified_at);
-    }
-}
+    Event::assertNotDispatched(Registered::class);
+    expect($user->refresh()->email_verified_at)->not->toBeNull();
+});

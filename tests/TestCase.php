@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Tests;
 
 use App\Enums\PermissionEnum;
-use App\Models\Member;
+use App\Models\Account;
 use App\Models\User;
-use App\Models\Vault;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -24,19 +23,20 @@ abstract class TestCase extends BaseTestCase
         return User::factory()->create($attributes);
     }
 
-    protected function createVault(string $name = 'New York Public Library'): Vault
+    protected function createAccount(string $name = 'Central Perk'): Account
     {
-        return Vault::factory()->create([
+        return Account::factory()->create([
             'name' => $name,
         ]);
     }
 
-    protected function assignUserToVault(User $user, Vault $vault, string $role = PermissionEnum::Viewer->value): Member
+    protected function assignUserToAccount(User $user, Account $account, string $role = PermissionEnum::Viewer->value): User
     {
-        return Member::factory()->create([
-            'user_id' => $user->id,
-            'vault_id' => $vault->id,
+        $user->update([
+            'account_id' => $account->id,
             'role' => $role,
         ]);
+
+        return $user;
     }
 }

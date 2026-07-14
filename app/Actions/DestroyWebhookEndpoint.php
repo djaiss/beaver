@@ -34,7 +34,6 @@ class DestroyWebhookEndpoint
     private function log(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::WebhookEndpointDeletion,
         )->onQueue('low');

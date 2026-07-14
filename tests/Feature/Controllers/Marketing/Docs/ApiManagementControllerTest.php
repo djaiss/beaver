@@ -2,26 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Controllers\Marketing\Docs;
+it('renders the api management page', function () {
+    $response = $this->get('/docs/1.x/api/account/api-management');
 
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+    $response->assertOk();
+});
 
-class ApiManagementControllerTest extends TestCase
-{
-    #[Test]
-    public function it_renders_the_api_management_page(): void
-    {
-        $response = $this->get('/docs/1.x/api/account/api-management');
+it('returns the api management document as markdown', function () {
+    $response = $this->get('/docs/1.x/api/account/api-management.md');
 
-        $response->assertOk();
-    }
-
-    #[Test]
-    public function it_returns_the_api_management_document_as_markdown(): void
-    {
-        $response = $this->get('/docs/1.x/api/account/api-management.md');
-
-        $response->assertOk();
-    }
-}
+    $response->assertOk();
+});

@@ -44,7 +44,7 @@ class TwoFAController extends Controller
                 ->withInput();
         }
 
-        return to_route('settings.security.index')
+        return to_route('profile.security.index')
             ->with('status', __('Two-factor authentication has been enabled successfully.'));
     }
 
@@ -54,7 +54,7 @@ class TwoFAController extends Controller
             user: $request->user(),
         )->execute();
 
-        return to_route('settings.security.index')
+        return to_route('profile.security.index')
             ->with('status', __('Changes saved'));
     }
 }

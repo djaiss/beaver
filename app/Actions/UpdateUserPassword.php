@@ -47,7 +47,6 @@ readonly class UpdateUserPassword
     private function log(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::UpdateUserPassword,
         )->onQueue('low');

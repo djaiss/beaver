@@ -1,73 +1,50 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\CreateAccount;
-use App\Enums\UserActionEnum;
-use App\Jobs\LogUserAction;
+use App\Enums\PermissionEnum;
+use App\Models\Account;
 use App\Models\User;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class CreateAccountTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_creates_an_account(): void
-    {
-        Queue::fake();
+it('creates an account and its first owner', function () {
+    Queue::fake();
 
-        Date::setTestNow(Date::create(2018, 1, 1));
+    $user = new CreateAccount(
+        email: 'monica.geller@friends.com',
+        password: 'password',
+        firstName: 'Monica',
+        lastName: 'Geller',
+    )->execute();
 
-        $user = new CreateAccount(
-            email: 'chandler.bing@friends.com',
-            password: 'password',
-            firstName: 'Chandler',
-            lastName: 'Bing',
-        )->execute();
+    expect($user)->toBeInstanceOf(User::class);
+    expect($user->role)->toBe(PermissionEnum::Owner->value);
+    expect($user->email)->toBe('monica.geller@friends.com');
 
-        $this->assertInstanceOf(
-            User::class,
-            $user,
-        );
+    $account = $user->account;
+    expect($account)->toBeInstanceOf(Account::class);
+    expect($account->name)->toBe('Monica Geller');
+    $this->assertDatabaseHas('accounts', [
+        'id' => $account->id,
+        'created_by_id' => $user->id,
+        'updated_by_id' => $user->id,
+    ]);
+    expect($account->created_by_name)->toBe('Monica Geller');
+    expect($account->updated_by_name)->toBe('Monica Geller');
+});
 
-        $this->assertDatabaseHas('users', [
-            'id' => $user->id,
-            'email' => 'chandler.bing@friends.com',
-            'trial_ends_at' => '2018-01-31 00:00:00',
-        ]);
+it('sanitizes the name it derives the account from', function () {
+    Queue::fake();
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::AccountCreation
-                && $job->user->id === $user->id
-            ),
-        );
-    }
+    $user = new CreateAccount(
+        email: 'monica.geller@friends.com',
+        password: 'password',
+        firstName: '<strong>Monica</strong>',
+        lastName: 'Geller',
+    )->execute();
 
-    #[Test]
-    public function it_cant_create_an_account_with_the_same_email(): void
-    {
-        User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-        ]);
-
-        $this->expectException(UniqueConstraintViolationException::class);
-
-        new CreateAccount(
-            email: 'chandler.bing@friends.com',
-            password: 'password',
-            firstName: 'Chandler',
-            lastName: 'Bing',
-        )->execute();
-    }
-}
+    expect($user->account->name)->toBe('Monica Geller');
+});

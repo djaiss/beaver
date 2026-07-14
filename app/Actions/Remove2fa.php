@@ -32,7 +32,6 @@ readonly class Remove2fa
     private function logUserAction(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::TwoFaRemoval,
         )->onQueue('low');

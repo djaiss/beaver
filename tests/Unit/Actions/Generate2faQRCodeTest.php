@@ -1,9 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\Generate2faQRCode;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
@@ -11,37 +8,30 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class Generate2faQRCodeTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_generates_a_2fa_qr_code(): void
-    {
-        Queue::fake();
+it('generates a 2fa qr code', function () {
+    Queue::fake();
 
-        Date::setTestNow(Date::parse('2025-07-16 10:00:00'));
+    Date::setTestNow(Date::parse('2025-07-16 10:00:00'));
 
-        $user = User::factory()->create([
-            'email' => 'chandler.bing@friends.com',
-        ]);
+    $user = User::factory()->create([
+        'email' => 'chandler.bing@friends.com',
+    ]);
 
-        $result = new Generate2faQRCode(
-            user: $user,
-        )->execute();
+    $result = new Generate2faQRCode(
+        user: $user,
+    )->execute();
 
-        $this->assertIsString($result['secret']);
+    expect($result['secret'])->toBeString();
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::TwoFaQrCodeGeneration
-                && $job->user->id === $user->id
-            ),
-        );
-    }
-}
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::TwoFaQrCodeGeneration
+            && $job->user->id === $user->id
+        ),
+    );
+});

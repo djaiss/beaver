@@ -1,22 +1,12 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\Marketing\Docs;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class ApiIntroductionControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_renders_the_api_introduction_page(): void
-    {
-        $response = $this->get('/docs/1.x/api/introduction');
+it('renders the api introduction page', function () {
+    $response = $this->get('/docs/1.x/api/introduction');
 
-        $response->assertOk();
-    }
-}
+    $response->assertOk();
+});

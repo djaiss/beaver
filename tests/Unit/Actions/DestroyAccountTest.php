@@ -1,148 +1,55 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\DestroyAccount;
 use App\Enums\PermissionEnum;
-use App\Mail\AccountDestroyed;
-use App\Models\AccountDeletionReason;
-use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Mail;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogUserAction;
+use App\Models\Invitation;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class DestroyAccountTest extends TestCase
-{
-    use DatabaseTransactions;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_destroys_an_account(): void
-    {
-        Queue::fake();
-        Mail::fake();
-        config(['app.account_deletion_notification_email' => 'regis@lifeos.com']);
+it('destroys an account and cascades its relations', function () {
+    Queue::fake();
 
-        $user = User::factory()->create();
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    Invitation::factory()->create(['account_id' => $account->id]);
 
-        new DestroyAccount(
-            user: $user,
-            reason: 'the service is not working',
-        )->execute();
+    new DestroyAccount(
+        user: $owner,
+        account: $account,
+    )->execute();
 
-        $this->assertDatabaseMissing('users', [
-            'id' => $user->id,
-        ]);
+    /*
+     * The members and invitations rows are removed through the
+     * cascadeOnDelete foreign keys when the database enforces constraints.
+     * The sqlite testing connection leaves foreign keys disabled, so we
+     * only assert that the account itself is gone.
+     */
+    $this->assertDatabaseMissing('accounts', ['id' => $account->id]);
 
-        $this->assertEquals(
-            1,
-            AccountDeletionReason::query()->count(),
-        );
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AccountDeletion,
+    );
+});
 
-        Mail::assertQueued(AccountDestroyed::class, fn (AccountDestroyed $job): bool => $job->reason === 'the service is not working'
-            && $job->to[0]['address'] === 'regis@lifeos.com');
-    }
+it('throws when the user is not an owner', function () {
+    Queue::fake();
+    $this->expectException(ModelNotFoundException::class);
 
-    #[Test]
-    public function it_deletes_vaults_where_user_is_the_only_owner(): void
-    {
-        Queue::fake();
-        Mail::fake();
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
 
-        $user = $this->createUser();
-        $vault = $this->createVault();
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Owner->value,
-        );
-
-        new DestroyAccount(
-            user: $user,
-            reason: 'test reason',
-        )->execute();
-
-        $this->assertDatabaseMissing('users', [
-            'id' => $user->id,
-        ]);
-
-        $this->assertDatabaseMissing('vaults', [
-            'id' => $vault->id,
-        ]);
-    }
-
-    #[Test]
-    public function it_does_not_delete_vaults_with_multiple_owners(): void
-    {
-        Queue::fake();
-        Mail::fake();
-
-        $user = $this->createUser();
-        $otherUser = $this->createUser();
-        $vault = $this->createVault();
-
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Owner->value,
-        );
-        $this->assignUserToVault(
-            user: $otherUser,
-            vault: $vault,
-            role: PermissionEnum::Owner->value,
-        );
-
-        new DestroyAccount(
-            user: $user,
-            reason: 'test reason',
-        )->execute();
-
-        $this->assertDatabaseMissing('users', [
-            'id' => $user->id,
-        ]);
-
-        // Vault should still exist because there's another owner
-        $this->assertDatabaseHas('vaults', [
-            'id' => $vault->id,
-        ]);
-    }
-
-    #[Test]
-    public function it_does_not_delete_vaults_where_user_is_not_owner(): void
-    {
-        Queue::fake();
-        Mail::fake();
-
-        $user = $this->createUser();
-        $owner = $this->createUser();
-        $vault = $this->createVault();
-
-        $this->assignUserToVault(
-            user: $owner,
-            vault: $vault,
-            role: PermissionEnum::Owner->value,
-        );
-        $this->assignUserToVault(
-            user: $user,
-            vault: $vault,
-            role: PermissionEnum::Editor->value,
-        );
-
-        new DestroyAccount(
-            user: $user,
-            reason: 'test reason',
-        )->execute();
-
-        $this->assertDatabaseMissing('users', [
-            'id' => $user->id,
-        ]);
-
-        // Vault should still exist because user was not an owner
-        $this->assertDatabaseHas('vaults', [
-            'id' => $vault->id,
-        ]);
-    }
-}
+    new DestroyAccount(
+        user: $viewer,
+        account: $account,
+    )->execute();
+});

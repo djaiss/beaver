@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\PermissionEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table): void {
             $table->id()->comment('primary key');
+            $table->unsignedBigInteger('account_id')->comment('account the user belongs to');
+            $table->string('role', 15)->default(PermissionEnum::Viewer->value)->comment('user\'s role within their account');
             $table->text('first_name')->comment('user\'s first name');
             $table->text('last_name')->comment('user\'s last name');
             $table->text('nickname')->nullable()->comment('user\'s nickname');
@@ -32,6 +35,8 @@ return new class extends Migration
             $table->boolean('auto_delete_account')->default(false)->comment('auto delete account preference');
             $table->rememberToken()->comment('remember token');
             $table->timestamps();
+
+            $table->foreign('account_id')->references('id')->on('accounts')->cascadeOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table): void {

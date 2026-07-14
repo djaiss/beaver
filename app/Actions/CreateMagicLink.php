@@ -41,7 +41,7 @@ class CreateMagicLink
     private function create(): void
     {
         $action = new LoginAction($this->user);
-        $action->response(redirect(route('vault.index', absolute: false)));
+        $action->response(redirect(route('dashboard.index', absolute: false)));
 
         $this->magicLinkUrl = MagicLink::create($action, 5)->url;
     }
@@ -49,7 +49,6 @@ class CreateMagicLink
     private function log(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::MagicLinkCreated,
         )->onQueue('low');

@@ -1,62 +1,40 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Helpers;
-
 use App\Helpers\TextSanitizer;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class TextSanitizerTest extends TestCase
-{
-    #[Test]
-    public function plain_text_strips_tags_and_trims(): void
-    {
-        $this->assertSame('Hello World', TextSanitizer::plainText('  <p>Hello</p> <b>World</b>  '));
-    }
+test('plain text strips tags and trims', function () {
+    expect(TextSanitizer::plainText('  <p>Hello</p> <b>World</b>  '))->toBe('Hello World');
+});
 
-    #[Test]
-    public function plain_text_removes_script_tags(): void
-    {
-        $this->assertSame('', TextSanitizer::plainText('<script>alert("xss")</script>'));
-    }
+test('plain text removes script tags', function () {
+    expect(TextSanitizer::plainText('<script>alert("xss")</script>'))->toBe('');
+});
 
-    #[Test]
-    public function plain_text_handles_malformed_html(): void
-    {
-        $result = TextSanitizer::plainText('< script >alert(1)</ script >');
+test('plain text handles malformed html', function () {
+    $result = TextSanitizer::plainText('< script >alert(1)</ script >');
 
-        $this->assertStringNotContainsString('< script >', $result);
-    }
+    $this->assertStringNotContainsString('< script >', $result);
+});
 
-    #[Test]
-    public function nullable_plain_text_returns_null_for_null(): void
-    {
-        $this->assertNull(TextSanitizer::nullablePlainText(null));
-    }
+test('nullable plain text returns null for null', function () {
+    expect(TextSanitizer::nullablePlainText(null))->toBeNull();
+});
 
-    #[Test]
-    public function nullable_plain_text_returns_null_for_empty_results(): void
-    {
-        $this->assertNull(TextSanitizer::nullablePlainText('<p></p>'));
-        $this->assertNull(TextSanitizer::nullablePlainText('   '));
-    }
+test('nullable plain text returns null for empty results', function () {
+    expect(TextSanitizer::nullablePlainText('<p></p>'))->toBeNull();
+    expect(TextSanitizer::nullablePlainText('   '))->toBeNull();
+});
 
-    #[Test]
-    public function html_strips_dangerous_tags_but_preserves_safe_ones(): void
-    {
-        $result = TextSanitizer::html('<p>Hello</p><script>alert(1)</script>');
+test('html strips dangerous tags but preserves safe ones', function () {
+    $result = TextSanitizer::html('<p>Hello</p><script>alert(1)</script>');
 
-        $this->assertStringContainsString('<p>Hello</p>', $result);
-        $this->assertStringNotContainsString('<script>', $result);
-    }
+    $this->assertStringContainsString('<p>Hello</p>', $result);
+    $this->assertStringNotContainsString('<script>', $result);
+});
 
-    #[Test]
-    public function nullable_html_returns_null_for_empty_or_dangerous_only(): void
-    {
-        $this->assertNull(TextSanitizer::nullableHtml(null));
-        $this->assertNull(TextSanitizer::nullableHtml('<script>alert(1)</script>'));
-        $this->assertNull(TextSanitizer::nullableHtml('<p>   </p>'));
-    }
-}
+test('nullable html returns null for empty or dangerous only', function () {
+    expect(TextSanitizer::nullableHtml(null))->toBeNull();
+    expect(TextSanitizer::nullableHtml('<script>alert(1)</script>'))->toBeNull();
+    expect(TextSanitizer::nullableHtml('<p>   </p>'))->toBeNull();
+});

@@ -3,13 +3,13 @@ APP_NAME=Laravel
 APP_ENV=testing
 APP_KEY=base64:NTrXToqFZJlv48dgPc+kNpc3SBt333TfDnF1mDShsBg=
 APP_DEBUG=true
-APP_URL=https://lifeos.test
+APP_URL=https://beaver.test
 
 DB_CONNECTION=pgsql
 DB_HOST=localhost
 DB_PORT=5432
-DB_DATABASE=lifeos
-DB_USERNAME=lifeos
+DB_DATABASE=beaver
+DB_USERNAME=beaver
 DB_PASSWORD=secret
 
 BROADCAST_DRIVER=log

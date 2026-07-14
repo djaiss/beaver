@@ -78,14 +78,6 @@ The attributes of the log.
 The current name of the user, or their name when the log was created if the user no longer exists.
 :::/attribute
 
-:::attribute name="data[].attributes.vault_id" type="string|null"
-The ID of the related vault, or `null` when the action is not associated with a vault.
-:::/attribute
-
-:::attribute name="data[].attributes.vault_name" type="string|null"
-The name of the related vault, or `null` when no related vault exists.
-:::/attribute
-
 :::attribute name="data[].attributes.action" type="string"
 The machine-readable name of the action.
 :::/attribute
@@ -131,13 +123,9 @@ Pagination information, including the current page, page size, and total number 
       "id": "42",
       "attributes": {
         "user_name": "Chandler Bing",
-        "vault_id": "1",
-        "vault_name": "Central Perk",
-        "action": "vault_created",
-        "parameters": {
-          "name": "Central Perk"
-        },
-        "description": "Created a vault called Central Perk",
+        "action": "magic_link_created",
+        "parameters": null,
+        "description": "Sent a magic link",
         "created_at": 1751284800,
         "updated_at": 1751284800
       },
@@ -209,14 +197,6 @@ The attributes of the log.
 The current name of the user, or their name when the log was created if the user no longer exists.
 :::/attribute
 
-:::attribute name="data.attributes.vault_id" type="string|null"
-The ID of the related vault, or `null` when the action is not associated with a vault.
-:::/attribute
-
-:::attribute name="data.attributes.vault_name" type="string|null"
-The name of the related vault, or `null` when no related vault exists.
-:::/attribute
-
 :::attribute name="data.attributes.action" type="string"
 The machine-readable name of the action.
 :::/attribute
@@ -253,8 +233,6 @@ The URL of the individual log endpoint.
     "id": "43",
     "attributes": {
       "user_name": "Chandler Bing",
-      "vault_id": null,
-      "vault_name": null,
       "action": "user_profile_updated",
       "parameters": null,
       "description": "Updated their personal profile",

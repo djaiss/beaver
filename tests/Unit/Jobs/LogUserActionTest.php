@@ -1,45 +1,30 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Jobs;
-
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class LogUserActionTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_logs_user_action(): void
-    {
-        $user = User::factory()->create([
-            'first_name' => 'Chandler',
-            'last_name' => 'Bing',
-            'last_activity_at' => null,
-        ]);
-        LogUserAction::dispatch(
-            vault: null,
-            user: $user,
-            action: UserActionEnum::PersonalProfileUpdate,
-        );
+it('logs user action', function () {
+    $user = User::factory()->create([
+        'first_name' => 'Chandler',
+        'last_name' => 'Bing',
+        'last_activity_at' => null,
+    ]);
+    LogUserAction::dispatch(
+        user: $user,
+        action: UserActionEnum::PersonalProfileUpdate,
+    );
 
-        $log = Log::query()->first();
+    $log = Log::query()->first();
 
-        $this->assertEquals('Chandler Bing', $log->getUserName());
-        $this->assertEquals('user_profile_updated', $log->action);
-        $this->assertEquals('Updated their personal profile', $log->getTranslatedDescription());
+    expect($log->getUserName())->toEqual('Chandler Bing');
+    expect($log->action)->toEqual('user_profile_updated');
+    expect($log->getTranslatedDescription())->toEqual('Updated their personal profile');
 
-        $this->assertEqualsWithDelta(
-            now()->timestamp,
-            $user->refresh()->last_activity_at->timestamp,
-            1,
-        );
-    }
-}
+    expect($user->refresh()->last_activity_at->timestamp)->toEqualWithDelta(now()->timestamp, 1);
+});

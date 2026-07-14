@@ -1,88 +1,71 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\CreateEmailSent;
 use App\Models\EmailSent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class CreateEmailSentTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_creates_an_email_sent(): void
-    {
-        Date::setTestNow(Date::create(2018, 1, 1));
-        $user = $this->createUser();
+it('creates an email sent', function () {
+    Date::setTestNow(Date::create(2018, 1, 1));
+    $user = $this->createUser();
 
-        $emailSent = new CreateEmailSent(
-            user: $user,
-            uuid: 'd27cee22-b10f-46c4-a7dc-af3b46820d80',
-            emailType: 'birthday_wishes',
-            emailAddress: 'ross.geller@friends.com',
-            subject: 'Happy Birthday!',
-            body: 'Hope you have a great day!',
-        )->execute();
+    $emailSent = new CreateEmailSent(
+        user: $user,
+        uuid: 'd27cee22-b10f-46c4-a7dc-af3b46820d80',
+        emailType: 'birthday_wishes',
+        emailAddress: 'ross.geller@friends.com',
+        subject: 'Happy Birthday!',
+        body: 'Hope you have a great day!',
+    )->execute();
 
-        $this->assertDatabaseHas('emails_sent', [
-            'id' => $emailSent->id,
-            'user_id' => $user->id,
-            'uuid' => 'd27cee22-b10f-46c4-a7dc-af3b46820d80',
-            'sent_at' => '2018-01-01 00:00:00',
-        ]);
+    $this->assertDatabaseHas('emails_sent', [
+        'id' => $emailSent->id,
+        'user_id' => $user->id,
+        'uuid' => 'd27cee22-b10f-46c4-a7dc-af3b46820d80',
+        'sent_at' => '2018-01-01 00:00:00',
+    ]);
 
-        $this->assertEquals(36, mb_strlen((string) $emailSent->uuid));
+    expect(mb_strlen((string) $emailSent->uuid))->toEqual(36);
 
-        $this->assertInstanceOf(
-            EmailSent::class,
-            $emailSent,
-        );
-    }
+    expect($emailSent)->toBeInstanceOf(EmailSent::class);
+});
 
-    #[Test]
-    public function it_sanitizes_the_body_and_strips_any_links(): void
-    {
-        $user = $this->createUser();
+it('sanitizes the body and strips any links', function () {
+    $user = $this->createUser();
 
-        $emailSent = new CreateEmailSent(
-            user: $user,
-            uuid: null,
-            emailType: 'birthday_wishes',
-            emailAddress: 'ross.geller@friends.com',
-            subject: 'Happy Birthday!',
-            body: 'Hope you <a href="https://example.com">have a great day!</a>',
-        )->execute();
+    $emailSent = new CreateEmailSent(
+        user: $user,
+        uuid: null,
+        emailType: 'birthday_wishes',
+        emailAddress: 'ross.geller@friends.com',
+        subject: 'Happy Birthday!',
+        body: 'Hope you <a href="https://example.com">have a great day!</a>',
+    )->execute();
 
-        $this->assertDatabaseHas('emails_sent', [
-            'id' => $emailSent->id,
-        ]);
-    }
+    $this->assertDatabaseHas('emails_sent', [
+        'id' => $emailSent->id,
+    ]);
+});
 
-    #[Test]
-    public function it_creates_an_email_sent_with_a_uuid(): void
-    {
-        $user = $this->createUser();
-        $uuid = Str::uuid();
+it('creates an email sent with a uuid', function () {
+    $user = $this->createUser();
+    $uuid = Str::uuid();
 
-        $emailSent = new CreateEmailSent(
-            user: $user,
-            uuid: $uuid->toString(),
-            emailType: 'birthday_wishes',
-            emailAddress: 'ross.geller@friends.com',
-            subject: 'Happy Birthday!',
-            body: 'Hope you have a great day!',
-        )->execute();
+    $emailSent = new CreateEmailSent(
+        user: $user,
+        uuid: $uuid->toString(),
+        emailType: 'birthday_wishes',
+        emailAddress: 'ross.geller@friends.com',
+        subject: 'Happy Birthday!',
+        body: 'Hope you have a great day!',
+    )->execute();
 
-        $this->assertDatabaseHas('emails_sent', [
-            'id' => $emailSent->id,
-            'uuid' => $uuid->toString(),
-        ]);
-    }
-}
+    $this->assertDatabaseHas('emails_sent', [
+        'id' => $emailSent->id,
+        'uuid' => $uuid->toString(),
+    ]);
+});

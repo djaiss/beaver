@@ -1,52 +1,32 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Models;
-
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class LogTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_belongs_to_a_vault(): void
-    {
-        $log = Log::factory()->create();
+it('belongs to a user', function () {
+    $log = Log::factory()->create();
 
-        $this->assertTrue($log->vault()->exists());
-    }
+    expect($log->user()->exists())->toBeTrue();
+});
 
-    #[Test]
-    public function it_belongs_to_a_user(): void
-    {
-        $log = Log::factory()->create();
+it('gets the name of the user', function () {
+    $user = User::factory()->create([
+        'first_name' => 'Ross',
+        'last_name' => 'Geller',
+    ]);
+    $log = Log::factory()->create([
+        'user_id' => $user->id,
+        'user_name' => 'Joey Tribbiani',
+    ]);
 
-        $this->assertTrue($log->user()->exists());
-    }
+    expect($log->getUserName())->toEqual('Ross Geller');
 
-    #[Test]
-    public function it_gets_the_name_of_the_user(): void
-    {
-        $user = User::factory()->create([
-            'first_name' => 'Ross',
-            'last_name' => 'Geller',
-        ]);
-        $log = Log::factory()->create([
-            'user_id' => $user->id,
-            'user_name' => 'Joey Tribbiani',
-        ]);
+    $log->user_id = null;
+    $log->save();
 
-        $this->assertEquals('Ross Geller', $log->getUserName());
-
-        $log->user_id = null;
-        $log->save();
-
-        $this->assertEquals('Joey Tribbiani', $log->refresh()->getUserName());
-    }
-}
+    expect($log->refresh()->getUserName())->toEqual('Joey Tribbiani');
+});

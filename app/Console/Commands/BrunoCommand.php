@@ -17,7 +17,7 @@ class BrunoCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'lifeos:bruno';
+    protected $signature = 'beaver:bruno';
 
     /**
      * @var string
@@ -26,7 +26,7 @@ class BrunoCommand extends Command
 
     public function handle(): int
     {
-        $collectionPath = base_path('docs/LifeOS/collection.bru');
+        $collectionPath = base_path('docs/beaver/collection.bru');
         $collection = $this->readBrunoCollection($collectionPath);
 
         if ($collection === null) {

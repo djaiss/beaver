@@ -1,53 +1,39 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Settings;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class ApiKeyControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_can_create_a_new_api_token(): void
-    {
-        $user = $this->createUser();
+it('can create a new api token', function () {
+    $user = $this->createUser();
 
-        $response = $this->actingAs($user)
-            ->from('/settings/security/create')
-            ->post('/settings/api-keys', [
-                'label' => 'My API Token',
-            ]);
+    $response = $this->actingAs($user)
+        ->from('/profile/security/create')
+        ->post('/profile/api-keys', [
+            'label' => 'My API Token',
+        ]);
 
-        $response->assertRedirect('/settings/security');
-        $response->assertSessionHas('status', 'API key created');
-    }
+    $response->assertRedirect('/profile/security');
+    $response->assertSessionHas('status', 'API key created');
+});
 
-    #[Test]
-    public function it_can_delete_an_api_token(): void
-    {
-        $user = $this->createUser();
-        $token = $user->createToken('Test API Token');
+it('can delete an api token', function () {
+    $user = $this->createUser();
+    $token = $user->createToken('Test API Token');
 
-        $response = $this->actingAs($user)
-            ->delete('/settings/api-keys/'.$token->accessToken->id);
+    $response = $this->actingAs($user)
+        ->delete('/profile/api-keys/'.$token->accessToken->id);
 
-        $response->assertRedirect('/settings/security');
-        $response->assertSessionHas('status', 'API key deleted');
-    }
+    $response->assertRedirect('/profile/security');
+    $response->assertSessionHas('status', 'API key deleted');
+});
 
-    #[Test]
-    public function it_returns_not_found_when_deleting_an_unknown_api_token(): void
-    {
-        $user = $this->createUser();
+it('returns not found when deleting an unknown api token', function () {
+    $user = $this->createUser();
 
-        $response = $this->actingAs($user)
-            ->delete('/settings/api-keys/9999');
+    $response = $this->actingAs($user)
+        ->delete('/profile/api-keys/9999');
 
-        $response->assertNotFound();
-    }
-}
+    $response->assertNotFound();
+});

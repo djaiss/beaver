@@ -61,7 +61,6 @@ class CreateWebhookEndpoint
     private function log(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::WebhookEndpointCreation,
         )->onQueue('low');

@@ -51,7 +51,7 @@ class WebhookController extends Controller
             label: $validated['label'] ?? null,
         )->execute();
 
-        return to_route('settings.webhooks.index')
+        return to_route('profile.webhooks.index')
             ->with('status', trans('Webhook endpoint created'));
     }
 
@@ -66,7 +66,7 @@ class WebhookController extends Controller
             webhookEndpoint: $endpoint,
         )->execute();
 
-        return to_route('settings.webhooks.index')
+        return to_route('profile.webhooks.index')
             ->with('status', trans('Webhook endpoint deleted'));
     }
 }

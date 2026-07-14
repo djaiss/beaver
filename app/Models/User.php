@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\PermissionEnum;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -19,6 +20,8 @@ use Laravel\Sanctum\HasApiTokens;
  * Class User
  *
  * @property int $id
+ * @property int $account_id
+ * @property string $role
  * @property string $first_name
  * @property string $last_name
  * @property string $nickname
@@ -33,7 +36,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $trial_ends_at
  * @property string $locale
  * @property bool $time_format_24h
- * @property bool $auto_delete_account
+ * @property bool $auto_delete_user
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
@@ -52,6 +55,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
+        'account_id',
+        'role',
         'first_name',
         'last_name',
         'nickname',
@@ -66,7 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_activity_at',
         'locale',
         'time_format_24h',
-        'auto_delete_account',
+        'auto_delete_user',
     ];
 
     /**
@@ -99,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_recovery_codes' => 'encrypted:array',
-            'auto_delete_account' => 'boolean',
+            'auto_delete_user' => 'boolean',
         ];
     }
 
@@ -114,16 +119,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get the memberships associated with the user.
-     *
-     * @return HasMany<Member, $this>
-     */
-    public function memberships(): HasMany
-    {
-        return $this->hasMany(Member::class);
-    }
-
-    /**
      * Get the webhook endpoints associated with the user.
      *
      * @return HasMany<WebhookEndpoint, $this>
@@ -131,23 +126,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function webhookEndpoints(): HasMany
     {
         return $this->hasMany(WebhookEndpoint::class);
-    }
-
-    /**
-     * Get the vaults associated with the user.
-     *
-     * @return HasManyThrough<Vault, Member, $this>
-     */
-    public function vaults(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            Vault::class,
-            Member::class,
-            'user_id',          // Foreign key on members table...
-            'id',               // Foreign key on vaults table...
-            'id',               // Local key on users table...
-            'vault_id',         // Local key on members table...
-        );
     }
 
     /**
@@ -174,18 +152,20 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check if the user is part of a specific vault.
+     * Get the account the user belongs to.
+     *
+     * @return BelongsTo<Account, $this>
      */
-    public function isPartOfVault(Vault $vault): bool
+    public function account(): BelongsTo
     {
-        return $this->memberships()->where('vault_id', $vault->id)->exists();
+        return $this->belongsTo(Account::class);
     }
 
     /**
-     * Return the member object for the user in the given vault.
+     * Check if the user is an owner of their account.
      */
-    public function memberOf(Vault $vault): ?Member
+    public function isOwner(): bool
     {
-        return $this->memberships()->where('vault_id', $vault->id)->first();
+        return $this->role === PermissionEnum::Owner->value;
     }
 }

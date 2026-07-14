@@ -1,50 +1,40 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\Remove2fa;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class Remove2faTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_removes_2fa_from_user_account(): void
-    {
-        Queue::fake();
+it('removes 2fa from user account', function () {
+    Queue::fake();
 
-        $user = User::factory()->create([
-            'two_factor_secret' => 'test-secret',
-            'two_factor_confirmed_at' => now(),
-            'two_factor_recovery_codes' => ['code1', 'code2'],
-        ]);
+    $user = User::factory()->create([
+        'two_factor_secret' => 'test-secret',
+        'two_factor_confirmed_at' => now(),
+        'two_factor_recovery_codes' => ['code1', 'code2'],
+    ]);
 
-        new Remove2fa(
-            user: $user,
-        )->execute();
+    new Remove2fa(
+        user: $user,
+    )->execute();
 
-        $user->refresh();
+    $user->refresh();
 
-        $this->assertNull($user->two_factor_secret);
-        $this->assertNull($user->two_factor_confirmed_at);
-        $this->assertNull($user->two_factor_recovery_codes);
+    expect($user->two_factor_secret)->toBeNull();
+    expect($user->two_factor_confirmed_at)->toBeNull();
+    expect($user->two_factor_recovery_codes)->toBeNull();
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::TwoFaRemoval
-                && $job->user->id === $user->id
-            ),
-        );
-    }
-}
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::TwoFaRemoval
+            && $job->user->id === $user->id
+        ),
+    );
+});

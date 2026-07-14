@@ -16,13 +16,10 @@ class LogController extends Controller
         $logs = Log::query()
             ->where('user_id', $request->user()->id)
             ->with('user')
-            ->with('vault')
             ->latest()
             ->cursorPaginate(10)
             ->through(fn (Log $log) => (object) [
                 'username' => $log->getUserName(),
-                'vault_name' => $log->vault?->name,
-                'vault_link' => $log->vault ? route('vault.show', $log->vault_id) : null,
                 'action' => $log->action,
                 'description' => $log->getTranslatedDescription(),
                 'created_at' => $log->created_at->format('Y-m-d H:i:s'),

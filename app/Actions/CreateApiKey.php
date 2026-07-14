@@ -53,7 +53,6 @@ class CreateApiKey
     private function log(): void
     {
         LogUserAction::dispatch(
-            vault: null,
             user: $this->user,
             action: UserActionEnum::ApiKeyCreation,
         )->onQueue('low');

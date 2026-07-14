@@ -7,17 +7,17 @@
 
   <div id="api-key-notification">
     @if (session('apiKey'))
-      <div class="m-4 rounded-lg border border-green-300 bg-green-50 p-4">
+      <div class="m-4 rounded-lg border border-success/30 bg-success/10 p-4">
         <div class="flex items-start">
           <div class="flex-shrink-0">
-            <x-phosphor-check-circle class="h-5 w-5 text-green-500" />
+            <x-lucide-circle-check class="h-5 w-5 text-success" />
           </div>
 
           <div class="ml-3 w-full">
-            <h3 class="text-sm font-medium text-green-800">{{ __('API Key created successfully') }}</h3>
+            <h3 class="text-sm font-medium text-success">{{ __('API Key created successfully') }}</h3>
 
             <div class="mt-2">
-              <div class="text-sm text-green-700">
+              <div class="text-sm text-success">
                 {{ __('Please copy your API key now. For security reasons, it won\'t be shown again.') }}
               </div>
 
@@ -38,10 +38,10 @@
                 },
               }">
                 <div class="flex items-center gap-x-2">
-                  <code class="flex-1 rounded border-gray-50 bg-white px-3 py-2 text-center font-mono text-sm text-gray-800 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">{{ session('apiKey') }}</code>
-                  <button @click="copyToClipboard()" class="inline-flex cursor-pointer items-center rounded-md border border-green-200 bg-white px-3 py-2 text-sm font-semibold text-green-600 shadow-sm hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none dark:border-green-700 dark:bg-gray-900 dark:text-green-300 dark:hover:bg-gray-800">
-                    <x-phosphor-check x-show="copied" class="mr-1 h-4 w-4" />
-                    <x-phosphor-copy x-show="!copied" class="mr-1 h-4 w-4" />
+                  <code class="flex-1 rounded border border-hairline bg-canvas px-3 py-2 text-center font-mono text-sm text-ink">{{ session('apiKey') }}</code>
+                  <button @click="copyToClipboard()" class="inline-flex cursor-pointer items-center rounded-md border border-hairline bg-canvas px-3 py-2 text-sm font-semibold text-success hover:bg-card focus:ring-2 focus:ring-success focus:ring-offset-2 focus:outline-none">
+                    <x-lucide-check x-show="copied" class="mr-1 h-4 w-4" />
+                    <x-lucide-copy x-show="!copied" class="mr-1 h-4 w-4" />
                     <span x-text="copied ? '{{ __('Copied') }}' : '{{ __('Copy') }}'"></span>
                   </button>
                 </div>
@@ -53,14 +53,14 @@
     @endif
   </div>
 
-  <div id="new-api-key-form" class="flex items-center justify-between rounded-t-lg p-3 last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:hover:bg-gray-800">
+  <div id="new-api-key-form" class="flex items-center justify-between p-3">
     @if ($apiKeys->isEmpty())
-      <p class="text-sm text-zinc-500">{{ __('No API keys created') }}</p>
+      <p class="text-sm text-muted">{{ __('No API keys created') }}</p>
     @else
-      <p class="text-sm text-zinc-500">{{ __(':count API key(s) created', ['count' => $apiKeys->count()]) }}</p>
+      <p class="text-sm text-muted">{{ __(':count API key(s) created', ['count' => $apiKeys->count()]) }}</p>
     @endif
 
-    <x-button.secondary href="{{ route('settings.api-keys.new') }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">
+    <x-button.secondary href="{{ route('profile.api-keys.new') }}" x-target="new-api-key-form" class="mr-2 text-sm" data-test="new-api-key-button">
       {{ __('New API key') }}
     </x-button.secondary>
   </div>
@@ -68,29 +68,29 @@
   @if (! $apiKeys->isEmpty())
     <div id="api-key-list">
       @foreach ($apiKeys as $apiKey)
-        <div class="group flex items-center justify-between border-b border-gray-200 p-3 first:border-t last:rounded-b-lg last:border-b-0 dark:border-gray-700">
+        <div class="group flex items-center justify-between border-b border-hairline-soft p-3 first:border-t last:border-b-0">
           <div class="flex items-center justify-between gap-3">
-            <div class="rounded-sm bg-zinc-100 p-2 dark:bg-gray-800">
-              <x-phosphor-key class="h-4 w-4 text-zinc-500" />
+            <div class="rounded-sm bg-card p-2">
+              <x-lucide-key class="h-4 w-4 text-muted" />
             </div>
 
             <div class="flex flex-col">
-              <p class="text-sm font-semibold">{{ $apiKey->name }}</p>
-              <p class="font-mono text-xs text-zinc-500">{{ $apiKey->last_used }}</p>
+              <p class="text-sm font-semibold text-ink">{{ $apiKey->name }}</p>
+              <p class="font-mono text-xs text-muted">{{ $apiKey->last_used }}</p>
             </div>
           </div>
 
           <x-form
             x-target="api-key-list"
-            action="{{ route('settings.api-keys.destroy', $apiKey->id) }}"
+            action="{{ route('profile.api-keys.destroy', $apiKey->id) }}"
             method="delete"
             x-on:ajax:before="
             confirm('{{ __('Are you sure you want to proceed? This can not be undone.') }}') ||
               $event.preventDefault()
           ">
-            <x-button x-target="api-key-list" class="text-sm" data-test="delete-api-key-{{ $apiKey->id }}">
+            <x-button.secondary x-target="api-key-list" class="text-sm" data-test="delete-api-key-{{ $apiKey->id }}">
               {{ __('Delete') }}
-            </x-button>
+            </x-button.secondary>
           </x-form>
         </div>
       @endforeach
