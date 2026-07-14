@@ -1,4 +1,4 @@
-<div class="flex flex-col items-center gap-2 p-8 text-center text-muted">
+<div {{ $attributes->merge(['class' => 'flex flex-col items-center gap-2 p-8 text-center text-muted']) }}>
   <div class="mb-1 rounded-full bg-card p-3">
     {{ $icon }}
   </div>

@@ -76,7 +76,12 @@
         @forelse ($tree as $node)
           @include('app.locations._row', ['node' => $node, 'depth' => 0, 'parentOptions' => $parentOptions, 'emojiOptions' => $emojiOptions])
         @empty
-          <p class="p-10 text-center text-sm text-muted" data-test="no-locations">{{ __('No locations yet — add one to start organizing where items are stored.') }}</p>
+          <x-empty-state data-test="no-locations">
+            <x-slot:icon>
+              <x-lucide-map-pin class="size-6 text-muted" />
+            </x-slot>
+            {{ __('No locations yet — add one to start organizing where items are stored.') }}
+          </x-empty-state>
         @endforelse
       </div>
     </div>
