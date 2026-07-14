@@ -7,6 +7,7 @@ use App\Enums\UserActionEnum;
 use App\Enums\VisibilityEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
+use App\Models\CollectionType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -134,4 +135,41 @@ it('throws when the user does not belong to the account', function () {
         account: $account,
         name: 'Wine Cellar',
     )->execute();
+});
+
+it('attaches the given collection types', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $comics = CollectionType::factory()->create(['account_id' => $account->id, 'name' => 'Comics']);
+    $vinyl = CollectionType::factory()->create(['account_id' => $account->id, 'name' => 'Vinyl Records']);
+
+    $collection = new CreateCollection(
+        user: $owner,
+        account: $account,
+        name: 'Wine Cellar',
+        collectionTypeIds: [$comics->id, $vinyl->id],
+    )->execute();
+
+    expect($collection->collectionTypes->pluck('id')->sort()->values()->all())->toBe([$comics->id, $vinyl->id]);
+});
+
+it('ignores collection type ids belonging to another account', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $foreignType = CollectionType::factory()->create(['name' => 'Foreign type']);
+
+    $collection = new CreateCollection(
+        user: $owner,
+        account: $account,
+        name: 'Wine Cellar',
+        collectionTypeIds: [$foreignType->id],
+    )->execute();
+
+    expect($collection->collectionTypes)->toBeEmpty();
 });
