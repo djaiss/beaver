@@ -27,7 +27,7 @@ class CollectionFactory extends Factory
             'account_id' => Account::factory(),
             'name' => fake()->words(3, true),
             'description' => fake()->sentence(),
-            'cover_image_path' => null,
+            'emoji' => fake()->randomElement(['📚', '💿', '🍷', '🎨', '🪙', '📦']),
             'visibility' => VisibilityEnum::Private->value,
             'currency' => 'USD',
             'settings' => null,

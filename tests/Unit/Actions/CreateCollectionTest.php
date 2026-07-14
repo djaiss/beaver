@@ -26,6 +26,7 @@ it('creates a collection and stamps the author', function () {
         account: $account,
         name: 'Marvel Comics 1990s',
         description: 'My run of 90s Marvel',
+        emoji: '📚',
         visibility: VisibilityEnum::Shared->value,
         currency: 'USD',
     )->execute();
@@ -33,6 +34,7 @@ it('creates a collection and stamps the author', function () {
     expect($collection)->toBeInstanceOf(Collection::class);
     expect($collection->name)->toBe('Marvel Comics 1990s');
     expect($collection->description)->toBe('My run of 90s Marvel');
+    expect($collection->emoji)->toBe('📚');
     expect($collection->visibility)->toBe(VisibilityEnum::Shared);
     expect($collection->account_id)->toBe($account->id);
     expect($collection->uuid)->not->toBeEmpty();

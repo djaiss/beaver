@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
  * @property int $account_id
  * @property string $name
  * @property string|null $description
- * @property string|null $cover_image_path
+ * @property string|null $emoji
  * @property VisibilityEnum $visibility
  * @property string|null $currency
  * @property array<string, mixed>|null $settings
@@ -54,7 +54,7 @@ class Collection extends Model
         'account_id',
         'name',
         'description',
-        'cover_image_path',
+        'emoji',
         'visibility',
         'currency',
         'settings',

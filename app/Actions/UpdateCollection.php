@@ -27,6 +27,7 @@ class UpdateCollection
         private readonly Collection $collection,
         private string $name,
         private ?string $description = null,
+        private ?string $emoji = null,
         private string $visibility = VisibilityEnum::Private->value,
         private ?string $currency = null,
         private ?array $settings = null,
@@ -72,6 +73,7 @@ class UpdateCollection
     {
         $this->collection->name = $this->name;
         $this->collection->description = $this->description;
+        $this->collection->emoji = $this->emoji;
         $this->collection->visibility = VisibilityEnum::from($this->visibility);
         $this->collection->currency = $this->currency;
         $this->collection->settings = $this->settings;

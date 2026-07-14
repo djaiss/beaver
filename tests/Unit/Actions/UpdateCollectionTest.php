@@ -30,6 +30,7 @@ it('updates a collection and stamps the editor', function () {
         collection: $collection,
         name: 'Marvel Comics 1990s',
         description: 'Updated description',
+        emoji: '🦸',
         visibility: VisibilityEnum::Public->value,
         currency: 'EUR',
         settings: ['theme' => 'dark'],
@@ -38,6 +39,7 @@ it('updates a collection and stamps the editor', function () {
     expect($result)->toBeInstanceOf(Collection::class);
     expect($collection->fresh()->name)->toBe('Marvel Comics 1990s');
     expect($collection->fresh()->description)->toBe('Updated description');
+    expect($collection->fresh()->emoji)->toBe('🦸');
     expect($collection->fresh()->visibility)->toBe(VisibilityEnum::Public);
     expect($collection->fresh()->currency)->toBe('EUR');
     expect($collection->fresh()->settings)->toBe(['theme' => 'dark']);

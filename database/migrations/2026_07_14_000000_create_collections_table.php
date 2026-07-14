@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('account_id')->comment('account the collection belongs to')->constrained()->cascadeOnDelete();
             $table->text('name')->comment('name of the collection');
             $table->text('description')->nullable()->comment('free text description of the collection');
-            $table->string('cover_image_path')->nullable()->comment('path to the header or thumbnail image');
+            $table->string('emoji')->nullable()->comment('emoji representing the collection');
             $table->string('visibility', 15)->default(VisibilityEnum::Private->value)->comment('who can see the collection: private, shared or public');
             $table->string('currency', 3)->nullable()->comment('currency used for valuation totals');
             $table->json('settings')->nullable()->comment('per-collection preferences');
