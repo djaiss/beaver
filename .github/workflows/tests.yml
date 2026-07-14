@@ -29,6 +29,12 @@ jobs:
         php-version: ['8.5']
         connection: [sqlite, mysql, pgsql]
 
+    # Selects the database connection for every step, including the plain
+    # `artisan migrate` (phpunit.xml pins DB_CONNECTION to "testing", so this
+    # env is what actually drives the connection at runtime).
+    env:
+      DB_CONNECTION: ${{ matrix.connection }}
+
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
@@ -111,22 +117,12 @@ jobs:
         run: php artisan migrate --no-interaction -vvv
 
       - name: Run tests
-        if: matrix.connection == 'sqlite'
+        if: matrix.connection != 'pgsql'
         run: php artisan test --parallel
-        env:
-          DB_CONNECTION: ${{ matrix.connection }}
-
-      - name: Run tests (mysql)
-        if: matrix.connection == 'mysql'
-        run: php artisan test --parallel
-        env:
-          DB_CONNECTION: ${{ matrix.connection }}
 
       - name: Run tests (pgsql)
         if: matrix.connection == 'pgsql'
         run: php artisan test --parallel --recreate-databases
-        env:
-          DB_CONNECTION: ${{ matrix.connection }}
 
   ####################
   # Run browser tests
@@ -135,6 +131,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     name: Browser tests (Playwright)
+
+    env:
+      DB_CONNECTION: sqlite
 
     steps:
       - name: Checkout sources
@@ -169,16 +168,26 @@ jobs:
       - name: Install JS dependencies
         run: bun install
 
-      - name: Build assets
-        run: bun run build
-
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
+      # The browser tests run with Vite disabled, so a stubbed manifest is
+      # enough and we avoid building the real assets.
       - name: Prepare environment
         run: |
           cp tests/.env.ci.sqlite .env
           touch database/database.sqlite
+          mkdir -p public/build/assets
+          {\
+            echo "{"; \
+            for f in app.js app.css marketing.js marketing.css; do \
+              [[ $first == 1 ]] && echo -n "," || first=1; \
+              k=${f##*.}/$f; \
+              echo "\"resources/$k\": {\"file\": \"assets/$f\", \"src\": \"resources/$k\"}"; \
+              echo '' > public/build/assets/$f; \
+            done; \
+            echo "}"; \
+          } | tee public/build/manifest.json
 
       - name: Generate key
         run: php artisan key:generate
@@ -188,5 +197,3 @@ jobs:
 
       - name: Run browser tests
         run: php artisan test tests/Browser
-        env:
-          DB_CONNECTION: sqlite
