@@ -16,8 +16,8 @@ it('moves a field down', function () {
     $first = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
     $second = CustomField::factory()->create(['type_id' => $type->id, 'position' => 2]);
 
-    $this->actingAs($user)->put('/types/'.$type->id.'/fields/'.$first->id.'/order', ['direction' => 'down'])
-        ->assertRedirect('/types/'.$type->id.'/edit');
+    $this->actingAs($user)->put('/settings/types/'.$type->id.'/fields/'.$first->id.'/order', ['direction' => 'down'])
+        ->assertRedirect('/settings/types/'.$type->id.'/edit');
 
     expect($first->refresh()->position)->toBe(2);
     expect($second->refresh()->position)->toBe(1);
@@ -28,7 +28,7 @@ it('validates the direction', function () {
     $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
 
-    $this->actingAs($user)->put('/types/'.$type->id.'/fields/'.$field->id.'/order', ['direction' => 'sideways'])
+    $this->actingAs($user)->put('/settings/types/'.$type->id.'/fields/'.$field->id.'/order', ['direction' => 'sideways'])
         ->assertSessionHasErrors('direction');
 });
 
@@ -39,6 +39,6 @@ it('cannot reorder a field of another accounts type', function () {
     $foreignType = CollectionType::factory()->create();
     $field = CustomField::factory()->create(['type_id' => $foreignType->id, 'position' => 1]);
 
-    $this->actingAs($user)->put('/types/'.$foreignType->id.'/fields/'.$field->id.'/order', ['direction' => 'down'])
+    $this->actingAs($user)->put('/settings/types/'.$foreignType->id.'/fields/'.$field->id.'/order', ['direction' => 'down'])
         ->assertNotFound();
 });

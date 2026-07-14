@@ -12,7 +12,7 @@ it('creates a type, renames it, and edits its fields inline', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
-    $page = visit('/types');
+    $page = visit('/settings/types');
     $page->assertSee('Collection types');
 
     // Creating a type lands on its editor.
@@ -62,7 +62,7 @@ it('keeps fields renameable and reorderable after adding more', function () {
     $this->actingAs($user);
     $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
 
-    $page = visit('/types/'.$type->id.'/edit');
+    $page = visit('/settings/types/'.$type->id.'/edit');
 
     $page->click('[data-test="add-field-button"]')->assertSee('Field added');
     $page->click('[data-test="add-field-button"]')->assertSee('Field added');

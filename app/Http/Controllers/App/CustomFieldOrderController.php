@@ -32,7 +32,7 @@ class CustomFieldOrderController extends Controller
             direction: $validated['direction'],
         )->execute();
 
-        return to_route('types.edit', $type->id)
+        return to_route('settings.types.edit', $type->id)
             ->with('status', __('Field moved'));
     }
 }

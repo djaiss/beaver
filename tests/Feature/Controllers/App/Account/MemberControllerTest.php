@@ -30,6 +30,16 @@ it('forbids a non owner from listing the members', function () {
     $response->assertForbidden();
 });
 
+it('forbids an editor from listing the members', function () {
+    $user = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Editor->value);
+
+    $response = $this->actingAs($user)->get('settings/members');
+
+    $response->assertForbidden();
+});
+
 it('sends an invitation', function () {
     Queue::fake();
     Mail::fake();
