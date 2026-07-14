@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
     // placeholder sections for the future collection domain
     Route::get('collections', fn () => view('app._placeholder', ['title' => __('Collections'), 'body' => __('Organize your items into collections. This is coming soon.')]))->name('collections.index');
+    Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
     Route::get('locations', fn () => view('app._placeholder', ['title' => __('Locations'), 'body' => __('Track where your items are stored. This is coming soon.')]))->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 

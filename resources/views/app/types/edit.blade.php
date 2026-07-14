@@ -34,14 +34,7 @@
           <x-form method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex gap-1.5">
             <input type="hidden" name="name" value="{{ $type->name }}" />
             @foreach ($palette as $swatch)
-              <button
-                type="submit"
-                name="color"
-                value="{{ $swatch }}"
-                aria-label="{{ $swatch }}"
-                class="size-4 cursor-pointer rounded-full ring-offset-1 ring-offset-canvas {{ $type->color === $swatch ? 'ring-2 ring-ink' : '' }}"
-                style="background-color: {{ $swatch }}"
-              ></button>
+              <button type="submit" name="color" value="{{ $swatch }}" aria-label="{{ $swatch }}" class="size-4 cursor-pointer rounded-full ring-offset-1 ring-offset-canvas {{ $type->color === $swatch ? 'ring-2 ring-ink' : '' }}" style="background-color: {{ $swatch }}"></button>
             @endforeach
           </x-form>
         </div>
@@ -53,19 +46,18 @@
 
           <x-form id="name-edit" hidden method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex items-center gap-2">
             <input type="hidden" name="color" value="{{ $type->color }}" />
-            <input
-              id="type-name-input"
-              name="name"
-              value="{{ $type->name }}"
-              placeholder="{{ __('Type name') }}"
-              class="w-full max-w-xs rounded-md border border-hairline bg-input px-3 py-2 text-lg font-semibold text-ink"
-            />
+            <input id="type-name-input" name="name" value="{{ $type->name }}" placeholder="{{ __('Type name') }}" class="w-full max-w-xs rounded-md border border-hairline bg-input px-3 py-2 text-lg font-semibold text-ink" />
             <x-button type="submit" data-test="save-name-button">{{ __('Save') }}</x-button>
             <button
               type="button"
-              onclick="document.getElementById('name-edit').hidden=true;document.getElementById('name-display').hidden=false;document.getElementById('edit-name-button').hidden=false"
-              class="cursor-pointer text-sm font-semibold text-muted hover:text-ink"
-            >{{ __('Cancel') }}</button>
+              onclick="
+                document.getElementById('name-edit').hidden = true;
+                document.getElementById('name-display').hidden = false;
+                document.getElementById('edit-name-button').hidden = false;
+              "
+              class="cursor-pointer text-sm font-semibold text-muted hover:text-ink">
+              {{ __('Cancel') }}
+            </button>
           </x-form>
 
           <p class="mt-2 text-xs text-muted-soft">{{ __('Used by :collections collection(s) · :fields custom field(s)', ['collections' => $type->collections->count(), 'fields' => $type->customFields->count()]) }}</p>
@@ -76,8 +68,14 @@
             type="button"
             id="edit-name-button"
             data-test="edit-name-button"
-            onclick="document.getElementById('name-display').hidden=true;document.getElementById('name-edit').hidden=false;document.getElementById('type-name-input').focus();this.hidden=true"
-          >{{ __('Edit name') }}</x-button>
+            onclick="
+              document.getElementById('name-display').hidden = true;
+              document.getElementById('name-edit').hidden = false;
+              document.getElementById('type-name-input').focus();
+              this.hidden = true;
+            ">
+            {{ __('Edit name') }}
+          </x-button>
 
           <x-form method="delete" :action="route('settings.types.destroy', $type->id)" data-turbo="true" onsubmit="return confirm('{{ __('Delete this type? This cannot be undone.') }}')">
             <x-button.secondary type="submit" data-test="delete-type-button" class="border-error/40 text-error hover:bg-error/5">{{ __('Delete type') }}</x-button.secondary>
@@ -151,9 +149,15 @@
                           type="button"
                           aria-label="{{ __('Remove option') }}"
                           data-test="remove-option-{{ $loop->index }}"
-                          onclick="if(!confirm('{{ __('Delete this option? Any item set to it will lose that value. This cannot be undone.') }}'))return;const f=this.form;this.closest('[data-opt-row]').remove();f.requestSubmit()"
-                          class="flex size-8 cursor-pointer items-center justify-center rounded-md text-muted hover:text-ink"
-                        >×</button>
+                          onclick="
+                            if (!confirm('{{ __('Delete this option? Any item set to it will lose that value. This cannot be undone.') }}')) return;
+                            const f = this.form;
+                            this.closest('[data-opt-row]').remove();
+                            f.requestSubmit();
+                          "
+                          class="flex size-8 cursor-pointer items-center justify-center rounded-md text-muted hover:text-ink">
+                          ×
+                        </button>
                       </div>
                     @endforeach
                   </div>
@@ -175,19 +179,17 @@
       <h2 class="text-lg font-semibold text-ink">{{ __('Collections using this type') }}</h2>
       <p class="mt-0.5 mb-3.5 text-xs text-muted-soft">{{ __('A collection can use many types; an item picks exactly one.') }}</p>
 
-      @if ($collections->isEmpty())
-        <p class="text-sm text-muted">{{ __('No collections yet.') }}</p>
+      @if ($type->collections->isEmpty())
+        <p class="text-sm text-muted">{{ __('No collections use this type yet.') }}</p>
       @else
-        <x-form method="put" :action="route('settings.types.collections.update', $type->id)" data-turbo="true" onchange="this.requestSubmit()" class="flex flex-wrap gap-2">
-          @foreach ($collections as $collection)
-            @php($checked = $type->collections->contains($collection->id))
-            <label class="flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-medium text-ink transition-colors {{ $checked ? 'border-ink bg-card' : 'border-hairline hover:bg-card' }}">
-              <input type="checkbox" name="collection_ids[]" value="{{ $collection->id }}" @checked($checked) class="sr-only" />
+        <div class="flex flex-wrap gap-2">
+          @foreach ($type->collections as $collection)
+            <a href="{{ route('collections.show', $collection->id) }}" data-turbo="true" class="flex items-center gap-2 rounded-full border border-hairline px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:bg-card">
               <span>{{ $collection->emoji }}</span>
               {{ $collection->name }}
-            </label>
+            </a>
           @endforeach
-        </x-form>
+        </div>
       @endif
     </div>
   </div>

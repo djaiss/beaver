@@ -7,6 +7,7 @@ namespace App\Http\Controllers\App;
 use App\Actions\CreateCollection;
 use App\Enums\VisibilityEnum;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,23 @@ class CollectionController extends Controller
 {
     /** @var list<string> */
     private const array EMOJI_OPTIONS = ['📦', '📚', '💿', '🃏', '🍷', '🎮', '🧸', '🪙', '🖼️', '⌚', '👟', '📷'];
+
+    public function show(Request $request, int $collection): View
+    {
+        $account = $request->user()->account;
+
+        try {
+            $collectionModel = $account->collections()
+                ->with('collectionTypes')
+                ->findOrFail($collection);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        return view('app.collections.show', [
+            'collection' => $collectionModel,
+        ]);
+    }
 
     public function new(Request $request): View
     {

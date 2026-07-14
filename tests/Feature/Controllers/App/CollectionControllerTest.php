@@ -81,3 +81,34 @@ it('forbids viewers from creating a collection', function () {
         'visibility' => VisibilityEnum::Shared->value,
     ])->assertNotFound();
 });
+
+it('shows a collection', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+    $collection->collectionTypes()->attach($type->id);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk();
+    $response->assertSee('Marvel Comics 1990s');
+    $response->assertSee('Comics');
+});
+
+it('allows a viewer to see a collection', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'name' => 'Wine Cellar']);
+
+    $this->actingAs($viewer)->get('/collections/'.$collection->id)
+        ->assertOk()
+        ->assertSee('Wine Cellar');
+});
+
+it('cannot see another accounts collection', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+
+    $this->actingAs($user)->get('/collections/'.$foreign->id)->assertNotFound();
+});

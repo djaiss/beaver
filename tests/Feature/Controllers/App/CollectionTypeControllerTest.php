@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
+use App\Models\Collection;
 use App\Models\CollectionType;
 use App\Models\CustomField;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -73,6 +74,30 @@ it('shows the edit page', function () {
         ->assertSee('Custom fields')
         ->assertSee('Edit name')
         ->assertSee('saved automatically in real time');
+});
+
+it('links to the collections that use the type', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Vinyl Records']);
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Chaney Salinas']);
+    $collection->collectionTypes()->attach($type->id);
+    $unrelated = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Unrelated Collection']);
+
+    $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
+
+    $response->assertOk();
+    $response->assertSee('Chaney Salinas');
+    $response->assertSee(route('collections.show', $collection->id), false);
+    $response->assertDontSee('Unrelated Collection');
+});
+
+it('shows a message when no collections use the type', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
+        ->assertOk()
+        ->assertSee('No collections use this type yet.');
 });
 
 it('cannot edit another accounts type', function () {
