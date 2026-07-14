@@ -7,36 +7,36 @@ namespace App\Actions;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
-use App\Models\Type;
+use App\Models\CollectionType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Update a type. Only owners and editors of its account may do so.
+ * Update a collection type. Only owners and editors of its account may do so.
  */
-class UpdateType
+class UpdateCollectionType
 {
     public function __construct(
         private readonly User $user,
-        private readonly Type $type,
+        private readonly CollectionType $collectionType,
         private string $name,
         private string $color = '#6B7280',
     ) {}
 
-    public function execute(): Type
+    public function execute(): CollectionType
     {
         $this->validate();
         $this->sanitize();
         $this->update();
         $this->log();
 
-        return $this->type;
+        return $this->collectionType;
     }
 
     private function validate(): void
     {
-        if (! $this->type->account->allowsManagementBy($this->user)) {
+        if (! $this->collectionType->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
 
@@ -52,19 +52,19 @@ class UpdateType
 
     private function update(): void
     {
-        $this->type->name = $this->name;
-        $this->type->color = $this->color;
-        $this->type->updated_by_id = $this->user->id;
-        $this->type->updated_by_name = $this->user->getFullName();
-        $this->type->save();
+        $this->collectionType->name = $this->name;
+        $this->collectionType->color = $this->color;
+        $this->collectionType->updated_by_id = $this->user->id;
+        $this->collectionType->updated_by_name = $this->user->getFullName();
+        $this->collectionType->save();
     }
 
     private function log(): void
     {
         LogUserAction::dispatch(
             user: $this->user,
-            action: UserActionEnum::TypeUpdate,
-            parameters: ['name' => $this->type->name],
+            action: UserActionEnum::CollectionTypeUpdate,
+            parameters: ['name' => $this->collectionType->name],
         )->onQueue('low');
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
 declare(strict_types=1);
-use App\Actions\CreateType;
+use App\Actions\CreateCollectionType;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Type;
+use App\Models\CollectionType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -20,30 +20,30 @@ it('creates a type and stamps the author', function () {
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
 
-    $type = new CreateType(
+    $collectionType = new CreateCollectionType(
         user: $editor,
         account: $account,
         name: 'Comics',
         color: '#1D4ED8',
     )->execute();
 
-    expect($type)->toBeInstanceOf(Type::class);
-    expect($type->name)->toBe('Comics');
-    expect($type->color)->toBe('#1D4ED8');
-    expect($type->account_id)->toBe($account->id);
+    expect($collectionType)->toBeInstanceOf(CollectionType::class);
+    expect($collectionType->name)->toBe('Comics');
+    expect($collectionType->color)->toBe('#1D4ED8');
+    expect($collectionType->account_id)->toBe($account->id);
 
     $this->assertDatabaseHas('types', [
-        'id' => $type->id,
+        'id' => $collectionType->id,
         'account_id' => $account->id,
         'created_by_id' => $editor->id,
         'updated_by_id' => $editor->id,
     ]);
-    expect($type->created_by_name)->toBe('Ross Geller');
+    expect($collectionType->created_by_name)->toBe('Ross Geller');
 
     Queue::assertPushedOn(
         queue: 'low',
         job: LogUserAction::class,
-        callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::TypeCreation,
+        callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::CollectionTypeCreation,
     );
 });
 
@@ -54,13 +54,13 @@ it('sanitizes the name', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    $type = new CreateType(
+    $collectionType = new CreateCollectionType(
         user: $owner,
         account: $account,
         name: '<strong>Vinyl</strong>',
     )->execute();
 
-    expect($type->name)->toBe('Vinyl');
+    expect($collectionType->name)->toBe('Vinyl');
 });
 
 it('throws when the color is not a valid hex', function () {
@@ -71,7 +71,7 @@ it('throws when the color is not a valid hex', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    new CreateType(
+    new CreateCollectionType(
         user: $owner,
         account: $account,
         name: 'Comics',
@@ -87,7 +87,7 @@ it('throws when the user is only a viewer', function () {
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
 
-    new CreateType(
+    new CreateCollectionType(
         user: $viewer,
         account: $account,
         name: 'Comics',
@@ -101,7 +101,7 @@ it('throws when the user does not belong to the account', function () {
     $account = $this->createAccount();
     $stranger = $this->createUser();
 
-    new CreateType(
+    new CreateCollectionType(
         user: $stranger,
         account: $account,
         name: 'Comics',

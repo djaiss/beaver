@@ -1,11 +1,11 @@
 <?php
 
 declare(strict_types=1);
-use App\Actions\DestroyType;
+use App\Actions\DestroyCollectionType;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Type;
+use App\Models\CollectionType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -18,19 +18,19 @@ it('deletes a type', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $type = Type::factory()->create(['account_id' => $account->id]);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
 
-    new DestroyType(
+    new DestroyCollectionType(
         user: $owner,
-        type: $type,
+        collectionType: $collectionType,
     )->execute();
 
-    $this->assertDatabaseMissing('types', ['id' => $type->id]);
+    $this->assertDatabaseMissing('types', ['id' => $collectionType->id]);
 
     Queue::assertPushedOn(
         queue: 'low',
         job: LogUserAction::class,
-        callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::TypeDeletion,
+        callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::CollectionTypeDeletion,
     );
 });
 
@@ -41,10 +41,10 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $type = Type::factory()->create(['account_id' => $account->id]);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
 
-    new DestroyType(
+    new DestroyCollectionType(
         user: $viewer,
-        type: $type,
+        collectionType: $collectionType,
     )->execute();
 });

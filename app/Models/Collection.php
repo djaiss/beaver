@@ -94,12 +94,12 @@ class Collection extends Model
     }
 
     /**
-     * Get the types linked to the collection.
+     * Get the collection types linked to the collection.
      *
-     * @return BelongsToMany<Type, $this>
+     * @return BelongsToMany<CollectionType, $this>
      */
-    public function types(): BelongsToMany
+    public function collectionTypes(): BelongsToMany
     {
-        return $this->belongsToMany(Type::class);
+        return $this->belongsToMany(CollectionType::class, 'collection_type', 'collection_id', 'type_id');
     }
 }

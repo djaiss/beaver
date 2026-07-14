@@ -66,12 +66,12 @@ class CustomField extends Model
     }
 
     /**
-     * Get the type the field is attached to.
+     * Get the collection type the field is attached to.
      *
-     * @return BelongsTo<Type, $this>
+     * @return BelongsTo<CollectionType, $this>
      */
-    public function type(): BelongsTo
+    public function collectionType(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(CollectionType::class, 'type_id');
     }
 }

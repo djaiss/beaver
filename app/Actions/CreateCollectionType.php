@@ -8,17 +8,17 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Account;
-use App\Models\Type;
+use App\Models\CollectionType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Create a type within an account. Only owners and editors may do so.
+ * Create a collection type within an account. Only owners and editors may do so.
  */
-class CreateType
+class CreateCollectionType
 {
-    private Type $type;
+    private CollectionType $collectionType;
 
     public function __construct(
         private readonly User $user,
@@ -27,7 +27,7 @@ class CreateType
         private string $color = '#6B7280',
     ) {}
 
-    public function execute(): Type
+    public function execute(): CollectionType
     {
         $this->validate();
         $this->sanitize();
@@ -35,7 +35,7 @@ class CreateType
         $this->stampAuthor();
         $this->log();
 
-        return $this->type;
+        return $this->collectionType;
     }
 
     private function validate(): void
@@ -56,7 +56,7 @@ class CreateType
 
     private function create(): void
     {
-        $this->type = Type::query()->create([
+        $this->collectionType = CollectionType::query()->create([
             'account_id' => $this->account->id,
             'name' => $this->name,
             'color' => $this->color,
@@ -65,19 +65,19 @@ class CreateType
 
     private function stampAuthor(): void
     {
-        $this->type->created_by_id = $this->user->id;
-        $this->type->created_by_name = $this->user->getFullName();
-        $this->type->updated_by_id = $this->user->id;
-        $this->type->updated_by_name = $this->user->getFullName();
-        $this->type->save();
+        $this->collectionType->created_by_id = $this->user->id;
+        $this->collectionType->created_by_name = $this->user->getFullName();
+        $this->collectionType->updated_by_id = $this->user->id;
+        $this->collectionType->updated_by_name = $this->user->getFullName();
+        $this->collectionType->save();
     }
 
     private function log(): void
     {
         LogUserAction::dispatch(
             user: $this->user,
-            action: UserActionEnum::TypeCreation,
-            parameters: ['name' => $this->type->name],
+            action: UserActionEnum::CollectionTypeCreation,
+            parameters: ['name' => $this->collectionType->name],
         )->onQueue('low');
     }
 }

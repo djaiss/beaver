@@ -87,13 +87,13 @@ class Account extends Model
     }
 
     /**
-     * Get the types that belong to the account.
+     * Get the collection types that belong to the account.
      *
-     * @return HasMany<Type, $this>
+     * @return HasMany<CollectionType, $this>
      */
-    public function types(): HasMany
+    public function collectionTypes(): HasMany
     {
-        return $this->hasMany(Type::class);
+        return $this->hasMany(CollectionType::class);
     }
 
     /**

@@ -16,9 +16,9 @@ enum UserActionEnum: string
     case CollectionCreation = 'collection_created';
     case CollectionUpdate = 'collection_updated';
     case CollectionDeletion = 'collection_deleted';
-    case TypeCreation = 'type_created';
-    case TypeUpdate = 'type_updated';
-    case TypeDeletion = 'type_deleted';
+    case CollectionTypeCreation = 'collection_type_created';
+    case CollectionTypeUpdate = 'collection_type_updated';
+    case CollectionTypeDeletion = 'collection_type_deleted';
     case CustomFieldCreation = 'custom_field_created';
     case CustomFieldUpdate = 'custom_field_updated';
     case CustomFieldDeletion = 'custom_field_deleted';
@@ -46,9 +46,9 @@ enum UserActionEnum: string
             self::CollectionCreation => 'Created the collection called :name',
             self::CollectionUpdate => 'Updated the collection called :name',
             self::CollectionDeletion => 'Deleted the collection called :name',
-            self::TypeCreation => 'Created the type called :name',
-            self::TypeUpdate => 'Updated the type called :name',
-            self::TypeDeletion => 'Deleted the type called :name',
+            self::CollectionTypeCreation => 'Created the collection type called :name',
+            self::CollectionTypeUpdate => 'Updated the collection type called :name',
+            self::CollectionTypeDeletion => 'Deleted the collection type called :name',
             self::CustomFieldCreation => 'Created the custom field called :name',
             self::CustomFieldUpdate => 'Updated the custom field called :name',
             self::CustomFieldDeletion => 'Deleted the custom field called :name',

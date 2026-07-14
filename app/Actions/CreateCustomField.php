@@ -8,8 +8,8 @@ use App\Enums\FieldTypeEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
+use App\Models\CollectionType;
 use App\Models\CustomField;
-use App\Models\Type;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -27,7 +27,7 @@ class CreateCustomField
      */
     public function __construct(
         private readonly User $user,
-        private readonly Type $type,
+        private readonly CollectionType $collectionType,
         private string $name,
         private string $fieldType = FieldTypeEnum::Text->value,
         private ?array $options = null,
@@ -46,7 +46,7 @@ class CreateCustomField
 
     private function validate(): void
     {
-        if (! $this->type->account->allowsManagementBy($this->user)) {
+        if (! $this->collectionType->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
 
@@ -63,7 +63,7 @@ class CreateCustomField
     private function create(): void
     {
         $this->customField = CustomField::query()->create([
-            'type_id' => $this->type->id,
+            'type_id' => $this->collectionType->id,
             'name' => $this->name,
             'field_type' => $this->fieldType,
             'options' => $this->options,
@@ -73,7 +73,7 @@ class CreateCustomField
 
     private function nextPosition(): int
     {
-        return (int) $this->type->customFields()->max('position') + 1;
+        return (int) $this->collectionType->customFields()->max('position') + 1;
     }
 
     private function stampAuthor(): void

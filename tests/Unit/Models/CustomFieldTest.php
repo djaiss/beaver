@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 use App\Enums\FieldTypeEnum;
+use App\Models\CollectionType;
 use App\Models\CustomField;
-use App\Models\Type;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
-it('belongs to a type', function () {
-    $type = Type::factory()->create();
-    $customField = CustomField::factory()->create(['type_id' => $type->id]);
+it('belongs to a collection type', function () {
+    $collectionType = CollectionType::factory()->create();
+    $customField = CustomField::factory()->create(['type_id' => $collectionType->id]);
 
-    expect($customField->type)->toBeInstanceOf(Type::class);
-    expect($customField->type->id)->toBe($type->id);
+    expect($customField->collectionType)->toBeInstanceOf(CollectionType::class);
+    expect($customField->collectionType->id)->toBe($collectionType->id);
 });
 
 it('casts the field type to an enum', function () {

@@ -6,8 +6,8 @@ use App\Enums\FieldTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
+use App\Models\CollectionType;
 use App\Models\CustomField;
-use App\Models\Type;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -21,11 +21,11 @@ it('creates a custom field and stamps the author', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $type = Type::factory()->create(['account_id' => $account->id]);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
 
     $customField = new CreateCustomField(
         user: $editor,
-        type: $type,
+        collectionType: $collectionType,
         name: 'Grade',
         fieldType: FieldTypeEnum::Select->value,
         options: ['Mint', 'Near Mint'],
@@ -35,7 +35,7 @@ it('creates a custom field and stamps the author', function () {
     expect($customField->name)->toBe('Grade');
     expect($customField->field_type)->toBe(FieldTypeEnum::Select);
     expect($customField->options)->toBe(['Mint', 'Near Mint']);
-    expect($customField->type_id)->toBe($type->id);
+    expect($customField->type_id)->toBe($collectionType->id);
     expect($customField->created_by_name)->toBe('Ross Geller');
 
     Queue::assertPushedOn(
@@ -45,16 +45,16 @@ it('creates a custom field and stamps the author', function () {
     );
 });
 
-it('auto-increments the position within the type', function () {
+it('auto-increments the position within the collection type', function () {
     Queue::fake();
 
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $type = Type::factory()->create(['account_id' => $account->id]);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
 
-    $first = new CreateCustomField(user: $owner, type: $type, name: 'Issue #')->execute();
-    $second = new CreateCustomField(user: $owner, type: $type, name: 'Publisher')->execute();
+    $first = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Issue #')->execute();
+    $second = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Publisher')->execute();
 
     expect($first->position)->toBe(1);
     expect($second->position)->toBe(2);
@@ -67,11 +67,11 @@ it('throws when the field type is invalid', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $type = Type::factory()->create(['account_id' => $account->id]);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
 
     new CreateCustomField(
         user: $owner,
-        type: $type,
+        collectionType: $collectionType,
         name: 'Grade',
         fieldType: 'rating',
     )->execute();
@@ -84,11 +84,11 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $type = Type::factory()->create(['account_id' => $account->id]);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
 
     new CreateCustomField(
         user: $viewer,
-        type: $type,
+        collectionType: $collectionType,
         name: 'Grade',
     )->execute();
 });

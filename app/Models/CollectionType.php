@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasAuthor;
 use Carbon\Carbon;
-use Database\Factories\TypeFactory;
+use Database\Factories\CollectionTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +14,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class Type
+ * Class CollectionType
+ *
+ * A user-defined category (e.g. Comics, Vinyl, Wine) that drives which custom
+ * fields apply to an item. Stored in the "types" table.
  *
  * @property int $id
  * @property int $account_id
@@ -27,11 +30,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class Type extends Model
+class CollectionType extends Model
 {
     use HasAuthor;
 
-    /** @use HasFactory<TypeFactory> */
+    /** @use HasFactory<CollectionTypeFactory> */
     use HasFactory;
 
     protected $table = 'types';
@@ -76,7 +79,7 @@ class Type extends Model
      */
     public function customFields(): HasMany
     {
-        return $this->hasMany(CustomField::class);
+        return $this->hasMany(CustomField::class, 'type_id');
     }
 
     /**
@@ -86,6 +89,6 @@ class Type extends Model
      */
     public function collections(): BelongsToMany
     {
-        return $this->belongsToMany(Collection::class);
+        return $this->belongsToMany(Collection::class, 'collection_type', 'type_id', 'collection_id');
     }
 }
