@@ -9,6 +9,7 @@ use App\Models\Account;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Validation\ValidationException;
 
 uses(RefreshDatabase::class);
 
@@ -23,10 +24,12 @@ it('renames an account for an owner', function () {
         user: $owner,
         account: $account,
         name: 'Central Perk',
+        currencyCode: 'EUR',
     )->execute();
 
     expect($result)->toBeInstanceOf(Account::class);
     expect($account->fresh()->name)->toBe('Central Perk');
+    expect($account->fresh()->currency_code)->toBe('EUR');
     expect($account->fresh()->updated_by_id)->toBe($owner->id);
 
     Queue::assertPushedOn(
@@ -34,6 +37,22 @@ it('renames an account for an owner', function () {
         job: LogUserAction::class,
         callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AccountUpdate,
     );
+});
+
+it('throws when the currency is not supported', function () {
+    Queue::fake();
+    $this->expectException(ValidationException::class);
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    new UpdateAccount(
+        user: $owner,
+        account: $account,
+        name: 'Central Perk',
+        currencyCode: 'XYZ',
+    )->execute();
 });
 
 it('throws when the user is not an owner', function () {
