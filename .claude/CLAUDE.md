@@ -21,7 +21,8 @@ Do not excessively use emojis.
 
 ## Guidelines for git and Github
 
-- You MUST create a new branch for each change, based off main. Make sure main is always up-to-date.
+- You MUST create a new branch when doing a new task, unless stated otherwise, based off of main branch. Make sure main is always up-to-date.
+- Branche names MUST be of the format YYYYMMDD-{name}.
 - You MUST follow conventional commits for commit messages.
 - NEVER mention Claude Code in PR descriptions, PR comments, or issue comments.
 
