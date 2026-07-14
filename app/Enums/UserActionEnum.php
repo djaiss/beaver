@@ -16,6 +16,12 @@ enum UserActionEnum: string
     case CollectionCreation = 'collection_created';
     case CollectionUpdate = 'collection_updated';
     case CollectionDeletion = 'collection_deleted';
+    case TypeCreation = 'type_created';
+    case TypeUpdate = 'type_updated';
+    case TypeDeletion = 'type_deleted';
+    case CustomFieldCreation = 'custom_field_created';
+    case CustomFieldUpdate = 'custom_field_updated';
+    case CustomFieldDeletion = 'custom_field_deleted';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -40,6 +46,12 @@ enum UserActionEnum: string
             self::CollectionCreation => 'Created the collection called :name',
             self::CollectionUpdate => 'Updated the collection called :name',
             self::CollectionDeletion => 'Deleted the collection called :name',
+            self::TypeCreation => 'Created the type called :name',
+            self::TypeUpdate => 'Updated the type called :name',
+            self::TypeDeletion => 'Deleted the type called :name',
+            self::CustomFieldCreation => 'Created the custom field called :name',
+            self::CustomFieldUpdate => 'Updated the custom field called :name',
+            self::CustomFieldDeletion => 'Deleted the custom field called :name',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',

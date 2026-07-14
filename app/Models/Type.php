@@ -4,47 +4,37 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\VisibilityEnum;
 use App\Models\Concerns\HasAuthor;
 use Carbon\Carbon;
-use Database\Factories\CollectionFactory;
+use Database\Factories\TypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class Collection
+ * Class Type
  *
  * @property int $id
- * @property string $uuid
  * @property int $account_id
  * @property string $name
- * @property string|null $description
- * @property string|null $emoji
- * @property VisibilityEnum $visibility
- * @property string|null $currency
- * @property array<string, mixed>|null $settings
+ * @property string $color
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
  * @property string|null $updated_by_name
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
  */
-class Collection extends Model
+class Type extends Model
 {
     use HasAuthor;
 
-    /** @use HasFactory<CollectionFactory> */
+    /** @use HasFactory<TypeFactory> */
     use HasFactory;
 
-    use SoftDeletes;
-
-    protected $table = 'collections';
+    protected $table = 'types';
 
     /**
      * The attributes that are mass assignable.
@@ -54,19 +44,8 @@ class Collection extends Model
     protected $fillable = [
         'account_id',
         'name',
-        'description',
-        'emoji',
-        'visibility',
-        'currency',
-        'settings',
+        'color',
     ];
-
-    protected static function booted(): void
-    {
-        static::creating(function (Collection $collection): void {
-            $collection->uuid ??= (string) Str::uuid();
-        });
-    }
 
     /**
      * Get the attributes that should be cast.
@@ -77,14 +56,11 @@ class Collection extends Model
     {
         return [
             'name' => 'encrypted',
-            'description' => 'encrypted',
-            'visibility' => VisibilityEnum::class,
-            'settings' => 'array',
         ];
     }
 
     /**
-     * Get the account the collection belongs to.
+     * Get the account the type belongs to.
      *
      * @return BelongsTo<Account, $this>
      */
@@ -94,12 +70,22 @@ class Collection extends Model
     }
 
     /**
-     * Get the types linked to the collection.
+     * Get the custom fields defined on the type.
      *
-     * @return BelongsToMany<Type, $this>
+     * @return HasMany<CustomField, $this>
      */
-    public function types(): BelongsToMany
+    public function customFields(): HasMany
     {
-        return $this->belongsToMany(Type::class);
+        return $this->hasMany(CustomField::class);
+    }
+
+    /**
+     * Get the collections the type is linked to.
+     *
+     * @return BelongsToMany<Collection, $this>
+     */
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class);
     }
 }

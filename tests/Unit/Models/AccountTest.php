@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
 use App\Models\Account;
+use App\Models\Collection;
 use App\Models\Invitation;
+use App\Models\Type;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,14 @@ it('has many collections', function () {
 
     expect($account->collections()->exists())->toBeTrue();
     expect($account->collections()->first())->toBeInstanceOf(Collection::class);
+});
+
+it('has many types', function () {
+    $account = $this->createAccount();
+    Type::factory()->create(['account_id' => $account->id]);
+
+    expect($account->types()->exists())->toBeTrue();
+    expect($account->types()->first())->toBeInstanceOf(Type::class);
 });
 
 it('lists only owners as administrators', function () {
