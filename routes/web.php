@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\App\Account\AccountController;
 use App\Http\Controllers\App\Account\InvitationController;
 use App\Http\Controllers\App\Account\MemberController;
+use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
 use App\Http\Controllers\App\Settings\EmailSentController;
@@ -24,63 +25,55 @@ require __DIR__.'/marketing.php';
 Route::put('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
 Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(function (): void {
-    // accounts
-    Route::get('accounts', [AccountController::class, 'index'])->name('accounts.index');
-    Route::get('accounts/new', [AccountController::class, 'new'])->name('accounts.new');
-    Route::post('accounts', [AccountController::class, 'create'])->name('accounts.create');
+    // dashboard
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-    Route::middleware(['account'])->where(['accountId' => '[1-9][0-9]*'])->group(function (): void {
-        Route::get('accounts/{accountId}', [AccountController::class, 'show'])->name('accounts.show');
+    // placeholder sections for the future collection domain
+    Route::get('collections', fn () => view('app._placeholder', ['title' => __('Collections'), 'body' => __('Organize your items into collections. This is coming soon.')]))->name('collections.index');
+    Route::get('locations', fn () => view('app._placeholder', ['title' => __('Locations'), 'body' => __('Track where your items are stored. This is coming soon.')]))->name('locations.index');
+    Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
-        Route::middleware(['account.owner'])->group(function (): void {
-            Route::put('accounts/{accountId}', [AccountController::class, 'update'])->name('accounts.update');
-            Route::delete('accounts/{accountId}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+    // personal profile — each user manages their own (any authenticated user)
+    Route::get('profile', [SettingsController::class, 'index'])->name('profile.index');
+    Route::put('profile', [SettingsController::class, 'update'])->name('profile.update');
+    Route::get('profile/logs', [LogController::class, 'index'])->name('profile.logs.index');
+    Route::get('profile/emails', [EmailSentController::class, 'index'])->name('profile.emails.index');
 
-            // members
-            Route::get('accounts/{accountId}/members', [MemberController::class, 'index'])->name('accounts.members.index');
-            Route::post('accounts/{accountId}/members', [MemberController::class, 'create'])->name('accounts.members.create');
-            Route::put('accounts/{accountId}/members/{memberId}', [MemberController::class, 'update'])->where('memberId', '[1-9][0-9]*')->name('accounts.members.update');
-            Route::delete('accounts/{accountId}/members/{memberId}', [MemberController::class, 'destroy'])->where('memberId', '[1-9][0-9]*')->name('accounts.members.destroy');
-        });
+    // profile: security
+    Route::get('profile/security', [SecurityController::class, 'index'])->name('profile.security.index');
+    Route::put('profile/security/password', [PasswordController::class, 'update'])->name('profile.security.password.update');
+    Route::get('profile/security/2fa/new', [TwoFAController::class, 'new'])->name('profile.security.2fa.new');
+    Route::post('profile/security/2fa', [TwoFAController::class, 'create'])->name('profile.security.2fa.create');
+    Route::delete('profile/security/2fa', [TwoFAController::class, 'destroy'])->name('profile.security.2fa.destroy');
+    Route::get('profile/security/recovery-codes', [RecoveryCodeController::class, 'show'])->name('profile.security.recoverycodes.show');
+    Route::put('profile/security/auto-delete-account', [AutoDeleteUserController::class, 'update'])->name('profile.security.auto-delete.update');
+
+    // profile: api keys
+    Route::get('profile/api-keys/new', [ApiKeyController::class, 'new'])->name('profile.api-keys.new');
+    Route::post('profile/api-keys', [ApiKeyController::class, 'create'])->name('profile.api-keys.create');
+    Route::delete('profile/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->name('profile.api-keys.destroy');
+
+    // profile: webhooks
+    Route::get('profile/webhooks', [WebhookController::class, 'index'])->name('profile.webhooks.index');
+    Route::get('profile/webhooks/new', [WebhookController::class, 'new'])->name('profile.webhooks.new');
+    Route::post('profile/webhooks', [WebhookController::class, 'create'])->name('profile.webhooks.create');
+    Route::delete('profile/webhooks/{webhookEndpoint}', [WebhookController::class, 'destroy'])->where('webhookEndpoint', '[1-9][0-9]*')->name('profile.webhooks.destroy');
+
+    // profile: danger zone (delete your own user)
+    Route::get('profile/user', [UserController::class, 'index'])->name('profile.user.index');
+    Route::delete('profile/user', [UserController::class, 'destroy'])->name('profile.user.destroy');
+
+    // account settings — the account and its members (owners/admins only)
+    Route::middleware(['owner'])->group(function (): void {
+        Route::get('settings', [AccountController::class, 'index'])->name('settings.index');
+        Route::put('settings', [AccountController::class, 'update'])->name('settings.update');
+        Route::delete('settings', [AccountController::class, 'destroy'])->name('settings.destroy');
+
+        Route::get('settings/members', [MemberController::class, 'index'])->name('settings.members.index');
+        Route::post('settings/members', [MemberController::class, 'create'])->name('settings.members.create');
+        Route::put('settings/members/{userId}', [MemberController::class, 'update'])->where('userId', '[1-9][0-9]*')->name('settings.members.update');
+        Route::delete('settings/members/{userId}', [MemberController::class, 'destroy'])->where('userId', '[1-9][0-9]*')->name('settings.members.destroy');
     });
-
-    // settings
-    Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::put('settings/profile', [SettingsController::class, 'update'])->name('settings.profile.update');
-
-    // log dedicated page
-    Route::get('settings/logs', [LogController::class, 'index'])->name('settings.logs.index');
-
-    // emails dedicated page
-    Route::get('settings/emails', [EmailSentController::class, 'index'])->name('settings.emails.index');
-
-    // security
-    Route::get('settings/security', [SecurityController::class, 'index'])->name('settings.security.index');
-    Route::put('settings/security/password', [PasswordController::class, 'update'])->name('settings.security.password.update');
-
-    // 2fa
-    Route::get('settings/security/2fa/new', [TwoFAController::class, 'new'])->name('settings.security.2fa.new');
-    Route::post('settings/security/2fa', [TwoFAController::class, 'create'])->name('settings.security.2fa.create');
-    Route::delete('settings/security/2fa', [TwoFAController::class, 'destroy'])->name('settings.security.2fa.destroy');
-    Route::get('settings/security/recovery-codes', [RecoveryCodeController::class, 'show'])->name('settings.security.recoverycodes.show');
-
-    // auto delete account
-    Route::put('settings/security/auto-delete-account', [AutoDeleteUserController::class, 'update'])->name('settings.security.auto-delete.update');
-
-    // api
-    Route::get('settings/api-keys/new', [ApiKeyController::class, 'new'])->name('settings.api-keys.new');
-    Route::post('settings/api-keys', [ApiKeyController::class, 'create'])->name('settings.api-keys.create');
-    Route::delete('settings/api-keys/{apiKey}', [ApiKeyController::class, 'destroy'])->name('settings.api-keys.destroy');
-
-    // webhooks
-    Route::get('settings/webhooks', [WebhookController::class, 'index'])->name('settings.webhooks.index');
-    Route::get('settings/webhooks/new', [WebhookController::class, 'new'])->name('settings.webhooks.new');
-    Route::post('settings/webhooks', [WebhookController::class, 'create'])->name('settings.webhooks.create');
-    Route::delete('settings/webhooks/{webhookEndpoint}', [WebhookController::class, 'destroy'])->where('webhookEndpoint', '[1-9][0-9]*')->name('settings.webhooks.destroy');
-
-    // user
-    Route::get('settings/user', [UserController::class, 'index'])->name('settings.user.index');
-    Route::delete('settings/user', [UserController::class, 'destroy'])->name('settings.user.destroy');
 });
 
 // invitations can be viewed and accepted by guests as well as logged-in users

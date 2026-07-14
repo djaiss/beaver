@@ -3,50 +3,41 @@
     {{ __('Logs') }}
   </x-slot>
 
-  <x-breadcrumb :items="[
-    ['label' => __('Accounts'), 'route' => route('accounts.index')],
-    ['label' => __('Settings'), 'route' => route('settings.index')],
-    ['label' => __('Logs')]
-  ]" />
-
-  <!-- settings layout -->
-  <div class="grid flex-grow bg-gray-50 sm:grid-cols-[220px_1fr] dark:bg-gray-950">
-    <!-- Sidebar -->
-    @include('app.settings._sidebar')
-
-    <!-- Main content -->
-    <section class="p-4 sm:p-8">
-      <div class="mx-auto max-w-4xl sm:px-0">
-        <x-box id="logs-container" x-merge="append" padding="p-0">
-          <x-slot:title>{{ __('Logs') }}</x-slot>
-          <!-- last actions -->
-          @foreach ($logs as $log)
-            <div class="flex items-center justify-between border-b border-gray-200 p-3 text-sm first:rounded-t-lg last:rounded-b-lg last:border-b-0 hover:bg-blue-50 dark:border-gray-700 dark:hover:bg-gray-800">
-              <div class="flex items-center gap-3">
-                <x-phosphor-pulse class="size-3 min-w-3 text-zinc-600 dark:text-zinc-400" />
-                <div class="flex flex-col gap-y-2">
-                  <p class="items-center gap-2 sm:flex">
-                    <span class="">{{ $log->username }}</span>
-                    |
-                    <span class="font-mono text-xs">{{ $log->action }}</span>
-                  </p>
-                  <p class="">{{ $log->description }}</p>
-                </div>
-              </div>
-
-              <x-tooltip text="{{ $log->created_at }}">
-                <p class="font-mono text-xs">{{ $log->created_at_human }}</p>
-              </x-tooltip>
-            </div>
-          @endforeach
-
-          @if ($logs->nextPageUrl())
-            <div id="pagination" class="flex justify-center rounded-b-lg p-3 text-sm hover:bg-blue-50 dark:hover:bg-gray-800">
-              <x-link x-target="logs-container pagination" href="{{ $logs->nextPageUrl() }}" class="text-center">{{ __('Load more') }}</x-link>
-            </div>
-          @endif
-        </x-box>
+  <div class="px-6 py-8 lg:px-12 lg:py-10">
+    <div class="mx-auto w-full max-w-3xl space-y-8">
+      <div>
+        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Logs') }}</h1>
+        <p class="mt-1 text-sm text-muted">{{ __('All actions performed on your account are logged here.') }}</p>
       </div>
-    </section>
+
+      <x-box id="logs-container" x-merge="append" padding="p-0">
+        <!-- last actions -->
+        @foreach ($logs as $log)
+          <div class="flex items-center justify-between border-b border-hairline-soft p-3 text-sm last:border-b-0">
+            <div class="flex items-center gap-3">
+              <x-phosphor-pulse class="size-3 min-w-3 text-muted-soft" />
+              <div class="flex flex-col gap-y-2">
+                <p class="items-center gap-2 text-body sm:flex">
+                  <span class="font-semibold text-ink">{{ $log->username }}</span>
+                  |
+                  <span class="font-mono text-xs">{{ $log->action }}</span>
+                </p>
+                <p class="text-body">{{ $log->description }}</p>
+              </div>
+            </div>
+
+            <x-tooltip text="{{ $log->created_at }}">
+              <p class="font-mono text-xs text-muted-soft">{{ $log->created_at_human }}</p>
+            </x-tooltip>
+          </div>
+        @endforeach
+
+        @if ($logs->nextPageUrl())
+          <div id="pagination" class="flex justify-center p-3 text-sm">
+            <x-link x-target="logs-container pagination" href="{{ $logs->nextPageUrl() }}" class="text-center">{{ __('Load more') }}</x-link>
+          </div>
+        @endif
+      </x-box>
+    </div>
   </div>
 </x-app-layout>

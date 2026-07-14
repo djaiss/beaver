@@ -41,7 +41,7 @@ class CreateMagicLink
     private function create(): void
     {
         $action = new LoginAction($this->user);
-        $action->response(redirect(route('accounts.index', absolute: false)));
+        $action->response(redirect(route('dashboard.index', absolute: false)));
 
         $this->magicLinkUrl = MagicLink::create($action, 5)->url;
     }

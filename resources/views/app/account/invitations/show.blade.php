@@ -3,11 +3,11 @@
     <div class="w-full max-w-md space-y-8">
       <x-box title="{{ __('Account invitation') }}">
         @if (! $invitation->isPending())
-          <p class="text-sm text-gray-700 dark:text-gray-300">
+          <p class="text-sm text-body">
             {{ __('This invitation is no longer valid.') }}
           </p>
         @else
-          <p class="mb-6 text-sm text-gray-700 dark:text-gray-300">
+          <p class="mb-6 text-sm text-body">
             {{ __('You have been invited to join :account.', ['account' => $invitation->account->name]) }}
           </p>
 
@@ -17,7 +17,7 @@
             </x-form>
           @else
             @if ($hasAccount)
-              <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
+              <p class="mb-4 text-sm text-body">
                 {{ __('You already have an account. Please log in to accept this invitation.') }}
               </p>
               <x-button href="{{ route('login') }}">{{ __('Log in') }}</x-button>

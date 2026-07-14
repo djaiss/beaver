@@ -13,11 +13,11 @@
   $classes = [
     'block w-full appearance-none',
     'pr-3 pl-3',
-    'bg-white dark:bg-white/10 dark:disabled:bg-white/[7%]',
-    'text-gray-700 placeholder-gray-400 disabled:text-gray-500 disabled:placeholder-gray-400/70 dark:text-gray-300 dark:placeholder-gray-400 dark:disabled:text-gray-400 dark:disabled:placeholder-gray-500',
-    'rounded-lg border border-gray-200 border-b-gray-300/80 disabled:border-b-gray-200 dark:border-white/10 dark:disabled:border-white/5',
+    'bg-input',
+    'text-ink disabled:text-muted',
+    'rounded-md border border-hairline disabled:opacity-60',
     'shadow-xs disabled:shadow-none dark:shadow-none',
-    'aria-invalid:border-red-500',
+    'aria-invalid:border-error',
     'h-10 py-2 text-base leading-[1.375rem] sm:text-sm',
   ];
 @endphp
@@ -27,7 +27,7 @@
     <div class="flex items-center space-x-2">
       <x-label :for="$id" :value="$label" />
       @if (! $required)
-        <span class="text-sm text-gray-500">({{ __('optional') }})</span>
+        <span class="text-sm text-muted-soft">({{ __('optional') }})</span>
       @endif
     </div>
 
@@ -37,7 +37,7 @@
       @endforeach
     </select>
     @if ($help)
-      <p class="mt-1 block text-xs text-gray-700 dark:text-gray-300">{{ $help }}</p>
+      <p class="mt-1 block text-xs text-muted">{{ $help }}</p>
     @endif
 
     <x-error :messages="$error" />
@@ -50,7 +50,7 @@
       @endforeach
     </select>
     @if ($help)
-      <p class="mt-1 block text-xs text-gray-700 dark:text-gray-300">{{ $help }}</p>
+      <p class="mt-1 block text-xs text-muted">{{ $help }}</p>
     @endif
 
     <x-error :messages="$error" />

@@ -1,0 +1,65 @@
+<x-app-layout>
+  <x-slot:title>
+    {{ __('Members') }}
+  </x-slot>
+
+  @php
+    $roleOptions = ['owner' => __('Owner'), 'editor' => __('Editor'), 'viewer' => __('Viewer')];
+  @endphp
+
+  <div class="px-6 py-8 lg:px-12 lg:py-10">
+    <div class="mx-auto w-full max-w-3xl space-y-8">
+      <div>
+        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Members') }}</h1>
+        <p class="mt-1 text-sm text-muted">{{ __('People who have access to :account.', ['account' => $account->name]) }}</p>
+      </div>
+
+      {{-- Members list --}}
+      <x-box padding="p-0">
+        @foreach ($members as $member)
+          <div class="flex flex-col gap-3 border-b border-hairline-soft px-4 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex min-w-0 items-center gap-3">
+              <x-avatar-initials :name="$member->getFullName()" class="size-9 text-xs" />
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-ink">{{ $member->getFullName() }}</p>
+                <p class="truncate text-xs text-muted">{{ $member->email }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <x-form method="put" :action="route('settings.members.update', $member->id)" class="flex items-center gap-2">
+                <x-select id="role" :options="$roleOptions" :selected="$member->role" />
+                <x-button type="submit">{{ __('Update') }}</x-button>
+              </x-form>
+              <x-form method="delete" :action="route('settings.members.destroy', $member->id)">
+                <x-button.secondary type="submit">{{ __('Remove') }}</x-button.secondary>
+              </x-form>
+            </div>
+          </div>
+        @endforeach
+      </x-box>
+
+      {{-- Invite --}}
+      <x-box title="{{ __('Invite a member') }}">
+        <x-form method="post" :action="route('settings.members.create')" class="space-y-4">
+          <x-input id="email" name="email" :label="__('Email')" :error="$errors->get('email')" required placeholder="ross@friends.com" />
+          <x-select id="role" :label="__('Role')" :options="$roleOptions" :selected="'viewer'" :error="$errors->get('role')" required />
+          <div class="flex items-center justify-end">
+            <x-button type="submit">{{ __('Send invitation') }}</x-button>
+          </div>
+        </x-form>
+      </x-box>
+
+      {{-- Pending invitations --}}
+      @if ($invitations->isNotEmpty())
+        <x-box title="{{ __('Pending invitations') }}" padding="p-0">
+          @foreach ($invitations as $invitation)
+            <div class="flex items-center justify-between border-b border-hairline-soft px-4 py-3 last:border-b-0">
+              <p class="text-sm text-ink">{{ $invitation->email }}</p>
+              <x-badge>{{ __(ucfirst($invitation->role)) }}</x-badge>
+            </div>
+          @endforeach
+        </x-box>
+      @endif
+    </div>
+  </div>
+</x-app-layout>

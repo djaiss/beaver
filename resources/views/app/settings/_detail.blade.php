@@ -3,12 +3,12 @@
 
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
     <div class="space-y-2">
-      <p class="text-sm text-gray-500">{{ __('These are the details that will be displayed on your profile. Everyone within organizations you belong to will have the opportunity to view them.') }}</p>
-      <p class="text-sm text-gray-500">{{ __('If you provide a nickname, it will be displayed to others instead of your real name.') }}</p>
-      <p class="text-sm text-gray-500">{{ __('If you change your email address, you will need to verify it again. In this case, you will receive a new verification link.') }}</p>
+      <p class="text-sm text-muted">{{ __('These are the details that will be displayed on your profile. Everyone within organizations you belong to will have the opportunity to view them.') }}</p>
+      <p class="text-sm text-muted">{{ __('If you provide a nickname, it will be displayed to others instead of your real name.') }}</p>
+      <p class="text-sm text-muted">{{ __('If you change your email address, you will need to verify it again. In this case, you will receive a new verification link.') }}</p>
     </div>
 
-    <x-form method="put" :action="route('settings.profile.update')" class="space-y-4">
+    <x-form method="put" :action="route('profile.update')" class="space-y-4">
       <!-- First name -->
       <x-input id="first_name" value="{{ old('first_name', $user->first_name) }}" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" autofocus />
 

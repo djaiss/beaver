@@ -100,7 +100,7 @@ class SettingsController extends Controller
             timeFormat24h: $validated['time_format_24h'] === 'true',
         )->execute();
 
-        return to_route('settings.index')
+        return to_route('profile.index')
             ->with('status', __('Changes saved'));
     }
 }

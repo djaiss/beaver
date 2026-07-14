@@ -8,21 +8,20 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Account;
-use App\Models\AccountMember;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Remove a member from an account. Only an owner may do so, and the last owner
- * cannot be removed.
+ * Remove a member from an account by deleting their user. Only an owner may do
+ * so, and the last owner cannot be removed.
  */
 class RemoveAccountMember
 {
     public function __construct(
         private readonly User $user,
         private readonly Account $account,
-        private readonly AccountMember $member,
+        private readonly User $member,
     ) {}
 
     public function execute(): void
@@ -53,7 +52,7 @@ class RemoveAccountMember
             return false;
         }
 
-        return $this->account->members()->where('role', PermissionEnum::Owner->value)->count() === 1;
+        return $this->account->users()->where('role', PermissionEnum::Owner->value)->count() === 1;
     }
 
     private function log(): void

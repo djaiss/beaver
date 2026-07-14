@@ -11,20 +11,20 @@
                 <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
               </div>
             </a>
-            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+            <h1 class="text-2xl font-semibold text-ink">
               {{ __('Thanks for signing up!') }}
             </h1>
           </div>
         </div>
 
         <x-box class="mb-12">
-          <p class="text-gray-500">{{ __('Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}</p>
+          <p class="text-muted">{{ __('Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}</p>
         </x-box>
 
         <x-box class="mb-12">
           <x-form method="post" action="{{ route('verification.store') }}" class="space-y-6">
             @if (session('status') == 'verification-link-sent')
-              <p class="!dark:text-green-400 text-center font-medium !text-green-600">
+              <p class="text-center font-medium text-success">
                 {{ __('A new verification link has been sent to the email address you provided during registration.') }}
               </p>
             @endif
@@ -43,13 +43,13 @@
           </x-form>
         </x-box>
 
-        <ul class="text-xs text-gray-600">
+        <ul class="text-xs text-muted">
           <li>&copy; {{ config('app.name') }} {{ now()->format('Y') }}</li>
         </ul>
       </div>
     </div>
 
     <!-- Right side - Image -->
-    <div class="login-image relative hidden bg-gray-400 lg:block"></div>
+    <div class="login-image relative hidden bg-card lg:block"></div>
   </div>
 </x-guest-layout>

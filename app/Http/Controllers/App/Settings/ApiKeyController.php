@@ -29,7 +29,7 @@ class ApiKeyController extends Controller
             label: $validated['label'],
         )->execute();
 
-        return to_route('settings.security.index')
+        return to_route('profile.security.index')
             ->with('apiKey', $apiKey)
             ->with('status', trans('API key created'));
     }
@@ -50,7 +50,7 @@ class ApiKeyController extends Controller
             tokenId: $apiKey->id,
         )->execute();
 
-        return to_route('settings.security.index')
+        return to_route('profile.security.index')
             ->with('status', trans('API key deleted'));
     }
 }

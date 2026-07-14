@@ -22,7 +22,7 @@ class AutoDeleteUserController extends Controller
             autoDeleteUser: $request->input('auto_delete_user') === 'yes',
         )->execute();
 
-        return to_route('settings.security.index')
+        return to_route('profile.security.index')
             ->with('status', trans('Changes saved'));
     }
 }

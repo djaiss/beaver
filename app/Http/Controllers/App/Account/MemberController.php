@@ -9,8 +9,7 @@ use App\Actions\RemoveAccountMember;
 use App\Actions\UpdateMemberRole;
 use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
-use App\Models\Account;
-use App\Models\AccountMember;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
@@ -20,17 +19,20 @@ class MemberController extends Controller
 {
     public function index(Request $request): View
     {
-        /** @var Account $account */
-        $account = $request->attributes->get('account');
+        $account = $request->user()->account;
 
-        $members = $account->members()->with('user')->get();
+        $order = [PermissionEnum::Owner->value, PermissionEnum::Editor->value, PermissionEnum::Viewer->value];
+
+        $members = $account->users()->get()
+            ->sortBy(fn (User $member): int => array_search($member->role, $order, true))
+            ->values();
 
         $invitations = $account->invitations()
             ->whereNull('accepted_at')
             ->where('expires_at', '>', now())
             ->get();
 
-        return view('app.account.members.index', [
+        return view('app.settings.members.index', [
             'account' => $account,
             'members' => $members,
             'invitations' => $invitations,
@@ -44,31 +46,25 @@ class MemberController extends Controller
             'role' => ['required', new Enum(PermissionEnum::class)],
         ]);
 
-        $account = $request->attributes->get('account');
-
         new InviteToAccount(
             user: $request->user(),
-            account: $account,
+            account: $request->user()->account,
             email: $validated['email'],
             role: $validated['role'],
         )->execute();
 
-        return to_route('accounts.members.index', $account->id)
+        return to_route('settings.members.index')
             ->with('status', __('Invitation sent successfully'));
     }
 
-    public function update(Request $request, int $accountId, int $memberId): RedirectResponse
+    public function update(Request $request, int $userId): RedirectResponse
     {
         $validated = $request->validate([
             'role' => ['required', new Enum(PermissionEnum::class)],
         ]);
 
-        /** @var Account $account */
-        $account = $request->attributes->get('account');
-
-        $member = AccountMember::query()
-            ->where('account_id', $account->id)
-            ->findOrFail($memberId);
+        $account = $request->user()->account;
+        $member = $account->users()->findOrFail($userId);
 
         new UpdateMemberRole(
             user: $request->user(),
@@ -77,18 +73,14 @@ class MemberController extends Controller
             role: $validated['role'],
         )->execute();
 
-        return to_route('accounts.members.index', $account->id)
+        return to_route('settings.members.index')
             ->with('status', __('Member role updated successfully'));
     }
 
-    public function destroy(Request $request, int $accountId, int $memberId): RedirectResponse
+    public function destroy(Request $request, int $userId): RedirectResponse
     {
-        /** @var Account $account */
-        $account = $request->attributes->get('account');
-
-        $member = AccountMember::query()
-            ->where('account_id', $account->id)
-            ->findOrFail($memberId);
+        $account = $request->user()->account;
+        $member = $account->users()->findOrFail($userId);
 
         new RemoveAccountMember(
             user: $request->user(),
@@ -96,7 +88,7 @@ class MemberController extends Controller
             member: $member,
         )->execute();
 
-        return to_route('accounts.members.index', $account->id)
+        return to_route('settings.members.index')
             ->with('status', __('Member removed successfully'));
     }
 }

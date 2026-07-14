@@ -3,23 +3,15 @@
     {{ __('Account administration') }}
   </x-slot>
 
-  <x-breadcrumb :items="[
-    ['label' => __('Accounts'), 'route' => route('accounts.index')],
-    ['label' => __('Settings'), 'route' => route('settings.index')],
-    ['label' => __('Account administration')]
-  ]" />
-
-  <!-- settings layout -->
-  <div class="grid flex-grow bg-gray-50 sm:grid-cols-[220px_1fr] dark:bg-gray-950">
-    <!-- Sidebar -->
-    @include('app.settings._sidebar')
-
-    <!-- Main content -->
-    <section class="p-4 sm:p-8">
-      <div class="mx-auto max-w-2xl space-y-6 sm:px-0">
-        <!-- delete account -->
-        @include('app.settings.user._delete', ['errors' => $errors])
+  <div class="px-6 py-8 lg:px-12 lg:py-10">
+    <div class="mx-auto w-full max-w-3xl space-y-8">
+      <div>
+        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Danger zone') }}</h1>
+        <p class="mt-1 text-sm text-muted">{{ __('Irreversible actions for your account.') }}</p>
       </div>
-    </section>
+
+      <!-- delete account -->
+      @include('app.settings.user._delete', ['errors' => $errors])
+    </div>
   </div>
 </x-app-layout>

@@ -6,31 +6,27 @@ namespace App\Actions;
 
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\AccountMember;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Claim a pending invitation and add the user to the account.
+ * Mark a pending invitation as accepted. The user has already been created in
+ * the inviting account (a user always belongs to exactly one account), so this
+ * only closes out the invitation.
  */
 class AcceptInvitation
 {
-    private AccountMember $member;
-
     public function __construct(
         private readonly Invitation $invitation,
         private readonly User $user,
     ) {}
 
-    public function execute(): AccountMember
+    public function execute(): void
     {
         $this->validate();
-        $this->join();
         $this->markAccepted();
         $this->log();
-
-        return $this->member;
     }
 
     private function validate(): void
@@ -42,20 +38,6 @@ class AcceptInvitation
         if (mb_strtolower($this->user->email) !== mb_strtolower($this->invitation->email)) {
             throw ValidationException::withMessages(['token' => 'This invitation was sent to a different email address']);
         }
-
-        if ($this->invitation->account->hasMember($this->user)) {
-            throw ValidationException::withMessages(['token' => 'You are already a member of this account']);
-        }
-    }
-
-    private function join(): void
-    {
-        $this->member = new AddAccountMember(
-            account: $this->invitation->account,
-            user: $this->user,
-            role: $this->invitation->role,
-            invitedBy: $this->invitation->invitedBy,
-        )->execute();
     }
 
     private function markAccepted(): void

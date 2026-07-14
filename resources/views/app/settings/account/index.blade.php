@@ -1,0 +1,32 @@
+<x-app-layout>
+  <x-slot:title>
+    {{ __('Account settings') }}
+  </x-slot>
+
+  <div class="px-6 py-8 lg:px-12 lg:py-10">
+    <div class="mx-auto w-full max-w-3xl space-y-8">
+      <div>
+        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Account settings') }}</h1>
+        <p class="mt-1 text-sm text-muted">{{ __('Manage :account and who can access it.', ['account' => $account->name]) }}</p>
+      </div>
+
+      {{-- General --}}
+      <x-box title="{{ __('General') }}">
+        <x-form method="put" :action="route('settings.update')" class="space-y-4">
+          <x-input id="name" name="name" :label="__('Account name')" :value="$account->name" :error="$errors->get('name')" required />
+          <div class="flex items-center justify-end">
+            <x-button type="submit">{{ __('Save') }}</x-button>
+          </div>
+        </x-form>
+      </x-box>
+
+      {{-- Danger zone --}}
+      <x-box title="{{ __('Delete account') }}">
+        <p class="mb-4 text-sm text-muted">{{ __('Permanently delete this account, all of its members, and everything it contains. This cannot be undone.') }}</p>
+        <x-form method="delete" :action="route('settings.destroy')">
+          <x-button.secondary type="submit">{{ __('Delete account') }}</x-button.secondary>
+        </x-form>
+      </x-box>
+    </div>
+  </div>
+</x-app-layout>

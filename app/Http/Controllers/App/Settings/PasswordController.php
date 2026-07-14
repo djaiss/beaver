@@ -31,7 +31,7 @@ class PasswordController extends Controller
             newPassword: $validated['new_password'],
         )->execute();
 
-        return to_route('settings.security.index')
+        return to_route('profile.security.index')
             ->with('status', __('Changes saved'));
     }
 }

@@ -32,19 +32,11 @@ class InvitationController extends Controller
     {
         $invitation = Invitation::query()->where('token', $token)->firstOrFail();
 
-        if (Auth::check()) {
-            new AcceptInvitation(
-                invitation: $invitation,
-                user: $request->user(),
-            )->execute();
-
-            return to_route('accounts.show', $invitation->account_id)
-                ->with('status', __('Invitation accepted successfully'));
-        }
-
-        if (User::query()->where('email', $invitation->email)->exists()) {
+        // A user belongs to exactly one account, so anyone who already has one
+        // cannot claim an invitation into another account.
+        if (Auth::check() || User::query()->where('email', $invitation->email)->exists()) {
             return to_route('login')
-                ->with('status', __('Please log in to accept your invitation'));
+                ->with('status', __('An account already exists for this email address.'));
         }
 
         $validated = $request->validate([
@@ -60,10 +52,12 @@ class InvitationController extends Controller
         ]);
 
         $user = new CreateUser(
+            account: $invitation->account,
             email: $invitation->email,
             password: $validated['password'],
             firstName: $validated['first_name'],
             lastName: $validated['last_name'],
+            role: $invitation->role,
         )->execute();
 
         $user->email_verified_at = now();
@@ -78,7 +72,7 @@ class InvitationController extends Controller
             user: $user,
         )->execute();
 
-        return to_route('accounts.show', $invitation->account_id)
-            ->with('status', __('Invitation accepted successfully'));
+        return to_route('dashboard.index')
+            ->with('status', __('Welcome! You have joined the account.'));
     }
 }

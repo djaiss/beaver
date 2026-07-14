@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\CheckAccount;
-use App\Http\Middleware\CheckAccountOwner;
 use App\Http\Middleware\CheckMarketing;
+use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,8 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'set.locale' => SetLocale::class,
-            'account' => CheckAccount::class,
-            'account.owner' => CheckAccountOwner::class,
+            'owner' => EnsureAccountOwner::class,
             'marketing' => CheckMarketing::class,
         ]);
     })

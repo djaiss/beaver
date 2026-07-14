@@ -8,7 +8,6 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Account;
-use App\Models\AccountMember;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -22,11 +21,11 @@ class UpdateMemberRole
     public function __construct(
         private readonly User $user,
         private readonly Account $account,
-        private readonly AccountMember $member,
+        private readonly User $member,
         private string $role,
     ) {}
 
-    public function execute(): AccountMember
+    public function execute(): User
     {
         $this->validate();
         $this->update();
@@ -64,7 +63,7 @@ class UpdateMemberRole
             return false;
         }
 
-        return $this->account->members()->where('role', PermissionEnum::Owner->value)->count() === 1;
+        return $this->account->users()->where('role', PermissionEnum::Owner->value)->count() === 1;
     }
 
     private function update(): void

@@ -4,7 +4,7 @@
     <div class="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center px-5 py-10 sm:px-30">
       <div class="w-full space-y-8">
         @if (config('app.show_marketing_site'))
-          <p class="group mb-10 flex items-center gap-x-1 text-sm text-gray-600">
+          <p class="group mb-10 flex items-center gap-x-1 text-sm text-muted">
             <x-phosphor-arrow-left class="h-4 w-4 transition-transform duration-150 group-hover:-translate-x-1" />
             <x-link href="{{ route('marketing.index') }}" class="group-hover:underline">{{ __('Back to the marketing website') }}</x-link>
           </p>
@@ -20,7 +20,7 @@
               <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
             </div>
           </a>
-          <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+          <h1 class="text-2xl font-semibold text-ink">
             {{ __('Forgot password') }}
           </h1>
         </div>
@@ -32,7 +32,7 @@
             <x-input id="email" type="email" :label="__('Email address')" required autofocus placeholder="john@doe.com" />
 
             <div class="flex items-center justify-between">
-              <x-link href="{{ route('login') }}" class="text-sm text-gray-600">
+              <x-link href="{{ route('login') }}" class="text-sm text-muted">
                 {{ __('Back to login') }}
               </x-link>
 
@@ -49,7 +49,7 @@
           </x-link>
         </x-box>
 
-        <ul class="text-xs text-gray-600">
+        <ul class="text-xs text-muted">
           <li>© {{ config('app.name') }} {{ now()->format('Y') }}</li>
         </ul>
       </div>
