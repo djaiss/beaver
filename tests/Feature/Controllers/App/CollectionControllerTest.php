@@ -10,6 +10,47 @@ use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
+it('lists the account collections', function () {
+    $user = $this->createUser();
+    Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+    Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Vinyl — Jazz LPs']);
+
+    $response = $this->actingAs($user)->get('/collections');
+
+    $response->assertOk();
+    $response->assertSee('Marvel Comics 1990s');
+    $response->assertSee('Vinyl — Jazz LPs');
+});
+
+it('does not list another accounts collections', function () {
+    $user = $this->createUser();
+    Collection::factory()->create(['name' => 'Foreign Collection']);
+
+    $response = $this->actingAs($user)->get('/collections');
+
+    $response->assertOk();
+    $response->assertDontSee('Foreign Collection');
+});
+
+it('allows a viewer to list collections', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    Collection::factory()->create(['account_id' => $account->id, 'name' => 'Wine Cellar']);
+
+    $this->actingAs($viewer)->get('/collections')
+        ->assertOk()
+        ->assertSee('Wine Cellar');
+});
+
+it('shows an empty state when there are no collections', function () {
+    $user = $this->createUser();
+
+    $this->actingAs($user)->get('/collections')
+        ->assertOk()
+        ->assertSee('No collections yet');
+});
+
 it('shows the new collection form', function () {
     $user = $this->createUser();
     CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);

@@ -18,6 +18,15 @@ class CollectionController extends Controller
     /** @var list<string> */
     private const array EMOJI_OPTIONS = ['📦', '📚', '💿', '🃏', '🍷', '🎮', '🧸', '🪙', '🖼️', '⌚', '👟', '📷'];
 
+    public function index(Request $request): View
+    {
+        $account = $request->user()->account;
+
+        return view('app.collections.index', [
+            'collections' => $account->collections()->orderByDesc('updated_at')->get(),
+        ]);
+    }
+
     public function show(Request $request, int $collection): View
     {
         $account = $request->user()->account;
