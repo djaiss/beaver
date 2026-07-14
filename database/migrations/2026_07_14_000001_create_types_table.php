@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('types', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->foreignId('account_id')->comment('account the type belongs to')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('account_id')->comment('account the type belongs to');
             $table->text('name')->comment('name of the type, e.g. Comics or Vinyl');
             $table->string('color', 7)->comment('hex color representing the type, e.g. #1D4ED8');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the type');
@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the type');
             $table->text('updated_by_name')->nullable()->comment('name of the last editor at the time');
             $table->timestamps();
+
+            $table->foreign('account_id')->references('id')->on('accounts')->cascadeOnDelete();
         });
     }
 

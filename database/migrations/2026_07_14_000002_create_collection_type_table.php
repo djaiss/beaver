@@ -12,9 +12,12 @@ return new class extends Migration
     {
         Schema::create('collection_type', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->foreignId('collection_id')->comment('the linked collection')->constrained()->cascadeOnDelete();
-            $table->foreignId('type_id')->comment('the linked type')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('collection_id')->comment('the linked collection');
+            $table->unsignedBigInteger('type_id')->comment('the linked type');
             $table->unique(['collection_id', 'type_id']);
+
+            $table->foreign('collection_id')->references('id')->on('collections')->cascadeOnDelete();
+            $table->foreign('type_id')->references('id')->on('types')->cascadeOnDelete();
         });
     }
 
