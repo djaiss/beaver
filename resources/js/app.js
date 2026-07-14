@@ -42,5 +42,15 @@ addEventListener('turbo:load', () => {
   if (window.Alpine?.initTree) Alpine.initTree(document.body);
 });
 
+// Turbo morph refreshes diff against the server HTML, which reverts the runtime
+// DOM changes Alpine makes (x-show/x-cloak). That reopens toggles like the sidebar
+// user menu. Skip morphing anything marked data-morph-skip so its state survives.
+// This only fires on morph refreshes, so full navigations still update normally.
+addEventListener('turbo:before-morph-element', (event) => {
+  if (event.target.matches?.('[data-morph-skip]')) {
+    event.preventDefault();
+  }
+});
+
 // If you need page-specific teardown, you can hook before Turbo renders the new DOM:
 // addEventListener('turbo:before-render', (event) => { /* cleanup here */ });

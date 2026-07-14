@@ -3,6 +3,8 @@
   <head>
     @include('partials.meta', ['title' => $title ?? null])
 
+    {{ $head ?? '' }}
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
@@ -11,6 +13,7 @@
       {{-- Mobile backdrop --}}
       <div
         x-cloak
+        data-morph-skip
         x-show="sidebarOpen"
         x-transition.opacity
         @click="sidebarOpen = false"
