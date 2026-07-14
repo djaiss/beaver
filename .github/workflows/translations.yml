@@ -1,8 +1,6 @@
 name: Check translations
 
 on:
-  push:
-    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
@@ -13,6 +11,7 @@ permissions:
 jobs:
   check-translations:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     name: Check translation completeness
 
     steps:

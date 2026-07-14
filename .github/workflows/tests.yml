@@ -4,21 +4,15 @@ permissions:
   pull-requests: write
 
 on:
-  push:
-    branches: [main]
   pull_request:
     types: [opened, synchronize, reopened]
   release:
     types: [created]
   workflow_dispatch:
 
-env:
-  default-php-version: '8.4'
-  coverage-with: sqlite
-
 concurrency:
   group: Build ${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   #############
@@ -26,36 +20,31 @@ jobs:
   #############
   tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     name: PHP ${{ matrix.php-version }} + ${{ matrix.connection }}
 
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.4', '8.5']
+        php-version: ['8.5']
         connection: [sqlite, mysql, pgsql]
-        testsuite: [Unit]
-        coverage: [true] # run test with coverage, if 'coverage-with' match with the connection
+
+    # Selects the database connection for every step, including the plain
+    # `artisan migrate` (phpunit.xml pins DB_CONNECTION to "testing", so this
+    # env is what actually drives the connection at runtime).
+    env:
+      DB_CONNECTION: ${{ matrix.connection }}
 
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
 
-      - name: Setup PHP ${{ matrix.php-version }} without coverage
-        if: matrix.connection != env.coverage-with || matrix.php-version != env.default-php-version || ! matrix.coverage
+      - name: Setup PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           extensions: mbstring, dom, fileinfo, ${{ matrix.connection }}
           coverage: none
-
-      - name: Setup PHP ${{ matrix.php-version }}
-        if: matrix.connection == env.coverage-with && matrix.php-version == env.default-php-version && matrix.coverage
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: mbstring, dom, fileinfo, ${{ matrix.connection }}
-          coverage: pcov
-          ini-values: pcov.directory=., pcov.exclude="~vendor~"
 
       - name: Check PHP Version
         run: php -v
@@ -80,7 +69,6 @@ jobs:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
             ${{ runner.os }}-composer-${{ matrix.php-version }}
             ${{ runner.os }}-composer-
 
@@ -129,19 +117,83 @@ jobs:
         run: php artisan migrate --no-interaction -vvv
 
       - name: Run tests
-        if: matrix.connection == 'sqlite'
+        if: matrix.connection != 'pgsql'
         run: php artisan test --parallel
-        env:
-          DB_CONNECTION: ${{ matrix.connection }}
-
-      - name: Run tests (mysql)
-        if: matrix.connection == 'mysql'
-        run: php artisan test --parallel
-        env:
-          DB_CONNECTION: ${{ matrix.connection }}
 
       - name: Run tests (pgsql)
         if: matrix.connection == 'pgsql'
         run: php artisan test --parallel --recreate-databases
-        env:
-          DB_CONNECTION: ${{ matrix.connection }}
+
+  ####################
+  # Run browser tests
+  ####################
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    name: Browser tests (Playwright)
+
+    env:
+      DB_CONNECTION: sqlite
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, dom, fileinfo, sqlite
+          coverage: none
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache composer files
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.5-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.5
+            ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install JS dependencies
+        run: bun install
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      # The browser tests run with Vite disabled, so a stubbed manifest is
+      # enough and we avoid building the real assets.
+      - name: Prepare environment
+        run: |
+          cp tests/.env.ci.sqlite .env
+          touch database/database.sqlite
+          mkdir -p public/build/assets
+          {\
+            echo "{"; \
+            for f in app.js app.css marketing.js marketing.css; do \
+              [[ $first == 1 ]] && echo -n "," || first=1; \
+              k=${f##*.}/$f; \
+              echo "\"resources/$k\": {\"file\": \"assets/$f\", \"src\": \"resources/$k\"}"; \
+              echo '' > public/build/assets/$f; \
+            done; \
+            echo "}"; \
+          } | tee public/build/manifest.json
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate --no-interaction
+
+      - name: Run browser tests
+        run: php artisan test tests/Browser
