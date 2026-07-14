@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\App\Account\AccountController;
 use App\Http\Controllers\App\Account\InvitationController;
 use App\Http\Controllers\App\Account\MemberController;
+use App\Http\Controllers\App\CollectionController;
 use App\Http\Controllers\App\CollectionTypeCollectionController;
 use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CustomFieldController;
@@ -36,6 +37,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('collections', fn () => view('app._placeholder', ['title' => __('Collections'), 'body' => __('Organize your items into collections. This is coming soon.')]))->name('collections.index');
     Route::get('locations', fn () => view('app._placeholder', ['title' => __('Locations'), 'body' => __('Track where your items are stored. This is coming soon.')]))->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
+
+    // collections — owners and editors may create new collections
+    Route::middleware(['editor'])->group(function (): void {
+        Route::get('collections/new', [CollectionController::class, 'new'])->name('collections.new');
+        Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
+    });
 
     // personal profile — each user manages their own (any authenticated user)
     Route::get('profile', [SettingsController::class, 'index'])->name('profile.index');

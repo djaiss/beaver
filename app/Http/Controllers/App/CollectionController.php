@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\App;
+
+use App\Actions\CreateCollection;
+use App\Enums\VisibilityEnum;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+
+class CollectionController extends Controller
+{
+    /** @var list<string> */
+    private const array EMOJI_OPTIONS = ['📦', '📚', '💿', '🃏', '🍷', '🎮', '🧸', '🪙', '🖼️', '⌚', '👟', '📷'];
+
+    public function new(Request $request): View
+    {
+        $account = $request->user()->account;
+
+        return view('app.collections.new', [
+            'types' => $account->collectionTypes()->orderBy('name')->get(),
+            'currencies' => $this->currencyOptions(),
+            'defaultCurrency' => $account->currency_code,
+            'emojiOptions' => self::EMOJI_OPTIONS,
+            'visibilityOptions' => $this->visibilityOptions(),
+        ]);
+    }
+
+    public function create(Request $request): RedirectResponse
+    {
+        $account = $request->user()->account;
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'emoji' => ['nullable', 'string', Rule::in(self::EMOJI_OPTIONS)],
+            'visibility' => ['required', Rule::enum(VisibilityEnum::class)],
+            'currency' => ['nullable', 'string', Rule::in(array_keys(config('currencies')))],
+            'collection_type_ids' => ['array'],
+            'collection_type_ids.*' => ['integer'],
+        ]);
+
+        new CreateCollection(
+            user: $request->user(),
+            account: $account,
+            name: $validated['name'],
+            description: $validated['description'] ?? null,
+            emoji: $validated['emoji'] ?? null,
+            visibility: $validated['visibility'],
+            currency: $validated['currency'] ?? null,
+            collectionTypeIds: $validated['collection_type_ids'] ?? [],
+        )->execute();
+
+        return to_route('collections.index')
+            ->with('status', __('Collection created'));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function currencyOptions(): array
+    {
+        return collect(config('currencies'))
+            ->map(fn (array $currency, string $code): string => $currency['flag'].' '.$code)
+            ->all();
+    }
+
+    /**
+     * @return list<array{key: string, label: string, description: string}>
+     */
+    private function visibilityOptions(): array
+    {
+        return [
+            ['key' => VisibilityEnum::Private->value, 'label' => __('Private'), 'description' => __('Only you can see this collection.')],
+            ['key' => VisibilityEnum::Shared->value, 'label' => __('Shared'), 'description' => __('Visible to everyone in your account.')],
+            ['key' => VisibilityEnum::Public->value, 'label' => __('Public'), 'description' => __('Anyone with the link can view it, read-only.')],
+        ];
+    }
+}

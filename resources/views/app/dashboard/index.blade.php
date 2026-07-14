@@ -19,7 +19,7 @@
         <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ $greeting }}, {{ $firstName }}</h1>
         <p class="mt-1 text-[15px] text-muted">{{ __("Here's what's happening across your account.") }}</p>
       </div>
-      <x-button href="{{ route('collections.index') }}" turbo="true">
+      <x-button href="{{ route('collections.new') }}" turbo="true">
         <x-slot:icon>
           <x-lucide-plus class="size-4" />
         </x-slot>

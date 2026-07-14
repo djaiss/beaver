@@ -24,6 +24,7 @@ class CreateCollection
 
     /**
      * @param  array<string, mixed>|null  $settings
+     * @param  array<int, int>  $collectionTypeIds
      */
     public function __construct(
         private readonly User $user,
@@ -34,6 +35,7 @@ class CreateCollection
         private string $visibility = VisibilityEnum::Private->value,
         private ?string $currency = null,
         private ?array $settings = null,
+        private array $collectionTypeIds = [],
     ) {}
 
     public function execute(): Collection
@@ -41,6 +43,7 @@ class CreateCollection
         $this->validate();
         $this->sanitize();
         $this->create();
+        $this->syncCollectionTypes();
         $this->stampAuthor();
         $this->log();
 
@@ -85,6 +88,16 @@ class CreateCollection
             'currency' => $this->currency,
             'settings' => $this->settings,
         ]);
+    }
+
+    private function syncCollectionTypes(): void
+    {
+        $ids = $this->account->collectionTypes()
+            ->whereIn('id', $this->collectionTypeIds)
+            ->pluck('id')
+            ->all();
+
+        $this->collection->collectionTypes()->sync($ids);
     }
 
     private function stampAuthor(): void
