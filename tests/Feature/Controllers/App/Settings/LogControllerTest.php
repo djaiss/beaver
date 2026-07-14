@@ -1,55 +1,42 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Settings;
-
 use App\Models\Log;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class LogControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_shows_all_the_logs(): void
-    {
-        Date::setTestNow(Date::create(2018, 1, 1));
-        $user = $this->createUser();
+it('shows all the logs', function () {
+    Date::setTestNow(Date::create(2018, 1, 1));
+    $user = $this->createUser();
 
-        Log::factory()->create([
+    Log::factory()->create([
+        'user_id' => $user->id,
+        'action' => 'log.user.profile_updated',
+    ]);
+
+    $response = $this->actingAs($user)
+        ->get('/settings/logs');
+
+    $response->assertStatus(200);
+    $response->assertViewIs('app.settings.logs.index');
+    $response->assertViewHas('logs');
+});
+it('shows a pagination', function () {
+    $user = $this->createUser();
+
+    Log::factory()
+        ->count(15)
+        ->create([
             'user_id' => $user->id,
-            'action' => 'log.user.profile_updated',
         ]);
 
-        $response = $this->actingAs($user)
-            ->get('/settings/logs');
+    $response = $this->actingAs($user)
+        ->get('/settings/logs');
 
-        $response->assertStatus(200);
-        $response->assertViewIs('app.settings.logs.index');
-        $response->assertViewHas('logs');
-    }
+    $response->assertStatus(200);
+    expect($response['logs'])->toHaveCount(10);
 
-    #[Test]
-    public function it_shows_a_pagination(): void
-    {
-        $user = $this->createUser();
-
-        Log::factory()
-            ->count(15)
-            ->create([
-                'user_id' => $user->id,
-            ]);
-
-        $response = $this->actingAs($user)
-            ->get('/settings/logs');
-
-        $response->assertStatus(200);
-        $this->assertCount(10, $response['logs']);
-
-        $this->assertTrue($response['logs']->hasMorePages());
-    }
-}
+    expect($response['logs']->hasMorePages())->toBeTrue();
+});

@@ -1,30 +1,17 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\Marketing\Docs;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class ApiProfileControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_renders_the_api_profile_page(): void
-    {
-        $response = $this->get('/docs/1.x/api/account/profile');
+it('renders the api profile page', function () {
+    $response = $this->get('/docs/1.x/api/account/profile');
 
-        $response->assertOk();
-    }
+    $response->assertOk();
+});
+it('returns the profile document as markdown', function () {
+    $response = $this->get('/docs/1.x/api/account/profile.md');
 
-    #[Test]
-    public function it_returns_the_profile_document_as_markdown(): void
-    {
-        $response = $this->get('/docs/1.x/api/account/profile.md');
-
-        $response->assertOk();
-    }
-}
+    $response->assertOk();
+});

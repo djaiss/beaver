@@ -1,32 +1,22 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Settings;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class PasswordControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_allows_the_user_to_update_their_password(): void
-    {
-        $user = $this->createUser([
-            'password' => bcrypt('5UTHSmdj'),
+it('allows the user to update their password', function () {
+    $user = $this->createUser([
+        'password' => bcrypt('5UTHSmdj'),
+    ]);
+
+    $response = $this->actingAs($user)
+        ->from('/settings/security')
+        ->put('/settings/security/password', [
+            'current_password' => '5UTHSmdj',
+            'new_password' => 'new-5UTHSmdj',
+            'new_password_confirmation' => 'new-5UTHSmdj',
         ]);
 
-        $response = $this->actingAs($user)
-            ->from('/settings/security')
-            ->put('/settings/security/password', [
-                'current_password' => '5UTHSmdj',
-                'new_password' => 'new-5UTHSmdj',
-                'new_password_confirmation' => 'new-5UTHSmdj',
-            ]);
-
-        $response->assertRedirect('/settings/security');
-    }
-}
+    $response->assertRedirect('/settings/security');
+});

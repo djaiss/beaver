@@ -1,77 +1,60 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Models\Concerns;
-
-use App\Models\Account;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class HasAuthorTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_stamps_the_author_when_a_record_is_created(): void
-    {
-        $user = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
+it('stamps the author when a record is created', function () {
+    $user = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
 
-        $account = $this->actingAs($user)->createAccount();
+    $account = $this->actingAs($user)->createAccount();
 
-        $account->refresh();
+    $account->refresh();
 
-        $this->assertSame($user->id, $account->created_by_id);
-        $this->assertSame('Rachel Green', $account->created_by_name);
-        $this->assertSame($user->id, $account->updated_by_id);
-        $this->assertSame('Rachel Green', $account->updated_by_name);
-    }
+    expect($account->created_by_id)->toBe($user->id);
+    expect($account->created_by_name)->toBe('Rachel Green');
+    expect($account->updated_by_id)->toBe($user->id);
+    expect($account->updated_by_name)->toBe('Rachel Green');
+});
+it('refreshes only the updater when a record is updated', function () {
+    $creator = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
+    $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
 
-    #[Test]
-    public function it_refreshes_only_the_updater_when_a_record_is_updated(): void
-    {
-        $creator = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
-        $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
+    $account = $this->actingAs($creator)->createAccount(name: 'Old name');
 
-        $account = $this->actingAs($creator)->createAccount(name: 'Old name');
+    $this->actingAs($editor);
+    $account->name = 'Central Perk';
+    $account->save();
 
-        $this->actingAs($editor);
-        $account->name = 'Central Perk';
-        $account->save();
+    $account->refresh();
 
-        $account->refresh();
+    expect($account->created_by_id)->toBe($creator->id);
+    expect($account->created_by_name)->toBe('Rachel Green');
+    expect($account->updated_by_id)->toBe($editor->id);
+    expect($account->updated_by_name)->toBe('Ross Geller');
+});
+it('keeps the author name snapshot after the author is deleted', function () {
+    $creator = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
+    $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
 
-        $this->assertSame($creator->id, $account->created_by_id);
-        $this->assertSame('Rachel Green', $account->created_by_name);
-        $this->assertSame($editor->id, $account->updated_by_id);
-        $this->assertSame('Ross Geller', $account->updated_by_name);
-    }
+    $account = $this->actingAs($creator)->createAccount(name: 'Old name');
 
-    #[Test]
-    public function it_keeps_the_author_name_snapshot_after_the_author_is_deleted(): void
-    {
-        $creator = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
-        $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
+    $this->actingAs($editor);
+    $account->name = 'Central Perk';
+    $account->save();
 
-        $account = $this->actingAs($creator)->createAccount(name: 'Old name');
+    $creator->delete();
 
-        $this->actingAs($editor);
-        $account->name = 'Central Perk';
-        $account->save();
+    $account->refresh();
 
-        $creator->delete();
-
-        $account->refresh();
-
-        /*
-         * The author id is wiped through the nullOnDelete foreign key when the
-         * database enforces constraints. The sqlite testing connection leaves
-         * foreign keys disabled, so we only assert on the encrypted name
-         * snapshot, which is the behaviour that survives regardless of the
-         * database in use.
-         */
-        $this->assertDatabaseMissing('users', ['id' => $creator->id]);
-        $this->assertSame('Rachel Green', $account->created_by_name);
-    }
-}
+    /*
+     * The author id is wiped through the nullOnDelete foreign key when the
+     * database enforces constraints. The sqlite testing connection leaves
+     * foreign keys disabled, so we only assert on the encrypted name
+     * snapshot, which is the behaviour that survives regardless of the
+     * database in use.
+     */
+    $this->assertDatabaseMissing('users', ['id' => $creator->id]);
+    expect($account->created_by_name)->toBe('Rachel Green');
+});

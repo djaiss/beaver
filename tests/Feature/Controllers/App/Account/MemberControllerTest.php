@@ -1,162 +1,131 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Account;
-
 use App\Enums\PermissionEnum;
 use App\Mail\AccountInvitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class MemberControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_lists_the_members_for_an_owner(): void
-    {
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+it('lists the members for an owner', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $response = $this->actingAs($owner)->get("accounts/{$account->id}/members");
+    $response = $this->actingAs($owner)->get("accounts/{$account->id}/members");
 
-        $response->assertOk();
-        $response->assertViewIs('app.account.members.index');
-    }
+    $response->assertOk();
+    $response->assertViewIs('app.account.members.index');
+});
+it('forbids a non owner from listing the members', function () {
+    $user = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
 
-    #[Test]
-    public function it_forbids_a_non_owner_from_listing_the_members(): void
-    {
-        $user = $this->createUser();
-        $account = $this->createAccount();
-        $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
+    $response = $this->actingAs($user)->get("accounts/{$account->id}/members");
 
-        $response = $this->actingAs($user)->get("accounts/{$account->id}/members");
+    $response->assertForbidden();
+});
+it('sends an invitation', function () {
+    Queue::fake();
+    Mail::fake();
 
-        $response->assertForbidden();
-    }
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    #[Test]
-    public function it_sends_an_invitation(): void
-    {
-        Queue::fake();
-        Mail::fake();
+    $response = $this->actingAs($owner)->post("accounts/{$account->id}/members", [
+        'email' => 'phoebe.buffay@friends.com',
+        'role' => PermissionEnum::Editor->value,
+    ]);
 
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $response->assertRedirect(route('accounts.members.index', $account->id, absolute: false));
+    $this->assertDatabaseHas('invitations', [
+        'account_id' => $account->id,
+        'email' => 'phoebe.buffay@friends.com',
+        'role' => PermissionEnum::Editor->value,
+    ]);
+    Mail::assertQueued(AccountInvitation::class);
+});
+it('updates the role of a member', function () {
+    Queue::fake();
 
-        $response = $this->actingAs($owner)->post("accounts/{$account->id}/members", [
-            'email' => 'phoebe.buffay@friends.com',
-            'role' => PermissionEnum::Editor->value,
-        ]);
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $response->assertRedirect(route('accounts.members.index', $account->id, absolute: false));
-        $this->assertDatabaseHas('invitations', [
-            'account_id' => $account->id,
-            'email' => 'phoebe.buffay@friends.com',
-            'role' => PermissionEnum::Editor->value,
-        ]);
-        Mail::assertQueued(AccountInvitation::class);
-    }
+    $member = $this->assignUserToAccount(
+        user: $this->createUser(),
+        account: $account,
+        role: PermissionEnum::Viewer->value,
+    );
 
-    #[Test]
-    public function it_updates_the_role_of_a_member(): void
-    {
-        Queue::fake();
+    $response = $this->actingAs($owner)->put("accounts/{$account->id}/members/{$member->id}", [
+        'role' => PermissionEnum::Editor->value,
+    ]);
 
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $response->assertRedirect(route('accounts.members.index', $account->id, absolute: false));
+    expect($member->fresh()->role)->toBe(PermissionEnum::Editor->value);
+});
+it('removes a member', function () {
+    Queue::fake();
 
-        $member = $this->assignUserToAccount(
-            user: $this->createUser(),
-            account: $account,
-            role: PermissionEnum::Viewer->value,
-        );
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $response = $this->actingAs($owner)->put("accounts/{$account->id}/members/{$member->id}", [
-            'role' => PermissionEnum::Editor->value,
-        ]);
+    $member = $this->assignUserToAccount(
+        user: $this->createUser(),
+        account: $account,
+        role: PermissionEnum::Viewer->value,
+    );
 
-        $response->assertRedirect(route('accounts.members.index', $account->id, absolute: false));
-        $this->assertSame(PermissionEnum::Editor->value, $member->fresh()->role);
-    }
+    $response = $this->actingAs($owner)->delete("accounts/{$account->id}/members/{$member->id}");
 
-    #[Test]
-    public function it_removes_a_member(): void
-    {
-        Queue::fake();
+    $response->assertRedirect(route('accounts.members.index', $account->id, absolute: false));
+    $this->assertModelMissing($member);
+});
+it('returns not found for a member of another account', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $otherAccount = $this->createAccount();
+    $foreignMember = $this->assignUserToAccount(
+        user: $this->createUser(),
+        account: $otherAccount,
+        role: PermissionEnum::Viewer->value,
+    );
 
-        $member = $this->assignUserToAccount(
-            user: $this->createUser(),
-            account: $account,
-            role: PermissionEnum::Viewer->value,
-        );
+    $response = $this->actingAs($owner)->delete("accounts/{$account->id}/members/{$foreignMember->id}");
 
-        $response = $this->actingAs($owner)->delete("accounts/{$account->id}/members/{$member->id}");
+    $response->assertNotFound();
+});
+it('cannot remove the last owner', function () {
+    Queue::fake();
 
-        $response->assertRedirect(route('accounts.members.index', $account->id, absolute: false));
-        $this->assertModelMissing($member);
-    }
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $member = $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    #[Test]
-    public function it_returns_not_found_for_a_member_of_another_account(): void
-    {
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $response = $this->actingAs($owner)->delete("accounts/{$account->id}/members/{$member->id}");
 
-        $otherAccount = $this->createAccount();
-        $foreignMember = $this->assignUserToAccount(
-            user: $this->createUser(),
-            account: $otherAccount,
-            role: PermissionEnum::Viewer->value,
-        );
+    $response->assertSessionHasErrors('member');
+    $this->assertDatabaseHas('account_user', ['id' => $member->id]);
+});
+it('cannot demote the last owner', function () {
+    Queue::fake();
 
-        $response = $this->actingAs($owner)->delete("accounts/{$account->id}/members/{$foreignMember->id}");
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $member = $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $response->assertNotFound();
-    }
+    $response = $this->actingAs($owner)->put("accounts/{$account->id}/members/{$member->id}", [
+        'role' => PermissionEnum::Viewer->value,
+    ]);
 
-    #[Test]
-    public function it_cannot_remove_the_last_owner(): void
-    {
-        Queue::fake();
-
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $member = $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-
-        $response = $this->actingAs($owner)->delete("accounts/{$account->id}/members/{$member->id}");
-
-        $response->assertSessionHasErrors('member');
-        $this->assertDatabaseHas('account_user', ['id' => $member->id]);
-    }
-
-    #[Test]
-    public function it_cannot_demote_the_last_owner(): void
-    {
-        Queue::fake();
-
-        $owner = $this->createUser();
-        $account = $this->createAccount();
-        $member = $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-
-        $response = $this->actingAs($owner)->put("accounts/{$account->id}/members/{$member->id}", [
-            'role' => PermissionEnum::Viewer->value,
-        ]);
-
-        $response->assertSessionHasErrors('role');
-        $this->assertSame(PermissionEnum::Owner->value, $member->fresh()->role);
-    }
-}
+    $response->assertSessionHasErrors('role');
+    expect($member->fresh()->role)->toBe(PermissionEnum::Owner->value);
+});

@@ -1,103 +1,74 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Models;
-
 use App\Enums\PermissionEnum;
-use App\Models\Account;
 use App\Models\AccountMember;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class AccountTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_has_many_users(): void
-    {
-        $account = $this->createAccount();
-        $user = $this->createUser();
-        $this->assignUserToAccount(user: $user, account: $account);
+it('has many users', function () {
+    $account = $this->createAccount();
+    $user = $this->createUser();
+    $this->assignUserToAccount(user: $user, account: $account);
 
-        $this->assertTrue($account->users()->exists());
-        $this->assertInstanceOf(User::class, $account->users()->first());
-    }
+    expect($account->users()->exists())->toBeTrue();
+    expect($account->users()->first())->toBeInstanceOf(User::class);
+});
+it('has many members', function () {
+    $account = $this->createAccount();
+    AccountMember::factory()->create(['account_id' => $account->id]);
 
-    #[Test]
-    public function it_has_many_members(): void
-    {
-        $account = $this->createAccount();
-        AccountMember::factory()->create(['account_id' => $account->id]);
+    expect($account->members()->exists())->toBeTrue();
+    expect($account->members()->first())->toBeInstanceOf(AccountMember::class);
+});
+it('has many invitations', function () {
+    $account = $this->createAccount();
+    Invitation::factory()->create(['account_id' => $account->id]);
 
-        $this->assertTrue($account->members()->exists());
-        $this->assertInstanceOf(AccountMember::class, $account->members()->first());
-    }
+    expect($account->invitations()->exists())->toBeTrue();
+    expect($account->invitations()->first())->toBeInstanceOf(Invitation::class);
+});
+it('lists only owners as administrators', function () {
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
 
-    #[Test]
-    public function it_has_many_invitations(): void
-    {
-        $account = $this->createAccount();
-        Invitation::factory()->create(['account_id' => $account->id]);
+    $administrators = $account->administrators()->get();
 
-        $this->assertTrue($account->invitations()->exists());
-        $this->assertInstanceOf(Invitation::class, $account->invitations()->first());
-    }
+    expect($administrators)->toHaveCount(1);
+    expect($administrators->contains('id', $owner->id))->toBeTrue();
+    expect($administrators->contains('id', $viewer->id))->toBeFalse();
+});
+it('knows whether a user is a member', function () {
+    $account = $this->createAccount();
+    $member = $this->createUser();
+    $stranger = $this->createUser();
+    $this->assignUserToAccount(user: $member, account: $account);
 
-    #[Test]
-    public function it_lists_only_owners_as_administrators(): void
-    {
-        $account = $this->createAccount();
-        $owner = $this->createUser();
-        $viewer = $this->createUser();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-        $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    expect($account->hasMember($member))->toBeTrue();
+    expect($account->hasMember($stranger))->toBeFalse();
+});
+it('returns the role for a member', function () {
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $stranger = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $administrators = $account->administrators()->get();
+    expect($account->roleFor($owner))->toBe(PermissionEnum::Owner->value);
+    expect($account->roleFor($stranger))->toBeNull();
+});
+it('encrypts the name at rest', function () {
+    $account = $this->createAccount(name: 'Central Perk');
 
-        $this->assertCount(1, $administrators);
-        $this->assertTrue($administrators->contains('id', $owner->id));
-        $this->assertFalse($administrators->contains('id', $viewer->id));
-    }
+    $rawName = DB::table('accounts')->where('id', $account->id)->value('name');
 
-    #[Test]
-    public function it_knows_whether_a_user_is_a_member(): void
-    {
-        $account = $this->createAccount();
-        $member = $this->createUser();
-        $stranger = $this->createUser();
-        $this->assignUserToAccount(user: $member, account: $account);
-
-        $this->assertTrue($account->hasMember($member));
-        $this->assertFalse($account->hasMember($stranger));
-    }
-
-    #[Test]
-    public function it_returns_the_role_for_a_member(): void
-    {
-        $account = $this->createAccount();
-        $owner = $this->createUser();
-        $stranger = $this->createUser();
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-
-        $this->assertSame(PermissionEnum::Owner->value, $account->roleFor($owner));
-        $this->assertNull($account->roleFor($stranger));
-    }
-
-    #[Test]
-    public function it_encrypts_the_name_at_rest(): void
-    {
-        $account = $this->createAccount(name: 'Central Perk');
-
-        $rawName = DB::table('accounts')->where('id', $account->id)->value('name');
-
-        $this->assertNotSame('Central Perk', $rawName);
-        $this->assertSame('Central Perk', $account->name);
-        $this->assertSame('Central Perk', $account->fresh()->name);
-    }
-}
+    $this->assertNotSame('Central Perk', $rawName);
+    expect($account->name)->toBe('Central Perk');
+    expect($account->fresh()->name)->toBe('Central Perk');
+});

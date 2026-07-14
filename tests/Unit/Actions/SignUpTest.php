@@ -1,9 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\SignUp;
 use App\Enums\PermissionEnum;
 use App\Jobs\LogUserAction;
@@ -11,38 +8,31 @@ use App\Models\Account;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class SignUpTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_signs_up_a_user_with_their_own_owner_account(): void
-    {
-        Queue::fake();
+it('signs up a user with their own owner account', function () {
+    Queue::fake();
 
-        $user = new SignUp(
-            email: 'chandler.bing@friends.com',
-            password: 'password',
-            firstName: 'Chandler',
-            lastName: 'Bing',
-        )->execute();
+    $user = new SignUp(
+        email: 'chandler.bing@friends.com',
+        password: 'password',
+        firstName: 'Chandler',
+        lastName: 'Bing',
+    )->execute();
 
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertDatabaseHas('users', [
-            'id' => $user->id,
-            'email' => 'chandler.bing@friends.com',
-        ]);
+    expect($user)->toBeInstanceOf(User::class);
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'email' => 'chandler.bing@friends.com',
+    ]);
 
-        $this->assertCount(1, $user->accounts()->get());
+    expect($user->accounts()->get())->toHaveCount(1);
 
-        $account = $user->accounts()->firstOrFail();
-        $this->assertSame('Chandler Bing', $account->name);
-        $this->assertSame(PermissionEnum::Owner->value, $account->pivot->role);
-        $this->assertSame(1, Account::query()->count());
+    $account = $user->accounts()->firstOrFail();
+    expect($account->name)->toBe('Chandler Bing');
+    expect($account->pivot->role)->toBe(PermissionEnum::Owner->value);
+    expect(Account::query()->count())->toBe(1);
 
-        Queue::assertPushedOn(queue: 'low', job: LogUserAction::class);
-    }
-}
+    Queue::assertPushedOn(queue: 'low', job: LogUserAction::class);
+});

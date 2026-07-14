@@ -1,52 +1,39 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Console\Commands;
-
 use App\Models\User;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class BrunoCommandTest extends TestCase
-{
-    #[Test]
-    public function it_refreshes_and_seeds_the_database_then_updates_the_bruno_api_key(): void
-    {
-        $collectionPath = base_path('docs/beaver/collection.bru');
-        $originalCollection = file_get_contents($collectionPath);
+it('refreshes and seeds the database then updates the bruno api key', function () {
+    $collectionPath = base_path('docs/beaver/collection.bru');
+    $originalCollection = file_get_contents($collectionPath);
 
-        $this->assertIsString($originalCollection);
+    expect($originalCollection)->toBeString();
 
-        try {
-            $this->artisan('beaver:bruno')
-                ->assertSuccessful();
+    try {
+        $this->artisan('beaver:bruno')
+            ->assertSuccessful();
 
-            $user = User::query()
-                ->where('email', 'admin@admin.com')
-                ->first();
+        $user = User::query()
+            ->where('email', 'admin@admin.com')
+            ->first();
 
-            $this->assertNotNull($user);
-            $this->assertCount(1, $user->tokens);
-            $this->assertSame('Bruno', $user->tokens->first()->name);
+        expect($user)->not->toBeNull();
+        expect($user->tokens)->toHaveCount(1);
+        expect($user->tokens->first()->name)->toBe('Bruno');
 
-            $updatedCollection = file_get_contents($collectionPath);
+        $updatedCollection = file_get_contents($collectionPath);
 
-            $this->assertIsString($updatedCollection);
-            $this->assertMatchesRegularExpression(
-                '/auth:bearer\s*\{\s*token: (?<id>\d+)\|(?<token>[A-Za-z0-9]+)/',
-                $updatedCollection,
-            );
+        expect($updatedCollection)->toBeString();
+        expect($updatedCollection)->toMatch('/auth:bearer\s*\{\s*token: (?<id>\d+)\|(?<token>[A-Za-z0-9]+)/');
 
-            preg_match(
-                '/auth:bearer\s*\{\s*token: \d+\|(?<token>[A-Za-z0-9]+)/',
-                $updatedCollection,
-                $matches,
-            );
+        preg_match(
+            '/auth:bearer\s*\{\s*token: \d+\|(?<token>[A-Za-z0-9]+)/',
+            $updatedCollection,
+            $matches,
+        );
 
-            $this->assertSame(hash('sha256', $matches['token']), $user->tokens->first()->token);
-        } finally {
-            file_put_contents($collectionPath, $originalCollection);
-        }
+        expect($user->tokens->first()->token)->toBe(hash('sha256', $matches['token']));
+    } finally {
+        file_put_contents($collectionPath, $originalCollection);
     }
-}
+});

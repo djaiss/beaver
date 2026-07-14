@@ -1,85 +1,69 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Jobs;
-
 use App\Enums\EmailType;
 use App\Jobs\CheckLastLogin;
 use App\Jobs\SendEmail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class CheckLastLoginTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_sends_email_when_ip_address_changes(): void
-    {
-        Queue::fake();
+it('sends email when ip address changes', function () {
+    Queue::fake();
 
-        $user = User::factory()->create([
-            'last_used_ip' => '192.168.1.1',
-        ]);
+    $user = User::factory()->create([
+        'last_used_ip' => '192.168.1.1',
+    ]);
 
-        $job = new CheckLastLogin(
-            user: $user,
-            ip: '192.168.1.2',
-        );
+    $job = new CheckLastLogin(
+        user: $user,
+        ip: '192.168.1.2',
+    );
 
-        $job->handle();
+    $job->handle();
 
-        Queue::assertPushed(
-            SendEmail::class,
-            fn (SendEmail $job): bool => $job->user->id === $user->id && $job->emailType === EmailType::UserIpChanged,
-        );
+    Queue::assertPushed(
+        SendEmail::class,
+        fn (SendEmail $job): bool => $job->user->id === $user->id && $job->emailType === EmailType::UserIpChanged,
+    );
 
-        $this->assertEquals('192.168.1.2', $user->fresh()->last_used_ip);
-    }
+    expect($user->fresh()->last_used_ip)->toEqual('192.168.1.2');
+});
+it('does not send email when ip address does not change', function () {
+    Queue::fake();
 
-    #[Test]
-    public function it_does_not_send_email_when_ip_address_does_not_change(): void
-    {
-        Queue::fake();
+    $user = User::factory()->create([
+        'last_used_ip' => '192.168.1.1',
+    ]);
 
-        $user = User::factory()->create([
-            'last_used_ip' => '192.168.1.1',
-        ]);
+    $job = new CheckLastLogin(
+        user: $user,
+        ip: '192.168.1.1',
+    );
 
-        $job = new CheckLastLogin(
-            user: $user,
-            ip: '192.168.1.1',
-        );
+    $job->handle();
 
-        $job->handle();
+    Queue::assertNotPushed(SendEmail::class);
 
-        Queue::assertNotPushed(SendEmail::class);
+    expect($user->fresh()->last_used_ip)->toEqual('192.168.1.1');
+});
+it('does not send email on first login', function () {
+    Queue::fake();
 
-        $this->assertEquals('192.168.1.1', $user->fresh()->last_used_ip);
-    }
+    $user = User::factory()->create([
+        'last_used_ip' => null,
+    ]);
 
-    #[Test]
-    public function it_does_not_send_email_on_first_login(): void
-    {
-        Queue::fake();
+    $job = new CheckLastLogin(
+        user: $user,
+        ip: '192.168.1.1',
+    );
 
-        $user = User::factory()->create([
-            'last_used_ip' => null,
-        ]);
+    $job->handle();
 
-        $job = new CheckLastLogin(
-            user: $user,
-            ip: '192.168.1.1',
-        );
+    Queue::assertNotPushed(SendEmail::class);
 
-        $job->handle();
-
-        Queue::assertNotPushed(SendEmail::class);
-
-        $this->assertEquals('192.168.1.1', $user->fresh()->last_used_ip);
-    }
-}
+    expect($user->fresh()->last_used_ip)->toEqual('192.168.1.1');
+});

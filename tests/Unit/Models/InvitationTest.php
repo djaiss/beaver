@@ -1,72 +1,47 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Models;
-
 use App\Models\Account;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class InvitationTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_belongs_to_an_account(): void
-    {
-        $account = $this->createAccount();
-        $invitation = Invitation::factory()->create(['account_id' => $account->id]);
+it('belongs to an account', function () {
+    $account = $this->createAccount();
+    $invitation = Invitation::factory()->create(['account_id' => $account->id]);
 
-        $this->assertTrue($invitation->account()->exists());
-        $this->assertInstanceOf(Account::class, $invitation->account);
-    }
+    expect($invitation->account()->exists())->toBeTrue();
+    expect($invitation->account)->toBeInstanceOf(Account::class);
+});
+it('belongs to the user who sent it', function () {
+    $inviter = $this->createUser();
+    $invitation = Invitation::factory()->create(['invited_by' => $inviter->id]);
 
-    #[Test]
-    public function it_belongs_to_the_user_who_sent_it(): void
-    {
-        $inviter = $this->createUser();
-        $invitation = Invitation::factory()->create(['invited_by' => $inviter->id]);
+    expect($invitation->invitedBy()->exists())->toBeTrue();
+    expect($invitation->invitedBy)->toBeInstanceOf(User::class);
+    expect($invitation->invitedBy->id)->toBe($inviter->id);
+});
+it('knows when it is expired', function () {
+    $pending = Invitation::factory()->create();
+    $expired = Invitation::factory()->expired()->create();
 
-        $this->assertTrue($invitation->invitedBy()->exists());
-        $this->assertInstanceOf(User::class, $invitation->invitedBy);
-        $this->assertSame($inviter->id, $invitation->invitedBy->id);
-    }
+    expect($pending->isExpired())->toBeFalse();
+    expect($expired->isExpired())->toBeTrue();
+});
+it('is pending when not accepted and not expired', function () {
+    $invitation = Invitation::factory()->create();
 
-    #[Test]
-    public function it_knows_when_it_is_expired(): void
-    {
-        $pending = Invitation::factory()->create();
-        $expired = Invitation::factory()->expired()->create();
+    expect($invitation->isPending())->toBeTrue();
+});
+it('is not pending when expired', function () {
+    $invitation = Invitation::factory()->expired()->create();
 
-        $this->assertFalse($pending->isExpired());
-        $this->assertTrue($expired->isExpired());
-    }
+    expect($invitation->isPending())->toBeFalse();
+});
+it('is not pending when accepted', function () {
+    $invitation = Invitation::factory()->accepted()->create();
 
-    #[Test]
-    public function it_is_pending_when_not_accepted_and_not_expired(): void
-    {
-        $invitation = Invitation::factory()->create();
-
-        $this->assertTrue($invitation->isPending());
-    }
-
-    #[Test]
-    public function it_is_not_pending_when_expired(): void
-    {
-        $invitation = Invitation::factory()->expired()->create();
-
-        $this->assertFalse($invitation->isPending());
-    }
-
-    #[Test]
-    public function it_is_not_pending_when_accepted(): void
-    {
-        $invitation = Invitation::factory()->accepted()->create();
-
-        $this->assertFalse($invitation->isPending());
-    }
-}
+    expect($invitation->isPending())->toBeFalse();
+});

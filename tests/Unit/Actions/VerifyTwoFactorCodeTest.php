@@ -1,48 +1,35 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\VerifyTwoFactorCode;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class VerifyTwoFactorCodeTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_verifies_a_rescue_code_and_updates_last_activity(): void
-    {
-        $user = User::factory()->create([
-            'two_factor_recovery_codes' => ['code-one', 'code-two'],
-        ]);
+it('verifies a rescue code and updates last activity', function () {
+    $user = User::factory()->create([
+        'two_factor_recovery_codes' => ['code-one', 'code-two'],
+    ]);
 
-        $result = new VerifyTwoFactorCode(
-            user: $user,
-            code: 'code-one',
-        )->execute();
+    $result = new VerifyTwoFactorCode(
+        user: $user,
+        code: 'code-one',
+    )->execute();
 
-        $this->assertTrue($result);
-        $this->assertNotContains('code-one', $user->refresh()->two_factor_recovery_codes);
-    }
+    expect($result)->toBeTrue();
+    expect($user->refresh()->two_factor_recovery_codes)->not->toContain('code-one');
+});
+it('returns false and skips activity update for invalid codes', function () {
+    $user = User::factory()->create([
+        'two_factor_recovery_codes' => ['code-one'],
+    ]);
 
-    #[Test]
-    public function it_returns_false_and_skips_activity_update_for_invalid_codes(): void
-    {
-        $user = User::factory()->create([
-            'two_factor_recovery_codes' => ['code-one'],
-        ]);
+    $result = new VerifyTwoFactorCode(
+        user: $user,
+        code: 'wrong-code',
+    )->execute();
 
-        $result = new VerifyTwoFactorCode(
-            user: $user,
-            code: 'wrong-code',
-        )->execute();
-
-        $this->assertFalse($result);
-        $this->assertEquals(['code-one'], $user->refresh()->two_factor_recovery_codes);
-    }
-}
+    expect($result)->toBeFalse();
+    expect($user->refresh()->two_factor_recovery_codes)->toEqual(['code-one']);
+});

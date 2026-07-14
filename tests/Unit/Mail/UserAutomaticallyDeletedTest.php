@@ -1,28 +1,18 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Mail;
-
 use App\Mail\UserAutomaticallyDeleted;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class UserAutomaticallyDeletedTest extends TestCase
-{
-    #[Test]
-    public function it_should_have_correct_envelope_subject(): void
-    {
-        $mailable = new UserAutomaticallyDeleted(
-            age: '90 days',
-        );
+it('should have correct envelope subject', function () {
+    $mailable = new UserAutomaticallyDeleted(
+        age: '90 days',
+    );
 
-        $this->assertEquals('Account automatically deleted', $mailable->envelope()->subject);
+    expect($mailable->envelope()->subject)->toEqual('Account automatically deleted');
 
-        $rendered = $mailable->render();
+    $rendered = $mailable->render();
 
-        $this->assertStringContainsString('Account deleted', $rendered);
-        $this->assertStringContainsString('automatically deleted because of inactivity', $rendered);
-        $this->assertStringContainsString('90 days', $rendered);
-    }
-}
+    $this->assertStringContainsString('Account deleted', $rendered);
+    $this->assertStringContainsString('automatically deleted because of inactivity', $rendered);
+    $this->assertStringContainsString('90 days', $rendered);
+});

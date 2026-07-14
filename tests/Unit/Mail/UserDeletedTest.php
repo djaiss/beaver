@@ -1,28 +1,18 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Mail;
-
 use App\Mail\UserDeleted;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class UserDeletedTest extends TestCase
-{
-    #[Test]
-    public function it_should_have_correct_envelope_subject(): void
-    {
-        $mailable = new UserDeleted(
-            reason: 'No longer needed',
-            activeSince: '2024-01-15',
-        );
+it('should have correct envelope subject', function () {
+    $mailable = new UserDeleted(
+        reason: 'No longer needed',
+        activeSince: '2024-01-15',
+    );
 
-        $this->assertEquals('Account deleted', $mailable->envelope()->subject);
+    expect($mailable->envelope()->subject)->toEqual('Account deleted');
 
-        $rendered = $mailable->render();
+    $rendered = $mailable->render();
 
-        $this->assertStringContainsString('No longer needed', $rendered);
-        $this->assertStringContainsString('2024-01-15', $rendered);
-    }
-}
+    $this->assertStringContainsString('No longer needed', $rendered);
+    $this->assertStringContainsString('2024-01-15', $rendered);
+});

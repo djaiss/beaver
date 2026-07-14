@@ -1,9 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\CreateApiKey;
 use App\Enums\EmailType;
 use App\Enums\UserActionEnum;
@@ -13,52 +10,45 @@ use App\Mail\ApiKeyCreated;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class CreateApiKeyTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_creates_an_api_key(): void
-    {
-        Queue::fake();
+it('creates an api key', function () {
+    Queue::fake();
 
-        $user = User::factory()->create();
+    $user = User::factory()->create();
 
-        $token = new CreateApiKey(
-            user: $user,
-            label: 'Production API Key',
-        )->execute();
+    $token = new CreateApiKey(
+        user: $user,
+        label: 'Production API Key',
+    )->execute();
 
-        $this->assertIsString($token);
-        $this->assertNotEmpty($token);
+    expect($token)->toBeString();
+    expect($token)->not->toBeEmpty();
 
-        $this->assertDatabaseHas('personal_access_tokens', [
-            'tokenable_id' => $user->id,
-            'tokenable_type' => User::class,
-            'name' => 'Production API Key',
-        ]);
+    $this->assertDatabaseHas('personal_access_tokens', [
+        'tokenable_id' => $user->id,
+        'tokenable_type' => User::class,
+        'name' => 'Production API Key',
+    ]);
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => (
-                $job->action === UserActionEnum::ApiKeyCreation
-                && $job->user->id === $user->id
-            ),
-        );
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => (
+            $job->action === UserActionEnum::ApiKeyCreation
+            && $job->user->id === $user->id
+        ),
+    );
 
-        Queue::assertPushedOn(
-            queue: 'high',
-            job: SendEmail::class,
-            callback: fn (SendEmail $job): bool => (
-                $job->mailable instanceof ApiKeyCreated
-                && $job->mailable->label === 'Production API Key'
-                && $job->user->id === $user->id
-                && $job->emailType === EmailType::ApiCreated
-            ),
-        );
-    }
-}
+    Queue::assertPushedOn(
+        queue: 'high',
+        job: SendEmail::class,
+        callback: fn (SendEmail $job): bool => (
+            $job->mailable instanceof ApiKeyCreated
+            && $job->mailable->label === 'Production API Key'
+            && $job->user->id === $user->id
+            && $job->emailType === EmailType::ApiCreated
+        ),
+    );
+});

@@ -1,9 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Actions;
-
 use App\Actions\UpdateAccount;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
@@ -12,53 +9,43 @@ use App\Models\Account;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class UpdateAccountTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_renames_an_account_for_an_owner(): void
-    {
-        Queue::fake();
+it('renames an account for an owner', function () {
+    Queue::fake();
 
-        $account = $this->createAccount(name: 'Old name');
-        $owner = $this->createUser(['first_name' => 'Joey', 'last_name' => 'Tribbiani']);
-        $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $account = $this->createAccount(name: 'Old name');
+    $owner = $this->createUser(['first_name' => 'Joey', 'last_name' => 'Tribbiani']);
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-        $result = new UpdateAccount(
-            user: $owner,
-            account: $account,
-            name: 'Central Perk',
-        )->execute();
+    $result = new UpdateAccount(
+        user: $owner,
+        account: $account,
+        name: 'Central Perk',
+    )->execute();
 
-        $this->assertInstanceOf(Account::class, $result);
-        $this->assertSame('Central Perk', $account->fresh()->name);
-        $this->assertSame($owner->id, $account->fresh()->updated_by_id);
+    expect($result)->toBeInstanceOf(Account::class);
+    expect($account->fresh()->name)->toBe('Central Perk');
+    expect($account->fresh()->updated_by_id)->toBe($owner->id);
 
-        Queue::assertPushedOn(
-            queue: 'low',
-            job: LogUserAction::class,
-            callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AccountUpdate,
-        );
-    }
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogUserAction::class,
+        callback: fn (LogUserAction $job): bool => $job->action === UserActionEnum::AccountUpdate,
+    );
+});
+it('throws when the user is not an owner', function () {
+    Queue::fake();
+    $this->expectException(ModelNotFoundException::class);
 
-    #[Test]
-    public function it_throws_when_the_user_is_not_an_owner(): void
-    {
-        Queue::fake();
-        $this->expectException(ModelNotFoundException::class);
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
 
-        $account = $this->createAccount();
-        $viewer = $this->createUser();
-        $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-
-        new UpdateAccount(
-            user: $viewer,
-            account: $account,
-            name: 'Central Perk',
-        )->execute();
-    }
-}
+    new UpdateAccount(
+        user: $viewer,
+        account: $account,
+        name: 'Central Perk',
+    )->execute();
+});

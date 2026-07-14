@@ -1,47 +1,34 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\App;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class LocaleControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_can_update_locale(): void
-    {
-        $response = $this->from('/')
-            ->put('/locale', [
-                'locale' => 'de_DE',
-            ]);
-
-        $response->assertRedirect('/');
-        $this->assertEquals('de_DE', session('locale'));
-        $this->assertEquals('de_DE', App::getLocale());
-    }
-
-    #[Test]
-    public function it_updates_authenticated_user_locale(): void
-    {
-        $user = $this->createUser([
-            'locale' => 'en',
+it('can update locale', function () {
+    $response = $this->from('/')
+        ->put('/locale', [
+            'locale' => 'de_DE',
         ]);
 
-        $response = $this->actingAs($user)
-            ->from('/')
-            ->put('/locale', [
-                'locale' => 'de_DE',
-            ]);
+    $response->assertRedirect('/');
+    expect(session('locale'))->toEqual('de_DE');
+    expect(App::getLocale())->toEqual('de_DE');
+});
+it('updates authenticated user locale', function () {
+    $user = $this->createUser([
+        'locale' => 'en',
+    ]);
 
-        $response->assertRedirect('/');
-        $this->assertEquals('de_DE', session('locale'));
-        $this->assertEquals('de_DE', App::getLocale());
-        $this->assertEquals('de_DE', $user->fresh()->locale);
-    }
-}
+    $response = $this->actingAs($user)
+        ->from('/')
+        ->put('/locale', [
+            'locale' => 'de_DE',
+        ]);
+
+    $response->assertRedirect('/');
+    expect(session('locale'))->toEqual('de_DE');
+    expect(App::getLocale())->toEqual('de_DE');
+    expect($user->fresh()->locale)->toEqual('de_DE');
+});

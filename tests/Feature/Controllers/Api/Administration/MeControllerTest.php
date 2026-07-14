@@ -1,125 +1,103 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\Api\Administration;
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class MeControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_returns_the_information_about_the_logged_user(): void
-    {
-        $user = Sanctum::actingAs(
-            User::factory()->create([
-                'first_name' => 'Dwight',
-                'last_name' => 'Schrute',
-                'email' => 'dwight.schrute@dundermifflin.com',
-                'nickname' => 'Dwight',
-                'locale' => 'en',
-                'time_format_24h' => true,
-            ]),
-        );
-
-        $response = $this->json('GET', '/api/me');
-
-        $response->assertStatus(200);
-
-        $this->assertEquals(
-            $response->json()['data'],
-            [
-                'type' => 'user',
-                'id' => (string) $user->id,
-                'attributes' => [
-                    'first_name' => 'Dwight',
-                    'last_name' => 'Schrute',
-                    'email' => 'dwight.schrute@dundermifflin.com',
-                    'nickname' => 'Dwight',
-                    'locale' => 'en',
-                    'time_format_24h' => true,
-                ],
-                'links' => [
-                    'self' => config('app.url').'/api/me',
-                ],
-            ],
-        );
-    }
-
-    #[Test]
-    public function it_updates_the_profile(): void
-    {
-        $user = User::factory()->create([
+it('returns the information about the logged user', function () {
+    $user = Sanctum::actingAs(
+        User::factory()->create([
             'first_name' => 'Dwight',
             'last_name' => 'Schrute',
             'email' => 'dwight.schrute@dundermifflin.com',
             'nickname' => 'Dwight',
             'locale' => 'en',
-            'time_format_24h' => false,
-        ]);
+            'time_format_24h' => true,
+        ]),
+    );
 
-        Sanctum::actingAs($user);
+    $response = $this->json('GET', '/api/me');
 
-        $response = $this->json('PUT', '/api/me', [
+    $response->assertStatus(200);
+
+    expect([
+        'type' => 'user',
+        'id' => (string) $user->id,
+        'attributes' => [
+            'first_name' => 'Dwight',
+            'last_name' => 'Schrute',
+            'email' => 'dwight.schrute@dundermifflin.com',
+            'nickname' => 'Dwight',
+            'locale' => 'en',
+            'time_format_24h' => true,
+        ],
+        'links' => [
+            'self' => config('app.url').'/api/me',
+        ],
+    ])->toEqual($response->json()['data']);
+});
+it('updates the profile', function () {
+    $user = User::factory()->create([
+        'first_name' => 'Dwight',
+        'last_name' => 'Schrute',
+        'email' => 'dwight.schrute@dundermifflin.com',
+        'nickname' => 'Dwight',
+        'locale' => 'en',
+        'time_format_24h' => false,
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $response = $this->json('PUT', '/api/me', [
+        'first_name' => 'Michael',
+        'last_name' => 'Scott',
+        'email' => 'michael.scott@dundermifflin.com',
+        'nickname' => 'Michael',
+        'locale' => 'fr_FR',
+        'time_format_24h' => 'true',
+    ]);
+
+    $response->assertStatus(200);
+
+    expect($response->json()['data'])->toEqual([
+        'type' => 'user',
+        'id' => (string) $user->id,
+        'attributes' => [
             'first_name' => 'Michael',
             'last_name' => 'Scott',
             'email' => 'michael.scott@dundermifflin.com',
             'nickname' => 'Michael',
             'locale' => 'fr_FR',
-            'time_format_24h' => 'true',
-        ]);
+            'time_format_24h' => true,
+        ],
+        'links' => [
+            'self' => config('app.url').'/api/me',
+        ],
+    ]);
+});
+it('updates the profile when no nickname is provided', function () {
+    $user = User::factory()->create([
+        'first_name' => 'Dwight',
+        'last_name' => 'Schrute',
+        'email' => 'dwight.schrute@dundermifflin.com',
+        'nickname' => 'Dwight',
+        'locale' => 'en',
+        'time_format_24h' => false,
+    ]);
 
-        $response->assertStatus(200);
+    Sanctum::actingAs($user);
 
-        $this->assertEquals(
-            [
-                'type' => 'user',
-                'id' => (string) $user->id,
-                'attributes' => [
-                    'first_name' => 'Michael',
-                    'last_name' => 'Scott',
-                    'email' => 'michael.scott@dundermifflin.com',
-                    'nickname' => 'Michael',
-                    'locale' => 'fr_FR',
-                    'time_format_24h' => true,
-                ],
-                'links' => [
-                    'self' => config('app.url').'/api/me',
-                ],
-            ],
-            $response->json()['data'],
-        );
-    }
+    $response = $this->json('PUT', '/api/me', [
+        'first_name' => 'Michael',
+        'last_name' => 'Scott',
+        'email' => 'michael.scott@dundermifflin.com',
+        'locale' => 'fr_FR',
+        'time_format_24h' => 'true',
+    ]);
 
-    #[Test]
-    public function it_updates_the_profile_when_no_nickname_is_provided(): void
-    {
-        $user = User::factory()->create([
-            'first_name' => 'Dwight',
-            'last_name' => 'Schrute',
-            'email' => 'dwight.schrute@dundermifflin.com',
-            'nickname' => 'Dwight',
-            'locale' => 'en',
-            'time_format_24h' => false,
-        ]);
-
-        Sanctum::actingAs($user);
-
-        $response = $this->json('PUT', '/api/me', [
-            'first_name' => 'Michael',
-            'last_name' => 'Scott',
-            'email' => 'michael.scott@dundermifflin.com',
-            'locale' => 'fr_FR',
-            'time_format_24h' => 'true',
-        ]);
-
-        $response->assertStatus(200);
-        $this->assertNull($response->json()['data']['attributes']['nickname']);
-    }
-}
+    $response->assertStatus(200);
+    expect($response->json()['data']['attributes']['nickname'])->toBeNull();
+});

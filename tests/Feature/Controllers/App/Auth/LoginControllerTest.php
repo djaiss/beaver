@@ -1,84 +1,62 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Feature\Controllers\App\Auth;
-
 use App\Enums\EmailType;
 use App\Jobs\SendEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class LoginControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(RefreshDatabase::class);
 
-    #[Test]
-    public function it_renders_the_login_screen(): void
-    {
-        $response = $this->get('/login');
+it('renders the login screen', function () {
+    $response = $this->get('/login');
 
-        $response->assertStatus(200);
-    }
+    $response->assertStatus(200);
+});
+it('authenticates a user', function () {
+    config(['app.show_marketing_site' => false]);
+    $user = $this->createUser();
 
-    #[Test]
-    public function it_authenticates_a_user(): void
-    {
-        config(['app.show_marketing_site' => false]);
-        $user = $this->createUser();
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
 
-        $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ]);
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('accounts.index', absolute: false));
+});
+it('sends an email on failed login', function () {
+    Queue::fake();
+    config(['app.show_marketing_site' => false]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('accounts.index', absolute: false));
-    }
+    $user = $this->createUser();
 
-    #[Test]
-    public function it_sends_an_email_on_failed_login(): void
-    {
-        Queue::fake();
-        config(['app.show_marketing_site' => false]);
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
 
-        $user = $this->createUser();
+    Queue::assertPushed(
+        SendEmail::class,
+        fn (SendEmail $job): bool => $job->emailType === EmailType::LoginFailed && $job->user->id === $user->id,
+    );
+});
+it('does not authenticate a user with invalid password', function () {
+    config(['app.show_marketing_site' => false]);
+    $user = $this->createUser();
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
 
-        Queue::assertPushed(
-            SendEmail::class,
-            fn (SendEmail $job): bool => $job->emailType === EmailType::LoginFailed && $job->user->id === $user->id,
-        );
-    }
+    $this->assertGuest();
+});
+it('logs out a user', function () {
+    $user = $this->createUser();
 
-    #[Test]
-    public function it_does_not_authenticate_a_user_with_invalid_password(): void
-    {
-        config(['app.show_marketing_site' => false]);
-        $user = $this->createUser();
+    $response = $this->actingAs($user)->post('/logout');
 
-        $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'wrong-password',
-        ]);
-
-        $this->assertGuest();
-    }
-
-    #[Test]
-    public function it_logs_out_a_user(): void
-    {
-        $user = $this->createUser();
-
-        $response = $this->actingAs($user)->post('/logout');
-
-        $this->assertGuest();
-        $response->assertRedirect('/');
-    }
-}
+    $this->assertGuest();
+    $response->assertRedirect('/');
+});

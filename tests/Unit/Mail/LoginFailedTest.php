@@ -1,27 +1,17 @@
 <?php
 
 declare(strict_types=1);
-
-namespace Tests\Unit\Mail;
-
 use App\Mail\LoginFailed;
 use Illuminate\Support\Facades\Config;
-use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
-class LoginFailedTest extends TestCase
-{
-    #[Test]
-    public function it_should_have_correct_envelope_subject(): void
-    {
-        Config::set('app.name', 'beaver');
+it('should have correct envelope subject', function () {
+    Config::set('app.name', 'beaver');
 
-        $mailable = new LoginFailed;
+    $mailable = new LoginFailed;
 
-        $this->assertEquals('Login attempt on beaver', $mailable->envelope()->subject);
+    expect($mailable->envelope()->subject)->toEqual('Login attempt on beaver');
 
-        $rendered = $mailable->render();
+    $rendered = $mailable->render();
 
-        $this->assertStringContainsString('Login attempt on beaver', $rendered);
-    }
-}
+    $this->assertStringContainsString('Login attempt on beaver', $rendered);
+});
