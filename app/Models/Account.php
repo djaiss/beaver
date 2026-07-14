@@ -87,6 +87,16 @@ class Account extends Model
     }
 
     /**
+     * Get the collection types that belong to the account.
+     *
+     * @return HasMany<CollectionType, $this>
+     */
+    public function collectionTypes(): HasMany
+    {
+        return $this->hasMany(CollectionType::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>
@@ -110,5 +120,18 @@ class Account extends Model
     public function roleFor(User $user): ?string
     {
         return $user->account_id === $this->id ? $user->role : null;
+    }
+
+    /**
+     * Whether the user may manage the account's content: owners and editors
+     * can, viewers and non-members cannot.
+     */
+    public function allowsManagementBy(User $user): bool
+    {
+        return in_array(
+            $this->roleFor($user),
+            [PermissionEnum::Owner->value, PermissionEnum::Editor->value],
+            true,
+        );
     }
 }
