@@ -129,7 +129,7 @@ class PopulateAccount implements ShouldQueue
                     ['name' => 'Year Minted', 'field_type' => FieldTypeEnum::Number],
                     ['name' => 'Mint Mark', 'field_type' => FieldTypeEnum::Text],
                     ['name' => 'Country', 'field_type' => FieldTypeEnum::Text],
-                    ['name' => 'Grade', 'field_type' => FieldTypeEnum::Select],
+                    ['name' => 'Grade', 'field_type' => FieldTypeEnum::Select, 'options' => ['MS-70', 'MS-65', 'MS-60', 'AU-58', 'AU-50', 'XF-45', 'XF-40', 'VF-30', 'VF-20', 'F-15', 'F-12', 'VG-10', 'VG-8', 'G-6', 'G-4', 'AG-3', 'FR-2', 'PR-1']],
                     ['name' => 'Metal', 'field_type' => FieldTypeEnum::Select, 'options' => ['Silver', 'Gold', 'Copper']],
                 ],
             ],
@@ -197,7 +197,7 @@ class PopulateAccount implements ShouldQueue
                     ['name' => 'Vintage', 'field_type' => FieldTypeEnum::Number],
                     ['name' => 'Region', 'field_type' => FieldTypeEnum::Text],
                     ['name' => 'Varietal', 'field_type' => FieldTypeEnum::Text],
-                    ['name' => 'Bottle Size', 'field_type' => FieldTypeEnum::Select],
+                    ['name' => 'Bottle Size', 'field_type' => FieldTypeEnum::Select, 'options' => ['Split/187ml', 'Half/375ml', 'Standard/750ml', 'Magnum/1.5L', 'Double Magnum/3L', 'Jeroboam/4.5L', 'Imperial/6L']],
                 ],
             ],
         ];

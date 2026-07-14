@@ -51,6 +51,11 @@ it('stores the options and field type of a select field', function () {
 
     expect($publisher->field_type)->toBe(FieldTypeEnum::Select);
     expect($publisher->options)->toBe(['Marvel', 'DC', 'Image', 'Dark Horse', 'Independent']);
+
+    $coins = $account->collectionTypes()->get()->firstWhere('name', 'Coins');
+    $grade = $coins->customFields()->get()->firstWhere('name', 'Grade');
+
+    expect($grade->options)->toContain('MS-70', 'PR-1');
 });
 
 it('encrypts the type and field names at rest', function () {
