@@ -71,6 +71,7 @@ class CreateCollection
     {
         $this->name = TextSanitizer::plainText($this->name);
         $this->description = TextSanitizer::nullablePlainText($this->description);
+        $this->emoji = TextSanitizer::nullablePlainText($this->emoji);
     }
 
     private function create(): void

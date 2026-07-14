@@ -55,7 +55,7 @@ it('creates a collection and stamps the author', function () {
     );
 });
 
-it('sanitizes the name and description', function () {
+it('sanitizes the name, description and emoji', function () {
     Queue::fake();
 
     $account = $this->createAccount();
@@ -67,10 +67,12 @@ it('sanitizes the name and description', function () {
         account: $account,
         name: '<strong>Vinyl Records</strong>',
         description: '<em>Rare pressings</em>',
+        emoji: '<script>alert(1)</script>💿',
     )->execute();
 
     expect($collection->name)->toBe('Vinyl Records');
     expect($collection->description)->toBe('Rare pressings');
+    expect($collection->emoji)->toBe('💿');
 });
 
 it('defaults the visibility to private', function () {
