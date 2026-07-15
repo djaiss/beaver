@@ -107,6 +107,16 @@ class Account extends Model
     }
 
     /**
+     * Get the conditions that belong to the account, excluding the system defaults.
+     *
+     * @return HasMany<Condition, $this>
+     */
+    public function conditions(): HasMany
+    {
+        return $this->hasMany(Condition::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>

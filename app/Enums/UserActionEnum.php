@@ -25,6 +25,9 @@ enum UserActionEnum: string
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
+    case ConditionCreation = 'condition_created';
+    case ConditionUpdate = 'condition_updated';
+    case ConditionDeletion = 'condition_deleted';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -58,6 +61,9 @@ enum UserActionEnum: string
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',
+            self::ConditionCreation => 'Created the condition called :name',
+            self::ConditionUpdate => 'Updated the condition called :name',
+            self::ConditionDeletion => 'Deleted the condition called :name',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',
