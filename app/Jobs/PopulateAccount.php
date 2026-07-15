@@ -19,7 +19,8 @@ class PopulateAccount implements ShouldQueue
     ) {}
 
     /**
-     * Populate the account with the default collection types and their fields.
+     * Populate the account with the default collection types and their
+     * fields, locations and conditions.
      */
     public function handle(): void
     {
@@ -27,6 +28,18 @@ class PopulateAccount implements ShouldQueue
             foreach ($this->defaultTypes() as $type) {
                 $this->createType($type);
             }
+
+            $this->account->locations()->createMany(
+                collect($this->defaultLocations())
+                    ->map(fn (array $location): array => ['parent_id' => null, ...$location])
+                    ->all()
+            );
+
+            $this->account->conditions()->createMany(
+                collect($this->defaultConditions())
+                    ->map(fn (string $name): array => ['name' => $name])
+                    ->all()
+            );
         });
     }
 
@@ -200,6 +213,34 @@ class PopulateAccount implements ShouldQueue
                     ['name' => 'Bottle Size', 'field_type' => FieldTypeEnum::Select, 'options' => ['Split/187ml', 'Half/375ml', 'Standard/750ml', 'Magnum/1.5L', 'Double Magnum/3L', 'Jeroboam/4.5L', 'Imperial/6L']],
                 ],
             ],
+        ];
+    }
+
+    /**
+     * @return list<array{name: string, emoji: string}>
+     */
+    private function defaultLocations(): array
+    {
+        return [
+            ['name' => 'Living Room', 'emoji' => '🛋️'],
+            ['name' => 'Storage', 'emoji' => '📦'],
+            ['name' => 'Display Case', 'emoji' => '🗄️'],
+            ['name' => 'Garage', 'emoji' => '🚗'],
+            ['name' => 'Office', 'emoji' => '🏢'],
+        ];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function defaultConditions(): array
+    {
+        return [
+            'New',
+            'Like New',
+            'Used',
+            'Worn',
+            'Damaged',
         ];
     }
 }
