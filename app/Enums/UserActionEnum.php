@@ -28,6 +28,9 @@ enum UserActionEnum: string
     case ConditionCreation = 'condition_created';
     case ConditionUpdate = 'condition_updated';
     case ConditionDeletion = 'condition_deleted';
+    case TagCreation = 'tag_created';
+    case TagUpdate = 'tag_updated';
+    case TagDeletion = 'tag_deleted';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -64,6 +67,9 @@ enum UserActionEnum: string
             self::ConditionCreation => 'Created the condition called :name',
             self::ConditionUpdate => 'Updated the condition called :name',
             self::ConditionDeletion => 'Deleted the condition called :name',
+            self::TagCreation => 'Created the tag called :name',
+            self::TagUpdate => 'Updated the tag called :name',
+            self::TagDeletion => 'Deleted the tag called :name',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',
