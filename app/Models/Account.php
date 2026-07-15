@@ -117,6 +117,16 @@ class Account extends Model
     }
 
     /**
+     * Get the tags that belong to the account.
+     *
+     * @return HasMany<Tag, $this>
+     */
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>
