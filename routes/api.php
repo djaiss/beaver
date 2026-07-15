@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\TagController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function (): void {
@@ -71,6 +72,13 @@ Route::name('api.')->group(function (): void {
         Route::post('conditions', [ConditionController::class, 'create'])->name('conditions.create');
         Route::put('conditions/{condition}', [ConditionController::class, 'update'])->where('condition', '[1-9][0-9]*')->name('conditions.update');
         Route::delete('conditions/{condition}', [ConditionController::class, 'destroy'])->where('condition', '[1-9][0-9]*')->name('conditions.destroy');
+
+        // tags
+        Route::get('tags', [TagController::class, 'index'])->name('tags');
+        Route::get('tags/{tag}', [TagController::class, 'show'])->where('tag', '[1-9][0-9]*')->name('tags.show');
+        Route::post('tags', [TagController::class, 'create'])->name('tags.create');
+        Route::put('tags/{tag}', [TagController::class, 'update'])->where('tag', '[1-9][0-9]*')->name('tags.update');
+        Route::delete('tags/{tag}', [TagController::class, 'destroy'])->where('tag', '[1-9][0-9]*')->name('tags.destroy');
 
         // api keys
         Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');
