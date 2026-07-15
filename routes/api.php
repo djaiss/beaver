@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Auth\RegistrationController;
 use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\CollectionTypeCollectionController;
 use App\Http\Controllers\Api\CollectionTypeController;
+use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\LocationController;
@@ -63,6 +64,13 @@ Route::name('api.')->group(function (): void {
         Route::post('locations', [LocationController::class, 'create'])->name('locations.create');
         Route::put('locations/{location}', [LocationController::class, 'update'])->where('location', '[1-9][0-9]*')->name('locations.update');
         Route::delete('locations/{location}', [LocationController::class, 'destroy'])->where('location', '[1-9][0-9]*')->name('locations.destroy');
+
+        // conditions
+        Route::get('conditions', [ConditionController::class, 'index'])->name('conditions');
+        Route::get('conditions/{condition}', [ConditionController::class, 'show'])->where('condition', '[1-9][0-9]*')->name('conditions.show');
+        Route::post('conditions', [ConditionController::class, 'create'])->name('conditions.create');
+        Route::put('conditions/{condition}', [ConditionController::class, 'update'])->where('condition', '[1-9][0-9]*')->name('conditions.update');
+        Route::delete('conditions/{condition}', [ConditionController::class, 'destroy'])->where('condition', '[1-9][0-9]*')->name('conditions.destroy');
 
         // api keys
         Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');
