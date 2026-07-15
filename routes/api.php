@@ -8,7 +8,12 @@ use App\Http\Controllers\Api\Administration\EmailSentController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegistrationController;
+use App\Http\Controllers\Api\CollectionController;
+use App\Http\Controllers\Api\CollectionTypeCollectionController;
+use App\Http\Controllers\Api\CollectionTypeController;
+use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\LocationController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function (): void {
@@ -27,6 +32,37 @@ Route::name('api.')->group(function (): void {
         // logged user
         Route::get('me', [MeController::class, 'show'])->name('me');
         Route::put('me', [MeController::class, 'update'])->name('me.update');
+
+        // collections
+        Route::get('collections', [CollectionController::class, 'index'])->name('collections');
+        Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
+        Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
+        Route::put('collections/{collection}', [CollectionController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.update');
+        Route::delete('collections/{collection}', [CollectionController::class, 'destroy'])->where('collection', '[1-9][0-9]*')->name('collections.destroy');
+
+        // collection types
+        Route::get('collection-types', [CollectionTypeController::class, 'index'])->name('collectionTypes');
+        Route::get('collection-types/{collectionType}', [CollectionTypeController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.show');
+        Route::post('collection-types', [CollectionTypeController::class, 'create'])->name('collectionTypes.create');
+        Route::put('collection-types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.update');
+        Route::delete('collection-types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.destroy');
+
+        // the collections a type applies to
+        Route::put('collection-types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.collections.update');
+
+        // custom fields
+        Route::get('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields');
+        Route::get('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.show');
+        Route::post('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields.create');
+        Route::put('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.update');
+        Route::delete('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.destroy');
+
+        // locations
+        Route::get('locations', [LocationController::class, 'index'])->name('locations');
+        Route::get('locations/{location}', [LocationController::class, 'show'])->where('location', '[1-9][0-9]*')->name('locations.show');
+        Route::post('locations', [LocationController::class, 'create'])->name('locations.create');
+        Route::put('locations/{location}', [LocationController::class, 'update'])->where('location', '[1-9][0-9]*')->name('locations.update');
+        Route::delete('locations/{location}', [LocationController::class, 'destroy'])->where('location', '[1-9][0-9]*')->name('locations.destroy');
 
         // api keys
         Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');
