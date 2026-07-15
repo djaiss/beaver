@@ -1,6 +1,55 @@
-<x-marketing-docs-layout :breadcrumbItems="[
-  ['label' => 'Home', 'route' => route('marketing.index')],
-  ['label' => 'Documentation'],
-]">
-  <div class="py-16"></div>
-</x-marketing-docs-layout>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+  <head>
+    @include('partials.meta', ['title' => config('app.name').' API documentation'])
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+
+    <script>
+      // navigator.clipboard only exists in secure contexts (https or
+      // localhost), so fall back to a hidden textarea everywhere else.
+      function docsCopy(text) {
+        if (window.isSecureContext && navigator.clipboard) {
+          return navigator.clipboard.writeText(text);
+        }
+
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+
+        return Promise.resolve();
+      }
+    </script>
+  </head>
+  <body class="bg-white font-sans text-gray-900 antialiased">
+    <div x-data="{ query: '' }">
+      <x-api-docs.topbar />
+
+      <div class="flex">
+        <x-api-docs.sidebar :navigation="$navigation" />
+
+        <main class="min-w-0 flex-1">
+          @foreach ($sections as $section)
+            <x-api-docs.section :section="$section" />
+          @endforeach
+
+          <footer class="bg-neutral-950 px-8 py-14 text-center">
+            <p class="mb-2 text-base font-bold text-white">{{ strtolower(config('app.name')) }}</p>
+            <p class="text-[13px] text-zinc-400">Built for people who keep real inventories.</p>
+          </footer>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
