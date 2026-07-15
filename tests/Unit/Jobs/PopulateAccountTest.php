@@ -70,3 +70,39 @@ it('encrypts the type and field names at rest', function () {
     expect($type->name)->toBe('Comics');
     expect($type->color)->toStartWith('#');
 });
+
+it('populates the account with the default locations', function () {
+    $account = Account::factory()->create();
+
+    new PopulateAccount($account)->handle();
+
+    $locations = $account->locations()->get();
+
+    expect($locations)->toHaveCount(5);
+    expect($locations->map->name->all())->toBe([
+        'Living Room',
+        'Storage',
+        'Display Case',
+        'Garage',
+        'Office',
+    ]);
+    expect($locations->every(fn ($location): bool => $location->parent_id === null))->toBeTrue();
+    expect($locations->firstWhere('name', 'Living Room')->emoji)->toBe('🛋️');
+});
+
+it('populates the account with the default conditions', function () {
+    $account = Account::factory()->create();
+
+    new PopulateAccount($account)->handle();
+
+    $conditions = $account->conditions()->get();
+
+    expect($conditions)->toHaveCount(5);
+    expect($conditions->map->name->all())->toBe([
+        'New',
+        'Like New',
+        'Used',
+        'Worn',
+        'Damaged',
+    ]);
+});
