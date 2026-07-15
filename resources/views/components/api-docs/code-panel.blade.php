@@ -6,7 +6,7 @@
     copied: false,
     samples: @js(collect($section['samples'])->map(fn (array $sample): string => $sample['code'])->all()),
     copy() {
-      navigator.clipboard.writeText(this.samples[this.lang]);
+      docsCopy(this.samples[this.lang]);
       this.copied = true;
       setTimeout(() => (this.copied = false), 1500);
     },

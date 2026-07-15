@@ -10,6 +10,27 @@
         scroll-behavior: smooth;
       }
     </style>
+
+    <script>
+      // navigator.clipboard only exists in secure contexts (https or
+      // localhost), so fall back to a hidden textarea everywhere else.
+      function docsCopy(text) {
+        if (window.isSecureContext && navigator.clipboard) {
+          return navigator.clipboard.writeText(text);
+        }
+
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        textarea.remove();
+
+        return Promise.resolve();
+      }
+    </script>
   </head>
   <body class="bg-white font-sans text-gray-900 antialiased">
     <div x-data="{ query: '' }">
