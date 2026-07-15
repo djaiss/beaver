@@ -1,47 +1,69 @@
 ---
 name: api-docs-writer
-description: Write or update the public-facing marketing documentation page for API methods. Use when a new API controller is created, routes are added or changed, or when documentation pages are missing or out of sync with the codebase.
+description: Write or update the public-facing API reference for API methods. Use when a new API controller is created, API routes are added or changed, or when the docs portal at /docs is out of sync with the codebase.
 ---
 
 # API docs writer
 
-Each API controller is documented in one markdown file under `resources/views/marketing/docs/1.x/03-API/…`. The page, route, and sidebar are generated automatically — no controller or route to create. Use `04-vaults/02-gender-management.md` as the reference.
+The API reference is a single-page portal served at `/docs`. It is built by `App\Services\ApiDocumentation` from the PHP definition files in `resources/docs/api`, and rendered with the Blade components in `resources/views/components/api-docs`. There are no markdown files, no per-page controllers, and no per-page routes to create.
+
+## How the portal works
+
+- `resources/docs/api/*.php`: one file per sidebar group, loaded in filename order (the numeric prefix sets the order). Each file returns an array with a `name` and a list of `sections`. A group with `'guide' => true` renders under GETTING STARTED in the sidebar; the others render under RESOURCES with method badges.
+- `App\Services\ApiDocumentation` normalizes every section and generates the cURL, JavaScript and PHP samples, the syntax-highlighted JSON, the sidebar navigation, and a markdown version of each section.
+- `Marketing\Docs\ApiDocsController@index` renders the portal. `Marketing\Docs\ApiDocsMarkdownController` serves the whole reference at `/docs.md` and one section at `/docs/{section}.md` (used by the Copy for LLM and View as Markdown buttons).
+- `Tests\Unit\Services\ApiDocumentationTest` asserts that the documented endpoints match the routes in `routes/api.php` exactly, in both directions. An API route without documentation fails the suite, and so does documentation for a route that does not exist.
 
 ## Step 1 — Research
 
 Read, for the resource being documented:
-- the API controller (`app/Http/Controllers/Api/…`) — every public method,
-- `routes/api.php` — exact URL, verb, and route name per endpoint,
-- the Eloquent Resource (`app/Http/Resources/…`) — exact response shape,
-- the Actions' `validate()` — permissions (owner-only vs any member),
-- a sibling `.md` page — to match tone and structure.
 
-## Step 2 — Write the markdown page
+- the API controller (`app/Http/Controllers/Api/…`): every public method,
+- `routes/api.php`: exact URL, verb and route name per endpoint,
+- the Eloquent Resource (`app/Http/Resources/…`): exact response shape,
+- the Actions' `validate()`: permissions (owners and editors vs any member),
+- a sibling definition file (e.g. `resources/docs/api/05-collections.php`): to match tone and structure.
 
-Create the file next to its siblings; the numeric prefix sets the order (e.g. `03-API/04-vaults/02-gender-management.md`). The file path maps to its URL with prefixes stripped (`/docs/1.x/api/vaults/gender-management`).
+## Step 2 — Write the definition file
 
-Pages are plain markdown with custom `:::directive … :::/directive` blocks — no Blade. Page structure:
+Create a numbered file in `resources/docs/api` (or add sections to an existing group). Each section supports:
 
-1. `# Title`
-2. `:::markdown-actions` wrapping `:::copy-for-llm` and `:::view-as-markdown` (all with `url="{{docs.markdown_url}}"`)
-3. `:::toc` — markdown links whose anchors match the endpoint headings
-4. Overview `:::section columns divided` — left `:::column` describes the resource and access rules; right `:::column` lists endpoints in a `:::code title="Endpoints"` `text` block
-5. One `:::section columns divided` per endpoint — left column has the `## heading`, `:::description`, then `:::parameters` groups; right column has a `:::code` response example. Omit `divided` on the last section.
+```php
+[
+    'id' => 'collections-list',           // unique, kebab-case; used as the anchor and in /docs/{id}.md
+    'title' => 'List collections',        // section heading
+    'label' => 'List collections',        // sidebar label; defaults to title
+    'method' => 'GET',
+    'path' => '/collections',             // route path, with {parameters} exactly as in routes/api.php
+    'examplePath' => '/collections/1',    // path used in code samples; defaults to path
+    'auth' => true,                       // false drops the Authorization header from the samples
+    'description' => '…',                 // first paragraph under the title
+    'body' => ['…'],                      // optional extra paragraphs
+    'permissions' => '…',                 // e.g. 'Owners and editors. Viewers get a 404 response.'
+    'pathParams' => [/* params */],
+    'queryParams' => [/* params */],
+    'bodyParams' => [/* params */],
+    'returns' => '…',                     // one sentence describing the response
+    'responseStatus' => 200,              // defaults to 200; use 201 for create and 204 for delete
+    'response' => [/* body as a PHP array */], // omit for 204 responses
+]
+```
 
-Document endpoints in this order regardless of controller order: list (`GET`), get one (`GET`), create (`POST`), update (`PUT`/`PATCH`), delete (`DELETE`).
+A param is `['name' => …, 'type' => …, 'required' => bool, 'description' => …]`, plus optional `'default' => '10'` and `'example' => …`. Body params that define an `example` become the request body of the code samples; use `'exampleBody' => […]` on the section to override it.
 
-### Directives
+Helpers on `ApiDocumentation`: `baseUrl()` returns the API base URL, and `paginated($data, $path)` wraps a list of resources in a realistic paginator body.
 
-- `:::section columns divided` / `:::column` — two-column layout; `divided` adds a separator (drop it on the final section).
-- `:::description` — explanatory text under an endpoint heading.
-- `:::parameters title="…"` — a group: `URL parameters`, `Query parameters`, `Body parameters`, or `Response attributes`. Add `empty="…"` when there are none.
-- `:::attribute name="…" type="…"` — one field (add `required` when required); description goes inside.
-- `:::code title="…" verb="GET"` — a request/response panel holding a fenced `json` (or `text`) block. Use `title="Endpoints"` without `verb` for the overview list, and a `text` block reading `No response body` for `204` deletes.
+Conventions:
 
-Match types and example values to the Resource (timestamps are integers, `updated_at` is `integer|null`, `id` is a string).
+- Document endpoints in this order: list (`GET`), get one (`GET`), create (`POST`), update (`PUT`), delete (`DELETE`), then extra actions.
+- Match example values to the Resource exactly: `id` is a string, timestamps are Unix integers, and the JSON envelope is `type` / `id` / `attributes` / `links`.
+- State the role rules in `permissions` for account-scoped resources, and say that cross-account lookups return 404 in `returns`.
+- Never use em dashes in the copy; rephrase with periods, commas or parentheses.
 
-## Step 3 — Write the test
+## Step 3 — Test
 
-Add `tests/Feature/Controllers/Marketing/Docs/Api{Name}ControllerTest.php` with two `#[Test]` methods that `assertOk()`: one for the page URL and one for the same URL with a `.md` suffix. Assert status only, never content.
+The route sync test fails on its own when an endpoint is missing, so there is usually no new test to write. When adding a new group, add an `assertSee()` for one of its titles to `tests/Feature/Controllers/Marketing/Docs/ApiDocsControllerTest.php`. Run:
 
-`php artisan make:test` nests the file under `tests/Feature/Feature/…`; move it to the correct path and `rm -rf tests/Feature/Feature` afterwards.
+```
+PAO_DISABLE=1 php artisan test tests/Unit/Services/ApiDocumentationTest.php tests/Feature/Controllers/Marketing/Docs/ApiDocsControllerTest.php
+```

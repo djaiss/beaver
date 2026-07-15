@@ -26,7 +26,7 @@ Do not excessively use emojis.
 - `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs).
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
 - `app/Jobs`: queued jobs. `app/Mail`: mailables. `app/Enums`: enums. `app/Helpers`: helpers.
-- `app/Services` and `app/Markdown`: markdown rendering and navigation for the documentation pages.
+- `app/Services`: `ApiDocumentation` builds the API reference served at `/docs` from the endpoint definition files in `resources/docs/api`.
 - `app/View/Components`: the layout components (app, guest, marketing).
 - `resources/views`: `app` for the logged in screens, `components` for shared UI, `layouts` and `partials` for the shell, `marketing` for the public site, `mail` for emails.
 - `resources/css` and `resources/js`: the Tailwind theme and the Alpine setup.
