@@ -11,6 +11,7 @@ it('shows the api docs portal', function () {
         ->assertSee('Authentication')
         ->assertSee('List collections')
         ->assertSee('Create a location')
+        ->assertSee('Create a condition')
         ->assertSee('Get API key');
 });
 
