@@ -16,7 +16,7 @@
         <p class="mt-1.5 text-[15px] text-muted">{{ __('A collection holds a set of items, give it a name and set who can see it.') }}</p>
       </div>
 
-      <x-form method="post" :action="route('collections.create')" data-test="create-collection-form">
+      <x-form method="post" :action="route('collections.create')" data-turbo="true" data-test="create-collection-form">
         <div x-data="{
           emoji: @js(old('emoji', $emojiOptions[0])),
           visibility: @js(old('visibility', 'shared')),

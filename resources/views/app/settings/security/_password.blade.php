@@ -1,7 +1,7 @@
 <x-box padding="p-0">
   <x-slot:title>{{ __('Change password') }}</x-slot>
 
-  <x-form method="put" action="{{ route('profile.security.password.update') }}">
+  <x-form id="password-form" x-target="password-form" x-merge="replace" method="put" action="{{ route('profile.security.password.update') }}">
     <!-- current password -->
     <div class="grid grid-cols-3 items-center border-b border-hairline-soft p-3">
       <p class="col-span-2 block text-sm font-medium text-ink">{{ __('Current password') }}</p>

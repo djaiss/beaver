@@ -232,6 +232,7 @@
     "Thanks for signing up!": "Merci pour votre inscription !",
     "The API key can no longer be used.": "La clé API ne peut plus être utilisée.",
     "The collections using this type were updated.": "Les collections utilisant ce type ont été mises à jour.",
+    "The current password is incorrect.": "Le mot de passe actuel est incorrect.",
     "The custom field was removed from the type.": "Le champ personnalisé a été retiré du type.",
     "The endpoint will no longer receive events.": "Le point de terminaison ne recevra plus d'événements.",
     "The endpoint will now receive event notifications.": "Le point de terminaison recevra désormais les notifications d'événements.",
