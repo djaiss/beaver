@@ -5,7 +5,7 @@
         <div class="flex flex-col items-center gap-x-4 sm:flex-row sm:gap-x-2">
           <a href="" class="group flex items-center gap-x-2 transition-transform ease-in-out">
             <div class="transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-              <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
+              <x-logo size="25" />
             </div>
           </a>
           <p class="text-xs text-gray-600">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved. Actually, our trademark is not registered, but we probably should write that to do like the big boys.</p>

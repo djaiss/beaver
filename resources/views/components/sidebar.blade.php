@@ -13,7 +13,7 @@
     {{-- Logo + theme toggle --}}
     <div class="flex items-center justify-between px-2">
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2">
-            <span class="size-[26px] shrink-0 rounded-full bg-ink"></span>
+            <x-logo size="26" />
             <span class="text-[17px] font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
         </a>
 

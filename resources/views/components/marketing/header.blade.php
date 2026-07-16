@@ -5,7 +5,7 @@
     <div class="flex items-center">
       <a href="" data-turbo="true" class="group flex items-center gap-x-2 transition-transform ease-in-out">
         <div class="transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-          <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
+          <x-logo size="25" />
         </div>
         <span class="text-lg font-semibold text-gray-900 dark:text-white">{{ config('app.name') }}</span>
       </a>
