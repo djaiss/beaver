@@ -11,10 +11,18 @@ test('plain text removes script tags', function () {
     expect(TextSanitizer::plainText('<script>alert("xss")</script>'))->toBe('');
 });
 
-test('plain text handles malformed html', function () {
-    $result = TextSanitizer::plainText('< script >alert(1)</ script >');
+test('plain text keeps malformed html as inert text', function () {
+    expect(TextSanitizer::plainText('< script >alert(1)</ script >'))->toBe('< script >alert(1)');
+});
 
-    $this->assertStringNotContainsString('< script >', $result);
+test('plain text keeps special characters unescaped', function () {
+    expect(TextSanitizer::plainText('Ross & Rachel'))->toBe('Ross & Rachel');
+    expect(TextSanitizer::plainText("Joey's Comics"))->toBe("Joey's Comics");
+    expect(TextSanitizer::plainText('Season 1 < Season 5'))->toBe('Season 1 < Season 5');
+});
+
+test('plain text decodes entities the user typed as text', function () {
+    expect(TextSanitizer::plainText('Monica &amp; Chandler'))->toBe('Monica & Chandler');
 });
 
 test('nullable plain text returns null for null', function () {
