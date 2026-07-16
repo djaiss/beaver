@@ -120,6 +120,7 @@ it('updates the name and color', function () {
 
     $response->assertRedirect('/settings/types/'.$type->id.'/edit');
     $response->assertSessionHas('status', 'Type updated');
+    $response->assertSessionHas('status_description', 'Your changes to the type were saved.');
 
     $type->refresh();
     expect($type->name)->toBe('Trading Cards');

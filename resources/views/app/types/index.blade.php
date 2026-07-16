@@ -11,7 +11,7 @@
           <p class="mt-1 max-w-lg text-sm text-muted">{{ __('Types define the custom fields available on items, and which collections can use them.') }}</p>
         </div>
 
-        <x-form method="post" :action="route('settings.types.create')" class="shrink-0">
+        <x-form method="post" :action="route('settings.types.create')" data-turbo="true" class="shrink-0">
           <x-button type="submit" data-test="new-type-button">{{ __('New type') }}</x-button>
         </x-form>
       </div>

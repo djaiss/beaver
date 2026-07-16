@@ -59,5 +59,16 @@ addEventListener('turbo:before-morph-element', (event) => {
   }
 });
 
+// Morph refreshes patch the toast DOM without re-running Alpine on it, so a
+// fresh toast keeps its stale state and never starts its auto-hide timer.
+// Rebuild the Alpine tree for just that island after every morph.
+addEventListener('turbo:morph', () => {
+  const notifications = document.getElementById('notifications');
+  if (notifications && window.Alpine?.initTree) {
+    Alpine.destroyTree(notifications);
+    Alpine.initTree(notifications);
+  }
+});
+
 // If you need page-specific teardown, you can hook before Turbo renders the new DOM:
 // addEventListener('turbo:before-render', (event) => { /* cleanup here */ });

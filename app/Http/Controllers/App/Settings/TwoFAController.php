@@ -45,7 +45,8 @@ class TwoFAController extends Controller
         }
 
         return to_route('profile.security.index')
-            ->with('status', __('Two-factor authentication has been enabled successfully.'));
+            ->with('status', __('Two-factor authentication enabled'))
+            ->with('status_description', __('You will be asked for a code when you sign in.'));
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -55,6 +56,7 @@ class TwoFAController extends Controller
         )->execute();
 
         return to_route('profile.security.index')
-            ->with('status', __('Changes saved'));
+            ->with('status', __('Changes saved'))
+            ->with('status_description', __('Two-factor authentication has been disabled.'));
     }
 }

@@ -54,7 +54,9 @@ class CollectionTypeController extends Controller
             color: self::PALETTE[0],
         )->execute();
 
-        return to_route('settings.types.edit', $type->id);
+        return to_route('settings.types.edit', $type->id)
+            ->with('status', __('Type created'))
+            ->with('status_description', __('Give it a name and add custom fields.'));
     }
 
     public function edit(Request $request, int $collectionType): View
@@ -99,7 +101,8 @@ class CollectionTypeController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Type updated'));
+            ->with('status', __('Type updated'))
+            ->with('status_description', __('Your changes to the type were saved.'));
     }
 
     public function destroy(Request $request, int $collectionType): RedirectResponse
@@ -118,7 +121,8 @@ class CollectionTypeController extends Controller
         )->execute();
 
         return to_route('settings.types.index')
-            ->with('status', __('Type deleted'));
+            ->with('status', __('Type deleted'))
+            ->with('status_description', __('The type and its custom fields were removed.'));
     }
 
     private function fieldSummary(CollectionType $type): string

@@ -31,7 +31,8 @@ class ApiKeyController extends Controller
 
         return to_route('profile.security.index')
             ->with('apiKey', $apiKey)
-            ->with('status', trans('API key created'));
+            ->with('status', trans('API key created'))
+            ->with('status_description', trans('Your new API key is ready to use.'));
     }
 
     public function destroy(Request $request, int $apiKeyId): RedirectResponse
@@ -51,6 +52,7 @@ class ApiKeyController extends Controller
         )->execute();
 
         return to_route('profile.security.index')
-            ->with('status', trans('API key deleted'));
+            ->with('status', trans('API key deleted'))
+            ->with('status_description', trans('The API key can no longer be used.'));
     }
 }

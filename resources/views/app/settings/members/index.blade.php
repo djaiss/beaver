@@ -14,6 +14,7 @@
         <p class="mt-1 text-sm text-muted">{{ __('People who have access to :account.', ['account' => $account->name]) }}</p>
       </div>
 
+      <div id="members" x-merge="replace" class="space-y-8">
       {{-- Members list --}}
       <x-box padding="p-0">
         @foreach ($members as $member)
@@ -26,11 +27,11 @@
               </div>
             </div>
             <div class="flex items-center gap-2">
-              <x-form method="put" :action="route('settings.members.update', $member->id)" class="flex items-center gap-2">
+              <x-form method="put" :action="route('settings.members.update', $member->id)" x-target="members" class="flex items-center gap-2">
                 <x-select id="role" :options="$roleOptions" :selected="$member->role" />
                 <x-button type="submit">{{ __('Update') }}</x-button>
               </x-form>
-              <x-form method="delete" :action="route('settings.members.destroy', $member->id)">
+              <x-form method="delete" :action="route('settings.members.destroy', $member->id)" x-target="members" x-on:ajax:before="confirm('{{ __('Are you sure you want to proceed? This can not be undone.') }}') || $event.preventDefault()">
                 <x-button.secondary type="submit">{{ __('Remove') }}</x-button.secondary>
               </x-form>
             </div>
@@ -40,7 +41,7 @@
 
       {{-- Invite --}}
       <x-box title="{{ __('Invite a member') }}">
-        <x-form method="post" :action="route('settings.members.create')" class="space-y-4">
+        <x-form method="post" :action="route('settings.members.create')" x-target="members" class="space-y-4">
           <x-input id="email" name="email" :label="__('Email')" :error="$errors->get('email')" required placeholder="ross@friends.com" />
           <x-select id="role" :label="__('Role')" :options="$roleOptions" :selected="'viewer'" :error="$errors->get('role')" required />
           <div class="flex items-center justify-end">
@@ -60,6 +61,7 @@
           @endforeach
         </x-box>
       @endif
+      </div>
     </div>
   </div>
 </x-app-layout>
