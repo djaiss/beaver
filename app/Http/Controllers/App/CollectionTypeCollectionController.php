@@ -32,6 +32,7 @@ class CollectionTypeCollectionController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Collections updated'));
+            ->with('status', __('Collections updated'))
+            ->with('status_description', __('The collections using this type were updated.'));
     }
 }

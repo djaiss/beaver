@@ -28,7 +28,8 @@ class CustomFieldController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Field added'));
+            ->with('status', __('Field added'))
+            ->with('status_description', __('A new custom field was added to the type.'));
     }
 
     public function update(Request $request, int $collectionType, int $customField): RedirectResponse
@@ -67,7 +68,8 @@ class CustomFieldController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Field updated'));
+            ->with('status', __('Field updated'))
+            ->with('status_description', __('Your changes to the field were saved.'));
     }
 
     public function destroy(Request $request, int $collectionType, int $customField): RedirectResponse
@@ -86,7 +88,8 @@ class CustomFieldController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Field removed'));
+            ->with('status', __('Field removed'))
+            ->with('status_description', __('The custom field was removed from the type.'));
     }
 
     private function findType(Request $request, int $collectionType): CollectionType
