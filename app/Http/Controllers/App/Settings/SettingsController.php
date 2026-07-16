@@ -101,6 +101,7 @@ class SettingsController extends Controller
         )->execute();
 
         return to_route('profile.index')
-            ->with('status', __('Changes saved'));
+            ->with('status', __('Changes saved'))
+            ->with('status_description', __('Your profile information was updated.'));
     }
 }

@@ -37,7 +37,8 @@ it('enables 2fa with valid token', function () {
         ]);
 
     $response->assertRedirect('/profile/security');
-    $response->assertSessionHas('status', 'Two-factor authentication has been enabled successfully.');
+    $response->assertSessionHas('status', 'Two-factor authentication enabled');
+    $response->assertSessionHas('status_description', 'You will be asked for a code when you sign in.');
 
     $user->refresh();
     expect($user->two_factor_confirmed_at)->not->toBeNull();

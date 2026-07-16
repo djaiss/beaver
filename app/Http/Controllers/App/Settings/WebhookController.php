@@ -52,7 +52,8 @@ class WebhookController extends Controller
         )->execute();
 
         return to_route('profile.webhooks.index')
-            ->with('status', trans('Webhook endpoint created'));
+            ->with('status', trans('Webhook endpoint created'))
+            ->with('status_description', trans('The endpoint will now receive event notifications.'));
     }
 
     public function destroy(Request $request, int $webhookEndpoint): RedirectResponse
@@ -67,6 +68,7 @@ class WebhookController extends Controller
         )->execute();
 
         return to_route('profile.webhooks.index')
-            ->with('status', trans('Webhook endpoint deleted'));
+            ->with('status', trans('Webhook endpoint deleted'))
+            ->with('status_description', trans('The endpoint will no longer receive events.'));
     }
 }

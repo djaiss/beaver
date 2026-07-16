@@ -83,7 +83,8 @@ class CollectionController extends Controller
         )->execute();
 
         return to_route('collections.index')
-            ->with('status', __('Collection created'));
+            ->with('status', __('Collection created'))
+            ->with('status_description', __('Your new collection is ready for items.'));
     }
 
     /**

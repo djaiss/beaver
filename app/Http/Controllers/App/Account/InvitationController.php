@@ -73,6 +73,7 @@ class InvitationController extends Controller
         )->execute();
 
         return to_route('dashboard.index')
-            ->with('status', __('Welcome! You have joined the account.'));
+            ->with('status', __('Welcome! You have joined the account.'))
+            ->with('status_description', __("You can now access the account's collections."));
     }
 }

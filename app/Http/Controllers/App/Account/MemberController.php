@@ -54,7 +54,8 @@ class MemberController extends Controller
         )->execute();
 
         return to_route('settings.members.index')
-            ->with('status', __('Invitation sent successfully'));
+            ->with('status', __('Invitation sent successfully'))
+            ->with('status_description', __('An invitation email is on its way.'));
     }
 
     public function update(Request $request, int $userId): RedirectResponse
@@ -74,7 +75,8 @@ class MemberController extends Controller
         )->execute();
 
         return to_route('settings.members.index')
-            ->with('status', __('Member role updated successfully'));
+            ->with('status', __('Member role updated successfully'))
+            ->with('status_description', __("The member's permissions were changed."));
     }
 
     public function destroy(Request $request, int $userId): RedirectResponse
@@ -89,6 +91,7 @@ class MemberController extends Controller
         )->execute();
 
         return to_route('settings.members.index')
-            ->with('status', __('Member removed successfully'));
+            ->with('status', __('Member removed successfully'))
+            ->with('status_description', __('The member no longer has access to the account.'));
     }
 }

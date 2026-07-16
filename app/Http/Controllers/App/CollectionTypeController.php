@@ -54,7 +54,9 @@ class CollectionTypeController extends Controller
             color: self::PALETTE[0],
         )->execute();
 
-        return to_route('settings.types.edit', $type->id);
+        return to_route('settings.types.edit', $type->id)
+            ->with('status', __('Type created'))
+            ->with('status_description', __('Give it a name and add custom fields.'));
     }
 
     public function edit(Request $request, int $collectionType): View

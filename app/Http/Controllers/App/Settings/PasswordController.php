@@ -32,6 +32,7 @@ class PasswordController extends Controller
         )->execute();
 
         return to_route('profile.security.index')
-            ->with('status', __('Changes saved'));
+            ->with('status', __('Changes saved'))
+            ->with('status_description', __('Your new password is now in effect.'));
     }
 }

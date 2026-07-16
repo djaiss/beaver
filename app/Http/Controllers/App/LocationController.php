@@ -51,7 +51,8 @@ class LocationController extends Controller
         )->execute();
 
         return to_route('locations.index')
-            ->with('status', __('Location created'));
+            ->with('status', __('Location created'))
+            ->with('status_description', __('The location can now be used to store items.'));
     }
 
     public function update(Request $request, int $location): RedirectResponse
@@ -79,7 +80,8 @@ class LocationController extends Controller
         )->execute();
 
         return to_route('locations.index')
-            ->with('status', __('Location updated'));
+            ->with('status', __('Location updated'))
+            ->with('status_description', __('Your changes to the location were saved.'));
     }
 
     public function destroy(Request $request, int $location): RedirectResponse
@@ -98,7 +100,8 @@ class LocationController extends Controller
         )->execute();
 
         return to_route('locations.index')
-            ->with('status', __('Location deleted'));
+            ->with('status', __('Location deleted'))
+            ->with('status_description', __('The location was removed from the account.'));
     }
 
     /**
