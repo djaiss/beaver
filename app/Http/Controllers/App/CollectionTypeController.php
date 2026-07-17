@@ -83,7 +83,7 @@ class CollectionTypeController extends Controller
             'fieldTypes' => $this->fieldTypeOptions(),
             'palette' => self::PALETTE,
             // The name is encrypted, so it can only be sorted once decrypted.
-            'collections' => $account->collections()->get()->sortBy('name'),
+            'collections' => $type->collections->sortBy('name'),
         ]);
     }
 
