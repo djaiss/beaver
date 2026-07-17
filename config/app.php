@@ -147,7 +147,7 @@ return [
     |
     */
 
-    'supported_locales' => ['en', 'fr_FR', 'es_ES', 'de_DE'],
+    'supported_locales' => ['en', 'fr_FR', 'es_ES', 'de_DE', 'pt_BR', 'zh_CN', 'ja_JP'],
 
     /*
     |--------------------------------------------------------------------------

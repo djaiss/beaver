@@ -75,7 +75,7 @@ return [
                     'name' => 'locale',
                     'type' => 'string',
                     'required' => true,
-                    'description' => 'The locale of the user. One of en, fr_FR, es_ES or de_DE.',
+                    'description' => 'The locale of the user. One of en, fr_FR, es_ES, de_DE, pt_BR, zh_CN or ja_JP.',
                     'example' => 'en',
                 ],
                 [
