@@ -10,6 +10,8 @@ use Database\Factories\ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -85,5 +87,26 @@ class Item extends Model
     public function collectionType(): BelongsTo
     {
         return $this->belongsTo(CollectionType::class, 'type_id');
+    }
+
+    /**
+     * Get the photos of the item, in the order the user arranged them.
+     *
+     * @return HasMany<ItemPhoto, $this>
+     */
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ItemPhoto::class)->orderBy('position')->orderBy('id');
+    }
+
+    /**
+     * Get the main visual of the item. An item with photos always has exactly
+     * one, and an item without photos has none.
+     *
+     * @return HasOne<ItemPhoto, $this>
+     */
+    public function mainPhoto(): HasOne
+    {
+        return $this->hasOne(ItemPhoto::class)->where('is_main', true);
     }
 }
