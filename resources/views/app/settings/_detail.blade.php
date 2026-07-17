@@ -23,7 +23,7 @@
       <x-input id="email" value="{{ old('email', $user->email) }}" :label="__('Email')" required placeholder="john@doe.com" :error="$errors->get('email')" />
 
       <!-- locale -->
-      <x-select id="locale" :label="__('Language')" :options="['en' => __('English'), 'fr_FR' => __('French'), 'es_ES' => __('Spanish'), 'de_DE' => __('German')]" selected="{{ $user->locale }}" required :error="$errors->get('locale')" />
+      <x-select id="locale" :label="__('Language')" :options="['en' => __('English'), 'fr_FR' => __('French'), 'es_ES' => __('Spanish'), 'de_DE' => __('German'), 'pt_BR' => __('Portuguese'), 'zh_CN' => __('Chinese'), 'ja_JP' => __('Japanese')]" selected="{{ $user->locale }}" required :error="$errors->get('locale')" />
 
       <!-- time format -->
       <x-select id="time_format_24h" :label="__('Time format')" :options="['true' => __('24-hour (e.g., 14:00)'), 'false' => __('12-hour (e.g., 2:00 PM)')]" selected="{{ $user->time_format_24h ? 'true' : 'false' }}" required :error="$errors->get('time_format_24h')" />
