@@ -15,6 +15,7 @@
     "bacon/bacon-qr-code": "^3.0.3",
     "cesargb/laravel-magiclink": "^2.25.1",
     "erag/laravel-disposable-email": "^5.0",
+    "intervention/image": "^4.2",
     "laravel/framework": "^13.8",
     "laravel/sanctum": "^4.0",
     "laravel/tinker": "^3.0",
