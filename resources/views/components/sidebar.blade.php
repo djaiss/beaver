@@ -4,11 +4,14 @@
     $isAccount = request()->routeIs('settings.*');
 @endphp
 
+{{-- The closed position is a static class rather than an x-cloak plus :class pair. x-cloak
+     would hide the sidebar until Alpine boots, and since it is in flow on desktop that drops
+     it out of the layout and shifts the page once it appears. Alpine only removes
+     -translate-x-full to slide it in on mobile. --}}
 <aside
-    x-cloak
     data-morph-skip
-    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-    class="fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 flex-col gap-6 border-r border-hairline bg-sidebar px-4 py-5 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
+    :class="{ '-translate-x-full': ! sidebarOpen }"
+    class="fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 -translate-x-full flex-col gap-6 border-r border-hairline bg-sidebar px-4 py-5 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
 >
     {{-- Logo + theme toggle --}}
     <div class="flex items-center justify-between px-2">
@@ -23,8 +26,10 @@
             class="flex size-8 items-center justify-center rounded-full border border-hairline bg-canvas text-muted transition-colors hover:text-ink"
             aria-label="{{ __('Toggle theme') }}"
         >
-            <span x-cloak x-show="$store.theme.dark">@svg('lucide-sun', 'size-4 text-warning')</span>
-            <span x-cloak x-show="!$store.theme.dark">@svg('lucide-moon', 'size-4')</span>
+            {{-- Driven by the `dark` class the inline script in partials/meta sets before paint,
+                 so the right icon is painted straight away instead of waiting on Alpine. --}}
+            <span class="hidden dark:block">@svg('lucide-sun', 'size-4 text-warning')</span>
+            <span class="block dark:hidden">@svg('lucide-moon', 'size-4')</span>
         </button>
     </div>
 
