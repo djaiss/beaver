@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -101,5 +102,15 @@ class Collection extends Model
     public function collectionTypes(): BelongsToMany
     {
         return $this->belongsToMany(CollectionType::class, 'collection_type', 'collection_id', 'type_id');
+    }
+
+    /**
+     * Get the items catalogued in the collection.
+     *
+     * @return HasMany<Item, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
     }
 }

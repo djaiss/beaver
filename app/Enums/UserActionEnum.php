@@ -25,6 +25,9 @@ enum UserActionEnum: string
     case CustomFieldGroupCreation = 'custom_field_group_created';
     case CustomFieldGroupUpdate = 'custom_field_group_updated';
     case CustomFieldGroupDeletion = 'custom_field_group_deleted';
+    case ItemCreation = 'item_created';
+    case ItemUpdate = 'item_updated';
+    case ItemDeletion = 'item_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -67,6 +70,9 @@ enum UserActionEnum: string
             self::CustomFieldGroupCreation => 'Created the field group called :name',
             self::CustomFieldGroupUpdate => 'Updated the field group called :name',
             self::CustomFieldGroupDeletion => 'Deleted the field group called :name',
+            self::ItemCreation => 'Created the item called :name',
+            self::ItemUpdate => 'Updated the item called :name',
+            self::ItemDeletion => 'Deleted the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',
