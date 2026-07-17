@@ -15,9 +15,11 @@
 >
     {{-- Logo + theme toggle --}}
     <div class="flex items-center justify-between px-2">
+        {{-- The mark is decorative here: the wordmark next to it already names the app,
+             so labelling both would announce it twice. --}}
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2">
-            <x-logo size="26" />
-            <span class="text-[17px] font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
+            <x-logo size="26" aria-hidden="true" />
+            <x-wordmark height="15" class="text-ink" />
         </a>
 
         <button
