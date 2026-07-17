@@ -9,6 +9,9 @@ use App\Http\Controllers\App\CollectionController;
 use App\Http\Controllers\App\CollectionTypeCollectionController;
 use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CustomFieldController;
+use App\Http\Controllers\App\CustomFieldGroupController;
+use App\Http\Controllers\App\CustomFieldGroupFieldController;
+use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\LocationController;
@@ -109,6 +112,13 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('settings/types/{collectionType}/fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('settings.types.fields.update');
         Route::delete('settings/types/{collectionType}/fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('settings.types.fields.destroy');
         Route::put('settings/types/{collectionType}/fields/{customField}/order', [CustomFieldOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('settings.types.fields.order.update');
+        // the groups a type's fields can be organised into
+        Route::post('settings/types/{collectionType}/groups', [CustomFieldGroupController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.groups.create');
+        Route::put('settings/types/{collectionType}/groups/{group}', [CustomFieldGroupController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('settings.types.groups.update');
+        Route::delete('settings/types/{collectionType}/groups/{group}', [CustomFieldGroupController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('settings.types.groups.destroy');
+        Route::put('settings/types/{collectionType}/groups/{group}/order', [CustomFieldGroupOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('settings.types.groups.order.update');
+        Route::post('settings/types/{collectionType}/groups/{group}/fields', [CustomFieldGroupFieldController::class, 'create'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('settings.types.groups.fields.create');
+
         Route::put('settings/types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.collections.update');
     });
 

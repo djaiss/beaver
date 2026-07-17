@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\FieldTypeEnum;
 use App\Models\Concerns\HasAuthor;
 use Carbon\Carbon;
-use Database\Factories\CustomFieldFactory;
+use Database\Factories\CustomFieldGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Class CustomField
+ * Class CustomFieldGroup
+ *
+ * A named section of custom fields within a type, e.g. "Main" holding the
+ * subtitle and author, then "Details" holding the publisher information.
+ * Groups keep the item form readable once a type carries many fields.
  *
  * @property int $id
  * @property int $type_id
- * @property int|null $group_id
  * @property string $name
- * @property FieldTypeEnum $field_type
- * @property array<int, mixed>|null $options
  * @property int $position
  * @property int|null $created_by_id
  * @property string|null $created_by_name
@@ -29,14 +30,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class CustomField extends Model
+class CustomFieldGroup extends Model
 {
     use HasAuthor;
 
-    /** @use HasFactory<CustomFieldFactory> */
+    /** @use HasFactory<CustomFieldGroupFactory> */
     use HasFactory;
 
-    protected $table = 'custom_fields';
+    protected $table = 'custom_field_groups';
 
     /**
      * The attributes that are mass assignable.
@@ -45,10 +46,7 @@ class CustomField extends Model
      */
     protected $fillable = [
         'type_id',
-        'group_id',
         'name',
-        'field_type',
-        'options',
         'position',
     ];
 
@@ -61,14 +59,12 @@ class CustomField extends Model
     {
         return [
             'name' => 'encrypted',
-            'field_type' => FieldTypeEnum::class,
-            'options' => 'array',
             'position' => 'integer',
         ];
     }
 
     /**
-     * Get the collection type the field is attached to.
+     * Get the collection type the group belongs to.
      *
      * @return BelongsTo<CollectionType, $this>
      */
@@ -78,12 +74,12 @@ class CustomField extends Model
     }
 
     /**
-     * Get the group the field sits in, if any.
+     * Get the custom fields sitting in the group.
      *
-     * @return BelongsTo<CustomFieldGroup, $this>
+     * @return HasMany<CustomField, $this>
      */
-    public function group(): BelongsTo
+    public function customFields(): HasMany
     {
-        return $this->belongsTo(CustomFieldGroup::class, 'group_id');
+        return $this->hasMany(CustomField::class, 'group_id');
     }
 }

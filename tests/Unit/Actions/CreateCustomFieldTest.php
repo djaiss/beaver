@@ -8,6 +8,7 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\CollectionType;
 use App\Models\CustomField;
+use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -90,5 +91,66 @@ it('throws when the user is only a viewer', function () {
         user: $viewer,
         collectionType: $collectionType,
         name: 'Grade',
+    )->execute();
+});
+
+it('creates a field inside a group', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+
+    $customField = new CreateCustomField(
+        user: $owner,
+        collectionType: $collectionType,
+        name: 'Grade',
+        group: $group,
+    )->execute();
+
+    expect($customField->group_id)->toBe($group->id);
+    expect($customField->type_id)->toBe($collectionType->id);
+});
+
+it('counts the positions of each group separately from the standalone fields', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $other = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+
+    $standalone = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Notes')->execute();
+    $firstOfGroup = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Issue #', group: $group)->execute();
+    $secondOfGroup = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Publisher', group: $group)->execute();
+    $firstOfOther = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Grade', group: $other)->execute();
+
+    // A position orders a field within its group, so every list restarts at 1.
+    expect($standalone->position)->toBe(1);
+    expect($firstOfGroup->position)->toBe(1);
+    expect($secondOfGroup->position)->toBe(2);
+    expect($firstOfOther->position)->toBe(1);
+});
+
+it('throws when the group belongs to another type', function () {
+    Queue::fake();
+    $this->expectException(ValidationException::class);
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $comics = CollectionType::factory()->create(['account_id' => $account->id]);
+    $wine = CollectionType::factory()->create(['account_id' => $account->id]);
+    $foreignGroup = CustomFieldGroup::factory()->create(['type_id' => $wine->id]);
+
+    new CreateCustomField(
+        user: $owner,
+        collectionType: $comics,
+        name: 'Grade',
+        group: $foreignGroup,
     )->execute();
 });

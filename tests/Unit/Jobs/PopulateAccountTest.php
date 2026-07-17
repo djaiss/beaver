@@ -19,26 +19,56 @@ it('populates the account with the default collection types', function () {
     expect($types->map->name->all())->toContain('Comics', 'Vinyl Records', 'CD', 'DVD', 'Wine');
 });
 
-it('populates each type with its custom fields in order', function () {
+it('populates each type with its field groups in order', function () {
     $account = Account::factory()->create();
 
     new PopulateAccount($account)->handle();
 
     $comics = $account->collectionTypes()->get()->firstWhere('name', 'Comics');
 
-    $fields = $comics->customFields()->orderBy('position')->get();
+    $groups = $comics->customFieldGroups()->orderBy('position')->get();
 
-    expect($fields)->toHaveCount(7);
+    expect($groups)->toHaveCount(2);
+    expect($groups->map->name->all())->toBe(['Publishing info', 'Condition & grading']);
+    expect($groups->pluck('position')->all())->toBe([1, 2]);
+});
+
+it('populates each group with its custom fields in order', function () {
+    $account = Account::factory()->create();
+
+    new PopulateAccount($account)->handle();
+
+    $comics = $account->collectionTypes()->get()->firstWhere('name', 'Comics');
+    $group = $comics->customFieldGroups()->get()->firstWhere('name', 'Publishing info');
+
+    $fields = $group->customFields()->orderBy('position')->get();
+
     expect($fields->map->name->all())->toBe([
         'Issue #',
         'Publisher',
         'Writer',
         'Artist',
         'Cover Date',
-        'Variant',
-        'Signed',
     ]);
-    expect($fields->pluck('position')->all())->toBe([1, 2, 3, 4, 5, 6, 7]);
+
+    // A position orders a field within its group, so each group restarts at 1.
+    expect($fields->pluck('position')->all())->toBe([1, 2, 3, 4, 5]);
+
+    // The field still knows the type it belongs to, alongside its group.
+    expect($fields->every(fn ($field): bool => $field->type_id === $comics->id))->toBeTrue();
+});
+
+it('leaves a type with no groups holding every field as standalone', function () {
+    $account = Account::factory()->create();
+
+    new PopulateAccount($account)->handle();
+
+    // Wine mixes the two: Bottle Size sits outside of any group.
+    $wine = $account->collectionTypes()->get()->firstWhere('name', 'Wine');
+
+    expect($wine->ungroupedCustomFields()->get()->map->name->all())->toBe(['Bottle Size']);
+    expect($wine->customFieldGroups()->get()->map->name->all())->toBe(['Origin']);
+    expect($wine->customFields()->count())->toBe(5);
 });
 
 it('stores the options and field type of a select field', function () {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\CustomField;
+use App\Models\CustomFieldGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin CustomField
+ * @mixin CustomFieldGroup
  */
-class CustomFieldResource extends JsonResource
+class CustomFieldGroupResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,21 +21,18 @@ class CustomFieldResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'custom_field',
+            'type' => 'custom_field_group',
             'id' => (string) $this->id,
             'attributes' => [
                 'name' => $this->name,
-                'field_type' => $this->field_type->value,
-                'options' => $this->options,
                 'position' => $this->position,
-                'group_id' => $this->group_id === null ? null : (string) $this->group_id,
                 'created_at' => $this->created_at->timestamp,
                 'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.collectionTypes.customFields.show', [
+                'self' => route('api.collectionTypes.customFieldGroups.show', [
                     'collectionType' => $this->type_id,
-                    'customField' => $this->id,
+                    'group' => $this->id,
                 ]),
             ],
         ];

@@ -4,6 +4,7 @@ declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Models\CollectionType;
 use App\Models\CustomField;
+use App\Models\CustomFieldGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
@@ -19,6 +20,7 @@ beforeEach(function () {
             'field_type',
             'options',
             'position',
+            'group_id',
             'created_at',
             'updated_at',
         ],
@@ -278,4 +280,57 @@ it('restricts custom field deletion to owners and editors', function () {
     $response = $this->json('DELETE', '/api/collection-types/'.$type->id.'/custom-fields/'.$field->id);
 
     $response->assertNotFound();
+});
+
+it('creates a field inside a group', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $type->id]);
+
+    Sanctum::actingAs($user);
+
+    $response = $this->json('POST', '/api/collection-types/'.$type->id.'/custom-fields', [
+        'name' => 'Grade',
+        'field_type' => 'text',
+        'group_id' => $group->id,
+    ]);
+
+    $response
+        ->assertCreated()
+        ->assertJsonPath('data.attributes.group_id', (string) $group->id);
+
+    expect($type->customFields()->first()->group_id)->toBe($group->id);
+});
+
+it('exposes a null group_id for a standalone field', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $field = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => null]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', '/api/collection-types/'.$type->id.'/custom-fields/'.$field->id)
+        ->assertOk()
+        ->assertJsonPath('data.attributes.group_id', null);
+});
+
+it('refuses a group belonging to another type', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $comics = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $wine = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $foreignGroup = CustomFieldGroup::factory()->create(['type_id' => $wine->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/collection-types/'.$comics->id.'/custom-fields', [
+        'name' => 'Grade',
+        'field_type' => 'text',
+        'group_id' => $foreignGroup->id,
+    ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('group_id');
 });
