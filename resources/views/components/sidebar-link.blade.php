@@ -1,4 +1,4 @@
-@props(['href', 'active' => false, 'icon' => null])
+@props(['href', 'active' => false, 'icon' => null, 'color' => null])
 
 <a
     href="{{ $href }}"
@@ -10,7 +10,9 @@
         'text-body hover:bg-canvas hover:text-ink' => ! $active,
     ]) }}
 >
-    @if ($icon)
+    @if ($color)
+        <span class="size-4 shrink-0 rounded-[5px] {{ $color }}"></span>
+    @elseif ($icon)
         @svg('lucide-'.$icon, 'size-4 shrink-0 '.($active ? 'text-ink' : 'text-muted'))
     @endif
     <span class="truncate">{{ $slot }}</span>

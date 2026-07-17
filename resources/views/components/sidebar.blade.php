@@ -1,7 +1,10 @@
+@props(['collection' => null])
+
 @php
     $user = auth()->user();
     $isProfile = request()->routeIs('profile.*');
     $isAccount = request()->routeIs('settings.*');
+    $isCollection = $collection !== null;
 @endphp
 
 {{-- The closed position is a static class rather than an x-cloak plus :class pair. x-cloak
@@ -62,6 +65,21 @@
             @endif
             <x-sidebar-link :href="route('settings.types.index')" :active="request()->routeIs('settings.types.*')" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.tags.index')" :active="request()->routeIs('settings.tags.*')" icon="tag">{{ __('Tags') }}</x-sidebar-link>
+        </nav>
+    @elseif ($isCollection)
+        <a href="{{ route('collections.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
+            @svg('lucide-arrow-left', 'size-4')
+            {{ __('Back to collections') }}
+        </a>
+
+        {{-- The sections below have no routes of their own yet, so they all point back at the
+             collection. They get their own pages as each concept is built. --}}
+        <nav class="flex flex-col gap-0.5">
+            <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $collection->name }}</p>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="true" color="bg-brand">{{ __('Items') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-violet">{{ __('Categories') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-emerald">{{ __('Sets') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-orange">{{ __('Item details') }}</x-sidebar-link>
         </nav>
     @else
         <nav class="flex flex-col gap-0.5">

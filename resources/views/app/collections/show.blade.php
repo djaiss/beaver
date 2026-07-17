@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout :collection="$collection">
   <x-slot:title>
     {{ $collection->name }}
   </x-slot>
