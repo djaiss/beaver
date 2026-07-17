@@ -1,6 +1,8 @@
 <header class="sticky top-0 z-50 flex h-16 items-center gap-6 border-b border-gray-200 bg-white px-4 sm:px-8">
   <div class="flex shrink-0 items-center gap-2">
-    <a href="{{ route('marketing.index') }}" class="text-base font-bold tracking-tight text-gray-900">{{ strtolower(config('app.name')) }}</a>
+    <a href="{{ route('marketing.index') }}" class="flex items-center text-gray-900">
+      <x-wordmark height="13" />
+    </a>
     <span class="text-gray-400">/</span>
     <span class="text-base font-semibold text-gray-900">API</span>
     <span class="ml-2 rounded-full bg-gray-100 px-2.5 py-1 font-mono text-xs font-semibold text-gray-700">v1</span>

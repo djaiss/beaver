@@ -5,9 +5,9 @@
     <div class="flex items-center">
       <a href="" data-turbo="true" class="group flex items-center gap-x-2 transition-transform ease-in-out">
         <div class="transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-          <x-logo size="25" />
+          <x-logo size="25" aria-hidden="true" />
         </div>
-        <span class="text-lg font-semibold text-gray-900 dark:text-white">{{ config('app.name') }}</span>
+        <x-wordmark height="15" class="text-gray-900 dark:text-white" />
       </a>
     </div>
 

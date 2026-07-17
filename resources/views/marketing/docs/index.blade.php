@@ -45,7 +45,7 @@
           @endforeach
 
           <footer class="bg-neutral-950 px-8 py-14 text-center">
-            <p class="mb-2 text-base font-bold text-white">{{ strtolower(config('app.name')) }}</p>
+            <x-wordmark height="14" class="mx-auto mb-2 block text-white" />
             <p class="text-[13px] text-zinc-400">Built for people who keep real inventories.</p>
           </footer>
         </main>

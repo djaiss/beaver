@@ -33,7 +33,7 @@
           >
             @svg('lucide-list', 'size-5')
           </button>
-          <span class="text-base font-semibold text-ink">{{ config('app.name') }}</span>
+          <x-wordmark height="14" class="text-ink" />
         </div>
 
         <main class="min-w-0 flex-1">
