@@ -20,7 +20,7 @@
         class="fixed inset-0 z-30 bg-black/40 lg:hidden"
       ></div>
 
-      <x-sidebar />
+      <x-sidebar :collection="$collection" />
 
       <div class="flex min-w-0 flex-1 flex-col">
         {{-- Mobile top bar --}}
