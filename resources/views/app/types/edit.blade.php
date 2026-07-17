@@ -170,20 +170,22 @@
       <p class="mt-0.5 mb-3.5 text-xs text-muted-soft">{{ __('A collection can use many types; an item picks exactly one.') }}</p>
 
       @if ($collections->isEmpty())
-        <p class="text-sm text-muted">{{ __('No collections yet. Create one to link it to this type.') }}</p>
+        <p class="text-sm text-muted">{{ __('No collections use this type yet.') }}</p>
       @else
-        {{-- Every collection in the account is listed; ticking one links it to the type. --}}
-        <x-form method="put" :action="route('settings.types.collections.update', $type->id)" data-turbo="true" onchange="this.requestSubmit()" class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2">
           @foreach ($collections as $collection)
-            <label class="cursor-pointer">
-              <input type="checkbox" name="collection_ids[]" value="{{ $collection->id }}" @checked($type->collections->contains($collection->id)) data-test="collection-chip-{{ $collection->id }}" class="peer sr-only" />
-              <span class="flex items-center gap-2 rounded-full border border-hairline px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:bg-card peer-checked:border-ink peer-checked:bg-card">
-                <span>{{ $collection->emoji }}</span>
-                {{ $collection->name }}
-              </span>
-            </label>
+            <a
+              href="{{ route('collections.show', $collection->id) }}"
+              data-turbo="true"
+              data-test="collection-chip-{{ $collection->id }}"
+              class="flex items-center gap-2 rounded-full border border-hairline px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:bg-card"
+            >
+              <span>{{ $collection->emoji }}</span>
+              {{ $collection->name }}
+              @svg('lucide-arrow-up-right', 'size-3.5 shrink-0 text-muted-soft')
+            </a>
           @endforeach
-        </x-form>
+        </div>
       @endif
     </div>
   </div>
