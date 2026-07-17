@@ -6,7 +6,6 @@ use App\Http\Controllers\App\Account\AccountController;
 use App\Http\Controllers\App\Account\InvitationController;
 use App\Http\Controllers\App\Account\MemberController;
 use App\Http\Controllers\App\CollectionController;
-use App\Http\Controllers\App\CollectionTypeCollectionController;
 use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldGroupController;
@@ -119,7 +118,6 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('settings/types/{collectionType}/groups/{group}/order', [CustomFieldGroupOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('settings.types.groups.order.update');
         Route::post('settings/types/{collectionType}/groups/{group}/fields', [CustomFieldGroupFieldController::class, 'create'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('settings.types.groups.fields.create');
 
-        Route::put('settings/types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.collections.update');
     });
 
     // account settings: tags — owners and editors define the labels items can carry

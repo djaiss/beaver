@@ -76,24 +76,35 @@ it('shows the edit page', function () {
         ->assertSee('saved automatically in real time');
 });
 
-it('offers every collection of the account as a chip, ticking the ones using the type', function () {
+it('links to each collection using the type', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Vinyl Records']);
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Chaney Salinas']);
-    $collection->collectionTypes()->attach($type->id);
-    $unrelated = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Unrelated Collection']);
+    $linked = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Central Perk Vinyl']);
+    $linked->collectionTypes()->attach($type->id);
+    $unlinked = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Joeys Baywatch Tapes']);
 
     $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
 
     $response->assertOk();
 
-    // Both are listed, so an unlinked collection can be ticked to link it.
-    $response->assertSee('Chaney Salinas');
-    $response->assertSee('Unrelated Collection');
+    // The collection using the type links through to it.
+    $response->assertSee('Central Perk Vinyl');
+    $response->assertSee('href="'.route('collections.show', $linked->id).'"', false);
 
-    // Only the one already using the type is ticked.
-    $response->assertSee('value="'.$collection->id.'" checked', false);
-    $response->assertDontSee('value="'.$unrelated->id.'" checked', false);
+    // A collection that does not use the type is no longer listed at all.
+    $response->assertDontSee('Joeys Baywatch Tapes');
+    $response->assertDontSee('href="'.route('collections.show', $unlinked->id).'"', false);
+});
+
+it('tells the user when no collection uses the type', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Joeys Baywatch Tapes']);
+
+    $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
+        ->assertOk()
+        ->assertSee('No collections use this type yet.')
+        ->assertDontSee('Joeys Baywatch Tapes');
 });
 
 it('does not offer the collections of another account', function () {
@@ -104,15 +115,6 @@ it('does not offer the collections of another account', function () {
     $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
         ->assertOk()
         ->assertDontSee('Someone Elses Collection');
-});
-
-it('shows a message when the account has no collections', function () {
-    $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
-
-    $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
-        ->assertOk()
-        ->assertSee('No collections yet. Create one to link it to this type.');
 });
 
 it('cannot edit another accounts type', function () {
