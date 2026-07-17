@@ -28,6 +28,9 @@ enum UserActionEnum: string
     case ItemCreation = 'item_created';
     case ItemUpdate = 'item_updated';
     case ItemDeletion = 'item_deleted';
+    case ItemPhotoCreation = 'item_photo_created';
+    case ItemPhotoUpdate = 'item_photo_updated';
+    case ItemPhotoDeletion = 'item_photo_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -73,6 +76,9 @@ enum UserActionEnum: string
             self::ItemCreation => 'Created the item called :name',
             self::ItemUpdate => 'Updated the item called :name',
             self::ItemDeletion => 'Deleted the item called :name',
+            self::ItemPhotoCreation => 'Added a photo to the item called :name',
+            self::ItemPhotoUpdate => 'Updated a photo of the item called :name',
+            self::ItemPhotoDeletion => 'Deleted a photo of the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',
