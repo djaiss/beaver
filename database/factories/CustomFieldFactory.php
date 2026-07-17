@@ -23,6 +23,7 @@ class CustomFieldFactory extends Factory
     {
         return [
             'type_id' => CollectionType::factory(),
+            'group_id' => null,
             'name' => fake()->randomElement(['Issue #', 'Vintage', 'Grade', 'Year', 'Publisher']),
             'field_type' => FieldTypeEnum::Text->value,
             'options' => null,

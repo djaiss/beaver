@@ -54,6 +54,12 @@ class CustomFieldController extends Controller
             'field_type' => ['required', Rule::enum(FieldTypeEnum::class)],
             'options' => ['array'],
             'options.*' => ['nullable', 'string', 'max:255'],
+            'group_id' => [
+                'nullable',
+                'integer',
+                // Scoped to the type, so a group of another type cannot be borrowed.
+                Rule::exists('custom_field_groups', 'id')->where('type_id', $type->id),
+            ],
         ]);
 
         $field = new CreateCustomField(
@@ -62,6 +68,9 @@ class CustomFieldController extends Controller
             name: $validated['name'] ?? '',
             fieldType: $validated['field_type'],
             options: $this->options($validated),
+            group: isset($validated['group_id'])
+                ? $type->customFieldGroups()->find($validated['group_id'])
+                : null,
         )->execute();
 
         return new CustomFieldResource($field)

@@ -6,7 +6,7 @@ use App\Services\ApiDocumentation;
 
 $base = ApiDocumentation::baseUrl();
 
-$field = fn (string $id, string $name, string $fieldType, ?array $options, int $position): array => [
+$field = fn (string $id, string $name, string $fieldType, ?array $options, int $position, ?string $groupId = null): array => [
     'type' => 'custom_field',
     'id' => $id,
     'attributes' => [
@@ -14,6 +14,7 @@ $field = fn (string $id, string $name, string $fieldType, ?array $options, int $
         'field_type' => $fieldType,
         'options' => $options,
         'position' => $position,
+        'group_id' => $groupId,
         'created_at' => 1752537600,
         'updated_at' => 1752537600,
     ],
@@ -63,14 +64,14 @@ return [
             'method' => 'GET',
             'path' => '/collection-types/{collectionType}/custom-fields',
             'examplePath' => '/collection-types/1/custom-fields',
-            'description' => 'Retrieve the custom fields of a collection type, in position order. A custom field is a field definition on a type, such as Issue # on Comics or Vintage on Wine.',
+            'description' => 'Retrieve the custom fields of a collection type, in position order. A custom field is a field definition on a type, such as Issue # on Comics or Vintage on Wine. Its group_id tells you the group it sits in, and is null when the field is standalone.',
             'permissions' => 'Any member of the account.',
             'pathParams' => [$typeId],
             'queryParams' => $pagination,
             'returns' => 'A paginated list of custom_field objects.',
             'response' => ApiDocumentation::paginated([
-                $field('1', 'Issue #', 'number', null, 1),
-                $field('2', 'Grade', 'select', ['NM', 'VF', 'FN'], 2),
+                $field('1', 'Issue #', 'number', null, 1, '1'),
+                $field('2', 'Grade', 'select', ['NM', 'VF', 'FN'], 1),
             ], '/collection-types/1/custom-fields'),
         ],
         [
@@ -118,6 +119,13 @@ return [
                     'description' => 'The choices of a select field. Blank entries are removed, and the parameter is ignored for the other field types.',
                     'example' => ['NM', 'VF', 'FN'],
                 ],
+                [
+                    'name' => 'group_id',
+                    'type' => 'integer',
+                    'required' => false,
+                    'description' => 'The ID of the custom field group to place the field in. The group must belong to the same collection type. When omitted, the field is standalone and sits directly on the type.',
+                    'example' => 1,
+                ],
             ],
             'returns' => 'The created custom_field object.',
             'responseStatus' => 201,
@@ -130,7 +138,7 @@ return [
             'method' => 'PUT',
             'path' => '/collection-types/{collectionType}/custom-fields/{customField}',
             'examplePath' => '/collection-types/1/custom-fields/2',
-            'description' => 'Update a custom field. Use position to reorder the fields of a type: fields are shown in ascending position order.',
+            'description' => 'Update a custom field. Use position to reorder the fields: they are shown in ascending position order within their group, or within the type when the field is standalone. A field cannot be moved between groups.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$typeId, $fieldId],
             'bodyParams' => [
@@ -159,7 +167,7 @@ return [
                     'name' => 'position',
                     'type' => 'integer',
                     'required' => false,
-                    'description' => 'The position of the field within the type, starting at 1. When omitted, the current position is kept.',
+                    'description' => 'The position of the field within its group, or within the type when the field is standalone, starting at 1. When omitted, the current position is kept.',
                     'example' => 2,
                 ],
             ],

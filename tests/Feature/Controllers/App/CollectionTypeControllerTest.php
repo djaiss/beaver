@@ -76,7 +76,7 @@ it('shows the edit page', function () {
         ->assertSee('saved automatically in real time');
 });
 
-it('links to the collections that use the type', function () {
+it('offers every collection of the account as a chip, ticking the ones using the type', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Vinyl Records']);
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Chaney Salinas']);
@@ -86,18 +86,33 @@ it('links to the collections that use the type', function () {
     $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
 
     $response->assertOk();
+
+    // Both are listed, so an unlinked collection can be ticked to link it.
     $response->assertSee('Chaney Salinas');
-    $response->assertSee(route('collections.show', $collection->id), false);
-    $response->assertDontSee('Unrelated Collection');
+    $response->assertSee('Unrelated Collection');
+
+    // Only the one already using the type is ticked.
+    $response->assertSee('value="'.$collection->id.'" checked', false);
+    $response->assertDontSee('value="'.$unrelated->id.'" checked', false);
 });
 
-it('shows a message when no collections use the type', function () {
+it('does not offer the collections of another account', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    Collection::factory()->create(['name' => 'Someone Elses Collection']);
+
+    $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
+        ->assertOk()
+        ->assertDontSee('Someone Elses Collection');
+});
+
+it('shows a message when the account has no collections', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
         ->assertOk()
-        ->assertSee('No collections use this type yet.');
+        ->assertSee('No collections yet. Create one to link it to this type.');
 });
 
 it('cannot edit another accounts type', function () {

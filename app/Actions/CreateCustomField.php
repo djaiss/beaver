@@ -10,13 +10,15 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\CollectionType;
 use App\Models\CustomField;
+use App\Models\CustomFieldGroup;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Create a custom field on a type. New fields are appended after the existing
- * ones. Only owners and editors of the type's account may do so.
+ * Create a custom field on a type, either inside a group or outside of any.
+ * New fields are appended after the existing ones. Only owners and editors of
+ * the type's account may do so.
  */
 class CreateCustomField
 {
@@ -31,6 +33,7 @@ class CreateCustomField
         private string $name,
         private string $fieldType = FieldTypeEnum::Text->value,
         private ?array $options = null,
+        private readonly ?CustomFieldGroup $group = null,
     ) {}
 
     public function execute(): CustomField
@@ -53,6 +56,10 @@ class CreateCustomField
         if (FieldTypeEnum::tryFrom($this->fieldType) === null) {
             throw ValidationException::withMessages(['field_type' => 'Invalid field type']);
         }
+
+        if ($this->group instanceof CustomFieldGroup && $this->group->type_id !== $this->collectionType->id) {
+            throw ValidationException::withMessages(['group_id' => 'The group belongs to another type']);
+        }
     }
 
     private function sanitize(): void
@@ -64,6 +71,7 @@ class CreateCustomField
     {
         $this->customField = CustomField::query()->create([
             'type_id' => $this->collectionType->id,
+            'group_id' => $this->group?->id,
             'name' => $this->name,
             'field_type' => $this->fieldType,
             'options' => $this->options,
@@ -71,9 +79,15 @@ class CreateCustomField
         ]);
     }
 
+    /**
+     * A position orders the field within its group, or within the type when the
+     * field is ungrouped, so only the fields sharing its group are considered.
+     */
     private function nextPosition(): int
     {
-        return (int) $this->collectionType->customFields()->max('position') + 1;
+        return (int) $this->collectionType->customFields()
+            ->where('group_id', $this->group?->id)
+            ->max('position') + 1;
     }
 
     private function stampAuthor(): void

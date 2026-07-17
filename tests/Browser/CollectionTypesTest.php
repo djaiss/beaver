@@ -86,3 +86,71 @@ it('keeps fields renameable and reorderable after adding more', function () {
 
     $page->assertNoSmoke();
 });
+
+it('adds a group, puts a field in it, and keeps that field when the group goes', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+    $page->assertSee('No field groups yet');
+
+    // Adding a group saves immediately.
+    $page->click('[data-test="add-group-button"]')->assertSee('Group added');
+
+    $group = $type->customFieldGroups()->first();
+    expect($group)->not->toBeNull();
+
+    // Naming it auto-saves on blur.
+    $page->type('[data-test="group-name-'.$group->id.'"]', 'Publishing info')
+        ->keys('[data-test="group-name-'.$group->id.'"]', 'Enter')
+        ->assertSee('Group updated');
+
+    expect($group->fresh()->name)->toBe('Publishing info');
+
+    // A field added from the group header lands inside it, not standalone.
+    $page->click('[data-test="add-field-to-group-'.$group->id.'"]')->assertSee('Field added');
+
+    $field = $type->customFields()->first();
+    expect($field->group_id)->toBe($group->id);
+    expect($type->ungroupedCustomFields()->count())->toBe(0);
+
+    $page->type('[data-test="field-name-'.$field->id.'"]', 'Issue #')
+        ->keys('[data-test="field-name-'.$field->id.'"]', 'Enter')
+        ->assertSee('Field updated');
+
+    // Deleting the group keeps the field: it drops back to standalone.
+    $page->script('window.confirm = () => true');
+    $page->click('[data-test="delete-group-'.$group->id.'"]')->assertSee('Group removed');
+
+    expect($group->fresh())->toBeNull();
+    expect($field->fresh()->group_id)->toBeNull();
+    expect($field->fresh()->name)->toBe('Issue #');
+
+    // The field is still on the page, now rendered as a standalone field.
+    $page->assertSee('No field groups yet')
+        ->assertPresent('[data-test="field-row-'.$field->id.'"]')
+        ->assertValue('[data-test="field-name-'.$field->id.'"]', 'Issue #');
+
+    $page->assertNoSmoke();
+});
+
+it('reorders the groups of a type', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+
+    $page->click('[data-test="add-group-button"]')->assertSee('Group added');
+    $page->click('[data-test="add-group-button"]')->assertSee('Group added');
+
+    $groups = $type->customFieldGroups()->orderBy('id')->get();
+    $first = $groups[0];
+
+    $page->click('[data-test="move-group-down-'.$first->id.'"]')->assertSee('Group moved');
+
+    expect($first->fresh()->position)->toBeGreaterThan($groups[1]->fresh()->position);
+
+    $page->assertNoSmoke();
+});

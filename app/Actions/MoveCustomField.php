@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Move a custom field one step up or down by swapping its position with the
- * neighbouring field. Only owners and editors of the type's account may do so.
+ * neighbouring field in its group. Moves stop at the group boundary, as a field
+ * never changes group. Only owners and editors of the type's account may do so.
  */
 class MoveCustomField
 {
@@ -43,6 +44,7 @@ class MoveCustomField
     {
         $fields = $this->customField->collectionType
             ->customFields()
+            ->where('group_id', $this->customField->group_id)
             ->orderBy('position')
             ->orderBy('id')
             ->get();

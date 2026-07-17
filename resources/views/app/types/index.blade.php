@@ -31,6 +31,11 @@
               <p class="mt-0.5 truncate text-xs text-muted">{{ $type->field_summary }}</p>
             </div>
 
+            <div class="hidden w-16 shrink-0 text-right sm:block">
+              <p class="text-sm font-semibold text-ink">{{ $type->group_count }}</p>
+              <p class="text-xs text-muted-soft">{{ __('groups') }}</p>
+            </div>
+
             <div class="w-24 shrink-0 text-right">
               <p class="text-sm font-semibold text-ink">{{ $type->field_count }}</p>
               <p class="text-xs text-muted-soft">{{ __('custom fields') }}</p>

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\CollectionTypeCollectionController;
 use App\Http\Controllers\Api\CollectionTypeController;
 use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CustomFieldController;
+use App\Http\Controllers\Api\CustomFieldGroupController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\TagController;
@@ -51,6 +52,13 @@ Route::name('api.')->group(function (): void {
 
         // the collections a type applies to
         Route::put('collection-types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.collections.update');
+
+        // the groups a type's custom fields can be organised into
+        Route::get('collection-types/{collectionType}/custom-field-groups', [CustomFieldGroupController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFieldGroups');
+        Route::get('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.show');
+        Route::post('collection-types/{collectionType}/custom-field-groups', [CustomFieldGroupController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFieldGroups.create');
+        Route::put('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.update');
+        Route::delete('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.destroy');
 
         // custom fields
         Route::get('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields');
