@@ -27,8 +27,8 @@
       </div>
 
       {{-- Header: color, name, delete --}}
-      <div class="mb-6 flex items-start gap-5">
-        <div class="flex shrink-0 flex-col items-center gap-2.5">
+      <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-5">
+        <div class="flex shrink-0 flex-col items-start gap-2.5 sm:items-center">
           <span class="size-14 rounded-full" style="background-color: {{ $type->color }}"></span>
 
           <x-form method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex gap-1.5">
@@ -44,7 +44,7 @@
             <h1 class="truncate text-2xl font-semibold tracking-tight text-ink">{{ $type->name !== '' ? $type->name : __('Untitled type') }}</h1>
           </div>
 
-          <x-form id="name-edit" hidden method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex items-center gap-2">
+          <x-form id="name-edit" hidden method="put" :action="route('settings.types.update', $type->id)" data-turbo="true" class="flex flex-wrap items-center gap-2">
             <input type="hidden" name="color" value="{{ $type->color }}" />
             <input id="type-name-input" name="name" value="{{ $type->name }}" placeholder="{{ __('Type name') }}" class="w-full max-w-xs rounded-md border border-hairline bg-input px-3 py-2 text-lg font-semibold text-ink" />
             <x-button type="submit" data-test="save-name-button">{{ __('Save') }}</x-button>
