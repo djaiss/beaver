@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Models\Concerns\HasAuthor;
+use Carbon\Carbon;
+use Database\Factories\ItemFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * Class Item
+ *
+ * A catalog entry for a kind of object, e.g. Amazing Spider-Man #1.
+ * An item reaches its account through its collection.
+ *
+ * @property int $id
+ * @property int $collection_id
+ * @property int|null $type_id
+ * @property string $name
+ * @property string|null $description
+ * @property int|null $created_by_id
+ * @property string|null $created_by_name
+ * @property int|null $updated_by_id
+ * @property string|null $updated_by_name
+ * @property Carbon $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ */
+class Item extends Model
+{
+    use HasAuthor;
+
+    /** @use HasFactory<ItemFactory> */
+    use HasFactory;
+
+    use SoftDeletes;
+
+    protected $table = 'items';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'collection_id',
+        'type_id',
+        'name',
+        'description',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'name' => 'encrypted',
+            'description' => 'encrypted',
+        ];
+    }
+
+    /**
+     * Get the collection the item belongs to.
+     *
+     * @return BelongsTo<Collection, $this>
+     */
+    public function collection(): BelongsTo
+    {
+        return $this->belongsTo(Collection::class);
+    }
+
+    /**
+     * Get the type of the item, if any.
+     *
+     * @return BelongsTo<CollectionType, $this>
+     */
+    public function collectionType(): BelongsTo
+    {
+        return $this->belongsTo(CollectionType::class, 'type_id');
+    }
+}
