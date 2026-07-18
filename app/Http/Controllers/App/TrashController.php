@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App;
 
+use App\Actions\EmptyTrash;
 use App\Actions\RestoreFromTrash;
 use App\Enums\TrashableEnum;
 use App\Http\Controllers\Controller;
@@ -47,5 +48,21 @@ class TrashController extends Controller
         return to_route('settings.trash.index')
             ->with('status', __('Restored'))
             ->with('status_description', __('The object was moved back to where it was.'));
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        try {
+            new EmptyTrash(
+                user: $request->user(),
+                account: $request->user()->account,
+            )->execute();
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        return to_route('settings.trash.index')
+            ->with('status', __('Trash emptied'))
+            ->with('status_description', __('Everything in the trash was permanently deleted.'));
     }
 }

@@ -83,6 +83,23 @@
               class="h-9 w-56 rounded-md border border-hairline bg-input px-3 text-sm text-ink"
               data-test="search-trash"
             />
+
+            {{-- Emptying the trash is irreversible, so it asks before going ahead. --}}
+            <x-form
+              method="delete"
+              :action="route('settings.trash.destroy')"
+              x-target="trash-list notifications"
+              x-on:ajax:before="confirm(@js(__('Permanently delete everything in the trash? The :count objects below cannot be recovered afterwards.', ['count' => $entries->count()]))) || $event.preventDefault()"
+            >
+              <button
+                type="submit"
+                class="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-error hover:bg-card"
+                data-test="empty-trash-button"
+              >
+                @svg('lucide-trash-2', 'size-3.5')
+                {{ __('Empty trash') }}
+              </button>
+            </x-form>
           </div>
 
           {{-- Column headers --}}
