@@ -151,6 +151,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::middleware(['editor'])->group(function (): void {
         Route::get('settings/trash', [TrashController::class, 'index'])->name('settings.trash.index');
         Route::put('settings/trash', [TrashController::class, 'update'])->name('settings.trash.update');
+        Route::delete('settings/trash', [TrashController::class, 'destroy'])->name('settings.trash.destroy');
     });
 });
 

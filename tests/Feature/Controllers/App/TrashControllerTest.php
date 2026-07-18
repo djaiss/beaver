@@ -21,6 +21,7 @@ it('shows the trash screen', function () {
 
     $response->assertStatus(200);
     $response->assertSee('Vintage Vinyl');
+    $response->assertSee('Empty trash');
 });
 
 it('shows an empty trash screen', function () {
@@ -32,6 +33,7 @@ it('shows an empty trash screen', function () {
 
     $response->assertStatus(200);
     $response->assertSee('The trash is empty');
+    $response->assertDontSee('Empty trash');
 });
 
 it('restores an object', function () {
@@ -80,6 +82,35 @@ it('returns not found when the object belongs to another account', function () {
         'type' => TrashableEnum::Collection->value,
         'id' => $collection->id,
     ]);
+
+    $response->assertNotFound();
+});
+
+it('empties the trash', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $item->delete();
+    $collection->delete();
+
+    $response = $this->actingAs($editor)->delete(route('settings.trash.destroy'));
+
+    $response->assertRedirect(route('settings.trash.index'));
+    $response->assertSessionHas('status', 'Trash emptied');
+    $this->assertDatabaseMissing('items', ['id' => $item->id]);
+    $this->assertDatabaseMissing('collections', ['id' => $collection->id]);
+});
+
+it('returns not found when a viewer empties the trash', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+
+    $response = $this->actingAs($viewer)->delete(route('settings.trash.destroy'));
 
     $response->assertNotFound();
 });
