@@ -55,11 +55,13 @@ class UpdateCopy
 
     private function update(): void
     {
-        $this->copy->condition_id = $this->condition?->id;
-        $this->copy->location_id = $this->location?->id;
-        $this->copy->acquired_at = $this->acquiredAt;
-        $this->copy->price_paid = $this->pricePaid;
-        $this->copy->estimated_value = $this->estimatedValue;
+        $this->copy->fill([
+            'condition_id' => $this->condition?->id,
+            'location_id' => $this->location?->id,
+            'acquired_at' => $this->acquiredAt,
+            'price_paid' => $this->pricePaid,
+            'estimated_value' => $this->estimatedValue,
+        ]);
         $this->copy->updated_by_id = $this->user->id;
         $this->copy->updated_by_name = $this->user->getFullName();
         $this->copy->save();
