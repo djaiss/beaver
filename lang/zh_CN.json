@@ -242,6 +242,7 @@
     "Options": "选项",
     "Organize related fields into groups (e.g. \"Grading\", \"Purchase info\"), or add a field directly to the type if it does not belong to a group.": "把相关字段整理进字段组（例如“评级”“购买信息”）；如果某个字段不属于任何组，也可以直接添加到类型上。",
     "Owner": "所有者",
+    "Page :current of :last": "第 :current 页,共 :last 页",
     "Pagination": "分页",
     "Parent location": "上级位置",
     "Password": "密码",

@@ -242,6 +242,7 @@
     "Options": "選択肢",
     "Organize related fields into groups (e.g. \"Grading\", \"Purchase info\"), or add a field directly to the type if it does not belong to a group.": "関連するフィールドはグループにまとめてください (例: 「グレーディング」「購入情報」)。どのグループにも属さないフィールドは、タイプに直接追加できます。",
     "Owner": "オーナー",
+    "Page :current of :last": ":last ページ中 :current ページ目",
     "Pagination": "ページ送り",
     "Parent location": "上位の保管場所",
     "Password": "パスワード",
