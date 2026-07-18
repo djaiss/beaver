@@ -42,35 +42,33 @@ An `Account` is the tenant. Everything in the collection domain belongs to exact
 - `Account`: the tenant. Owns the users, collections, types, locations and invitations, and answers the role questions (`allowsManagementBy()`).
 - `User`: an authenticated person. Belongs to one account, and carries its `role` (owner, editor, viewer) as a column.
 - `Invitation`: a pending invite to join an account at a given role, claimed with a token.
-- `Collection`: a set of items being catalogued, such as "My Comics". Has a public uuid and a visibility (private, shared, public).
+- `Collection`: a set of items being catalogued, such as "My Comics". Has a public uuid and a visibility (private, shared, public). Owns items, categories and the per user remembered views.
 - `CollectionType`: a user defined category (Comics, Vinyl, Wine) that decides which custom fields apply. It lives in the `types` table, so its foreign keys are `type_id`.
+- `CustomFieldGroup`: a named section (Main, Details) that groups custom fields on a type. Reaches the type through `type_id`, owns fields through `group_id`.
 - `CustomField`: a field definition on a type (Issue #, Vintage). Reaches its account through the type.
-- `Location`: where an item is physically stored. Nests into itself through `parent_id`.
+- `Item`: a catalogued entry, such as "Amazing Spider-Man #1". Belongs to a collection, and optionally a type, category and set. Reaches its account through its collection.
+- `Copy`: a single physical instance of an item, with its own condition and location. Three owned copies are three rows. The table is `copies`, and money is stored in cents.
+- `ItemPhoto`: a photo of an item. `mainPhoto` is the one flagged `is_main`, served over a streamed route.
+- `CustomFieldValue`: one item's value for one custom field.
+- `Category`: groups items within a collection, and nests into itself through `parent_id`.
+- `Set`: a named series of items to complete. Belongs to an account rather than a collection.
+- `Tag`: a reusable label shared across the account, attached to items through a pivot.
+- `Condition`: the state of a copy (New, Damaged). A null `account_id` marks a seeded system default shared across accounts.
+- `CollectionView`: remembers one user's chosen items layout (grid, list, table) for one collection.
+- `Location`: where a copy is physically stored. Nests into itself through `parent_id`.
 - `Log`: the audit trail of user actions, and the source of the dashboard activity feed.
 - `EmailSent`: a record of every email the app sent, with delivery tracking.
 - `WebhookEndpoint`: a webhook destination. Scoped to a user rather than an account.
 - `UserDeletionReason`: why someone deleted their user. Left unlinked on purpose so it outlives them.
 - `Country`: a read only lookup of countries, seeded from `database/data`.
 
-There is no `Item` model yet. Collections, types, custom fields and locations are in place, but the item they describe is still to be built.
-
 ## Docker and self-hosting
 
-Self-hosting Beaver with Docker is a first-class, supported use case. The setup lives in `Dockerfile` (a multi-stage build), `docker-compose.yml`, the `docker/` directory (php, nginx, supervisor and entrypoint config), `.env.docker.example` and `docker/README.md`. The same image runs three roles selected by `CONTAINER_ROLE`: web (`app`), queue worker (`queue`) and scheduler (`scheduler`).
+Self-hosting with Docker is a supported use case, so keep the image building. One multi-stage `Dockerfile` runs three roles via `CONTAINER_ROLE` (web, queue, scheduler); the rest of the setup is in `docker-compose.yml`, `docker/`, `.env.docker.example` and `docker/README.md`.
 
-Every feature MUST keep the Docker image building and running. When your change touches any of the following, update the Docker setup in the same PR:
+In the same PR, reflect anything your change adds: a new PHP extension in the `Dockerfile`, a new or renamed env var in `.env.docker.example`, a new queue name in `docker-compose.yml`.
 
-- A new PHP extension requirement: add it to the `install-php-extensions` list in the `Dockerfile`.
-- A new or renamed environment variable: add it to `.env.docker.example` (and document it in `docker/README.md` if an operator must set it).
-- A new queue name: add it to the `queue:work --queue=...` command in `docker-compose.yml`.
-- A new long-running process, scheduled task, or external service dependency: wire it into `docker-compose.yml` and the entrypoint.
-- A new front-end or Composer dependency, or a change to the build steps: make sure the `assets` and `vendor` build stages still produce a working image.
-
-Migrations MUST be upgrade-safe so that pulling a newer image never breaks or wipes an existing database. The entrypoint only ever runs `php artisan migrate --force` (pending migrations only). Never rely on `migrate:fresh` or `migrate:refresh` in the image, and avoid destructive migrations (dropping or renaming a populated column, for example) unless you provide a safe, multi-step path that preserves existing data. The database and uploaded files live in named volumes that are independent of the image.
-
-Note that the entrypoint skips `route:cache` on purpose, because a closure route exists in `routes/web.php`. It still caches config, events and views. If you add a route that cannot be serialized, do not re-enable route caching.
-
-After a change that could affect any of this, verify that `docker compose build` succeeds, `docker compose up` starts cleanly, and the `/up` health endpoint reports healthy.
+Migrations must be upgrade-safe: the entrypoint only runs `php artisan migrate --force`, so never use `migrate:fresh` or `migrate:refresh`, and avoid destructive migrations without a safe multi-step path. It also skips `route:cache` on purpose (a closure route lives in `routes/web.php`), so do not add routes that cannot be serialized.
 
 ## Guidelines for git and Github
 
