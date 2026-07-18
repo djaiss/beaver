@@ -596,3 +596,38 @@ it('leaves the photos alone when the edit form sends none', function () {
     expect($item->photos()->count())->toBe(1);
     expect($item->mainPhoto()->first()->id)->toBe($photo->id);
 });
+
+it('counts which photo is on screen when an item has several', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    ItemPhoto::factory()->count(3)->create(['item_id' => $item->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('photo-position', false);
+    $response->assertSee('x-text="photo + 1"', false);
+    $response->assertSee('/ 3');
+});
+
+it('does not count the photos of an item that has only one', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    ItemPhoto::factory()->create(['item_id' => $item->id]);
+
+    $this->actingAs($user)->get(route('items.show', [$collection, $item]))
+        ->assertOk()
+        ->assertDontSee('photo-position', false);
+});
+
+it('does not count the photos of an item that has none', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $this->actingAs($user)->get(route('items.show', [$collection, $item]))
+        ->assertOk()
+        ->assertDontSee('photo-position', false);
+});

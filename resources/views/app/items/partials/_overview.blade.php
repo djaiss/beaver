@@ -8,15 +8,27 @@
           {{ $collection->emoji ?? '📦' }}
         </div>
       @else
-        @foreach ($item->photos as $photo)
-          <img
-            x-show="photo === {{ $loop->index }}"
-            @if (! $loop->first) x-cloak @endif
-            src="{{ $photo->url() }}"
-            alt="{{ $item->name }}"
-            class="aspect-4/3 w-full rounded-xl border border-hairline object-cover"
-          />
-        @endforeach
+        <div class="relative">
+          @foreach ($item->photos as $photo)
+            <img
+              x-show="photo === {{ $loop->index }}"
+              @if (! $loop->first) x-cloak @endif
+              src="{{ $photo->url() }}"
+              alt="{{ $item->name }}"
+              class="aspect-4/3 w-full rounded-xl border border-hairline object-cover"
+            />
+          @endforeach
+
+          {{-- Which of the photos is on screen. A single photo needs no counting. --}}
+          @if ($item->photos->count() > 1)
+            <span
+              class="absolute bottom-3.5 left-3.5 rounded-md bg-black/40 px-2.5 py-1 font-mono text-[11px] text-white"
+              data-test="photo-position"
+            >
+              <span x-text="photo + 1">1</span> / {{ $item->photos->count() }}
+            </span>
+          @endif
+        </div>
       @endif
 
       <div class="mt-3 flex flex-wrap gap-2.5">
