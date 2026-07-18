@@ -49,6 +49,7 @@ enum UserActionEnum: string
     case SetCreation = 'set_created';
     case SetUpdate = 'set_updated';
     case SetDeletion = 'set_deleted';
+    case TrashRestoration = 'trash_restored';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -106,6 +107,7 @@ enum UserActionEnum: string
             self::SetCreation => 'Created the set called :name',
             self::SetUpdate => 'Updated the set called :name',
             self::SetDeletion => 'Deleted the set called :name',
+            self::TrashRestoration => 'Restored the :type called :name from the trash',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',

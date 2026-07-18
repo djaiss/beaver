@@ -63,6 +63,11 @@
                 <x-sidebar-link :href="route('settings.index')" :active="request()->routeIs('settings.index')" icon="settings">{{ __('General') }}</x-sidebar-link>
                 <x-sidebar-link :href="route('settings.members.index')" :active="request()->routeIs('settings.members.*')" icon="users">{{ __('Members') }}</x-sidebar-link>
             @endif
+            <x-sidebar-link :href="route('settings.trash.index')" :active="request()->routeIs('settings.trash.*')" icon="trash-2">{{ __('Trash') }}</x-sidebar-link>
+        </nav>
+
+        <nav class="-mt-2 flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Administration') }}</p>
             <x-sidebar-link :href="route('settings.types.index')" :active="request()->routeIs('settings.types.*')" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.tags.index')" :active="request()->routeIs('settings.tags.*')" icon="tag">{{ __('Tags') }}</x-sidebar-link>
         </nav>
