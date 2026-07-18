@@ -13,6 +13,11 @@ it('shows the api docs portal', function () {
         ->assertSee('Create a location')
         ->assertSee('Create a condition')
         ->assertSee('Create a tag')
+        ->assertSee('Create a category')
+        ->assertSee('Create a set')
+        ->assertSee('Create an item')
+        ->assertSee('Create a copy')
+        ->assertSee('Upload an item photo')
         ->assertSee('Get API key');
 });
 

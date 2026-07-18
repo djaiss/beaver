@@ -8,14 +8,19 @@ use App\Http\Controllers\Api\Administration\EmailSentController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegistrationController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\CollectionTypeCollectionController;
 use App\Http\Controllers\Api\CollectionTypeController;
 use App\Http\Controllers\Api\ConditionController;
+use App\Http\Controllers\Api\CopyController;
 use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\CustomFieldGroupController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\ItemController;
+use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\SetController;
 use App\Http\Controllers\Api\TagController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +47,20 @@ Route::name('api.')->group(function (): void {
         Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
         Route::put('collections/{collection}', [CollectionController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.update');
         Route::delete('collections/{collection}', [CollectionController::class, 'destroy'])->where('collection', '[1-9][0-9]*')->name('collections.destroy');
+
+        // the categories that group items within a collection
+        Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('collections.categories');
+        Route::get('collections/{collection}/categories/{category}', [CategoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('collections.categories.show');
+        Route::post('collections/{collection}/categories', [CategoryController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('collections.categories.create');
+        Route::put('collections/{collection}/categories/{category}', [CategoryController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('collections.categories.update');
+        Route::delete('collections/{collection}/categories/{category}', [CategoryController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('collections.categories.destroy');
+
+        // the items catalogued within a collection
+        Route::get('collections/{collection}/items', [ItemController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('collections.items');
+        Route::get('collections/{collection}/items/{item}', [ItemController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('collections.items.show');
+        Route::post('collections/{collection}/items', [ItemController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('collections.items.create');
+        Route::put('collections/{collection}/items/{item}', [ItemController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('collections.items.update');
+        Route::delete('collections/{collection}/items/{item}', [ItemController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('collections.items.destroy');
 
         // collection types
         Route::get('collection-types', [CollectionTypeController::class, 'index'])->name('collectionTypes');
@@ -87,6 +106,27 @@ Route::name('api.')->group(function (): void {
         Route::post('tags', [TagController::class, 'create'])->name('tags.create');
         Route::put('tags/{tag}', [TagController::class, 'update'])->where('tag', '[1-9][0-9]*')->name('tags.update');
         Route::delete('tags/{tag}', [TagController::class, 'destroy'])->where('tag', '[1-9][0-9]*')->name('tags.destroy');
+
+        // sets
+        Route::get('sets', [SetController::class, 'index'])->name('sets');
+        Route::get('sets/{set}', [SetController::class, 'show'])->where('set', '[1-9][0-9]*')->name('sets.show');
+        Route::post('sets', [SetController::class, 'create'])->name('sets.create');
+        Route::put('sets/{set}', [SetController::class, 'update'])->where('set', '[1-9][0-9]*')->name('sets.update');
+        Route::delete('sets/{set}', [SetController::class, 'destroy'])->where('set', '[1-9][0-9]*')->name('sets.destroy');
+
+        // the physical copies owned of an item
+        Route::get('items/{item}/copies', [CopyController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.copies');
+        Route::get('items/{item}/copies/{copy}', [CopyController::class, 'show'])->where(['item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.copies.show');
+        Route::post('items/{item}/copies', [CopyController::class, 'create'])->where('item', '[1-9][0-9]*')->name('items.copies.create');
+        Route::put('items/{item}/copies/{copy}', [CopyController::class, 'update'])->where(['item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.copies.update');
+        Route::delete('items/{item}/copies/{copy}', [CopyController::class, 'destroy'])->where(['item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.copies.destroy');
+
+        // the photos of an item
+        Route::get('items/{item}/photos', [ItemPhotoController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.photos');
+        Route::get('items/{item}/photos/{photo}', [ItemPhotoController::class, 'show'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.show');
+        Route::post('items/{item}/photos', [ItemPhotoController::class, 'create'])->where('item', '[1-9][0-9]*')->name('items.photos.create');
+        Route::put('items/{item}/photos/{photo}/main', [ItemPhotoController::class, 'main'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.main');
+        Route::delete('items/{item}/photos/{photo}', [ItemPhotoController::class, 'destroy'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.destroy');
 
         // api keys
         Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');
