@@ -12,7 +12,7 @@
                 </div>
             @endif
             <div class="p-3.5">
-                <p class="mb-2 truncate text-sm font-semibold text-ink">{{ $row['name'] }}</p>
+                <a href="{{ route('items.show', [$collection, $row['id']]) }}" data-turbo="true" class="mb-2 block truncate text-sm font-semibold text-ink transition-colors hover:text-muted">{{ $row['name'] }}</a>
                 <div class="mb-2">
                     <x-badge>{{ $row['condition'] }}</x-badge>
                 </div>

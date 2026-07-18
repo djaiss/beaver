@@ -1,0 +1,142 @@
+<div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1.6fr_1fr]">
+  {{-- Left column --}}
+  <div class="flex min-w-0 flex-col gap-8">
+    {{-- Photos --}}
+    <div>
+      @if ($item->photos->isEmpty())
+        <div class="flex aspect-4/3 w-full items-center justify-center rounded-xl border border-dashed border-hairline bg-card text-5xl">
+          {{ $collection->emoji ?? '📦' }}
+        </div>
+      @else
+        @foreach ($item->photos as $photo)
+          <img
+            x-show="photo === {{ $loop->index }}"
+            @if (! $loop->first) x-cloak @endif
+            src="{{ $photo->url() }}"
+            alt="{{ $item->name }}"
+            class="aspect-4/3 w-full rounded-xl border border-hairline object-cover"
+          />
+        @endforeach
+      @endif
+
+      <div class="mt-3 flex flex-wrap gap-2.5">
+        @foreach ($item->photos as $photo)
+          <button
+            type="button"
+            x-on:click="photo = {{ $loop->index }}"
+            :class="photo === {{ $loop->index }} ? 'border-ink' : 'border-hairline'"
+            class="relative h-[60px] w-[78px] shrink-0 cursor-pointer overflow-hidden rounded-lg border-2"
+          >
+            <img src="{{ $photo->url() }}" alt="" class="size-full object-cover" />
+            @if ($photo->is_main)
+              <span class="absolute top-1 left-1 rounded bg-black/55 px-1.5 py-px text-[9px] font-semibold text-white">{{ __('Main') }}</span>
+            @endif
+          </button>
+        @endforeach
+
+        {{-- Uploading a photo from this screen is not built yet. --}}
+        <span class="flex h-[60px] w-[78px] shrink-0 cursor-not-allowed items-center justify-center rounded-lg border border-dashed border-hairline">
+          <x-soon />
+        </span>
+      </div>
+    </div>
+
+    {{-- Description --}}
+    <div>
+      <p class="mb-3 text-[13px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Description') }}</p>
+
+      @if ($item->description)
+        <p class="max-w-2xl text-[15px] leading-relaxed text-muted">{{ $item->description }}</p>
+      @else
+        <p class="text-[15px] text-muted-soft">{{ __('No description.') }}</p>
+      @endif
+    </div>
+
+    {{-- Custom fields --}}
+    <div>
+      <p class="mb-3.5 text-[13px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Details') }}</p>
+
+      @if (! $hasDetails)
+        <div class="rounded-xl border border-hairline">
+          <x-empty-state data-test="no-item-details">
+            <x-slot:icon>
+              <x-lucide-list class="size-6 text-muted" />
+            </x-slot>
+
+            {{ __('This item has no type, so it has no custom fields to show.') }}
+          </x-empty-state>
+        </div>
+      @else
+        <div class="overflow-hidden rounded-xl border border-hairline">
+          @if ($ungroupedFields->isNotEmpty())
+            <div class="grid grid-cols-1 sm:grid-cols-2">
+              @foreach ($ungroupedFields as $field)
+                @include('app.items.partials._field', ['field' => $field])
+              @endforeach
+            </div>
+          @endif
+
+          @foreach ($fieldGroups as $group)
+            <div class="border-y border-hairline bg-card px-4.5 py-2.5 text-xs font-semibold tracking-wide text-muted uppercase">{{ $group->name }}</div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2">
+              @foreach ($group->customFields as $field)
+                @include('app.items.partials._field', ['field' => $field])
+              @endforeach
+            </div>
+          @endforeach
+        </div>
+      @endif
+    </div>
+  </div>
+
+  {{-- Right rail --}}
+  <div class="flex flex-col gap-5">
+    {{-- At a glance --}}
+    <div class="rounded-xl border border-hairline px-4.5">
+      @php
+        $glance = [
+            __('Type') => $item->collectionType?->name ?? '—',
+            __('Category') => $item->category?->name ?? '—',
+            __('Set') => $item->set?->name ?? '—',
+            __('Copies owned') => number_format($item->copies->count()),
+            __('Est. value') => $totalEstimated > 0 ? $money($totalEstimated) : '—',
+            __('Total paid') => $totalPaid > 0 ? $money($totalPaid) : '—',
+            __('Photos') => number_format($item->photos->count()),
+        ];
+      @endphp
+
+      @foreach ($glance as $label => $value)
+        <div class="flex items-center justify-between gap-4 py-3 @unless ($loop->last) border-b border-hairline @endunless">
+          <span class="shrink-0 text-[13px] text-muted-soft">{{ $label }}</span>
+          <span class="truncate text-[13px] font-semibold text-ink">{{ $value }}</span>
+        </div>
+      @endforeach
+    </div>
+
+    {{-- Set completion --}}
+    @if ($item->set)
+      <div class="rounded-xl border border-hairline p-4.5">
+        <div class="mb-1.5 flex items-center justify-between gap-3">
+          <p class="text-[13px] font-semibold text-ink">{{ __('Part of a set') }}</p>
+          <x-soon />
+        </div>
+
+        <p class="text-[13px] text-muted">{{ $item->set->name }}</p>
+
+        <p class="mt-3 text-[13px] text-muted-soft">
+          {{ trans_choice(':count item in this set|:count items in this set', $setItemCount, ['count' => $setItemCount]) }}
+        </p>
+
+        {{-- How many entries a set should hold is not tracked, so completion cannot be shown yet. --}}
+        <p class="mt-1 text-[13px] text-muted-soft">{{ __('Set completion needs a target size, which sets do not record yet.') }}</p>
+      </div>
+    @endif
+
+    {{-- Metadata --}}
+    <div class="flex flex-col gap-2 rounded-xl border border-hairline p-4.5 text-xs text-muted-soft">
+      <p>{!! __('Added by :name', ['name' => '<span class="font-semibold text-ink">'.e($item->created_by_name ?? __('someone')).'</span>']) !!} · {{ $item->created_at->isoFormat('MMM D, YYYY') }}</p>
+      <p>{!! __('Last edited by :name', ['name' => '<span class="font-semibold text-ink">'.e($item->updated_by_name ?? __('someone')).'</span>']) !!} · {{ $item->updated_at?->diffForHumans() }}</p>
+    </div>
+  </div>
+</div>

@@ -7,7 +7,10 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionType;
 use App\Models\Condition;
+use App\Models\Copy;
 use App\Models\CustomField;
+use App\Models\CustomFieldGroup;
+use App\Models\CustomFieldValue;
 use App\Models\Item;
 use App\Models\Location;
 use App\Models\Set;
@@ -41,6 +44,154 @@ it('renders a star picker for a rating field on the add item form', function () 
     $response->assertSee('x-for="star in 5"', false);
     // The plain input must not double up on a rating field.
     $response->assertSee("field.type !== 'rating'", false);
+});
+
+it('shows the item detail page', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    $item = Item::factory()->create([
+        'collection_id' => $collection->id,
+        'category_id' => $category->id,
+        'type_id' => $type->id,
+        'name' => 'Amazing Spider-Man #1',
+        'description' => 'The one where Chandler gets a chick and a duck.',
+    ]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Amazing Spider-Man #1');
+    $response->assertSee('Marvel Comics 1990s');
+    $response->assertSee('Spider-Man');
+    $response->assertSee('Comics');
+    $response->assertSee('The one where Chandler gets a chick and a duck.');
+    $response->assertSee('Overview');
+    $response->assertSee('Copies');
+    $response->assertSee('Roadmap');
+});
+
+it('shows the custom field values grouped the way the type orders them', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'name' => 'Publishing info']);
+    $ungrouped = CustomField::factory()->create(['type_id' => $type->id, 'name' => 'Issue #', 'group_id' => null]);
+    $grouped = CustomField::factory()->create(['type_id' => $type->id, 'name' => 'Publisher', 'group_id' => $group->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'type_id' => $type->id]);
+    CustomFieldValue::factory()->create(['item_id' => $item->id, 'custom_field_id' => $ungrouped->id, 'value' => '300']);
+    CustomFieldValue::factory()->create(['item_id' => $item->id, 'custom_field_id' => $grouped->id, 'value' => 'Marvel']);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Issue #');
+    $response->assertSee('300');
+    $response->assertSee('Publishing info');
+    $response->assertSee('Publisher');
+    $response->assertSee('Marvel');
+});
+
+it('reads a yes / no custom field as words rather than its stored one', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $field = CustomField::factory()->create(['type_id' => $type->id, 'name' => 'Signed', 'field_type' => FieldTypeEnum::Boolean, 'group_id' => null]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'type_id' => $type->id]);
+    CustomFieldValue::factory()->create(['item_id' => $item->id, 'custom_field_id' => $field->id, 'value' => '1']);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Signed');
+    $response->assertSee('Yes');
+});
+
+it('reads a rating custom field as stars', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $field = CustomField::factory()->create(['type_id' => $type->id, 'name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating, 'group_id' => null]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'type_id' => $type->id]);
+    CustomFieldValue::factory()->create(['item_id' => $item->id, 'custom_field_id' => $field->id, 'value' => '4']);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('My Rating');
+    $response->assertSee('4 stars');
+    // Four filled stars, then one empty one.
+    $response->assertSee('<span class="text-hairline">★</span>', false);
+    $response->assertDontSee('>4<', false);
+});
+
+it('shows the copies of an item with their condition and location', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Near Mint']);
+    $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Display Case']);
+    Copy::factory()->create([
+        'item_id' => $item->id,
+        'condition_id' => $condition->id,
+        'location_id' => $location->id,
+        'price_paid' => 18000,
+        'estimated_value' => 42000,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Near Mint');
+    $response->assertSee('Display Case');
+    $response->assertSee('$420');
+    $response->assertSee('$180');
+});
+
+it('flags the parts of the item screen that are not built yet', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+    Copy::factory()->create(['item_id' => $item->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Soon');
+    $response->assertSee('Provenance');
+    $response->assertSee('Purchase &amp; sale history', false);
+    $response->assertSee('Set completion needs a target size');
+});
+
+it('lets a viewer read an item', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1']);
+
+    $this->actingAs($viewer)->get(route('items.show', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('Amazing Spider-Man #1');
+});
+
+it('does not show an item belonging to another accounts collection', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+
+    $this->actingAs($user)->get(route('items.show', [$foreign, $item]))->assertNotFound();
+});
+
+it('does not show an item that belongs to a different collection', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $other = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $other->id]);
+
+    $this->actingAs($user)->get(route('items.show', [$collection, $item]))->assertNotFound();
 });
 
 it('does not show the form for another accounts collection', function () {

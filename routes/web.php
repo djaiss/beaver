@@ -48,6 +48,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
     // remembering which items view a member last opened is a private preference, so any role may set it
     Route::put('collections/{collection}/item-view', [CollectionItemViewController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.item-view.update');
+    // viewing an item is read only, so any role may do it
+    Route::get('collections/{collection}/items/{item}', [ItemController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.show');
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');

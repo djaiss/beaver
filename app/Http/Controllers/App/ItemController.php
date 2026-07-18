@@ -14,6 +14,38 @@ use Illuminate\View\View;
 
 class ItemController extends Controller
 {
+    public function show(Request $request, int $collection, int $item): View
+    {
+        $collectionModel = $this->findCollection($request, $collection);
+
+        try {
+            $itemModel = $collectionModel->items()
+                ->with([
+                    'photos',
+                    'copies.condition',
+                    'copies.location',
+                    'tags',
+                    'category',
+                    'set',
+                    'collectionType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+                    'collectionType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+                    'collectionType.ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+                    'customFieldValues',
+                ])
+                ->findOrFail($item);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+
+        return view('app.items.show', [
+            'collection' => $collectionModel,
+            'item' => $itemModel,
+            // The set counts what is owned. How many entries a set should hold
+            // is not tracked yet, so completion cannot be worked out.
+            'setItemCount' => $itemModel->set?->items()->count() ?? 0,
+        ]);
+    }
+
     public function new(Request $request, int $collection): View
     {
         $account = $request->user()->account;

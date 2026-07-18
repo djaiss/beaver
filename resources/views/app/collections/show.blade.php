@@ -1,22 +1,12 @@
 @use('App\Enums\ItemViewEnum')
+@use('App\Helpers\Money')
 
 @php
     $user = auth()->user();
     $canManage = $user->account->allowsManagementBy($user);
 
-    $symbols = ['USD' => '$', 'EUR' => '€', 'GBP' => '£', 'JPY' => '¥'];
-    $symbol = $symbols[$collection->currency] ?? null;
-
     // Format an amount held in cents into the collection's currency.
-    $money = function (int $cents) use ($symbol, $collection): string {
-        $amount = number_format($cents / 100);
-
-        if ($symbol !== null) {
-            return $symbol.$amount;
-        }
-
-        return $collection->currency ? $amount.' '.$collection->currency : $amount;
-    };
+    $money = fn (int $cents): string => Money::format($cents, $collection->currency);
 
     // One display row per item, derived from its copies. Condition and location come from the
     // first copy; value is the sum across copies; quantity is the number of copies.
