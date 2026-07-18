@@ -39,6 +39,7 @@ class CreateItem
      * @param  list<string>  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>  $customFieldValues  custom field id to raw value
      * @param  list<array{condition_id?: int|null, location_id?: int|null, acquired_at?: string|null, price_paid?: int|null, estimated_value?: int|null}>  $copies
+     * @param  list<UploadedFile>  $photos  in the order they should appear, the first becoming the cover
      */
     public function __construct(
         private readonly User $user,
@@ -52,7 +53,7 @@ class CreateItem
         private readonly array $newTagNames = [],
         private readonly array $customFieldValues = [],
         private readonly array $copies = [],
-        private readonly ?UploadedFile $coverPhoto = null,
+        private readonly array $photos = [],
     ) {}
 
     public function execute(): Item
@@ -68,7 +69,7 @@ class CreateItem
             $this->createCopies();
         });
 
-        $this->addCoverPhoto();
+        $this->addPhotos();
         $this->log();
 
         return $this->item;
@@ -243,17 +244,23 @@ class CreateItem
         }
     }
 
-    private function addCoverPhoto(): void
+    /**
+     * The photos are added in the order they were given. An item without any
+     * photo yet promotes the first one to cover on its own.
+     */
+    private function addPhotos(): void
     {
-        if (! $this->coverPhoto instanceof UploadedFile) {
-            return;
-        }
+        foreach ($this->photos as $photo) {
+            if (! $photo instanceof UploadedFile) {
+                continue;
+            }
 
-        new AddItemPhoto(
-            user: $this->user,
-            item: $this->item,
-            file: $this->coverPhoto,
-        )->execute();
+            new AddItemPhoto(
+                user: $this->user,
+                item: $this->item,
+                file: $photo,
+            )->execute();
+        }
     }
 
     private function stampAuthorOn(Model $model): void

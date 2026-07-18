@@ -33,7 +33,7 @@ trait FindsItems
      *
      * @param  list<string>|array<string, callable>  $with
      */
-    private function findItem(Collection $collection, int $item, array $with = ['tags', 'copies', 'customFieldValues', 'mainPhoto']): Item
+    private function findItem(Collection $collection, int $item, array $with = ['tags', 'copies', 'customFieldValues', 'photos', 'mainPhoto']): Item
     {
         try {
             return $collection->items()->with($with)->findOrFail($item);

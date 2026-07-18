@@ -16,6 +16,7 @@ use App\Models\Copy;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
+use App\Models\ItemPhoto;
 use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
@@ -47,6 +48,9 @@ class UpdateItem
      * @param  list<string>|null  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>|null  $customFieldValues  custom field id to raw value
      * @param  list<array{id?: int|null, condition_id?: int|null, location_id?: int|null, acquired_at?: string|null, price_paid?: int|null, estimated_value?: int|null}>|null  $copies
+     * @param  list<UploadedFile>  $photos  new photos, appended after the ones the item already has
+     * @param  list<int>  $deletedPhotoIds  ids of photos of this item to remove
+     * @param  int|null  $mainPhotoId  id of the photo to make the cover, among those the item keeps
      */
     public function __construct(
         private readonly User $user,
@@ -60,7 +64,9 @@ class UpdateItem
         private readonly ?array $newTagNames = null,
         private readonly ?array $customFieldValues = null,
         private readonly ?array $copies = null,
-        private readonly ?UploadedFile $coverPhoto = null,
+        private readonly array $photos = [],
+        private readonly array $deletedPhotoIds = [],
+        private readonly ?int $mainPhotoId = null,
     ) {}
 
     public function execute(): Item
@@ -76,7 +82,7 @@ class UpdateItem
             $this->syncCopies();
         });
 
-        $this->addCoverPhoto();
+        $this->syncPhotos();
         $this->log();
 
         return $this->item;
@@ -354,24 +360,62 @@ class UpdateItem
     }
 
     /**
-     * The new photo becomes the cover. Only the very first photo of an item is
-     * promoted on its own, so a replacement has to be flagged explicitly.
+     * Photos are removed first, so the cover can be handed to a photo that
+     * survives, and so an item emptied of its photos lets the first new one
+     * take the role on its own.
      */
-    private function addCoverPhoto(): void
+    private function syncPhotos(): void
     {
-        if (! $this->coverPhoto instanceof UploadedFile) {
+        $this->deletePhotos();
+        $this->addPhotos();
+        $this->setMainPhoto();
+    }
+
+    private function deletePhotos(): void
+    {
+        foreach ($this->deletedPhotoIds as $photoId) {
+            $photo = $this->item->photos()->find($photoId);
+
+            if (! $photo instanceof ItemPhoto) {
+                continue;
+            }
+
+            new DestroyItemPhoto(
+                user: $this->user,
+                itemPhoto: $photo,
+            )->execute();
+        }
+    }
+
+    private function addPhotos(): void
+    {
+        foreach ($this->photos as $photo) {
+            if (! $photo instanceof UploadedFile) {
+                continue;
+            }
+
+            new AddItemPhoto(
+                user: $this->user,
+                item: $this->item,
+                file: $photo,
+            )->execute();
+        }
+    }
+
+    /**
+     * A photo that was removed in the same request, or that belongs to another
+     * item, cannot become the cover. Deleting the current cover already
+     * promotes another one, so leaving the choice out is not an error.
+     */
+    private function setMainPhoto(): void
+    {
+        if ($this->mainPhotoId === null) {
             return;
         }
 
-        $hadPhotos = $this->item->photos()->exists();
+        $photo = $this->item->photos()->find($this->mainPhotoId);
 
-        $photo = new AddItemPhoto(
-            user: $this->user,
-            item: $this->item,
-            file: $this->coverPhoto,
-        )->execute();
-
-        if (! $hadPhotos) {
+        if (! $photo instanceof ItemPhoto || $photo->is_main) {
             return;
         }
 

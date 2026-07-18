@@ -17,7 +17,9 @@ use App\Models\Set;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -342,4 +344,48 @@ it('throws when the category belongs to another collection', function () {
         name: 'Amazing Spider-Man #1',
         category: $foreignCategory,
     )->execute();
+});
+
+it('adds several photos to a new item, the first becoming the cover', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'Amazing Spider-Man #1',
+        photos: [
+            UploadedFile::fake()->image('front.jpg'),
+            UploadedFile::fake()->image('back.jpg'),
+        ],
+    )->execute();
+
+    expect($item->photos()->count())->toBe(2);
+    expect($item->mainPhoto()->first()->filename)->toBe('front.jpg');
+    // The order the photos were given is the order the item screen shows them.
+    expect($item->photos()->pluck('filename')->all())->toBe(['front.jpg', 'back.jpg']);
+});
+
+it('creates an item without any photo', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'Amazing Spider-Man #1',
+    )->execute();
+
+    expect($item->photos()->count())->toBe(0);
+    expect($item->mainPhoto()->first())->toBeNull();
 });

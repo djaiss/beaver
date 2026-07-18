@@ -432,7 +432,7 @@ it('leaves the copies alone when none are given', function () {
 
 // Only the very first photo of an item is promoted on its own, so replacing a
 // cover has to hand the role over explicitly.
-it('makes a new cover photo the main one', function () {
+it('adds several photos at once, the first becoming the cover', function () {
     Queue::fake();
     Storage::fake('local');
 
@@ -441,18 +441,153 @@ it('makes a new cover photo the main one', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $original = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true]);
 
     $updated = new UpdateItem(
         user: $owner,
         item: $item,
         name: 'Amazing Spider-Man #1',
-        coverPhoto: UploadedFile::fake()->image('cover.jpg'),
+        photos: [
+            UploadedFile::fake()->image('front.jpg'),
+            UploadedFile::fake()->image('back.jpg'),
+            UploadedFile::fake()->image('spine.jpg'),
+        ],
+    )->execute();
+
+    expect($updated->photos()->count())->toBe(3);
+    expect($updated->mainPhoto()->first()->filename)->toBe('front.jpg');
+});
+
+it('appends new photos without disturbing the cover', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $original = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true, 'position' => 1]);
+
+    $updated = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        photos: [UploadedFile::fake()->image('back.jpg')],
     )->execute();
 
     expect($updated->photos()->count())->toBe(2);
-    expect($original->fresh()->is_main)->toBeFalse();
-    expect($updated->mainPhoto()->first()->id)->not->toBe($original->id);
+    expect($updated->mainPhoto()->first()->id)->toBe($original->id);
+});
+
+it('removes the photos that were marked for removal', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $kept = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true, 'position' => 1]);
+    $dropped = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => false, 'position' => 2]);
+
+    $updated = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        deletedPhotoIds: [$dropped->id],
+    )->execute();
+
+    expect($updated->photos()->count())->toBe(1);
+    expect($updated->photos()->first()->id)->toBe($kept->id);
+});
+
+it('promotes another photo when the cover is removed', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $cover = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true, 'position' => 1]);
+    $other = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => false, 'position' => 2]);
+
+    $updated = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        deletedPhotoIds: [$cover->id],
+    )->execute();
+
+    expect($updated->mainPhoto()->first()->id)->toBe($other->id);
+});
+
+it('makes a chosen photo the cover', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $was = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true, 'position' => 1]);
+    $chosen = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => false, 'position' => 2]);
+
+    $updated = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        mainPhotoId: $chosen->id,
+    )->execute();
+
+    expect($updated->mainPhoto()->first()->id)->toBe($chosen->id);
+    expect($was->fresh()->is_main)->toBeFalse();
+});
+
+it('ignores a cover that belongs to another item', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $mine = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true]);
+    $foreign = ItemPhoto::factory()->create();
+
+    $updated = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        mainPhotoId: $foreign->id,
+    )->execute();
+
+    expect($updated->mainPhoto()->first()->id)->toBe($mine->id);
+    expect($foreign->fresh()->is_main)->toBeFalse();
+});
+
+it('leaves the photos alone when the form sends none', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true]);
+
+    $updated = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+    )->execute();
+
+    expect($updated->photos()->count())->toBe(1);
 });
 
 it('records the values that moved on the activity of the item', function () {
