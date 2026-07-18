@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ItemViewEnum;
 use App\Enums\VisibilityEnum;
 use App\Models\Concerns\HasAuthor;
 use Carbon\Carbon;
@@ -122,5 +123,25 @@ class Collection extends Model
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
+    }
+
+    /**
+     * Get the remembered view preferences, one per user who has opened the collection.
+     *
+     * @return HasMany<CollectionView, $this>
+     */
+    public function collectionViews(): HasMany
+    {
+        return $this->hasMany(CollectionView::class);
+    }
+
+    /**
+     * The items view the given user last opened for this collection, defaulting to the grid.
+     */
+    public function viewForUser(User $user): ItemViewEnum
+    {
+        return $this->collectionViews()
+            ->where('user_id', $user->id)
+            ->value('items_view') ?? ItemViewEnum::Grid;
     }
 }

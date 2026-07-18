@@ -6,6 +6,7 @@ use App\Http\Controllers\App\Account\AccountController;
 use App\Http\Controllers\App\Account\InvitationController;
 use App\Http\Controllers\App\Account\MemberController;
 use App\Http\Controllers\App\CollectionController;
+use App\Http\Controllers\App\CollectionItemViewController;
 use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldGroupController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\ItemController;
+use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
@@ -41,6 +43,9 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // placeholder sections for the future collection domain
     Route::get('collections', [CollectionController::class, 'index'])->name('collections.index');
     Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
+    // remembering which items view a member last opened is a private preference, so any role may set it
+    Route::put('collections/{collection}/item-view', [CollectionItemViewController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.item-view.update');
+    Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 

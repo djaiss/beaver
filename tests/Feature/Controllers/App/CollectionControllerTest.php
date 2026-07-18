@@ -1,10 +1,14 @@
 <?php
 
 declare(strict_types=1);
+use App\Enums\ItemViewEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\VisibilityEnum;
 use App\Models\Collection;
 use App\Models\CollectionType;
+use App\Models\CollectionView;
+use App\Models\Item;
+use App\Models\ItemPhoto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 
@@ -125,15 +129,55 @@ it('forbids viewers from creating a collection', function () {
 
 it('shows a collection', function () {
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
-    $collection->collectionTypes()->attach($type->id);
 
     $response = $this->actingAs($user)->get('/collections/'.$collection->id);
 
     $response->assertOk();
     $response->assertSee('Marvel Comics 1990s');
-    $response->assertSee('Comics');
+    $response->assertSee('Est. value');
+});
+
+it('shows the grid (sidebar) chrome by default', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk();
+    $response->assertSee('Back to collections');
+    $response->assertDontSee('Filter by location');
+});
+
+it('shows the table (top bar) chrome when the user last used it', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    CollectionView::factory()->create([
+        'user_id' => $user->id,
+        'collection_id' => $collection->id,
+        'items_view' => ItemViewEnum::Table->value,
+    ]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk();
+    $response->assertSee('Filter by location');
+    $response->assertDontSee('Back to collections');
+});
+
+it('remembers the view for each user independently', function () {
+    $account = $this->createAccount();
+    $ross = $this->createUser(['account_id' => $account->id]);
+    $rachel = $this->createUser(['account_id' => $account->id]);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    CollectionView::factory()->create([
+        'user_id' => $ross->id,
+        'collection_id' => $collection->id,
+        'items_view' => ItemViewEnum::Table->value,
+    ]);
+
+    $this->actingAs($ross)->get('/collections/'.$collection->id)->assertSee('Filter by location');
+    $this->actingAs($rachel)->get('/collections/'.$collection->id)->assertDontSee('Filter by location');
 });
 
 it('allows a viewer to see a collection', function () {
@@ -152,4 +196,15 @@ it('cannot see another accounts collection', function () {
     $foreign = Collection::factory()->create();
 
     $this->actingAs($user)->get('/collections/'.$foreign->id)->assertNotFound();
+});
+
+it('renders an item main photo when there is one', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $photo = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id)
+        ->assertOk()
+        ->assertSee(route('items.photos.show', $photo), false);
 });

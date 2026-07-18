@@ -80,4 +80,12 @@ class ItemPhoto extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    /**
+     * The URL that streams the photo file through the app.
+     */
+    public function url(): string
+    {
+        return route('items.photos.show', $this);
+    }
 }
