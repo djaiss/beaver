@@ -1,38 +1,39 @@
-<footer class="border-t border-gray-200 bg-white pt-12 pb-8 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
-  <div class="mx-auto max-w-7xl px-6 lg:px-0">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex flex-col gap-y-2">
-        <div class="flex flex-col items-center gap-x-4 sm:flex-row sm:gap-x-2">
-          <a href="" class="group flex items-center gap-x-2 transition-transform ease-in-out">
-            <div class="transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-              <x-logo size="25" />
+<footer class="mt-24 bg-[#101010] text-[#a1a1aa]">
+  <div class="mx-auto max-w-[1200px] px-5 py-16 sm:px-8">
+    <div class="grid grid-cols-2 gap-8 border-b border-[#242424] pb-12 sm:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
+      <div class="col-span-2 sm:col-span-3 lg:col-span-1">
+        <div class="mb-4 flex items-center gap-x-2.5">
+          <x-logo size="28" hoverColor="#ffffff" aria-hidden="true" />
+          <x-wordmark height="17" class="text-white" />
+        </div>
+        <p class="max-w-60 text-sm leading-relaxed">The open source collection manager that belongs to you.</p>
+      </div>
+
+      @isset($footerColumns)
+        @foreach ($footerColumns as $column)
+          <div>
+            <p class="mb-4 text-[13px] font-semibold text-white">{{ $column['title'] }}</p>
+            <div class="flex flex-col gap-y-3">
+              @foreach ($column['links'] as $link)
+                <a href="{{ $link['url'] }}" class="text-sm text-[#a1a1aa] transition-colors hover:text-white">{{ $link['label'] }}</a>
+              @endforeach
             </div>
-          </a>
-          <p class="text-xs text-gray-600">&copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved. Actually, our trademark is not registered, but we probably should write that to do like the big boys.</p>
-        </div>
+          </div>
+        @endforeach
+      @endisset
+    </div>
 
-        <p class="text-xs text-gray-600">
-          This site is inspired by the magnificent and funny
-          <x-link href="https://posthog.com" target="_blank">Posthog website</x-link>
-          .
-        </p>
-      </div>
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-7">
+      <p class="text-[13px] text-[#898989]">&copy; {{ date('Y') }} {{ config('app.name') }}. Released under the MIT License.</p>
 
-      <div class="mt-6 sm:mt-0">
-        <div class="mb-2 flex gap-x-4">
-          <a href="" class="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Privacy</a>
-          <a href="" class="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Terms</a>
-        </div>
-
-        <p class="flex gap-x-2 text-xs text-gray-500">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" width="48" height="48" viewBox="0 0 9600 4800">
-            <title>Flag of Canada</title>
-            <path fill="#f00" d="m0 0h2400l99 99h4602l99-99h2400v4800h-2400l-99-99h-4602l-99 99H0z" />
-            <path fill="#fff" d="m2400 0h4800v4800h-4800zm2490 4430-45-863a95 95 0 0 1 111-98l859 151-116-320a65 65 0 0 1 20-73l941-762-212-99a65 65 0 0 1-34-79l186-572-542 115a65 65 0 0 1-73-38l-105-247-423 454a65 65 0 0 1-111-57l204-1052-327 189a65 65 0 0 1-91-27l-332-652-332 652a65 65 0 0 1-91 27l-327-189 204 1052a65 65 0 0 1-111 57l-423-454-105 247a65 65 0 0 1-73 38l-542-115 186 572a65 65 0 0 1-34 79l-212 99 941 762a65 65 0 0 1 20 73l-116 320 859-151a95 95 0 0 1 111 98l-45 863z" />
-          </svg>
-          Proudly Canadian
-        </p>
-      </div>
+      <p class="flex items-center gap-x-2 text-[13px] text-[#898989]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 9600 4800" aria-hidden="true">
+          <title>Flag of Canada</title>
+          <path fill="#f00" d="m0 0h2400l99 99h4602l99-99h2400v4800h-2400l-99-99h-4602l-99 99H0z" />
+          <path fill="#fff" d="m2400 0h4800v4800h-4800zm2490 4430-45-863a95 95 0 0 1 111-98l859 151-116-320a65 65 0 0 1 20-73l941-762-212-99a65 65 0 0 1-34-79l186-572-542 115a65 65 0 0 1-73-38l-105-247-423 454a65 65 0 0 1-111-57l204-1052-327 189a65 65 0 0 1-91-27l-332-652-332 652a65 65 0 0 1-91 27l-327-189 204 1052a65 65 0 0 1-111 57l-423-454-105 247a65 65 0 0 1-73 38l-542-115 186 572a65 65 0 0 1-34 79l-212 99 941 762a65 65 0 0 1 20 73l-116 320 859-151a95 95 0 0 1 111 98l-45 863z" />
+        </svg>
+        Made by collectors, for collectors. Proudly Canadian.
+      </p>
     </div>
   </div>
 </footer>

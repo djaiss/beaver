@@ -11,12 +11,19 @@ use Symfony\Component\HttpFoundation\Response;
 class CheckMarketing
 {
     /**
-     * Handle an incoming request.
+     * Send visitors to the application when the marketing site is off.
+     *
+     * Everyone lands on the login page, signed in or not. The guest middleware
+     * guarding that page then carries anyone already signed in to their dashboard.
      *
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        if (config('marketing.show')) {
+            return $next($request);
+        }
+
+        return redirect()->route('login');
     }
 }

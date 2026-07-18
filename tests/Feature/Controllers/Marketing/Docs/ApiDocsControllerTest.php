@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
+beforeEach(function (): void {
+    config()->set('marketing.show', true);
+});
+
 it('shows the api docs portal', function () {
-    $response = $this->get('/docs');
+    $response = $this->get('/docs/api');
 
     $response
         ->assertOk()
@@ -23,7 +27,7 @@ it('shows the api docs portal', function () {
 });
 
 it('shows the whole reference as markdown', function () {
-    $response = $this->get('/docs.md');
+    $response = $this->get('/docs/api.md');
 
     $response
         ->assertOk()
@@ -33,7 +37,7 @@ it('shows the whole reference as markdown', function () {
 });
 
 it('shows a single section as markdown', function () {
-    $response = $this->get('/docs/collections-list.md');
+    $response = $this->get('/docs/api/collections-list.md');
 
     $response
         ->assertOk()
@@ -43,7 +47,7 @@ it('shows a single section as markdown', function () {
 });
 
 it('returns not found for an unknown section', function () {
-    $response = $this->get('/docs/unknown-section.md');
+    $response = $this->get('/docs/api/unknown-section.md');
 
     $response->assertNotFound();
 });
