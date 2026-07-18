@@ -92,6 +92,10 @@ class ItemController extends Controller
             name: $validated['name'],
             description: $validated['description'] ?? null,
             collectionType: isset($validated['type_id']) ? $account->collectionTypes()->find($validated['type_id']) : null,
+            // The API does not manage the catalog placement, so the current
+            // category and set are passed back to leave them where they are.
+            category: $item->category,
+            set: $item->set,
         )->execute();
 
         return new ItemResource($item)
