@@ -65,7 +65,7 @@
 
         <div class="min-w-[180px]">
           <x-label>{{ __('Parent location') }}</x-label>
-          <select name="parent_id" x-model="editParentId" class="mt-1.5 h-9 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink">
+          <select name="parent_id" x-model="editParentId" class="mt-1.5 h-9 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
             @foreach ($rowOptions as $id => $label)
               <option value="{{ $id }}">{{ $label }}</option>
             @endforeach
