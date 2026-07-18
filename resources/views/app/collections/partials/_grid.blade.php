@@ -4,9 +4,13 @@
             x-show="cardVisible(@js($row['name']), @js($row['categoryId']))"
             class="overflow-hidden rounded-xl border border-hairline bg-canvas"
         >
-            <div class="flex h-36 items-center justify-center bg-card text-3xl">
-                {{ $collection->emoji ?? '📦' }}
-            </div>
+            @if ($row['photoUrl'])
+                <img src="{{ $row['photoUrl'] }}" alt="{{ $row['name'] }}" loading="lazy" class="h-36 w-full object-cover" />
+            @else
+                <div class="flex h-36 items-center justify-center bg-card text-3xl">
+                    {{ $collection->emoji ?? '📦' }}
+                </div>
+            @endif
             <div class="p-3.5">
                 <p class="mb-2 truncate text-sm font-semibold text-ink">{{ $row['name'] }}</p>
                 <div class="mb-2">

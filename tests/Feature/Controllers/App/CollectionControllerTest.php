@@ -7,6 +7,8 @@ use App\Enums\VisibilityEnum;
 use App\Models\Collection;
 use App\Models\CollectionType;
 use App\Models\CollectionView;
+use App\Models\Item;
+use App\Models\ItemPhoto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 
@@ -194,4 +196,15 @@ it('cannot see another accounts collection', function () {
     $foreign = Collection::factory()->create();
 
     $this->actingAs($user)->get('/collections/'.$foreign->id)->assertNotFound();
+});
+
+it('renders an item main photo when there is one', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $photo = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id)
+        ->assertOk()
+        ->assertSee(route('items.photos.show', $photo), false);
 });

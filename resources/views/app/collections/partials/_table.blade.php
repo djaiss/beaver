@@ -94,7 +94,8 @@
     <div class="w-72 shrink-0 overflow-y-auto border-l border-hairline p-5">
         <template x-if="selected">
             <div>
-                <div class="mb-4 flex aspect-[3/4] items-center justify-center rounded-lg bg-card text-4xl">{{ $collection->emoji ?? '📦' }}</div>
+                <img x-show="selected.photoUrl" :src="selected.photoUrl" :alt="selected.name" class="mb-4 aspect-[3/4] w-full rounded-lg object-cover" />
+                <div x-show="! selected.photoUrl" class="mb-4 flex aspect-[3/4] items-center justify-center rounded-lg bg-card text-4xl">{{ $collection->emoji ?? '📦' }}</div>
                 <p class="mb-4 text-base font-semibold text-ink" x-text="selected.name"></p>
                 <dl class="flex flex-col">
                     <div class="flex justify-between border-b border-hairline-soft py-2.5">

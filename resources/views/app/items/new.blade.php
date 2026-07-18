@@ -28,6 +28,7 @@
         tagDraft: '',
         copies: [{ condition_id: '', location_id: '', acquired_at: '', price_paid: '', estimated_value: '' }],
         coverName: '',
+        coverPreview: '',
         get selectedType() { return this.types.find(t => String(t.id) === String(this.typeId)) || null },
         get customFields() { return this.selectedType ? this.selectedType.fields : [] },
         get canSubmit() { return this.name.trim().length > 0 },
@@ -38,7 +39,11 @@
         removeNewTag(name) { this.newTags = this.newTags.filter(t => t !== name) },
         addCopy() { this.copies.push({ condition_id: '', location_id: '', acquired_at: '', price_paid: '', estimated_value: '' }) },
         removeCopy(i) { if (this.copies.length > 1) this.copies.splice(i, 1) },
-        onCover(e) { this.coverName = e.target.files.length ? e.target.files[0].name : '' },
+        onCover(e) {
+          const file = e.target.files[0]
+          this.coverName = file ? file.name : ''
+          this.coverPreview = file ? URL.createObjectURL(file) : ''
+        },
       }"
     >
       <div class="mb-5 flex items-center gap-1.5 text-[13px]">
@@ -56,11 +61,12 @@
         {{-- Cover --}}
         <div>
           <x-label>{{ __('Cover image') }}</x-label>
-          <label class="mt-2 flex size-24 cursor-pointer items-center justify-center rounded-xl border border-dashed border-hairline bg-card text-center transition-colors hover:border-muted-soft">
+          <label class="relative mt-2 flex size-24 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed border-hairline bg-card text-center transition-colors hover:border-muted-soft">
             <input type="file" name="cover" accept="image/*" class="sr-only" x-on:change="onCover($event)" />
-            <span x-show="!coverName" class="px-2 font-mono text-[10px] leading-tight text-muted-soft">{{ __('drop image') }}</span>
-            <span x-show="coverName" x-cloak x-text="coverName" class="truncate px-2 text-[10px] text-muted"></span>
+            <img x-show="coverPreview" x-cloak :src="coverPreview" alt="" class="absolute inset-0 size-full object-cover" />
+            <span x-show="!coverPreview" class="px-2 font-mono text-[10px] leading-tight text-muted-soft">{{ __('drop image') }}</span>
           </label>
+          <p x-show="coverName" x-cloak x-text="coverName" class="mt-1.5 truncate text-[11px] text-muted-soft"></p>
           <x-error :messages="$errors->get('cover')" class="mt-2" />
         </div>
 

@@ -29,6 +29,7 @@
             'id' => $item->id,
             'name' => $item->name,
             'categoryId' => (string) ($item->category_id ?? ''),
+            'photoUrl' => $item->mainPhoto?->url(),
             'condition' => $first?->condition?->name ?? '—',
             'location' => $first?->location?->name ?? '—',
             'quantity' => $copies->count(),
