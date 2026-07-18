@@ -316,6 +316,19 @@ it('shows a collection', function () {
     $response->assertSee('Est. value');
 });
 
+it('paginates the items 1000 at a time', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    Item::factory()->count(30)->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk();
+    expect($response->viewData('items')->perPage())->toBe(1000);
+    expect($response->viewData('items')->lastPage())->toBe(1);
+    expect($response->viewData('items'))->toHaveCount(30);
+});
+
 it('shows the grid (sidebar) chrome by default', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
