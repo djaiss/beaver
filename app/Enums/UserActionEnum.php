@@ -43,6 +43,12 @@ enum UserActionEnum: string
     case TagCreation = 'tag_created';
     case TagUpdate = 'tag_updated';
     case TagDeletion = 'tag_deleted';
+    case CategoryCreation = 'category_created';
+    case CategoryUpdate = 'category_updated';
+    case CategoryDeletion = 'category_deleted';
+    case SetCreation = 'set_created';
+    case SetUpdate = 'set_updated';
+    case SetDeletion = 'set_deleted';
     case ApiKeyCreation = 'api_key_created';
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
@@ -94,6 +100,12 @@ enum UserActionEnum: string
             self::TagCreation => 'Created the tag called :name',
             self::TagUpdate => 'Updated the tag called :name',
             self::TagDeletion => 'Deleted the tag called :name',
+            self::CategoryCreation => 'Created the category called :name',
+            self::CategoryUpdate => 'Updated the category called :name',
+            self::CategoryDeletion => 'Deleted the category called :name',
+            self::SetCreation => 'Created the set called :name',
+            self::SetUpdate => 'Updated the set called :name',
+            self::SetDeletion => 'Deleted the set called :name',
             self::ApiKeyCreation => 'Created an API key',
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',
