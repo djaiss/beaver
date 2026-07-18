@@ -92,4 +92,14 @@ class Location extends Model
     {
         return $this->hasMany(Location::class, 'parent_id');
     }
+
+    /**
+     * Get the copies stored in this location.
+     *
+     * @return HasMany<Copy, $this>
+     */
+    public function copies(): HasMany
+    {
+        return $this->hasMany(Copy::class);
+    }
 }
