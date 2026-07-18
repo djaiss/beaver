@@ -31,6 +31,8 @@ enum UserActionEnum: string
     case ItemPhotoCreation = 'item_photo_created';
     case ItemPhotoUpdate = 'item_photo_updated';
     case ItemPhotoDeletion = 'item_photo_deleted';
+    case ItemTagAttached = 'item_tag_attached';
+    case ItemTagDetached = 'item_tag_detached';
     case CopyCreation = 'copy_created';
     case CopyUpdate = 'copy_updated';
     case CopyDeletion = 'copy_deleted';
@@ -90,6 +92,8 @@ enum UserActionEnum: string
             self::ItemPhotoCreation => 'Added a photo to the item called :name',
             self::ItemPhotoUpdate => 'Updated a photo of the item called :name',
             self::ItemPhotoDeletion => 'Deleted a photo of the item called :name',
+            self::ItemTagAttached => 'Added the tag :tag to the item called :name',
+            self::ItemTagDetached => 'Removed the tag :tag from the item called :name',
             self::CopyCreation => 'Added a copy of the item called :name',
             self::CopyUpdate => 'Updated a copy of the item called :name',
             self::CopyDeletion => 'Deleted a copy of the item called :name',

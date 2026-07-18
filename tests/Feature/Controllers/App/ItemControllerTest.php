@@ -491,3 +491,38 @@ it('does not let the item tabs scroll vertically', function () {
         ->assertOk()
         ->assertSee('overflow-x-auto overflow-y-hidden', false);
 });
+
+it('shows the tags of an item with the controls to change them', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $onItem = Tag::factory()->create(['account_id' => $user->account_id, 'name' => 'Signed']);
+    Tag::factory()->create(['account_id' => $user->account_id, 'name' => 'Key issue']);
+    $item->tags()->sync([$onItem->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Signed');
+    $response->assertSee('add-tag-input', false);
+    $response->assertSee('remove-tag-'.$onItem->id, false);
+    // The account's other tags are offered as suggestions.
+    $response->assertSee('Key issue');
+});
+
+it('shows a viewer the tags of an item without the controls to change them', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
+    $item->tags()->sync([$tag->id]);
+
+    $response = $this->actingAs($viewer)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('Signed');
+    $response->assertDontSee('add-tag-input', false);
+    $response->assertDontSee('remove-tag-'.$tag->id, false);
+});
