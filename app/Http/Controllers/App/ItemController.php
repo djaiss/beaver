@@ -9,9 +9,11 @@ use App\Actions\UpdateItem;
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use App\Models\Item;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\View\View;
 
 class ItemController extends Controller
@@ -42,6 +44,8 @@ class ItemController extends Controller
         return view('app.items.show', [
             'collection' => $collectionModel,
             'item' => $itemModel,
+            // The tags of the account, offered as suggestions when tagging the item.
+            'tags' => $this->accountTags($request),
             // The set counts what is owned. How many entries a set should hold
             // is not tracked yet, so completion cannot be worked out.
             'setItemCount' => $itemModel->set?->items()->count() ?? 0,
@@ -61,7 +65,7 @@ class ItemController extends Controller
             'sets' => $account->sets()->orderBy('name')->get(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
-            'tags' => $account->tags()->orderBy('name')->get(),
+            'tags' => $this->accountTags($request),
         ]);
     }
 
@@ -80,7 +84,7 @@ class ItemController extends Controller
             'sets' => $account->sets()->orderBy('name')->get(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
-            'tags' => $account->tags()->orderBy('name')->get(),
+            'tags' => $this->accountTags($request),
         ]);
     }
 
@@ -157,6 +161,20 @@ class ItemController extends Controller
         return to_route('collections.show', $collectionModel->id)
             ->with('status', __('Item added'))
             ->with('status_description', __('Your new item is now in the collection.'));
+    }
+
+    /**
+     * A tag name is encrypted, so ordering the query would sort the ciphertext.
+     * The names are read and sorted here instead.
+     *
+     * @return SupportCollection<int, Tag>
+     */
+    private function accountTags(Request $request): SupportCollection
+    {
+        return $request->user()->account->tags()
+            ->get()
+            ->sortBy(fn (Tag $tag): string => mb_strtolower($tag->name))
+            ->values();
     }
 
     private function findCollection(Request $request, int $collection): Collection

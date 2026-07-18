@@ -94,16 +94,7 @@
       </div>
 
       {{-- Tags --}}
-      <div class="mb-6 flex flex-wrap items-center gap-2">
-        @foreach ($item->tags as $tag)
-          <x-badge>{{ $tag->name }}</x-badge>
-        @endforeach
-
-        <span class="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-dashed border-hairline px-3 py-1 text-[13px] font-medium text-muted-soft">
-          {{ __('Add tag') }}
-          <x-soon />
-        </span>
-      </div>
+      @include('app.items.partials._tags')
 
       {{-- Tabs --}}
       {{-- The tabs scroll sideways on a narrow screen. Pinning overflow-y stops the
