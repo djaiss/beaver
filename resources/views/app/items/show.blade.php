@@ -2,6 +2,9 @@
 @use('App\Helpers\Money')
 
 @php
+    $user = auth()->user();
+    $canManage = $user->account->allowsManagementBy($user);
+
     $type = $item->collectionType;
     $values = $item->customFieldValues->keyBy('custom_field_id');
 
@@ -70,12 +73,19 @@
           <h1 class="text-[28px] leading-tight font-semibold tracking-tight text-ink" data-test="item-name">{{ $item->name }}</h1>
         </div>
 
-        {{-- Editing an item and adding a copy have no screens on the web yet. --}}
+        {{-- Adding a copy on its own has no screen on the web yet. --}}
         <div class="flex shrink-0 flex-wrap items-center gap-2">
-          <span class="flex h-9 cursor-not-allowed items-center gap-2 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-muted-soft" data-test="edit-item-soon">
-            {{ __('Edit') }}
-            <x-soon />
-          </span>
+          @if ($canManage)
+            <a
+              href="{{ route('items.edit', [$collection, $item]) }}"
+              data-turbo="true"
+              class="flex h-9 items-center gap-2 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-ink transition-colors hover:bg-card"
+              data-test="edit-item-button"
+            >
+              @svg('lucide-pencil', 'size-3.5 text-muted')
+              {{ __('Edit') }}
+            </a>
+          @endif
           <span class="flex h-9 cursor-not-allowed items-center gap-2 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-muted-soft" data-test="add-copy-soon">
             {{ __('Add copy') }}
             <x-soon />
@@ -96,7 +106,10 @@
       </div>
 
       {{-- Tabs --}}
-      <div class="mb-7 flex items-center gap-1 overflow-x-auto border-b border-hairline">
+      {{-- The tabs scroll sideways on a narrow screen. Pinning overflow-y stops the
+           browser turning that into a vertical scrollbar, which it otherwise does to
+           reach the 1px the active tab's underline hangs over the border by. --}}
+      <div class="mb-7 flex items-center gap-1 overflow-x-auto overflow-y-hidden border-b border-hairline">
         @foreach ([['overview', __('Overview'), null], ['copies', __('Copies'), $item->copies->count()], ['roadmap', __('Roadmap'), null]] as [$key, $label, $count])
           <button
             type="button"
