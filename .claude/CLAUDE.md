@@ -54,6 +54,24 @@ An `Account` is the tenant. Everything in the collection domain belongs to exact
 
 There is no `Item` model yet. Collections, types, custom fields and locations are in place, but the item they describe is still to be built.
 
+## Docker and self-hosting
+
+Self-hosting Beaver with Docker is a first-class, supported use case. The setup lives in `Dockerfile` (a multi-stage build), `docker-compose.yml`, the `docker/` directory (php, nginx, supervisor and entrypoint config), `.env.docker.example` and `docker/README.md`. The same image runs three roles selected by `CONTAINER_ROLE`: web (`app`), queue worker (`queue`) and scheduler (`scheduler`).
+
+Every feature MUST keep the Docker image building and running. When your change touches any of the following, update the Docker setup in the same PR:
+
+- A new PHP extension requirement: add it to the `install-php-extensions` list in the `Dockerfile`.
+- A new or renamed environment variable: add it to `.env.docker.example` (and document it in `docker/README.md` if an operator must set it).
+- A new queue name: add it to the `queue:work --queue=...` command in `docker-compose.yml`.
+- A new long-running process, scheduled task, or external service dependency: wire it into `docker-compose.yml` and the entrypoint.
+- A new front-end or Composer dependency, or a change to the build steps: make sure the `assets` and `vendor` build stages still produce a working image.
+
+Migrations MUST be upgrade-safe so that pulling a newer image never breaks or wipes an existing database. The entrypoint only ever runs `php artisan migrate --force` (pending migrations only). Never rely on `migrate:fresh` or `migrate:refresh` in the image, and avoid destructive migrations (dropping or renaming a populated column, for example) unless you provide a safe, multi-step path that preserves existing data. The database and uploaded files live in named volumes that are independent of the image.
+
+Note that the entrypoint skips `route:cache` on purpose, because a closure route exists in `routes/web.php`. It still caches config, events and views. If you add a route that cannot be serialized, do not re-enable route caching.
+
+After a change that could affect any of this, verify that `docker compose build` succeeds, `docker compose up` starts cleanly, and the `/up` health endpoint reports healthy.
+
 ## Guidelines for git and Github
 
 - You MUST create a new branch when doing a new task, unless stated otherwise, based off of main branch. Make sure main is always up-to-date.

@@ -7,6 +7,18 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Self-hosting with Docker
+
+Beaver ships a production Docker image and a Compose stack, so you can run your own instance. Self-hosting is a first-class, supported use case.
+
+```bash
+cp .env.docker.example .env
+docker compose run --rm app php artisan key:generate --show   # paste into .env as APP_KEY
+docker compose up -d --build
+```
+
+See [docker/README.md](docker/README.md) for the full guide, including configuration, upgrades (which preserve your existing data), and backups.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
