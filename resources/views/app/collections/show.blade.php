@@ -117,11 +117,14 @@
             @else
                 @include('app.collections.partials._toolbar')
 
-                <div x-show="view === '{{ ItemViewEnum::Grid->value }}'">
+                {{-- Which view is visible on first paint is decided here, server side. Alpine
+                     takes over the display once it boots, but until then x-show is inert, so
+                     without this the page would paint the grid whatever the remembered view is. --}}
+                <div x-show="view === '{{ ItemViewEnum::Grid->value }}'" @style(['display: none' => $view !== ItemViewEnum::Grid])>
                     @include('app.collections.partials._grid')
                 </div>
 
-                <div x-show="view === '{{ ItemViewEnum::List->value }}'" x-cloak>
+                <div x-show="view === '{{ ItemViewEnum::List->value }}'" @style(['display: none' => $view !== ItemViewEnum::List])>
                     @include('app.collections.partials._list')
                 </div>
 

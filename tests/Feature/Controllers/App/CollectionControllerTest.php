@@ -149,6 +149,37 @@ it('shows the grid (sidebar) chrome by default', function () {
     $response->assertDontSee('Filter by location');
 });
 
+// Alpine only takes over the display once it has booted, so the wrong view would paint first
+// unless the server hides it up front. See the flicker on first load of a remembered list view.
+it('hides the grid on first paint when the remembered view is the list', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1']);
+    CollectionView::factory()->create([
+        'user_id' => $user->id,
+        'collection_id' => $collection->id,
+        'items_view' => ItemViewEnum::List->value,
+    ]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk();
+    $response->assertSee('<div x-show="view === \'grid\'" style="display: none;">', false);
+    $response->assertSee('<div x-show="view === \'list\'" style="">', false);
+});
+
+it('hides the list on first paint when the remembered view is the grid', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1']);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk();
+    $response->assertSee('<div x-show="view === \'grid\'" style="">', false);
+    $response->assertSee('<div x-show="view === \'list\'" style="display: none;">', false);
+});
+
 it('shows the table (top bar) chrome when the user last used it', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
