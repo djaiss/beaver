@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 use App\Enums\FieldTypeEnum;
-use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
 use App\Models\Category;
 use App\Models\Collection;
@@ -13,11 +12,9 @@ use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
-use App\Models\ItemLog;
 use App\Models\Location;
 use App\Models\Set;
 use App\Models\Tag;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 
@@ -129,30 +126,7 @@ it('reads a rating custom field as stars', function () {
     $response->assertDontSee('>4<', false);
 });
 
-it('shows the copies of an item with their condition and location', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Near Mint']);
-    $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Display Case']);
-    Copy::factory()->create([
-        'item_id' => $item->id,
-        'condition_id' => $condition->id,
-        'location_id' => $location->id,
-        'price_paid' => 18000,
-        'estimated_value' => 42000,
-    ]);
-
-    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
-
-    $response->assertOk();
-    $response->assertSee('Near Mint');
-    $response->assertSee('Display Case');
-    $response->assertSee('$420');
-    $response->assertSee('$180');
-});
-
-it('flags the parts of the item screen that are not built yet', function () {
+it('flags the parts of the overview that are not built yet', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $set = Set::factory()->create(['account_id' => $user->account_id]);
@@ -163,8 +137,6 @@ it('flags the parts of the item screen that are not built yet', function () {
 
     $response->assertOk();
     $response->assertSee('Soon');
-    $response->assertSee('Provenance');
-    $response->assertSee('Purchase &amp; sale history', false);
     $response->assertSee('Set completion needs a target size');
 });
 
@@ -528,77 +500,4 @@ it('shows a viewer the tags of an item without the controls to change them', fun
     $response->assertSee('Signed');
     $response->assertDontSee('add-tag-input', false);
     $response->assertDontSee('remove-tag-'.$tag->id, false);
-});
-
-it('shows the activity of an item, newest first', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $author = User::factory()->create(['first_name' => 'Rachel', 'last_name' => 'Green']);
-
-    ItemLog::factory()->create([
-        'item_id' => $item->id,
-        'user_id' => $author->id,
-        'action' => ItemActionEnum::ItemCreation->value,
-        'created_at' => now()->subDay(),
-    ]);
-    ItemLog::factory()->create([
-        'item_id' => $item->id,
-        'user_id' => $author->id,
-        'action' => ItemActionEnum::TagAttached->value,
-        'parameters' => ['label' => 'Signed'],
-        'created_at' => now(),
-    ]);
-
-    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
-
-    $response->assertOk();
-    $response->assertSee('item-tab-activity', false);
-    $response->assertSee('Rachel Green');
-    $response->assertSee('created this item');
-    $response->assertSee('added the tag');
-    $response->assertSeeInOrder(['added the tag', 'created this item'], false);
-});
-
-it('shows the change chips of an entry', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-
-    ItemLog::factory()->create([
-        'item_id' => $item->id,
-        'action' => ItemActionEnum::CopyUpdate->value,
-        'parameters' => ['changes' => [['label' => 'Estimated value', 'from' => '$390', 'to' => '$420']]],
-    ]);
-
-    $this->actingAs($user)->get(route('items.show', [$collection, $item]))
-        ->assertOk()
-        ->assertSee('Estimated value: $390 → $420');
-});
-
-it('tells the reader when an item has no activity yet', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-
-    $this->actingAs($user)->get(route('items.show', [$collection, $item]))
-        ->assertOk()
-        ->assertSee('No activity yet.');
-});
-
-it('does not show the activity of another item', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $other = Item::factory()->create(['collection_id' => $collection->id]);
-
-    ItemLog::factory()->create([
-        'item_id' => $other->id,
-        'action' => ItemActionEnum::TagAttached->value,
-        'parameters' => ['label' => 'Belongs elsewhere'],
-    ]);
-
-    $this->actingAs($user)->get(route('items.show', [$collection, $item]))
-        ->assertOk()
-        ->assertDontSee('Belongs elsewhere');
 });
