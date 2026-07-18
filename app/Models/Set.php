@@ -4,30 +4,26 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\VisibilityEnum;
 use App\Models\Concerns\HasAuthor;
 use Carbon\Carbon;
-use Database\Factories\CollectionFactory;
+use Database\Factories\SetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 /**
- * Class Collection
+ * Class Set
+ *
+ * A group of items collected together as a series, e.g. "Amazing Spider-Man
+ * #1-10". Used to track completion, which items in the set are owned versus
+ * still needed.
  *
  * @property int $id
- * @property string $uuid
  * @property int $account_id
  * @property string $name
  * @property string|null $description
- * @property string|null $emoji
- * @property VisibilityEnum $visibility
- * @property string|null $currency
- * @property array<string, mixed>|null $settings
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -36,16 +32,16 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class Collection extends Model
+class Set extends Model
 {
     use HasAuthor;
 
-    /** @use HasFactory<CollectionFactory> */
+    /** @use HasFactory<SetFactory> */
     use HasFactory;
 
     use SoftDeletes;
 
-    protected $table = 'collections';
+    protected $table = 'sets';
 
     /**
      * The attributes that are mass assignable.
@@ -56,18 +52,7 @@ class Collection extends Model
         'account_id',
         'name',
         'description',
-        'emoji',
-        'visibility',
-        'currency',
-        'settings',
     ];
-
-    protected static function booted(): void
-    {
-        static::creating(function (Collection $collection): void {
-            $collection->uuid ??= (string) Str::uuid();
-        });
-    }
 
     /**
      * Get the attributes that should be cast.
@@ -79,13 +64,11 @@ class Collection extends Model
         return [
             'name' => 'encrypted',
             'description' => 'encrypted',
-            'visibility' => VisibilityEnum::class,
-            'settings' => 'array',
         ];
     }
 
     /**
-     * Get the account the collection belongs to.
+     * Get the account the set belongs to.
      *
      * @return BelongsTo<Account, $this>
      */
@@ -95,32 +78,12 @@ class Collection extends Model
     }
 
     /**
-     * Get the collection types linked to the collection.
-     *
-     * @return BelongsToMany<CollectionType, $this>
-     */
-    public function collectionTypes(): BelongsToMany
-    {
-        return $this->belongsToMany(CollectionType::class, 'collection_type', 'collection_id', 'type_id');
-    }
-
-    /**
-     * Get the items catalogued in the collection.
+     * Get the items that are part of this set.
      *
      * @return HasMany<Item, $this>
      */
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
-    }
-
-    /**
-     * Get the categories that group the collection's items.
-     *
-     * @return HasMany<Category, $this>
-     */
-    public function categories(): HasMany
-    {
-        return $this->hasMany(Category::class);
     }
 }

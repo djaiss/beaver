@@ -10,6 +10,7 @@ use Database\Factories\TagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Tag
@@ -66,5 +67,15 @@ class Tag extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get the items that carry this tag.
+     *
+     * @return BelongsToMany<Item, $this>
+     */
+    public function items(): BelongsToMany
+    {
+        return $this->belongsToMany(Item::class);
     }
 }

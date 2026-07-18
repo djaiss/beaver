@@ -10,6 +10,7 @@ use Database\Factories\ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -22,7 +23,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property int $id
  * @property int $collection_id
+ * @property int|null $category_id
  * @property int|null $type_id
+ * @property int|null $set_id
  * @property string $name
  * @property string|null $description
  * @property int|null $created_by_id
@@ -51,7 +54,9 @@ class Item extends Model
      */
     protected $fillable = [
         'collection_id',
+        'category_id',
         'type_id',
+        'set_id',
         'name',
         'description',
     ];
@@ -87,6 +92,46 @@ class Item extends Model
     public function collectionType(): BelongsTo
     {
         return $this->belongsTo(CollectionType::class, 'type_id');
+    }
+
+    /**
+     * Get the category the item sits in, if any.
+     *
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the set the item is part of, if any.
+     *
+     * @return BelongsTo<Set, $this>
+     */
+    public function set(): BelongsTo
+    {
+        return $this->belongsTo(Set::class);
+    }
+
+    /**
+     * Get the tags applied to the item.
+     *
+     * @return BelongsToMany<Tag, $this>
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * Get the custom field values recorded for the item.
+     *
+     * @return HasMany<CustomFieldValue, $this>
+     */
+    public function customFieldValues(): HasMany
+    {
+        return $this->hasMany(CustomFieldValue::class);
     }
 
     /**
