@@ -14,8 +14,8 @@
     @yield('json-ld')
   </head>
   <body class="font-sans antialiased">
-    <div class="min-h-screen bg-white dark:bg-gray-900">
-      @include('components.marketing.header')
+    <div class="min-h-screen bg-page text-ink">
+      @include('components.marketing.header', ['announcement' => $announcement])
 
       <!-- Page Content -->
       <main>
@@ -26,7 +26,7 @@
         {{ $slot }}
       </main>
 
-      @include('components.marketing.footer')
+      @include('components.marketing.footer', ['footerColumns' => $footerColumns])
     </div>
   </body>
 </html>

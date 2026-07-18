@@ -8,6 +8,7 @@ Turbo.session.drive = false; // explicit (enabled by default)
 // --- Alpine ---
 import Alpine from 'alpinejs';
 import morph from '@alpinejs/morph';
+import intersect from '@alpinejs/intersect';
 import ajax from '@imacrayon/alpine-ajax';
 import Popover from './components/popover';
 import RelationshipTypeSorter from './components/relationship-type-sorter';
@@ -15,6 +16,7 @@ import TypeSchemaValidator from './components/type-schema-validator';
 
 window.Alpine = Alpine;
 Alpine.plugin(morph);
+Alpine.plugin(intersect);
 Alpine.plugin(ajax);
 // Morph preserves DOM/Alpine state for elements that persist between requests,
 // instead of discarding and recreating them — needed so a form nested inside

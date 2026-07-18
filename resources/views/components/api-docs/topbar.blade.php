@@ -26,7 +26,7 @@
 
   <div class="flex shrink-0 items-center gap-4 sm:gap-6">
     <a href="#introduction" class="hidden text-sm font-medium text-gray-500 hover:text-gray-900 sm:block">Guides</a>
-    <a href="{{ route('marketing.docs.markdown.index') }}" class="hidden text-sm font-medium text-gray-500 hover:text-gray-900 sm:block">Markdown</a>
+    <a href="{{ route('marketing.docs.api.markdown.index') }}" class="hidden text-sm font-medium text-gray-500 hover:text-gray-900 sm:block">Markdown</a>
     <a href="{{ route('profile.api-keys.new') }}" class="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 hover:border-gray-300">Get API key</a>
   </div>
 </header>
