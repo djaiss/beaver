@@ -22,6 +22,20 @@ it('lists the account collection types', function () {
     $response->assertSee('Publisher');
 });
 
+it('keeps the actions menu out of the morph', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
+
+    $response->assertOk();
+
+    // This screen refreshes itself with a Turbo morph, which reverts the display
+    // Alpine sets on the menu and leaves it hanging open. data-morph-skip is what
+    // keeps it closed, so the attribute has to stay on the menu itself.
+    expect($response->getContent())->toMatch('/role="menu"[^>]*data-morph-skip|data-morph-skip[^>]*role="menu"/s');
+});
+
 it('offers rating as a field type', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);

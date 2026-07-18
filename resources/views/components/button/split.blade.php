@@ -54,8 +54,11 @@
     </button>
   </div>
 
+  {{-- A morph refresh diffs against the server HTML, which would revert the
+       display Alpine sets here and leave the menu hanging open. --}}
   <div
     x-cloak
+    data-morph-skip
     x-show="open"
     @click.away="open = false"
     @keydown.escape.window="open = false"
