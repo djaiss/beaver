@@ -11,6 +11,7 @@ import morph from '@alpinejs/morph';
 import ajax from '@imacrayon/alpine-ajax';
 import Popover from './components/popover';
 import RelationshipTypeSorter from './components/relationship-type-sorter';
+import TypeSchemaValidator from './components/type-schema-validator';
 
 window.Alpine = Alpine;
 Alpine.plugin(morph);
@@ -22,6 +23,7 @@ Alpine.plugin(ajax);
 ajax.configure({ mergeStrategy: 'morph' });
 Alpine.data('popover', Popover);
 Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
+Alpine.data('typeSchemaValidator', TypeSchemaValidator);
 
 // --- Collection items view switching ---
 // Persists the chosen view (grid/list/table) for the current user in the background. Grid and

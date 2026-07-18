@@ -169,3 +169,44 @@ it('reorders the groups of a type', function () {
 
     $page->assertNoSmoke();
 });
+
+it('imports a type from the JSON pasted into the import screen', function (): void {
+    // The import screen validates in the browser as you type, so it needs the real assets.
+    $this->withVite();
+
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $page = visit('/settings/types');
+
+    // The import screen hangs off the menu of the two part button.
+    $page->click('[aria-label="More actions"]')
+        ->click('[data-test="import-type-button"]')
+        ->assertSee('Import a collection type')
+        ->assertSee('Paste a schema to validate it');
+
+    // A broken document is flagged in the browser, before anything is submitted.
+    $page->fill('[data-test="import-json-input"]', '{"schemaVersion": 1, "type": {"name": "Comics", "groups": [{"name": "Main", "fields": [{"name": "Grade", "type": "select"}]}]}}')
+        ->assertSee('1 problem found')
+        ->assertSee('Grade is a select field');
+
+    // Loading the sample replaces it with a document that validates.
+    $page->press('Load sample')
+        ->assertSee('Schema looks good')
+        ->assertSee('2 groups')
+        ->assertSee('5 fields');
+
+    // Group and field names land in inputs, so the counts are what is readable here.
+    $page->press('Import type')
+        ->assertSee('Type imported')
+        ->assertSee('Comics')
+        ->assertSee('2 field group(s)')
+        ->assertSee('5 custom field(s)');
+
+    $type = CollectionType::query()->sole();
+    expect($type->name)->toBe('Comics');
+    expect($type->customFieldGroups()->count())->toBe(2);
+    expect($type->customFields()->count())->toBe(5);
+
+    $page->assertNoSmoke();
+});
