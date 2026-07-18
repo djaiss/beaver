@@ -30,6 +30,7 @@ use App\Http\Controllers\App\Settings\TwoFAController;
 use App\Http\Controllers\App\Settings\UserController;
 use App\Http\Controllers\App\Settings\WebhookController;
 use App\Http\Controllers\App\TagController;
+use App\Http\Controllers\App\TrashController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -141,6 +142,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('settings/tags', [TagController::class, 'create'])->name('settings.tags.create');
         Route::put('settings/tags/{tag}', [TagController::class, 'update'])->where('tag', '[1-9][0-9]*')->name('settings.tags.update');
         Route::delete('settings/tags/{tag}', [TagController::class, 'destroy'])->where('tag', '[1-9][0-9]*')->name('settings.tags.destroy');
+    });
+
+    // account settings: trash — owners and editors restore what has been deleted
+    Route::middleware(['editor'])->group(function (): void {
+        Route::get('settings/trash', [TrashController::class, 'index'])->name('settings.trash.index');
+        Route::put('settings/trash', [TrashController::class, 'update'])->name('settings.trash.update');
     });
 });
 

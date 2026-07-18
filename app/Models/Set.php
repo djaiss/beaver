@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\SetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
  * @property string|null $updated_by_name
+ * @property int|null $deleted_by_id
+ * @property string|null $deleted_by_name
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -35,6 +38,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Set extends Model
 {
     use HasAuthor;
+    use HasDeleter;
 
     /** @use HasFactory<SetFactory> */
     use HasFactory;
