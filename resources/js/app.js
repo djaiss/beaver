@@ -23,6 +23,37 @@ ajax.configure({ mergeStrategy: 'morph' });
 Alpine.data('popover', Popover);
 Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
 
+// --- Collection items view switching ---
+// Persists the chosen view (grid/list/table) for the current user in the background. Grid and
+// list share the same page chrome, so they swap instantly. The table view uses a different
+// chrome (the sidebar moves to a top bar), so crossing into or out of it needs a reload for the
+// server to render the right shell.
+window.switchCollectionView = (component, target) => {
+  const url = document.getElementById('collection-view-endpoint')?.value;
+
+  if (url) {
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+    fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': token,
+      },
+      body: JSON.stringify({ view: target }),
+    }).catch(() => {});
+  }
+
+  const crossesTable = (target === 'table') !== (component.serverView === 'table');
+
+  if (crossesTable) {
+    window.location.reload();
+    return;
+  }
+
+  component.view = target;
+};
+
 // --- Light/dark theme ---
 // The initial class is set before paint by the inline script in partials/meta.
 Alpine.store('theme', {
