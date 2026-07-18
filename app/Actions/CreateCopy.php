@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Condition;
 use App\Models\Copy;
@@ -85,6 +87,13 @@ class CreateCopy
             user: $this->user,
             action: UserActionEnum::CopyCreation,
             parameters: ['name' => $this->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->item,
+            user: $this->user,
+            action: ItemActionEnum::CopyCreation,
+            parameters: $this->condition instanceof Condition ? ['label' => $this->condition->name] : null,
         )->onQueue('low');
     }
 }

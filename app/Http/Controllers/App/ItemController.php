@@ -49,6 +49,9 @@ class ItemController extends Controller
             // The set counts what is owned. How many entries a set should hold
             // is not tracked yet, so completion cannot be worked out.
             'setItemCount' => $itemModel->set?->items()->count() ?? 0,
+            // The activity tab, newest first. The user is eager loaded because
+            // every entry reads the current name of whoever performed it.
+            'activity' => $itemModel->logs()->with('user')->latest()->get(),
         ]);
     }
 

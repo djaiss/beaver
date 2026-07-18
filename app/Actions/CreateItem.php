@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\FieldTypeEnum;
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Category;
 use App\Models\Collection;
@@ -269,6 +271,12 @@ class CreateItem
             user: $this->user,
             action: UserActionEnum::ItemCreation,
             parameters: ['name' => $this->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->item,
+            user: $this->user,
+            action: ItemActionEnum::ItemCreation,
         )->onQueue('low');
     }
 }

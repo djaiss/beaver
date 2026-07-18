@@ -3,8 +3,10 @@
 declare(strict_types=1);
 use App\Actions\UpdateItem;
 use App\Enums\FieldTypeEnum;
+use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Category;
 use App\Models\Collection;
@@ -451,4 +453,65 @@ it('makes a new cover photo the main one', function () {
     expect($updated->photos()->count())->toBe(2);
     expect($original->fresh()->is_main)->toBeFalse();
     expect($updated->mainPhoto()->first()->id)->not->toBe($original->id);
+});
+
+it('records the values that moved on the activity of the item', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    $item = Item::factory()->create([
+        'collection_id' => $collection->id,
+        'name' => 'Amazing Spider-Man #1',
+        'description' => 'The one with the duck.',
+        'category_id' => null,
+    ]);
+
+    new UpdateItem(
+        user: $editor,
+        item: $item,
+        name: 'Amazing Spider-Man #2',
+        description: 'The one with the chick.',
+        category: $category,
+    )->execute();
+
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogItemAction::class,
+        callback: fn (LogItemAction $job): bool => $job->action === ItemActionEnum::ItemUpdate
+            && $job->parameters === ['changes' => [
+                ['label' => 'Name', 'from' => 'Amazing Spider-Man #1', 'to' => 'Amazing Spider-Man #2'],
+                // A description is too long for a chip, so only the fact it moved is kept.
+                ['label' => 'Description'],
+                ['label' => 'Category', 'from' => null, 'to' => 'Spider-Man'],
+            ]],
+    );
+});
+
+it('records no chips when nothing on the item moved', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create([
+        'collection_id' => $collection->id,
+        'name' => 'Amazing Spider-Man #1',
+        'description' => null,
+        'category_id' => null,
+        'type_id' => null,
+        'set_id' => null,
+    ]);
+
+    new UpdateItem(user: $editor, item: $item, name: 'Amazing Spider-Man #1')->execute();
+
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogItemAction::class,
+        callback: fn (LogItemAction $job): bool => $job->parameters === null,
+    );
 });

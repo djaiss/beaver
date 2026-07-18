@@ -101,7 +101,7 @@
            browser turning that into a vertical scrollbar, which it otherwise does to
            reach the 1px the active tab's underline hangs over the border by. --}}
       <div class="mb-7 flex items-center gap-1 overflow-x-auto overflow-y-hidden border-b border-hairline">
-        @foreach ([['overview', __('Overview'), null], ['copies', __('Copies'), $item->copies->count()], ['roadmap', __('Roadmap'), null]] as [$key, $label, $count])
+        @foreach ([['overview', __('Overview'), null], ['copies', __('Copies'), $item->copies->count()], ['activity', __('Activity'), null], ['roadmap', __('Roadmap'), null]] as [$key, $label, $count])
           <button
             type="button"
             x-on:click="tab = @js($key)"
@@ -123,6 +123,10 @@
 
       <div x-show="tab === 'copies'" x-cloak>
         @include('app.items.partials._copies')
+      </div>
+
+      <div x-show="tab === 'activity'" x-cloak>
+        @include('app.items.partials._activity')
       </div>
 
       <div x-show="tab === 'roadmap'" x-cloak>

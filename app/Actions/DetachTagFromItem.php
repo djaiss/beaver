@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Item;
 use App\Models\Tag;
@@ -56,6 +58,13 @@ class DetachTagFromItem
             user: $this->user,
             action: UserActionEnum::ItemTagDetached,
             parameters: ['tag' => $this->tag->name, 'name' => $this->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->item,
+            user: $this->user,
+            action: ItemActionEnum::TagDetached,
+            parameters: ['label' => $this->tag->name],
         )->onQueue('low');
     }
 }

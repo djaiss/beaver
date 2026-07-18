@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\ItemPhoto;
 use App\Models\User;
@@ -62,6 +64,13 @@ class SetMainItemPhoto
             user: $this->user,
             action: UserActionEnum::ItemPhotoUpdate,
             parameters: ['name' => $this->itemPhoto->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->itemPhoto->item,
+            user: $this->user,
+            action: ItemActionEnum::PhotoMainSet,
+            parameters: ['file' => $this->itemPhoto->filename],
         )->onQueue('low');
     }
 }

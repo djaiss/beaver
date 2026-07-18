@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\FieldTypeEnum;
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Category;
 use App\Models\CollectionType;
@@ -33,6 +35,14 @@ use Illuminate\Support\Facades\DB;
 class UpdateItem
 {
     /**
+     * The values that moved, captured before the item is written so the
+     * activity tab can show what they moved from.
+     *
+     * @var list<array{label: string, from?: string|null, to?: string|null}>
+     */
+    private array $changes = [];
+
+    /**
      * @param  list<int>|null  $tagIds  ids of existing account tags to apply
      * @param  list<string>|null  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>|null  $customFieldValues  custom field id to raw value
@@ -57,6 +67,7 @@ class UpdateItem
     {
         $this->validate();
         $this->sanitize();
+        $this->captureChanges();
 
         DB::transaction(function (): void {
             $this->update();
@@ -142,6 +153,47 @@ class UpdateItem
     {
         $this->name = TextSanitizer::plainText($this->name);
         $this->description = TextSanitizer::nullablePlainText($this->description);
+    }
+
+    /**
+     * Read what is about to move, while the item still holds its old values.
+     */
+    private function captureChanges(): void
+    {
+        $this->changes = array_values(array_filter([
+            $this->change('Name', $this->item->name, $this->name),
+            $this->describedChange(),
+            $this->change('Type', $this->item->collectionType?->name, $this->collectionType?->name),
+            $this->change('Category', $this->item->category?->name, $this->category?->name),
+            $this->change('Set', $this->item->set?->name, $this->set?->name),
+        ]));
+    }
+
+    /**
+     * @return array{label: string, from: string|null, to: string|null}|null
+     */
+    private function change(string $label, ?string $from, ?string $to): ?array
+    {
+        if ($from === $to) {
+            return null;
+        }
+
+        return ['label' => $label, 'from' => $from, 'to' => $to];
+    }
+
+    /**
+     * A description is far too long to sit in a chip, so the activity tab only
+     * reports that it moved.
+     *
+     * @return array{label: string}|null
+     */
+    private function describedChange(): ?array
+    {
+        if ($this->item->description === $this->description) {
+            return null;
+        }
+
+        return ['label' => 'Description'];
     }
 
     private function update(): void
@@ -342,6 +394,13 @@ class UpdateItem
             user: $this->user,
             action: UserActionEnum::ItemUpdate,
             parameters: ['name' => $this->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->item,
+            user: $this->user,
+            action: ItemActionEnum::ItemUpdate,
+            parameters: $this->changes === [] ? null : ['changes' => $this->changes],
         )->onQueue('low');
     }
 }
