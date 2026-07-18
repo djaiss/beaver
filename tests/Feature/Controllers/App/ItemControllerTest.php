@@ -609,6 +609,10 @@ it('counts which photo is on screen when an item has several', function () {
     $response->assertSee('photo-position', false);
     $response->assertSee('x-text="photo + 1"', false);
     $response->assertSee('/ 3');
+    // The counter sits inside the photo, in its bottom right corner.
+    $response->assertSee('aspect-4/3 w-full overflow-hidden', false);
+    $response->assertSee('right-3.5', false);
+    $response->assertSee('bottom-3.5', false);
 });
 
 it('does not count the photos of an item that has only one', function () {
