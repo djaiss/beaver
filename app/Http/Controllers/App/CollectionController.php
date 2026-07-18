@@ -7,6 +7,7 @@ namespace App\Http\Controllers\App;
 use App\Actions\CreateCollection;
 use App\Enums\VisibilityEnum;
 use App\Http\Controllers\Controller;
+use App\Models\Copy;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,14 +34,24 @@ class CollectionController extends Controller
 
         try {
             $collectionModel = $account->collections()
-                ->with('collectionTypes')
+                ->with(['collectionTypes', 'categories'])
                 ->findOrFail($collection);
         } catch (ModelNotFoundException) {
             abort(404);
         }
 
+        $items = $collectionModel->items()
+            ->with(['mainPhoto', 'copies.condition', 'copies.location'])
+            ->orderByDesc('id')
+            ->paginate(24)
+            ->withQueryString();
+
         return view('app.collections.show', [
             'collection' => $collectionModel,
+            'view' => $collectionModel->viewForUser($request->user()),
+            'items' => $items,
+            'itemCount' => $collectionModel->items()->count(),
+            'totalValue' => (int) Copy::whereIn('item_id', $collectionModel->items()->select('id'))->sum('estimated_value'),
         ]);
     }
 
