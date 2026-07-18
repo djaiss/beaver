@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\CustomFieldGroupController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\ItemController;
+use App\Http\Controllers\Api\ItemLogController;
 use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\SetController;
@@ -131,6 +132,10 @@ Route::name('api.')->group(function (): void {
         Route::post('items/{item}/photos', [ItemPhotoController::class, 'create'])->where('item', '[1-9][0-9]*')->name('items.photos.create');
         Route::put('items/{item}/photos/{photo}/main', [ItemPhotoController::class, 'main'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.main');
         Route::delete('items/{item}/photos/{photo}', [ItemPhotoController::class, 'destroy'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.destroy');
+
+        // the activity trail of an item, written by the app as actions happen
+        Route::get('items/{item}/logs', [ItemLogController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.logs');
+        Route::get('items/{item}/logs/{log}', [ItemLogController::class, 'show'])->where(['item' => '[1-9][0-9]*', 'log' => '[1-9][0-9]*'])->name('items.logs.show');
 
         // api keys
         Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');

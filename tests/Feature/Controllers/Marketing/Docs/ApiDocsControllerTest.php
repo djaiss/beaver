@@ -18,6 +18,7 @@ it('shows the api docs portal', function () {
         ->assertSee('Create an item')
         ->assertSee('Create a copy')
         ->assertSee('Upload an item photo')
+        ->assertSee('List item activity')
         ->assertSee('Get API key');
 });
 
