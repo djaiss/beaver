@@ -67,7 +67,7 @@
                   <span class="truncate font-mono text-xs text-muted">type-schema.json</span>
                 </div>
 
-                <span class="shrink-0 font-mono text-[11px] text-muted-soft" x-text="charLabel" data-test="import-char-count"></span>
+                <span class="shrink-0 font-mono text-[11px] text-muted-soft" x-text="charLabel" data-test="import-char-count">{{ __('empty') }}</span>
 
                 <div class="flex shrink-0 gap-2">
                   <x-button.secondary type="button" x-on:click="json = sample" class="h-8 text-xs" data-test="load-sample-button">
@@ -92,7 +92,9 @@
               >{{ old('json') }}</textarea>
             </div>
 
-            {{-- What the browser makes of the document, ahead of the server having the final say --}}
+            {{-- What the browser makes of the document, ahead of the server having the final say.
+                 The idle state is rendered server side so the panel still reads as something
+                 without JavaScript, where the server is the only thing validating. --}}
             <div class="rounded-xl border p-4 transition-colors" :class="statusBoxClass" data-test="import-status">
               <div class="flex items-center gap-2.5">
                 <span class="flex size-6 shrink-0 items-center justify-center rounded-full" :class="statusIconClass">
@@ -100,7 +102,7 @@
                   <span x-cloak x-show="status === 'error'">@svg('lucide-alert-circle', 'size-3.5')</span>
                   <span x-cloak x-show="status === 'valid'">@svg('lucide-check', 'size-3.5')</span>
                 </span>
-                <span class="text-sm font-semibold" :class="statusTitleClass" x-text="statusTitle"></span>
+                <span class="text-sm font-semibold text-muted" :class="statusTitleClass" x-text="statusTitle">{{ __('Paste a schema to validate it') }}</span>
               </div>
 
               <ul x-cloak x-show="status === 'error'" class="mt-3 space-y-1.5">
