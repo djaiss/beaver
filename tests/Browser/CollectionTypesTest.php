@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\CollectionType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Vite;
 
 uses(RefreshDatabase::class);
 
@@ -223,4 +224,30 @@ it('rejects a document the import screen cannot trust', function () {
         ->assertSee('Grade is a select field');
 
     expect(CollectionType::query()->count())->toBe(0);
+});
+
+it('leaves the actions menu closed when a field is added', function () {
+    // The rest of this file runs with Vite stubbed out, so no JavaScript at all.
+    // This one is about what Alpine and Turbo do to each other, so it needs the
+    // real bundle.
+    $this->app->instance(Vite::class, new Vite);
+
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+
+    $menuDisplay = "getComputedStyle(document.querySelector('[role=menu]')).display";
+
+    $page->assertScript($menuDisplay, 'none');
+
+    // The chevron still opens it.
+    $page->click('[aria-haspopup="menu"]')->assertScript($menuDisplay, 'block');
+    $page->click('[aria-haspopup="menu"]')->assertScript($menuDisplay, 'none');
+
+    // Adding a field triggers a Turbo morph refresh, which must not reopen it.
+    $page->click('[data-test="add-field-button"]')->assertSee('Field added');
+
+    $page->assertScript($menuDisplay, 'none');
 });
