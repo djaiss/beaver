@@ -37,11 +37,27 @@
     </div>
 
     @if ($canManage)
-        <x-button href="{{ route('items.new', $collection) }}" turbo="true" data-test="new-item-button" class="shrink-0">
-            <x-slot:icon>
-                <x-lucide-plus class="size-4" />
-            </x-slot>
-            {{ __('Add item') }}
-        </x-button>
+        <div class="shrink-0">
+            {{-- The delete button sits inside the menu, so its form lives outside and is reached with form=. --}}
+            <x-form method="delete" :action="route('collections.destroy', $collection->id)" id="delete-collection-form" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete :name? The collection and everything in it will no longer be accessible.', ['name' => $collection->name]) }}')"></x-form>
+
+            <x-button.split :href="route('items.new', $collection)" :label="__('Add item')" turbo data-test="new-item-button">
+                <x-slot:icon>
+                    <x-lucide-plus class="size-4" />
+                </x-slot>
+
+                <x-menu-item :href="route('collections.edit', $collection->id)" turbo data-test="edit-collection-button">
+                    <x-slot:icon>@svg('lucide-pencil', 'size-4 text-muted')</x-slot>
+                    {{ __('Edit collection') }}
+                </x-menu-item>
+
+                <div class="my-1 h-px bg-hairline"></div>
+
+                <x-menu-item type="submit" form="delete-collection-form" danger data-test="delete-collection-button">
+                    <x-slot:icon>@svg('lucide-trash-2', 'size-4')</x-slot>
+                    {{ __('Delete collection') }}
+                </x-menu-item>
+            </x-button.split>
+        </div>
     @endif
 </div>
