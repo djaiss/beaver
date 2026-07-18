@@ -9,6 +9,7 @@ use App\Http\Controllers\App\CollectionController;
 use App\Http\Controllers\App\CollectionItemViewController;
 use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CollectionTypeExportController;
+use App\Http\Controllers\App\CollectionTypeImportController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldGroupController;
 use App\Http\Controllers\App\CustomFieldGroupFieldController;
@@ -121,6 +122,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('settings/types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.update');
         Route::delete('settings/types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.destroy');
         Route::get('settings/types/{collectionType}/export', [CollectionTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.export.show');
+        Route::get('settings/types/import', [CollectionTypeImportController::class, 'new'])->name('settings.types.import.new');
+        Route::post('settings/types/import', [CollectionTypeImportController::class, 'create'])->name('settings.types.import.create');
 
         // a type's custom fields and the collections that may use it (edited inline, saved as you go)
         Route::post('settings/types/{collectionType}/fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.fields.create');

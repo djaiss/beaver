@@ -11,9 +11,19 @@
           <p class="mt-1 max-w-lg text-sm text-muted">{{ __('Types define the custom fields available on items, and which collections can use them.') }}</p>
         </div>
 
-        <x-form method="post" :action="route('settings.types.create')" data-turbo="true" class="shrink-0">
-          <x-button type="submit" data-test="new-type-button">{{ __('New type') }}</x-button>
-        </x-form>
+        <div class="shrink-0">
+          {{-- The primary action posts, so its form lives outside the menu and is reached with form=. --}}
+          <x-form method="post" :action="route('settings.types.create')" id="new-type-form" data-turbo="true" class="hidden"></x-form>
+
+          <x-button.split type="submit" form="new-type-form" :label="__('New type')" data-test="new-type-button">
+            <x-menu-item :href="route('settings.types.import.new')" turbo data-test="import-type-button">
+              <x-slot:icon>
+                @svg('lucide-download', 'size-4 text-muted')
+              </x-slot>
+              {{ __('Import JSON') }}
+            </x-menu-item>
+          </x-button.split>
+        </div>
       </div>
 
       <x-box padding="p-0">

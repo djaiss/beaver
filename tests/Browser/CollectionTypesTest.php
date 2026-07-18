@@ -169,3 +169,58 @@ it('reorders the groups of a type', function () {
 
     $page->assertNoSmoke();
 });
+
+it('imports a type from the JSON pasted into the import screen', function () {
+    // Vite is stubbed out in the test environment, so this drives the screen with
+    // no JavaScript at all: the import has to work on the server alone.
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $page = visit('/settings/types');
+
+    // The import screen hangs off the menu of the two part button.
+    $page->click('[data-test="import-type-button"]')
+        ->assertSee('Import a collection type')
+        ->assertSee('Paste a schema to validate it');
+
+    $page->fill('[data-test="import-json-input"]', json_encode([
+        'schemaVersion' => 1,
+        'type' => [
+            'name' => 'Comics',
+            'color' => '#FB923C',
+            'groups' => [
+                ['name' => 'Publishing info', 'fields' => [
+                    ['name' => 'Issue #', 'type' => 'number'],
+                    ['name' => 'Grade', 'type' => 'select', 'options' => ['CGC 9.8', 'Raw']],
+                ]],
+            ],
+            'standaloneFields' => [['name' => 'Notes', 'type' => 'text']],
+        ],
+    ]));
+
+    // Group and field names land in inputs, so the counts are what is readable here.
+    $page->press('Import type')
+        ->assertSee('Type imported')
+        ->assertSee('Comics')
+        ->assertSee('1 field group(s)')
+        ->assertSee('3 custom field(s)');
+
+    $type = CollectionType::query()->sole();
+    expect($type->customFieldGroups()->sole()->name)->toBe('Publishing info');
+    expect($type->ungroupedCustomFields()->sole()->name)->toBe('Notes');
+
+    $page->assertNoSmoke();
+});
+
+it('rejects a document the import screen cannot trust', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $page = visit('/settings/types/import');
+
+    $page->fill('[data-test="import-json-input"]', '{"schemaVersion": 1, "type": {"name": "Comics", "groups": [{"name": "Main", "fields": [{"name": "Grade", "type": "select"}]}]}}')
+        ->press('Import type')
+        ->assertSee('Grade is a select field');
+
+    expect(CollectionType::query()->count())->toBe(0);
+});
