@@ -15,7 +15,7 @@
   </head>
   <body class="font-sans antialiased">
     <div class="min-h-screen bg-page text-ink">
-      @include('components.marketing.header', ['announcement' => $announcement])
+      @include('components.marketing.header')
 
       <!-- Page Content -->
       <main>
@@ -26,7 +26,7 @@
         {{ $slot }}
       </main>
 
-      @include('components.marketing.footer', ['footerColumns' => $footerColumns])
+      @include('components.marketing.footer')
     </div>
   </body>
 </html>

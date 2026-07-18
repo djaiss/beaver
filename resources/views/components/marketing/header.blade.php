@@ -1,23 +1,20 @@
 @php
     $navigation = [
-        ['label' => 'Features', 'url' => route('marketing.index') . '#features'],
-        ['label' => 'Pricing', 'url' => route('marketing.index') . '#pricing'],
-        ['label' => 'Roadmap', 'url' => route('marketing.index') . '#roadmap'],
-        ['label' => 'API', 'url' => route('marketing.docs.api.index')],
+        ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
+        ['label' => __('Pricing'), 'url' => route('marketing.index') . '#pricing'],
+        ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
+        ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
     ];
 @endphp
 
 <div x-data="{ mobileMenuOpen: false }">
-  {{-- Announcement bar. Only the homepage passes an announcement down. --}}
-  @isset($announcement)
-    <div class="flex flex-col items-center justify-center gap-2 bg-[#101010] px-4 py-2 text-center text-[13px] font-medium sm:h-10 sm:flex-row sm:py-0">
-      <div class="flex items-center gap-2">
-        <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold tracking-wide text-badge-emerald">{{ $announcement['version'] }}</span>
-        <span class="text-[#a1a1aa]">{{ $announcement['text'] }}</span>
-      </div>
-      <a href="{{ config('marketing.github_url') }}/releases" class="font-semibold text-white hover:underline">Read the changelog &rarr;</a>
+  <div class="flex flex-col items-center justify-center gap-2 bg-[#101010] px-4 py-2 text-center text-[13px] font-medium sm:h-10 sm:flex-row sm:py-0">
+    <div class="flex items-center gap-2">
+      <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold tracking-wide text-badge-emerald">v0.9</span>
+      <span class="text-[#a1a1aa]">{{ __('Custom item types are here. Build a schema for any hobby.') }}</span>
     </div>
-  @endisset
+    <a href="{{ config('marketing.github_url') }}/releases" class="font-semibold text-white hover:underline">{{ __('Read the changelog') }} &rarr;</a>
+  </div>
 
   {{-- Main nav --}}
   <div class="sticky top-0 z-50 border-b border-hairline bg-page/85 backdrop-blur-md">
@@ -39,18 +36,18 @@
       <div class="flex items-center gap-x-2.5">
         <a href="{{ config('marketing.github_url') }}" target="_blank" rel="noopener" class="hidden items-center gap-x-2 rounded-md border border-hairline px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:bg-sidebar sm:flex">
           <x-lucide-github class="h-4 w-4" />
-          GitHub
+          {{ __('GitHub') }}
         </a>
 
         @auth
-          <a href="{{ route('dashboard.index') }}" class="flex h-10 items-center rounded-md bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">Go to your account</a>
+          <a href="{{ route('dashboard.index') }}" class="flex h-10 items-center rounded-md bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Go to your account') }}</a>
         @else
-          <a href="{{ route('register') }}" class="flex h-10 items-center rounded-md bg-primary px-4.5 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">Get started</a>
+          <a href="{{ route('register') }}" class="flex h-10 items-center rounded-md bg-primary px-4.5 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Get started') }}</a>
         @endauth
 
         {{-- Mobile menu button --}}
         <button type="button" @click="mobileMenuOpen = true" class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-ink lg:hidden">
-          <span class="sr-only">Open main menu</span>
+          <span class="sr-only">{{ __('Open main menu') }}</span>
           <x-lucide-menu class="h-6 w-6" />
         </button>
       </div>
@@ -65,7 +62,7 @@
         <x-wordmark height="17" class="text-ink" />
         <button type="button" @click="mobileMenuOpen = false" class="-mr-2 rounded-md p-2 text-muted hover:bg-sidebar">
           <x-lucide-x class="h-6 w-6" />
-          <span class="sr-only">Close menu</span>
+          <span class="sr-only">{{ __('Close menu') }}</span>
         </button>
       </div>
 
@@ -73,10 +70,10 @@
         @foreach ($navigation as $link)
           <a href="{{ $link['url'] }}" @click="mobileMenuOpen = false" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ $link['label'] }}</a>
         @endforeach
-        <a href="{{ config('marketing.github_url') }}" target="_blank" rel="noopener" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">GitHub</a>
+        <a href="{{ config('marketing.github_url') }}" target="_blank" rel="noopener" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ __('GitHub') }}</a>
 
         @guest
-          <a href="{{ route('login') }}" class="py-3.5 text-base font-semibold text-ink">Sign in</a>
+          <a href="{{ route('login') }}" class="py-3.5 text-base font-semibold text-ink">{{ __('Sign in') }}</a>
         @endguest
       </div>
     </div>

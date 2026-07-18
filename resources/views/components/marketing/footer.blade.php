@@ -6,33 +6,69 @@
           <x-logo size="28" hoverColor="#ffffff" aria-hidden="true" />
           <x-wordmark height="17" class="text-white" />
         </div>
-        <p class="max-w-60 text-sm leading-relaxed">The open source collection manager that belongs to you.</p>
+        <p class="max-w-60 text-sm leading-relaxed">{{ __('The open source collection manager that belongs to you.') }}</p>
       </div>
 
-      @isset($footerColumns)
-        @foreach ($footerColumns as $column)
-          <div>
-            <p class="mb-4 text-[13px] font-semibold text-white">{{ $column['title'] }}</p>
-            <div class="flex flex-col gap-y-3">
-              @foreach ($column['links'] as $link)
-                <a href="{{ $link['url'] }}" class="text-sm text-[#a1a1aa] transition-colors hover:text-white">{{ $link['label'] }}</a>
-              @endforeach
-            </div>
+      @php
+          $github = config('marketing.github_url');
+          $columns = [
+              [
+                  'title' => __('Product'),
+                  'links' => [
+                      ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
+                      ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
+                      ['label' => __('Pricing'), 'url' => route('marketing.index') . '#pricing'],
+                  ],
+              ],
+              [
+                  'title' => __('Resources'),
+                  'links' => [
+                      ['label' => __('API reference'), 'url' => route('marketing.docs.api.index')],
+                      ['label' => __('FAQ'), 'url' => route('marketing.index') . '#faq'],
+                      ['label' => __('Changelog'), 'url' => $github . '/releases'],
+                  ],
+              ],
+              [
+                  'title' => __('Community'),
+                  'links' => [
+                      ['label' => __('GitHub'), 'url' => $github],
+                      ['label' => __('Discussions'), 'url' => $github . '/discussions'],
+                      ['label' => __('Issues'), 'url' => $github . '/issues'],
+                  ],
+              ],
+              [
+                  'title' => __('Legal'),
+                  'links' => [
+                      ['label' => __('Privacy'), 'url' => '#'],
+                      ['label' => __('Terms'), 'url' => '#'],
+                      ['label' => __('MIT License'), 'url' => $github . '/blob/main/LICENSE'],
+                  ],
+              ],
+          ];
+      @endphp
+
+      @foreach ($columns as $column)
+        <div>
+          <p class="mb-4 text-[13px] font-semibold text-white">{{ $column['title'] }}</p>
+          <div class="flex flex-col gap-y-3">
+            @foreach ($column['links'] as $link)
+              <a href="{{ $link['url'] }}" class="text-sm text-[#a1a1aa] transition-colors hover:text-white">{{ $link['label'] }}</a>
+            @endforeach
           </div>
-        @endforeach
-      @endisset
+        </div>
+      @endforeach
     </div>
 
     <div class="flex flex-wrap items-center justify-between gap-3 pt-7">
-      <p class="text-[13px] text-[#898989]">&copy; {{ date('Y') }} {{ config('app.name') }}. Released under the MIT License.</p>
+      <p class="text-[13px] text-[#898989]">{{ __('© :year :name. Released under the MIT License.', ['year' => date('Y'), 'name' => config('app.name')]) }}</p>
 
       <p class="flex items-center gap-x-2 text-[13px] text-[#898989]">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 9600 4800" aria-hidden="true">
-          <title>Flag of Canada</title>
+          <title>{{ __('Flag of Canada') }}</title>
           <path fill="#f00" d="m0 0h2400l99 99h4602l99-99h2400v4800h-2400l-99-99h-4602l-99 99H0z" />
           <path fill="#fff" d="m2400 0h4800v4800h-4800zm2490 4430-45-863a95 95 0 0 1 111-98l859 151-116-320a65 65 0 0 1 20-73l941-762-212-99a65 65 0 0 1-34-79l186-572-542 115a65 65 0 0 1-73-38l-105-247-423 454a65 65 0 0 1-111-57l204-1052-327 189a65 65 0 0 1-91-27l-332-652-332 652a65 65 0 0 1-91 27l-327-189 204 1052a65 65 0 0 1-111 57l-423-454-105 247a65 65 0 0 1-73 38l-542-115 186 572a65 65 0 0 1-34 79l-212 99 941 762a65 65 0 0 1 20 73l-116 320 859-151a95 95 0 0 1 111 98l-45 863z" />
         </svg>
-        Made by collectors, for collectors. Proudly Canadian.
+        {{ __('Made by collectors, for collectors. Proudly Canadian.') }}
       </p>
     </div>
   </div>

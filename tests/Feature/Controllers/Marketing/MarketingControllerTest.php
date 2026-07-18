@@ -17,6 +17,19 @@ it('renders the marketing homepage', function () {
         ->assertSee('https://github.com/djaiss/kollek');
 });
 
+it('shows the privacy section above the pricing section', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/');
+
+    $response
+        ->assertOk()
+        ->assertSee('Private by default. Not by policy.')
+        ->assertSee('Encrypted at rest')
+        ->assertSee('Zero tracking')
+        ->assertSeeInOrder(['id="privacy"', 'id="pricing"'], false);
+});
+
 it('offers to sign up when the visitor is a guest', function () {
     config()->set('marketing.show', true);
 
