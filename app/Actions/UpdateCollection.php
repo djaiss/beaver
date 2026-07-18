@@ -21,6 +21,7 @@ class UpdateCollection
 {
     /**
      * @param  array<string, mixed>|null  $settings
+     * @param  array<int, int>|null  $collectionTypeIds  Null leaves the linked types alone.
      */
     public function __construct(
         private readonly User $user,
@@ -31,6 +32,7 @@ class UpdateCollection
         private string $visibility = VisibilityEnum::Private->value,
         private ?string $currency = null,
         private ?array $settings = null,
+        private ?array $collectionTypeIds = null,
     ) {}
 
     public function execute(): Collection
@@ -38,6 +40,7 @@ class UpdateCollection
         $this->validate();
         $this->sanitize();
         $this->update();
+        $this->syncCollectionTypes();
         $this->log();
 
         return $this->collection;
@@ -81,6 +84,24 @@ class UpdateCollection
         $this->collection->updated_by_id = $this->user->id;
         $this->collection->updated_by_name = $this->user->getFullName();
         $this->collection->save();
+    }
+
+    /**
+     * Callers that do not manage types, such as the API, pass null and leave
+     * the existing links untouched.
+     */
+    private function syncCollectionTypes(): void
+    {
+        if ($this->collectionTypeIds === null) {
+            return;
+        }
+
+        $ids = $this->collection->account->collectionTypes()
+            ->whereIn('id', $this->collectionTypeIds)
+            ->pluck('id')
+            ->all();
+
+        $this->collection->collectionTypes()->sync($ids);
     }
 
     private function log(): void

@@ -54,6 +54,9 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::middleware(['editor'])->group(function (): void {
         Route::get('collections/new', [CollectionController::class, 'new'])->name('collections.new');
         Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
+        Route::get('collections/{collection}/edit', [CollectionController::class, 'edit'])->where('collection', '[1-9][0-9]*')->name('collections.edit');
+        Route::put('collections/{collection}', [CollectionController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.update');
+        Route::delete('collections/{collection}', [CollectionController::class, 'destroy'])->where('collection', '[1-9][0-9]*')->name('collections.destroy');
 
         // items — owners and editors may add items to a collection
         Route::get('collections/{collection}/items/new', [ItemController::class, 'new'])->where('collection', '[1-9][0-9]*')->name('items.new');

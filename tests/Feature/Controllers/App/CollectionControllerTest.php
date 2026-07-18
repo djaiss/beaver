@@ -127,6 +127,184 @@ it('forbids viewers from creating a collection', function () {
     ])->assertNotFound();
 });
 
+it('shows the edit collection form', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+    $collection->collectionTypes()->attach($type->id);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/edit');
+
+    $response->assertOk();
+    $response->assertSee('Edit collection');
+    $response->assertSee('Marvel Comics 1990s');
+    $response->assertSee('Comics');
+});
+
+it('cannot edit another accounts collection', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+
+    $this->actingAs($user)->get('/collections/'.$foreign->id.'/edit')->assertNotFound();
+});
+
+it('forbids viewers from viewing the edit collection form', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $this->actingAs($viewer)->get('/collections/'.$collection->id.'/edit')->assertNotFound();
+});
+
+it('updates a collection', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create([
+        'account_id' => $user->account_id,
+        'name' => 'Marvel Comics',
+        'visibility' => VisibilityEnum::Private->value,
+    ]);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $response = $this->actingAs($user)->put('/collections/'.$collection->id, [
+        'name' => 'Marvel Comics 1990s',
+        'description' => 'My run of 90s Marvel',
+        'emoji' => '📚',
+        'visibility' => VisibilityEnum::Shared->value,
+        'currency' => 'USD',
+        'collection_type_ids' => [$type->id],
+    ]);
+
+    $response->assertRedirect('/collections/'.$collection->id);
+    $response->assertSessionHas('status', 'Collection updated');
+
+    $collection->refresh();
+    expect($collection->name)->toBe('Marvel Comics 1990s');
+    expect($collection->description)->toBe('My run of 90s Marvel');
+    expect($collection->emoji)->toBe('📚');
+    expect($collection->visibility)->toBe(VisibilityEnum::Shared);
+    expect($collection->currency)->toBe('USD');
+    expect($collection->collectionTypes->pluck('id')->all())->toBe([$type->id]);
+});
+
+it('unlinks the types left unchecked when updating', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $collection->collectionTypes()->attach($type->id);
+
+    $this->actingAs($user)->put('/collections/'.$collection->id, [
+        'name' => 'Marvel Comics',
+        'visibility' => VisibilityEnum::Shared->value,
+    ]);
+
+    expect($collection->fresh()->collectionTypes)->toBeEmpty();
+});
+
+it('does not link a type of another account when updating', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $foreignType = CollectionType::factory()->create();
+
+    $this->actingAs($user)->put('/collections/'.$collection->id, [
+        'name' => 'Marvel Comics',
+        'visibility' => VisibilityEnum::Shared->value,
+        'collection_type_ids' => [$foreignType->id],
+    ]);
+
+    expect($collection->fresh()->collectionTypes)->toBeEmpty();
+});
+
+it('validates the name is required when updating', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->put('/collections/'.$collection->id, [
+        'visibility' => VisibilityEnum::Shared->value,
+    ])->assertSessionHasErrors('name');
+});
+
+it('cannot update another accounts collection', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+
+    $this->actingAs($user)->put('/collections/'.$foreign->id, [
+        'name' => 'Hijacked',
+        'visibility' => VisibilityEnum::Shared->value,
+    ])->assertNotFound();
+});
+
+it('forbids viewers from updating a collection', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $this->actingAs($viewer)->put('/collections/'.$collection->id, [
+        'name' => 'Wine Cellar',
+        'visibility' => VisibilityEnum::Shared->value,
+    ])->assertNotFound();
+});
+
+it('deletes a collection', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $response = $this->actingAs($user)->delete('/collections/'.$collection->id);
+
+    $response->assertRedirect('/collections');
+    $response->assertSessionHas('status', 'Collection deleted');
+    $this->assertSoftDeleted($collection);
+});
+
+it('cannot delete another accounts collection', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+
+    $this->actingAs($user)->delete('/collections/'.$foreign->id)->assertNotFound();
+});
+
+it('forbids viewers from deleting a collection', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $this->actingAs($viewer)->delete('/collections/'.$collection->id)->assertNotFound();
+});
+
+it('offers edit and delete from the collection page', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id)
+        ->assertOk()
+        ->assertSee('Add item')
+        ->assertSee('Edit collection')
+        ->assertSee('Delete collection')
+        ->assertSee('/collections/'.$collection->id.'/edit');
+});
+
+it('does not offer edit and delete to a viewer', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $this->actingAs($viewer)->get('/collections/'.$collection->id)
+        ->assertOk()
+        ->assertDontSee('Edit collection')
+        ->assertDontSee('Delete collection');
+});
+
 it('shows a collection', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
