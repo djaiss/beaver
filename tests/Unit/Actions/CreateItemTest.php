@@ -237,6 +237,51 @@ it('records custom field values for the selected type', function () {
     expect($item->customFieldValues->first()->custom_field_id)->toBe($issue->id);
 });
 
+it('records a rating custom field value', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $collection->collectionTypes()->attach($type);
+    $rating = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Rating]);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'The One With The Embryos',
+        collectionType: $type,
+        customFieldValues: [$rating->id => '4'],
+    )->execute();
+
+    expect($item->customFieldValues)->toHaveCount(1);
+    expect($item->customFieldValues->first()->value)->toBe('4');
+});
+
+it('drops a rating that falls outside the one to five scale', function (string $value) {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $collection->collectionTypes()->attach($type);
+    $rating = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Rating]);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'The One With The Embryos',
+        collectionType: $type,
+        customFieldValues: [$rating->id => $value],
+    )->execute();
+
+    expect($item->customFieldValues)->toHaveCount(0);
+})->with(['0', '6', '-1', '3.5', 'five']);
+
 it('ignores custom field values that do not belong to the type', function () {
     Queue::fake();
 

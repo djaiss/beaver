@@ -100,7 +100,9 @@ class PopulateAccount implements ShouldQueue
             [
                 'name' => 'Comics',
                 'color' => '#EF4444',
-                'fields' => [],
+                'fields' => [
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
+                ],
                 'groups' => [
                     [
                         'name' => 'Publishing info',
@@ -147,7 +149,9 @@ class PopulateAccount implements ShouldQueue
             [
                 'name' => 'Vinyl Records',
                 'color' => '#8B5CF6',
-                'fields' => [],
+                'fields' => [
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
+                ],
                 'groups' => [
                     [
                         'name' => 'Release info',
@@ -170,7 +174,9 @@ class PopulateAccount implements ShouldQueue
             [
                 'name' => 'CD',
                 'color' => '#6366F1',
-                'fields' => [],
+                'fields' => [
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
+                ],
                 'groups' => [
                     [
                         'name' => 'Release info',
@@ -194,7 +200,9 @@ class PopulateAccount implements ShouldQueue
             [
                 'name' => 'DVD',
                 'color' => '#EC4899',
-                'fields' => [],
+                'fields' => [
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
+                ],
                 'groups' => [
                     [
                         'name' => 'Release info',
@@ -263,7 +271,9 @@ class PopulateAccount implements ShouldQueue
             [
                 'name' => 'Books',
                 'color' => '#3B82F6',
-                'fields' => [],
+                'fields' => [
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
+                ],
                 'groups' => [
                     [
                         'name' => 'Publishing info',
@@ -308,7 +318,9 @@ class PopulateAccount implements ShouldQueue
             [
                 'name' => 'Video Games',
                 'color' => '#14B8A6',
-                'fields' => [],
+                'fields' => [
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
+                ],
                 'groups' => [
                     [
                         'name' => 'Release info',
@@ -356,6 +368,7 @@ class PopulateAccount implements ShouldQueue
                 'color' => '#991B1B',
                 'fields' => [
                     ['name' => 'Bottle Size', 'field_type' => FieldTypeEnum::Select, 'options' => ['Split/187ml', 'Half/375ml', 'Standard/750ml', 'Magnum/1.5L', 'Double Magnum/3L', 'Jeroboam/4.5L', 'Imperial/6L']],
+                    ['name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating],
                 ],
                 'groups' => [
                     [

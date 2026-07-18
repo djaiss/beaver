@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('type_id')->comment('type the field is attached to');
             $table->unsignedBigInteger('group_id')->nullable()->comment('group the field sits in, null when ungrouped');
             $table->text('name')->comment('name of the field, e.g. Issue # or Vintage');
-            $table->string('field_type', 15)->comment('kind of field: text, number, date, boolean or select');
+            $table->string('field_type', 15)->comment('kind of field: text, number, date, boolean, select or rating');
             $table->json('options')->nullable()->comment('choices for select fields');
             $table->unsignedInteger('position')->default(0)->comment('order of the field within its group, or within the type when ungrouped');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the field');

@@ -22,6 +22,18 @@ it('lists the account collection types', function () {
     $response->assertSee('Publisher');
 });
 
+it('offers rating as a field type', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    CustomField::factory()->create(['type_id' => $type->id, 'name' => 'Publisher']);
+
+    $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
+
+    $response->assertOk();
+    $response->assertSee('value="rating"', false);
+    $response->assertSee('Rating');
+});
+
 it('does not list another accounts types', function () {
     $user = $this->createUser();
     CollectionType::factory()->create(['name' => 'Foreign type']);

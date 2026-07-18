@@ -63,12 +63,12 @@ it('leaves a type with no groups holding every field as standalone', function ()
 
     new PopulateAccount($account)->handle();
 
-    // Wine mixes the two: Bottle Size sits outside of any group.
+    // Wine mixes the two: Bottle Size and My Rating sit outside of any group.
     $wine = $account->collectionTypes()->get()->firstWhere('name', 'Wine');
 
-    expect($wine->ungroupedCustomFields()->get()->map->name->all())->toBe(['Bottle Size']);
+    expect($wine->ungroupedCustomFields()->get()->map->name->all())->toBe(['Bottle Size', 'My Rating']);
     expect($wine->customFieldGroups()->get()->map->name->all())->toBe(['Origin']);
-    expect($wine->customFields()->count())->toBe(5);
+    expect($wine->customFields()->count())->toBe(6);
 });
 
 it('stores the options and field type of a select field', function () {
@@ -86,6 +86,21 @@ it('stores the options and field type of a select field', function () {
     $grade = $coins->customFields()->get()->firstWhere('name', 'Grade');
 
     expect($grade->options)->toContain('MS-70', 'PR-1');
+});
+
+it('seeds a rating field on the types where a personal rating makes sense', function () {
+    $account = Account::factory()->create();
+
+    new PopulateAccount($account)->handle();
+
+    $types = $account->collectionTypes()->get();
+
+    foreach (['Comics', 'Vinyl Records', 'CD', 'DVD', 'Books', 'Video Games', 'Wine'] as $name) {
+        $rating = $types->firstWhere('name', $name)->customFields()->get()->firstWhere('name', 'My Rating');
+
+        expect($rating)->not->toBeNull();
+        expect($rating->field_type)->toBe(FieldTypeEnum::Rating);
+    }
 });
 
 it('encrypts the type and field names at rest', function () {

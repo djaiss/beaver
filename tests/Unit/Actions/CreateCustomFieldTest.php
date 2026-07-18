@@ -74,7 +74,7 @@ it('throws when the field type is invalid', function () {
         user: $owner,
         collectionType: $collectionType,
         name: 'Grade',
-        fieldType: 'rating',
+        fieldType: 'hologram',
     )->execute();
 });
 

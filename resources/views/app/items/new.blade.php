@@ -140,8 +140,37 @@
                   </select>
                 </template>
 
+                {{-- Rating --}}
+                <template x-if="field.type === 'rating'">
+                  <div class="flex h-11 items-center gap-1">
+                    <input type="hidden" :name="`custom_fields[${field.id}]`" x-model="customValues[field.id]" />
+
+                    <template x-for="star in {{ App\Enums\FieldTypeEnum::MAX_RATING }}" :key="star">
+                      <button
+                        type="button"
+                        x-on:click="customValues[field.id] = customValues[field.id] == star ? '' : star"
+                        class="cursor-pointer text-xl leading-none"
+                        :class="customValues[field.id] >= star ? 'text-ink' : 'text-hairline'"
+                        :aria-label="`${star}`"
+                      >
+                        ★
+                      </button>
+                    </template>
+
+                    <button
+                      type="button"
+                      x-show="customValues[field.id]"
+                      x-cloak
+                      x-on:click="customValues[field.id] = ''"
+                      class="ml-2 cursor-pointer text-[13px] text-muted hover:text-ink"
+                    >
+                      {{ __('Clear') }}
+                    </button>
+                  </div>
+                </template>
+
                 {{-- Text / number / date --}}
-                <template x-if="field.type !== 'boolean' && field.type !== 'select'">
+                <template x-if="field.type !== 'boolean' && field.type !== 'select' && field.type !== 'rating'">
                   <input
                     :type="field.type === 'number' ? 'number' : field.type === 'date' ? 'date' : 'text'"
                     :name="`custom_fields[${field.id}]`"
