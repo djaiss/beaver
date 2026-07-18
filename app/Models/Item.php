@@ -109,4 +109,14 @@ class Item extends Model
     {
         return $this->hasOne(ItemPhoto::class)->where('is_main', true);
     }
+
+    /**
+     * Get the physical copies owned of the item.
+     *
+     * @return HasMany<Copy, $this>
+     */
+    public function copies(): HasMany
+    {
+        return $this->hasMany(Copy::class);
+    }
 }

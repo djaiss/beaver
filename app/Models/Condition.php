@@ -10,6 +10,7 @@ use Database\Factories\ConditionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Class Condition
@@ -67,6 +68,16 @@ class Condition extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get the copies that carry this condition.
+     *
+     * @return HasMany<Copy, $this>
+     */
+    public function copies(): HasMany
+    {
+        return $this->hasMany(Copy::class);
     }
 
     /**
