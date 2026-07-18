@@ -30,24 +30,26 @@ Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
 // server to render the right shell.
 window.switchCollectionView = (component, target) => {
   const url = document.getElementById('collection-view-endpoint')?.value;
+  const token = document.querySelector('meta[name="csrf-token"]')?.content;
 
-  if (url) {
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
-    fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': token,
-      },
-      body: JSON.stringify({ view: target }),
-    }).catch(() => {});
-  }
+  const persisted = url
+    ? fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': token,
+        },
+        body: JSON.stringify({ view: target }),
+      }).catch(() => {})
+    : Promise.resolve();
 
   const crossesTable = (target === 'table') !== (component.serverView === 'table');
 
   if (crossesTable) {
-    window.location.reload();
+    // Wait for the preference to save before reloading — reloading first would
+    // cancel the in-flight request and the server would render the old view.
+    persisted.finally(() => window.location.reload());
     return;
   }
 
