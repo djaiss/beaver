@@ -22,6 +22,12 @@ class CollectionController extends Controller
     /** @var list<string> */
     private const array EMOJI_OPTIONS = ['📦', '📚', '💿', '🃏', '🍷', '🎮', '🧸', '🪙', '🖼️', '⌚', '👟', '📷'];
 
+    /**
+     * Searching and filtering the items happens in the browser, over the rows of
+     * the current page only, so the page holds as many items as it reasonably can.
+     */
+    private const int ITEMS_PER_PAGE = 1000;
+
     public function index(Request $request): View
     {
         $account = $request->user()->account;
@@ -46,7 +52,7 @@ class CollectionController extends Controller
         $items = $collectionModel->items()
             ->with(['mainPhoto', 'copies.condition', 'copies.location'])
             ->orderByDesc('id')
-            ->paginate(24)
+            ->paginate(self::ITEMS_PER_PAGE)
             ->withQueryString();
 
         return view('app.collections.show', [
