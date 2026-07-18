@@ -20,6 +20,36 @@ $type = fn (string $id, string $name, string $color): array => [
     ],
 ];
 
+$export = [
+    'type' => 'collection_type_export',
+    'id' => '1',
+    'attributes' => [
+        'schema' => [
+            'schemaVersion' => 1,
+            'type' => [
+                'name' => 'Comics',
+                'color' => '#fb923c',
+                'groups' => [
+                    [
+                        'name' => 'Publishing info',
+                        'fields' => [
+                            ['name' => 'Issue #', 'type' => 'number'],
+                            ['name' => 'Publisher', 'type' => 'select', 'options' => ['Marvel', 'DC', 'Image']],
+                        ],
+                    ],
+                ],
+                'standaloneFields' => [
+                    ['name' => 'Signed', 'type' => 'boolean'],
+                ],
+            ],
+        ],
+    ],
+    'links' => [
+        'self' => $base.'/collection-types/1/export',
+        'collection_type' => $base.'/collection-types/1',
+    ],
+];
+
 $pagination = [
     [
         'name' => 'per_page',
@@ -74,6 +104,24 @@ return [
             'pathParams' => [$typeId],
             'returns' => 'A collection_type object, or 404 when the type does not belong to your account.',
             'response' => ['data' => $type('1', 'Comics', '#fb923c')],
+        ],
+        [
+            'id' => 'collection-types-export',
+            'title' => 'Export a collection type',
+            'label' => 'Export a type',
+            'method' => 'GET',
+            'path' => '/collection-types/{collectionType}/export',
+            'examplePath' => '/collection-types/1/export',
+            'description' => 'Retrieve the full schema of a collection type as a portable JSON document: its name, its color, its field groups, and every custom field with its kind, its ordering and its select options. This is the same document the app hands out from the type\'s export screen.',
+            'body' => [
+                'The document describes structure only. Your items, their copies and their photos are never part of it.',
+                'Fields are ordered the way they render on an item, and a field only carries an options key when it has options. Groups are listed under groups, and fields that sit outside of any group under standaloneFields.',
+                'The schemaVersion key tells you which shape of the document you are reading. It is bumped whenever the shape changes, so store it alongside the export.',
+            ],
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'pathParams' => [$typeId],
+            'returns' => 'A collection_type_export object whose schema attribute is the portable JSON document, or 404 when the type does not belong to your account.',
+            'response' => ['data' => $export],
         ],
         [
             'id' => 'collection-types-create',

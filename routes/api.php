@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\CollectionTypeCollectionController;
 use App\Http\Controllers\Api\CollectionTypeController;
+use App\Http\Controllers\Api\CollectionTypeExportController;
 use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CopyController;
 use App\Http\Controllers\Api\CustomFieldController;
@@ -68,6 +69,9 @@ Route::name('api.')->group(function (): void {
         Route::post('collection-types', [CollectionTypeController::class, 'create'])->name('collectionTypes.create');
         Route::put('collection-types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.update');
         Route::delete('collection-types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.destroy');
+
+        // the type's schema, as a portable JSON document
+        Route::get('collection-types/{collectionType}/export', [CollectionTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.export.show');
 
         // the collections a type applies to
         Route::put('collection-types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.collections.update');
