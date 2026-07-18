@@ -8,6 +8,7 @@ use App\Http\Controllers\App\Account\MemberController;
 use App\Http\Controllers\App\CollectionController;
 use App\Http\Controllers\App\CollectionItemViewController;
 use App\Http\Controllers\App\CollectionTypeController;
+use App\Http\Controllers\App\CollectionTypeExportController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldGroupController;
 use App\Http\Controllers\App\CustomFieldGroupFieldController;
@@ -115,6 +116,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::get('settings/types/{collectionType}/edit', [CollectionTypeController::class, 'edit'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.edit');
         Route::put('settings/types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.update');
         Route::delete('settings/types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.destroy');
+        Route::get('settings/types/{collectionType}/export', [CollectionTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.export.show');
 
         // a type's custom fields and the collections that may use it (edited inline, saved as you go)
         Route::post('settings/types/{collectionType}/fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.fields.create');

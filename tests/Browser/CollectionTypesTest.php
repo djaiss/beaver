@@ -57,6 +57,21 @@ it('creates a type, renames it, and edits its fields inline', function () {
     expect($type->customFields()->first()->options)->toBe([]);
 });
 
+it('reaches the export page from the menu of the two part button', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+
+    $page->click('[data-test="export-type-button"]')
+        ->assertSee('Export Comics')
+        ->assertSee('schemaVersion')
+        ->assertSee('comics.type.json');
+
+    $page->assertNoSmoke();
+});
+
 it('keeps fields renameable and reorderable after adding more', function () {
     $user = User::factory()->create();
     $this->actingAs($user);

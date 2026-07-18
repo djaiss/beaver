@@ -53,7 +53,7 @@
               onclick="
                 document.getElementById('name-edit').hidden = true;
                 document.getElementById('name-display').hidden = false;
-                document.getElementById('edit-name-button').hidden = false;
+                document.getElementById('type-actions').hidden = false;
               "
               class="cursor-pointer text-sm font-semibold text-muted hover:text-ink">
               {{ __('Cancel') }}
@@ -63,23 +63,31 @@
           <p class="mt-2 text-xs text-muted-soft">{{ __('Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)', ['collections' => $type->collections->count(), 'groups' => $type->custom_field_groups_count, 'fields' => $type->custom_fields_count]) }}</p>
         </div>
 
-        <div class="flex shrink-0 items-center gap-3">
-          <x-button
-            type="button"
-            id="edit-name-button"
+        <div id="type-actions" class="flex shrink-0 items-center gap-3">
+          {{-- The delete button sits inside the menu, so its form lives outside and is reached with form=. --}}
+          <x-form method="delete" :action="route('settings.types.destroy', $type->id)" id="delete-type-form" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete this type? This cannot be undone.') }}')"></x-form>
+
+          <x-button.split
+            :label="__('Edit name')"
             data-test="edit-name-button"
             onclick="
               document.getElementById('name-display').hidden = true;
               document.getElementById('name-edit').hidden = false;
               document.getElementById('type-name-input').focus();
-              this.hidden = true;
+              document.getElementById('type-actions').hidden = true;
             ">
-            {{ __('Edit name') }}
-          </x-button>
+            <x-menu-item :href="route('settings.types.export.show', $type->id)" turbo data-test="export-type-button">
+              <x-slot:icon>@svg('lucide-download', 'size-4 text-muted')</x-slot>
+              {{ __('Export as JSON') }}
+            </x-menu-item>
 
-          <x-form method="delete" :action="route('settings.types.destroy', $type->id)" data-turbo="true" onsubmit="return confirm('{{ __('Delete this type? This cannot be undone.') }}')">
-            <x-button.secondary type="submit" data-test="delete-type-button" class="border-error/40 text-error hover:bg-error/5">{{ __('Delete type') }}</x-button.secondary>
-          </x-form>
+            <div class="my-1 h-px bg-hairline"></div>
+
+            <x-menu-item type="submit" form="delete-type-form" danger data-test="delete-type-button">
+              <x-slot:icon>@svg('lucide-trash-2', 'size-4')</x-slot>
+              {{ __('Delete type') }}
+            </x-menu-item>
+          </x-button.split>
         </div>
       </div>
 
