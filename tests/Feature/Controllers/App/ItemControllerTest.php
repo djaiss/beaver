@@ -12,11 +12,14 @@ use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
+use App\Models\ItemPhoto;
 use App\Models\Location;
 use App\Models\Set;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -500,4 +503,96 @@ it('shows a viewer the tags of an item without the controls to change them', fun
     $response->assertSee('Signed');
     $response->assertDontSee('add-tag-input', false);
     $response->assertDontSee('remove-tag-'.$tag->id, false);
+});
+
+it('uploads several photos when creating an item', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->post("/collections/{$collection->id}/items", [
+        'name' => 'Amazing Spider-Man #1',
+        'photos' => [
+            UploadedFile::fake()->image('front.jpg'),
+            UploadedFile::fake()->image('back.jpg'),
+        ],
+    ])->assertRedirect(route('collections.show', $collection));
+
+    $item = Item::query()->first();
+
+    expect($item->photos()->count())->toBe(2);
+    expect($item->mainPhoto()->first()->filename)->toBe('front.jpg');
+});
+
+it('rejects a photo that is not an image', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->post("/collections/{$collection->id}/items", [
+        'name' => 'Amazing Spider-Man #1',
+        'photos' => [UploadedFile::fake()->create('notes.pdf', 100, 'application/pdf')],
+    ])->assertSessionHasErrors('photos.0');
+});
+
+it('shows the photos an item already has on the edit form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $cover = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true, 'position' => 1]);
+    $other = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => false, 'position' => 2]);
+
+    $response = $this->actingAs($user)->get(route('items.edit', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('item-photos', false);
+    $response->assertSee('add-photos', false);
+    // Both photos reach the form, with the cover already chosen. Blade hands
+    // the array to Alpine through JSON.parse, so the quotes arrive escaped.
+    $response->assertSee('\u0022id\u0022:'.$cover->id, false);
+    $response->assertSee('\u0022id\u0022:'.$other->id, false);
+    $response->assertSee('mainPhotoId: '.$cover->id, false);
+});
+
+it('adds, removes and re-covers photos when updating an item', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $dropped = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true, 'position' => 1]);
+    $promoted = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => false, 'position' => 2]);
+
+    $this->actingAs($user)->put("/collections/{$collection->id}/items/{$item->id}", [
+        'name' => 'Amazing Spider-Man #1',
+        'photos' => [UploadedFile::fake()->image('spine.jpg')],
+        'deleted_photos' => [$dropped->id],
+        'main_photo_id' => $promoted->id,
+    ])->assertRedirect(route('items.show', [$collection, $item]));
+
+    $this->assertModelMissing($dropped);
+    expect($item->photos()->count())->toBe(2);
+    expect($item->mainPhoto()->first()->id)->toBe($promoted->id);
+});
+
+it('leaves the photos alone when the edit form sends none', function () {
+    Queue::fake();
+    Storage::fake('local');
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $photo = ItemPhoto::factory()->create(['item_id' => $item->id, 'is_main' => true]);
+
+    $this->actingAs($user)->put("/collections/{$collection->id}/items/{$item->id}", [
+        'name' => 'Amazing Spider-Man #1',
+    ])->assertRedirect(route('items.show', [$collection, $item]));
+
+    expect($item->photos()->count())->toBe(1);
+    expect($item->mainPhoto()->first()->id)->toBe($photo->id);
 });

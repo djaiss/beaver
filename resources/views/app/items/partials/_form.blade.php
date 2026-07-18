@@ -32,7 +32,13 @@
 
     $selectedCategoryId = old('category_id', $item?->category_id);
     $selectedSetId = old('set_id', $item?->set_id);
-    $coverUrl = $item?->mainPhoto ? route('items.photos.show', $item->mainPhoto) : '';
+    // The photos the item already has, in the order the item screen shows them.
+    $existingPhotos = ($item?->photos ?? collect())
+        ->map(fn ($photo): array => ['id' => $photo->id, 'url' => $photo->url()])
+        ->values()
+        ->all();
+
+    $mainPhotoId = $item?->mainPhoto?->id;
 @endphp
 
 <div
@@ -46,8 +52,11 @@
     newTags: [],
     tagDraft: '',
     copies: @js($existingCopies === [] ? [$blankCopy] : $existingCopies),
-    coverName: '',
-    coverPreview: @js($coverUrl),
+    existingPhotos: @js($existingPhotos),
+    newPhotos: [],
+    deletedPhotoIds: [],
+    mainPhotoId: @js($mainPhotoId),
+    nextPhotoKey: 0,
     dragging: false,
     get selectedType() { return this.types.find(t => String(t.id) === String(this.typeId)) || null },
     get customFields() { return this.selectedType ? this.selectedType.fields : [] },
@@ -64,19 +73,43 @@
       if (this.copies[i].id && !confirm(@js(__('Remove this copy? It will be deleted when you save.')))) return
       this.copies.splice(i, 1)
     },
-    setCover(file) {
-      if (!file || !file.type.startsWith('image/')) return
-      this.coverName = file.name
-      this.coverPreview = URL.createObjectURL(file)
+    isMain(id) { return this.mainPhotoId === id },
+    isDeleted(id) { return this.deletedPhotoIds.includes(id) },
+    deletePhoto(id) {
+      this.deletedPhotoIds.push(id)
+      // The cover cannot be a photo that is on its way out. Whichever photo the
+      // item keeps first takes over, which is what the server does anyway.
+      if (this.mainPhotoId !== id) return
+      const kept = this.existingPhotos.find(p => !this.isDeleted(p.id))
+      this.mainPhotoId = kept ? kept.id : null
     },
-    onCover(e) { this.setCover(e.target.files[0]) },
-    onDropCover(e) {
+    restorePhoto(id) {
+      this.deletedPhotoIds = this.deletedPhotoIds.filter(x => x !== id)
+      if (this.mainPhotoId === null) this.mainPhotoId = id
+    },
+    addFiles(fileList) {
+      for (const file of fileList) {
+        if (!file.type.startsWith('image/')) continue
+        this.newPhotos.push({ key: this.nextPhotoKey++, file, preview: URL.createObjectURL(file) })
+      }
+      this.syncPhotoInput()
+    },
+    removeNewPhoto(index) {
+      URL.revokeObjectURL(this.newPhotos[index].preview)
+      this.newPhotos.splice(index, 1)
+      this.syncPhotoInput()
+    },
+    // A file input replaces its whole list every time it is used, so the files
+    // picked over several goes are collected here and written back to it.
+    syncPhotoInput() {
+      const data = new DataTransfer()
+      this.newPhotos.forEach(p => data.items.add(p.file))
+      this.$refs.photoInput.files = data.files
+    },
+    onPickPhotos(e) { this.addFiles(e.target.files) },
+    onDropPhotos(e) {
       this.dragging = false
-      const file = e.dataTransfer.files[0]
-      if (!file || !file.type.startsWith('image/')) return
-      // Assign the dropped file to the input so it submits with the form.
-      this.$refs.coverInput.files = e.dataTransfer.files
-      this.setCover(file)
+      this.addFiles(e.dataTransfer.files)
     },
   }"
 >
@@ -105,22 +138,91 @@
     data-test="{{ $item ? 'edit-item-form' : 'add-item-form' }}"
     class="space-y-6"
   >
-    {{-- Cover --}}
+    {{-- Photos --}}
     <div>
-      <x-label>{{ __('Cover image') }}</x-label>
-      <label
-        class="relative mt-2 flex size-24 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed bg-card text-center transition-colors"
-        :class="dragging ? 'border-muted-soft ring-2 ring-[var(--color-accent)]/40' : 'border-hairline hover:border-muted-soft'"
-        x-on:dragover.prevent="dragging = true"
-        x-on:dragleave.prevent="dragging = false"
-        x-on:drop.prevent="onDropCover($event)"
-      >
-        <input x-ref="coverInput" type="file" name="cover" accept="image/*" class="sr-only" x-on:change="onCover($event)" />
-        <img x-show="coverPreview" x-cloak :src="coverPreview" alt="" class="pointer-events-none absolute inset-0 size-full object-cover" />
-        <span x-show="!coverPreview" class="pointer-events-none px-2 font-mono text-[10px] leading-tight text-muted-soft">{{ __('Drop or click') }}</span>
-      </label>
-      <p x-show="coverName" x-cloak x-text="coverName" class="mt-1.5 truncate text-[11px] text-muted-soft"></p>
-      <x-error :messages="$errors->get('cover')" class="mt-2" />
+      <x-label>{{ __('Photos') }}</x-label>
+      <p class="mt-1 text-[13px] text-muted-soft">{{ __('The cover is the one shown wherever the item is listed.') }}</p>
+
+      <div class="mt-2 flex flex-wrap items-start gap-3" data-test="item-photos">
+        {{-- The photos the item already has. Removing one only marks it, so
+             nothing is lost until the form is sent. --}}
+        <template x-for="photo in existingPhotos" :key="photo.id">
+          <div class="relative size-24 shrink-0" :class="isDeleted(photo.id) && 'opacity-40'">
+            <img :src="photo.url" alt="" class="size-full rounded-xl border border-hairline object-cover" />
+
+            <span
+              x-show="isMain(photo.id) && !isDeleted(photo.id)"
+              x-cloak
+              class="absolute bottom-1 left-1 rounded-full bg-ink/80 px-1.5 py-px text-[10px] font-semibold text-page"
+            >{{ __('Cover') }}</span>
+
+            <button
+              type="button"
+              x-show="!isMain(photo.id) && !isDeleted(photo.id)"
+              x-cloak
+              x-on:click="mainPhotoId = photo.id"
+              class="absolute bottom-1 left-1 cursor-pointer rounded-full bg-ink/60 px-1.5 py-px text-[10px] font-semibold text-page transition-colors hover:bg-ink/80"
+              :data-test="'make-cover-' + photo.id"
+              :title="@js(__('Make this the cover'))"
+            >{{ __('Make cover') }}</button>
+
+            <button
+              type="button"
+              x-show="!isDeleted(photo.id)"
+              x-on:click="deletePhoto(photo.id)"
+              class="absolute -top-1.5 -right-1.5 flex size-6 cursor-pointer items-center justify-center rounded-full border border-hairline bg-page text-muted transition-colors hover:text-ink"
+              :data-test="'remove-photo-' + photo.id"
+              :title="@js(__('Remove this photo'))"
+            >@svg('lucide-x', 'size-3.5')</button>
+
+            <button
+              type="button"
+              x-show="isDeleted(photo.id)"
+              x-cloak
+              x-on:click="restorePhoto(photo.id)"
+              class="absolute inset-0 flex cursor-pointer items-center justify-center rounded-xl text-[11px] font-semibold text-ink"
+              :data-test="'restore-photo-' + photo.id"
+            >{{ __('Undo') }}</button>
+          </div>
+        </template>
+
+        {{-- The files picked in this form, not uploaded yet. --}}
+        <template x-for="(file, index) in newPhotos" :key="file.key">
+          <div class="relative size-24 shrink-0">
+            <img :src="file.preview" alt="" class="size-full rounded-xl border border-hairline object-cover" />
+            <span class="absolute bottom-1 left-1 rounded-full bg-ink/70 px-1.5 py-px text-[10px] font-semibold text-page">{{ __('New') }}</span>
+            <button
+              type="button"
+              x-on:click="removeNewPhoto(index)"
+              class="absolute -top-1.5 -right-1.5 flex size-6 cursor-pointer items-center justify-center rounded-full border border-hairline bg-page text-muted transition-colors hover:text-ink"
+              :data-test="'remove-new-photo-' + index"
+              :title="@js(__('Remove this photo'))"
+            >@svg('lucide-x', 'size-3.5')</button>
+          </div>
+        </template>
+
+        <label
+          class="relative flex size-24 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed bg-card text-center transition-colors"
+          :class="dragging ? 'border-muted-soft ring-2 ring-[var(--color-accent)]/40' : 'border-hairline hover:border-muted-soft'"
+          x-on:dragover.prevent="dragging = true"
+          x-on:dragleave.prevent="dragging = false"
+          x-on:drop.prevent="onDropPhotos($event)"
+          data-test="add-photos"
+        >
+          <input x-ref="photoInput" type="file" name="photos[]" accept="image/*" multiple class="sr-only" x-on:change="onPickPhotos($event)" />
+          <span class="pointer-events-none px-2 font-mono text-[10px] leading-tight text-muted-soft">{{ __('Drop or click') }}</span>
+        </label>
+      </div>
+
+      {{-- What the browser will not carry on its own: which photos to drop, and
+           which one to promote. --}}
+      <template x-for="id in deletedPhotoIds" :key="id">
+        <input type="hidden" name="deleted_photos[]" :value="id" />
+      </template>
+      <input type="hidden" name="main_photo_id" :value="mainPhotoId ?? ''" />
+
+      <x-error :messages="$errors->get('photos')" class="mt-2" />
+      <x-error :messages="$errors->get('photos.*')" class="mt-2" />
     </div>
 
     {{-- Name --}}

@@ -10,6 +10,7 @@ use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\View\View;
 
 class ItemController extends Controller
@@ -104,7 +105,9 @@ class ItemController extends Controller
             newTagNames: $validated['new_tags'] ?? [],
             customFieldValues: $validated['custom_fields'] ?? [],
             copies: $this->copies($validated['copies'] ?? []),
-            coverPhoto: $request->file('cover'),
+            photos: $this->photos($request),
+            deletedPhotoIds: array_map(intval(...), $validated['deleted_photos'] ?? []),
+            mainPhotoId: isset($validated['main_photo_id']) ? (int) $validated['main_photo_id'] : null,
         )->execute();
 
         return to_route('items.show', [$collectionModel->id, $itemModel->id])
@@ -144,7 +147,7 @@ class ItemController extends Controller
             newTagNames: $validated['new_tags'] ?? [],
             customFieldValues: $validated['custom_fields'] ?? [],
             copies: $this->copies($validated['copies'] ?? []),
-            coverPhoto: $request->file('cover'),
+            photos: $this->photos($request),
         )->execute();
 
         return to_route('collections.show', $collectionModel->id)
@@ -178,7 +181,11 @@ class ItemController extends Controller
             'copies.*.acquired_at' => ['nullable', 'date'],
             'copies.*.price_paid' => ['nullable', 'numeric', 'min:0'],
             'copies.*.estimated_value' => ['nullable', 'numeric', 'min:0'],
-            'cover' => ['nullable', 'image', 'max:10240'],
+            'photos' => ['array'],
+            'photos.*' => ['image', 'max:10240'],
+            'deleted_photos' => ['array'],
+            'deleted_photos.*' => ['integer'],
+            'main_photo_id' => ['nullable', 'integer'],
         ]);
     }
 
@@ -201,6 +208,20 @@ class ItemController extends Controller
                 'estimated_value' => $this->toCents($copy['estimated_value'] ?? null),
             ])
             ->all();
+    }
+
+    /**
+     * The uploaded photos, in the order the browser sent them. An input that
+     * was left alone sends nothing at all.
+     *
+     * @return list<UploadedFile>
+     */
+    private function photos(Request $request): array
+    {
+        return array_values(array_filter(
+            $request->file('photos', []),
+            fn (mixed $photo): bool => $photo instanceof UploadedFile,
+        ));
     }
 
     /**
