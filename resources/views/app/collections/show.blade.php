@@ -56,7 +56,7 @@
         </x-slot>
 
         <div
-            class="px-6 py-8 lg:px-10"
+            class="flex h-[calc(100vh-3.75rem)] flex-col overflow-hidden"
             x-data="{
                 view: @js($view->value),
                 serverView: @js($view->value),
@@ -74,10 +74,11 @@
                 },
             }"
         >
-            @include('app.collections.partials._header')
-            @include('app.collections.partials._toolbar')
+            {{-- The view-switch endpoint for the current collection, read by switchCollectionView in app.js. --}}
+            <input type="hidden" id="collection-view-endpoint" value="{{ route('collections.item-view.update', $collection) }}" />
+
+            @include('app.collections.partials._table-header')
             @include('app.collections.partials._table')
-            @include('app.collections.partials._pagination')
         </div>
     </x-app-layout>
 @else

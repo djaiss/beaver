@@ -242,6 +242,7 @@
     "Options": "Options",
     "Organize related fields into groups (e.g. \"Grading\", \"Purchase info\"), or add a field directly to the type if it does not belong to a group.": "Organize related fields into groups (e.g. \"Grading\", \"Purchase info\"), or add a field directly to the type if it does not belong to a group.",
     "Owner": "Owner",
+    "Page :current of :last": "Page :current of :last",
     "Pagination": "Pagination",
     "Parent location": "Parent location",
     "Password": "Password",
