@@ -127,6 +127,16 @@ class Account extends Model
     }
 
     /**
+     * Get the sets that belong to the account.
+     *
+     * @return HasMany<Set, $this>
+     */
+    public function sets(): HasMany
+    {
+        return $this->hasMany(Set::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>

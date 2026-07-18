@@ -13,6 +13,7 @@ use App\Http\Controllers\App\CustomFieldGroupFieldController;
 use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\ItemController;
 use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
@@ -47,6 +48,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::middleware(['editor'])->group(function (): void {
         Route::get('collections/new', [CollectionController::class, 'new'])->name('collections.new');
         Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
+
+        // items — owners and editors may add items to a collection
+        Route::get('collections/{collection}/items/new', [ItemController::class, 'new'])->where('collection', '[1-9][0-9]*')->name('items.new');
+        Route::post('collections/{collection}/items', [ItemController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('items.create');
     });
 
     // locations — owners and editors may create, update and delete locations

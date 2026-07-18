@@ -20,6 +20,15 @@
             <p class="mt-1.5 text-[15px] text-muted">{{ $collection->description }}</p>
           @endif
         </div>
+
+        @if (auth()->user()->account->allowsManagementBy(auth()->user()))
+          <x-button href="{{ route('items.new', $collection) }}" turbo="true" data-test="new-item-button">
+            <x-slot:icon>
+              <x-lucide-plus class="size-4" />
+            </x-slot>
+            {{ __('Add item') }}
+          </x-button>
+        @endif
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -48,7 +57,11 @@
           <x-slot:icon>
             <x-lucide-layers class="size-6 text-muted" />
           </x-slot>
-          {{ __('No items yet. Items are coming soon.') }}
+          @if (auth()->user()->account->allowsManagementBy(auth()->user()))
+            {{ __('No items yet. Add your first one to start cataloging.') }}
+          @else
+            {{ __('No items yet.') }}
+          @endif
         </x-empty-state>
       </div>
     </div>
