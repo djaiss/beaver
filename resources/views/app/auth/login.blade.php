@@ -87,6 +87,9 @@
           </x-link>
         </x-box>
 
+        <!-- Language switcher -->
+        @include('partials.languageSwitcher')
+
         <ul class="text-xs text-muted">
           <li>© {{ config('app.name') }} {{ now()->format('Y') }}</li>
         </ul>
