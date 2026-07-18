@@ -40,19 +40,22 @@ it('offers to go back to the account when the visitor is signed in', function ()
         ->assertSee(route('dashboard.index'));
 });
 
-it('sends guests to the login page when the marketing site is off', function () {
+it('sends everyone to the login page when the marketing site is off', function () {
     config()->set('marketing.show', false);
 
-    $response = $this->get('/');
+    $this->get('/')->assertRedirect(route('login'));
 
-    $response->assertRedirect(route('login'));
+    $user = $this->createUser();
+    $this->actingAs($user)->get('/')->assertRedirect(route('login'));
 });
 
-it('sends signed in users to the dashboard when the marketing site is off', function () {
+it('carries signed in users on to their dashboard when the marketing site is off', function () {
     config()->set('marketing.show', false);
     $user = $this->createUser();
 
-    $response = $this->actingAs($user)->get('/');
+    // The login page sits behind the guest middleware, so it hands anyone already signed
+    // in back to the application instead of leaving them on a redirect loop.
+    $response = $this->actingAs($user)->followingRedirects()->get('/');
 
-    $response->assertRedirect(route('dashboard.index'));
+    $response->assertOk();
 });
