@@ -163,6 +163,7 @@ class CollectionTypeController extends Controller
             FieldTypeEnum::Date->value => __('Date'),
             FieldTypeEnum::Boolean->value => __('Yes / No'),
             FieldTypeEnum::Select->value => __('Select'),
+            FieldTypeEnum::Rating->value => __('Rating'),
         ];
     }
 }

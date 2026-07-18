@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\FieldTypeEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
@@ -11,6 +12,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionType;
 use App\Models\Copy;
+use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
 use App\Models\Set;
@@ -180,10 +182,12 @@ class CreateItem
             return;
         }
 
-        $fieldIds = $this->collectionType->customFields()->pluck('id')->all();
+        $fields = $this->collectionType->customFields()->get()->keyBy('id');
 
         foreach ($this->customFieldValues as $fieldId => $value) {
-            if (! in_array($fieldId, $fieldIds, true)) {
+            $field = $fields->get($fieldId);
+
+            if (! $field instanceof CustomField) {
                 continue;
             }
 
@@ -191,12 +195,35 @@ class CreateItem
                 continue;
             }
 
+            $value = $field->field_type === FieldTypeEnum::Rating
+                ? $this->rating($value)
+                : TextSanitizer::plainText((string) $value);
+
+            if ($value === null) {
+                continue;
+            }
+
             CustomFieldValue::query()->create([
                 'item_id' => $this->item->id,
                 'custom_field_id' => $fieldId,
-                'value' => TextSanitizer::plainText((string) $value),
+                'value' => $value,
             ]);
         }
+    }
+
+    /**
+     * A rating is a whole number of stars, so anything outside the scale is dropped
+     * rather than stored as junk.
+     */
+    private function rating(string|int $value): ?string
+    {
+        $stars = filter_var($value, FILTER_VALIDATE_INT);
+
+        if ($stars === false || $stars < 1 || $stars > FieldTypeEnum::MAX_RATING) {
+            return null;
+        }
+
+        return (string) $stars;
     }
 
     private function createCopies(): void

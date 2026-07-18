@@ -109,7 +109,7 @@ return [
                     'name' => 'field_type',
                     'type' => 'string',
                     'required' => true,
-                    'description' => 'The kind of value the field holds. One of text, number, date, boolean or select.',
+                    'description' => 'The kind of value the field holds. One of text, number, date, boolean, select or rating. A rating stores a whole number of stars from 1 to 5.',
                     'example' => 'select',
                 ],
                 [
@@ -153,7 +153,7 @@ return [
                     'name' => 'field_type',
                     'type' => 'string',
                     'required' => true,
-                    'description' => 'The kind of value the field holds. One of text, number, date, boolean or select.',
+                    'description' => 'The kind of value the field holds. One of text, number, date, boolean, select or rating. A rating stores a whole number of stars from 1 to 5.',
                     'example' => 'select',
                 ],
                 [

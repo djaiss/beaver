@@ -27,6 +27,22 @@ it('shows the add item form', function () {
         ->assertSee('Marvel Comics 1990s');
 });
 
+it('renders a star picker for a rating field on the add item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $collection->collectionTypes()->attach($type);
+    CustomField::factory()->create(['type_id' => $type->id, 'name' => 'My Rating', 'field_type' => FieldTypeEnum::Rating]);
+
+    $response = $this->actingAs($user)->get("/collections/{$collection->id}/items/new");
+
+    $response->assertOk();
+    $response->assertSee("x-if=\"field.type === 'rating'\"", false);
+    $response->assertSee('x-for="star in 5"', false);
+    // The plain input must not double up on a rating field.
+    $response->assertSee("field.type !== 'rating'", false);
+});
+
 it('does not show the form for another accounts collection', function () {
     $user = $this->createUser();
     $foreign = Collection::factory()->create();

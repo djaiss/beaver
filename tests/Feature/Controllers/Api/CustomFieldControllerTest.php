@@ -157,6 +157,23 @@ it('creates a custom field', function () {
     expect($field->type_id)->toBe($type->id);
 });
 
+it('creates a rating custom field', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create([
+        'account_id' => $user->account_id,
+    ]);
+
+    Sanctum::actingAs($user);
+
+    $response = $this->json('POST', '/api/collection-types/'.$type->id.'/custom-fields', [
+        'name' => 'My Rating',
+        'field_type' => 'rating',
+    ]);
+
+    $response->assertCreated();
+    $response->assertJsonPath('data.attributes.field_type', 'rating');
+});
+
 it('validates the field type when creating a custom field', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create([
