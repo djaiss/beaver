@@ -140,6 +140,12 @@
                             <dd class="text-[13px] font-semibold text-ink" x-text="selected.added"></dd>
                         </div>
                     </dl>
+
+                    <a
+                        :href="`{{ route('collections.show', $collection) }}/items/${selected.id}`"
+                        data-turbo="true"
+                        class="mt-5 inline-flex h-9 items-center rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-ink transition-colors hover:bg-card"
+                    >{{ __('View item') }}</a>
                 </div>
             </div>
         </template>

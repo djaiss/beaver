@@ -9,7 +9,7 @@
             @else
                 <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-card text-lg">{{ $collection->emoji ?? '📦' }}</div>
             @endif
-            <p class="min-w-0 flex-1 truncate text-sm font-semibold text-ink">{{ $row['name'] }}</p>
+            <a href="{{ route('items.show', [$collection, $row['id']]) }}" data-turbo="true" class="min-w-0 flex-1 truncate text-sm font-semibold text-ink transition-colors hover:text-muted">{{ $row['name'] }}</a>
             <div class="shrink-0">
                 <x-badge>{{ $row['condition'] }}</x-badge>
             </div>

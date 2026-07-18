@@ -11,6 +11,7 @@ Do not excessively use emojis.
 - If you are unsure about a specific implementation, ask for clarification before proceeding.
 - When you write tests, read the testing rules in `rules/testing.md` and follow them.
 - When writing code, follow the coding standards in `rules/code-style.md`.
+- ALWAYS warn users before making a destructive action in the UI.
 
 ## Tech Stack & Architecture
 
