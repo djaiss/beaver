@@ -330,10 +330,18 @@
         <x-label for="category_id">{{ __('Category') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
         <select id="category_id" name="category_id" class="mt-2 h-11 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
           <option value="">{{ __('No category') }}</option>
+          {{-- Nested categories are indented so the structure survives the flattening a select forces. --}}
           @foreach ($categories as $category)
-            <option value="{{ $category->id }}" @selected($selectedCategoryId == $category->id)>{{ $category->name }}</option>
+            {{-- Non-breaking spaces, because a browser collapses ordinary leading ones in an option. --}}
+            <option value="{{ $category['id'] }}" @selected($selectedCategoryId == $category['id'])>{{ str_repeat("\u{00A0}\u{00A0}\u{00A0}", $category['depth']) . $category['name'] }}</option>
           @endforeach
         </select>
+        @if ($categories === [])
+          <p class="mt-2 text-[13px] text-muted-soft">
+            {{ __('This collection has no categories yet.') }}
+            <a href="{{ route('categories.index', $collection->id) }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
+          </p>
+        @endif
       </div>
       <div>
         <x-label for="set_id">{{ __('Set') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>

@@ -33,6 +33,55 @@ it('shows the add item form', function () {
         ->assertSee('Marvel Comics 1990s');
 });
 
+it('offers the categories of the collection on the add item form, nested under their parent', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $parent = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    $child = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man', 'parent_id' => $parent->id]);
+
+    $response = $this->actingAs($user)->get("/collections/{$collection->id}/items/new");
+
+    $response->assertOk()
+        // A child is listed straight after its parent, and indented rather than shown flat.
+        ->assertSeeInOrder([
+            '>Spider-Man</option>',
+            '>'.str_repeat("\u{00A0}\u{00A0}\u{00A0}", 1).'Amazing Spider-Man</option>',
+        ], false);
+});
+
+it('points at the categories screen when the collection has none yet', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/new")
+        ->assertOk()
+        ->assertSee('This collection has no categories yet.')
+        ->assertSee('/collections/'.$collection->id.'/categories', false);
+});
+
+it('does not offer the categories of another collection on the add item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $other = Collection::factory()->create(['account_id' => $user->account_id]);
+    Category::factory()->create(['collection_id' => $other->id, 'name' => 'Elsewhere']);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/new")
+        ->assertOk()
+        ->assertDontSee('Elsewhere');
+});
+
+it('shows the parent of a nested category on the item page', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $parent = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    $child = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man', 'parent_id' => $parent->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $child->id]);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/{$item->id}")
+        ->assertOk()
+        ->assertSee('Spider-Man › Amazing Spider-Man');
+});
+
 it('renders a star picker for a rating field on the add item form', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);

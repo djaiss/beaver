@@ -111,7 +111,10 @@
       @php
         $glance = [
             __('Type') => $item->collectionType?->name ?? '—',
-            __('Category') => $item->category?->name ?? '—',
+            // A nested category means little on its own, so it is shown under its parent.
+            __('Category') => $item->category
+                ? ($item->category->parent ? $item->category->parent->name . ' › ' . $item->category->name : $item->category->name)
+                : '—',
             __('Set') => $item->set?->name ?? '—',
             __('Copies owned') => number_format($item->copies->count()),
             __('Est. value') => $totalEstimated > 0 ? $money($totalEstimated) : '—',

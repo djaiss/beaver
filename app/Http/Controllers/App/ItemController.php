@@ -8,6 +8,9 @@ use App\Actions\CreateItem;
 use App\Actions\UpdateItem;
 use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Collection as CollectionModel;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -24,7 +27,7 @@ class ItemController extends Controller
             'photos',
             'copies',
             'tags',
-            'category',
+            'category.parent',
             'set',
             'collectionType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
             'collectionType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
@@ -51,7 +54,7 @@ class ItemController extends Controller
         return view('app.items.new', [
             'collection' => $collectionModel,
             'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
-            'categories' => $collectionModel->categories()->orderBy('name')->get(),
+            'categories' => $this->categoryOptions($collectionModel),
             'sets' => $account->sets()->orderBy('name')->get(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
@@ -70,7 +73,7 @@ class ItemController extends Controller
             'collection' => $collectionModel,
             'item' => $itemModel,
             'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
-            'categories' => $collectionModel->categories()->orderBy('name')->get(),
+            'categories' => $this->categoryOptions($collectionModel),
             'sets' => $account->sets()->orderBy('name')->get(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
@@ -222,6 +225,37 @@ class ItemController extends Controller
             $request->file('photos', []),
             fn (mixed $photo): bool => $photo instanceof UploadedFile,
         ));
+    }
+
+    /**
+     * The categories of a collection, flattened for a <select> with each child listed
+     * directly under its parent and carrying its depth so the option can be indented.
+     *
+     * Names are encrypted, so the database cannot sort them and the ordering is done
+     * in memory instead.
+     *
+     * @return list<array{id: int, name: string, depth: int}>
+     */
+    private function categoryOptions(CollectionModel $collection): array
+    {
+        return $this->flattenCategories($collection->categories()->get());
+    }
+
+    /**
+     * @param  EloquentCollection<int, Category>  $categories
+     * @return list<array{id: int, name: string, depth: int}>
+     */
+    private function flattenCategories(EloquentCollection $categories, ?int $parentId = null, int $depth = 0): array
+    {
+        return $categories
+            ->where('parent_id', $parentId)
+            ->sortBy('name')
+            ->flatMap(fn (Category $category): array => [
+                ['id' => $category->id, 'name' => $category->name, 'depth' => $depth],
+                ...$this->flattenCategories($categories, $category->id, $depth + 1),
+            ])
+            ->values()
+            ->all();
     }
 
     /**
