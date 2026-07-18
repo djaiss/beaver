@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 use App\Actions\AttachTagToItem;
+use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
 use App\Models\Item;
@@ -157,4 +159,40 @@ it('throws when the user does not belong to the account', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
 
     new AttachTagToItem(user: $stranger, item: $item, name: 'Signed')->execute();
+});
+
+it('records the tag on the activity of the item', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    new AttachTagToItem(user: $editor, item: $item, name: 'Signed')->execute();
+
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogItemAction::class,
+        callback: fn (LogItemAction $job): bool => $job->action === ItemActionEnum::TagAttached
+            && $job->item->id === $item->id
+            && $job->parameters === ['label' => 'Signed'],
+    );
+});
+
+it('does not record activity when the item already carries the tag', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
+    $item->tags()->sync([$tag->id]);
+
+    new AttachTagToItem(user: $editor, item: $item, name: 'Signed')->execute();
+
+    Queue::assertNotPushed(LogItemAction::class);
 });

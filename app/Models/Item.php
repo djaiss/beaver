@@ -168,4 +168,14 @@ class Item extends Model
     {
         return $this->hasMany(Copy::class);
     }
+
+    /**
+     * Get the activity trail of the item.
+     *
+     * @return HasMany<ItemLog, $this>
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(ItemLog::class);
+    }
 }

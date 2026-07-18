@@ -6,45 +6,34 @@ namespace App\Http\Controllers\App;
 
 use App\Actions\CreateItem;
 use App\Actions\UpdateItem;
+use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
-use App\Models\Collection;
-use App\Models\Item;
-use App\Models\Tag;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\View\View;
 
 class ItemController extends Controller
 {
+    use FindsItems;
+
     public function show(Request $request, int $collection, int $item): View
     {
         $collectionModel = $this->findCollection($request, $collection);
-
-        try {
-            $itemModel = $collectionModel->items()
-                ->with([
-                    'photos',
-                    'copies.condition',
-                    'copies.location',
-                    'tags',
-                    'category',
-                    'set',
-                    'collectionType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
-                    'collectionType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
-                    'collectionType.ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
-                    'customFieldValues',
-                ])
-                ->findOrFail($item);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
+        $itemModel = $this->findItem($collectionModel, $item, [
+            'photos',
+            'copies',
+            'tags',
+            'category',
+            'set',
+            'collectionType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'collectionType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'collectionType.ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'customFieldValues',
+        ]);
 
         return view('app.items.show', [
             'collection' => $collectionModel,
             'item' => $itemModel,
-            // The tags of the account, offered as suggestions when tagging the item.
             'tags' => $this->accountTags($request),
             // The set counts what is owned. How many entries a set should hold
             // is not tracked yet, so completion cannot be worked out.
@@ -161,40 +150,6 @@ class ItemController extends Controller
         return to_route('collections.show', $collectionModel->id)
             ->with('status', __('Item added'))
             ->with('status_description', __('Your new item is now in the collection.'));
-    }
-
-    /**
-     * A tag name is encrypted, so ordering the query would sort the ciphertext.
-     * The names are read and sorted here instead.
-     *
-     * @return SupportCollection<int, Tag>
-     */
-    private function accountTags(Request $request): SupportCollection
-    {
-        return $request->user()->account->tags()
-            ->get()
-            ->sortBy(fn (Tag $tag): string => mb_strtolower($tag->name))
-            ->values();
-    }
-
-    private function findCollection(Request $request, int $collection): Collection
-    {
-        try {
-            return $request->user()->account->collections()->findOrFail($collection);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
-    }
-
-    private function findItem(Collection $collection, int $item): Item
-    {
-        try {
-            return $collection->items()
-                ->with(['tags', 'copies', 'customFieldValues', 'mainPhoto'])
-                ->findOrFail($item);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     /**

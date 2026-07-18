@@ -126,30 +126,7 @@ it('reads a rating custom field as stars', function () {
     $response->assertDontSee('>4<', false);
 });
 
-it('shows the copies of an item with their condition and location', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Near Mint']);
-    $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Display Case']);
-    Copy::factory()->create([
-        'item_id' => $item->id,
-        'condition_id' => $condition->id,
-        'location_id' => $location->id,
-        'price_paid' => 18000,
-        'estimated_value' => 42000,
-    ]);
-
-    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
-
-    $response->assertOk();
-    $response->assertSee('Near Mint');
-    $response->assertSee('Display Case');
-    $response->assertSee('$420');
-    $response->assertSee('$180');
-});
-
-it('flags the parts of the item screen that are not built yet', function () {
+it('flags the parts of the overview that are not built yet', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $set = Set::factory()->create(['account_id' => $user->account_id]);
@@ -160,8 +137,6 @@ it('flags the parts of the item screen that are not built yet', function () {
 
     $response->assertOk();
     $response->assertSee('Soon');
-    $response->assertSee('Provenance');
-    $response->assertSee('Purchase &amp; sale history', false);
     $response->assertSee('Set completion needs a target size');
 });
 

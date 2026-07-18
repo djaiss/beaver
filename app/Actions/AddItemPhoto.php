@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Item;
 use App\Models\ItemPhoto;
@@ -137,6 +139,13 @@ class AddItemPhoto
             user: $this->user,
             action: UserActionEnum::ItemPhotoCreation,
             parameters: ['name' => $this->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->item,
+            user: $this->user,
+            action: ItemActionEnum::PhotoAdded,
+            parameters: ['file' => $this->itemPhoto->filename],
         )->onQueue('low');
     }
 }

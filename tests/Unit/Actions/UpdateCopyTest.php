@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 use App\Actions\UpdateCopy;
+use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
 use App\Models\Condition;
@@ -127,4 +129,68 @@ it('throws when the user does not belong to the account', function () {
         user: $stranger,
         copy: $copy,
     )->execute();
+});
+
+it('records the values that moved on the activity of the item', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $wasIn = Location::factory()->create(['account_id' => $account->id, 'name' => 'Box A1']);
+    $nowIn = Location::factory()->create(['account_id' => $account->id, 'name' => 'Display Case']);
+    $copy = Copy::factory()->create([
+        'item_id' => $item->id,
+        'location_id' => $wasIn->id,
+        'condition_id' => null,
+        'acquired_at' => null,
+        'price_paid' => null,
+        'estimated_value' => 39000,
+    ]);
+
+    new UpdateCopy(
+        user: $editor,
+        copy: $copy,
+        location: $nowIn,
+        estimatedValue: 42000,
+    )->execute();
+
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogItemAction::class,
+        callback: fn (LogItemAction $job): bool => $job->action === ItemActionEnum::CopyUpdate
+            && $job->parameters === ['changes' => [
+                ['label' => 'Location', 'from' => 'Box A1', 'to' => 'Display Case'],
+                ['label' => 'Estimated value', 'from' => '$390', 'to' => '$420'],
+            ]],
+    );
+});
+
+it('records no chips when nothing on the copy moved', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $copy = Copy::factory()->create([
+        'item_id' => $item->id,
+        'condition_id' => $condition->id,
+        'location_id' => null,
+        'acquired_at' => null,
+        'price_paid' => null,
+        'estimated_value' => null,
+    ]);
+
+    new UpdateCopy(user: $editor, copy: $copy, condition: $condition)->execute();
+
+    Queue::assertPushedOn(
+        queue: 'low',
+        job: LogItemAction::class,
+        callback: fn (LogItemAction $job): bool => $job->parameters === null,
+    );
 });

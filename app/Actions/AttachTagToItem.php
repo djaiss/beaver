@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
+use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Item;
 use App\Models\Tag;
@@ -108,6 +110,13 @@ class AttachTagToItem
             user: $this->user,
             action: UserActionEnum::ItemTagAttached,
             parameters: ['tag' => $this->tag->name, 'name' => $this->item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $this->item,
+            user: $this->user,
+            action: ItemActionEnum::TagAttached,
+            parameters: ['label' => $this->tag->name],
         )->onQueue('low');
     }
 }
