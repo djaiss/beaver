@@ -63,6 +63,8 @@ enum UserActionEnum: string
     case WebhookEndpointDeletion = 'webhook_endpoint_deleted';
     case MagicLinkCreated = 'magic_link_created';
     case PersonalProfileUpdate = 'user_profile_updated';
+    case AvatarUpdate = 'user_avatar_updated';
+    case AvatarDeletion = 'user_avatar_deleted';
     case UpdateUserPassword = 'user_password_updated';
     case AutoDeleteUserUpdate = 'user_auto_delete_updated';
     case TwoFaQrCodeGeneration = '2fa_qr_generated';
@@ -128,6 +130,8 @@ enum UserActionEnum: string
             self::WebhookEndpointDeletion => 'Deleted a webhook endpoint',
             self::MagicLinkCreated => 'Sent a magic link',
             self::PersonalProfileUpdate => 'Updated their personal profile',
+            self::AvatarUpdate => 'Updated their avatar',
+            self::AvatarDeletion => 'Removed their avatar',
             self::UpdateUserPassword => 'Updated their password',
             self::AutoDeleteUserUpdate => 'Updated auto delete account setting to :status',
             self::TwoFaQrCodeGeneration => 'Generated 2FA QR code for setup',
