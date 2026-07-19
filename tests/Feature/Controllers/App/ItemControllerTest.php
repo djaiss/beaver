@@ -210,7 +210,36 @@ it('flags the parts of the overview that are not built yet', function () {
 
     $response->assertOk();
     $response->assertSee('Soon');
-    $response->assertSee('Set completion needs a target size');
+});
+
+it('shows how complete the set of an item is', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1-10', 'target_count' => 10]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+    Item::factory()->count(3)->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk()
+        ->assertSee('Part of a set')
+        ->assertSee('Amazing Spider-Man #1-10')
+        ->assertSee('4/10')
+        ->assertSee('style="width: 40%"', false)
+        ->assertSee(route('sets.index', $collection->id), false);
+});
+
+it('falls back to an item count when the set has no target', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id, 'target_count' => null]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk()
+        ->assertSee('1 item in this set')
+        ->assertDontSee('data-test="set-completion-ratio"', false);
 });
 
 it('lets a viewer read an item', function () {
