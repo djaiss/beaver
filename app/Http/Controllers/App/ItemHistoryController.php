@@ -26,15 +26,15 @@ class ItemHistoryController extends Controller
 
     public function index(Request $request, int $collection, int $item): View
     {
-        return $this->render($request, $collection, $item, null);
+        return $this->render($request, $collection, $item, null, 'timeline');
     }
 
-    public function show(Request $request, int $collection, int $item, int $copy): View
+    public function show(Request $request, int $collection, int $item, int $copy, string $section = 'timeline'): View
     {
-        return $this->render($request, $collection, $item, $copy);
+        return $this->render($request, $collection, $item, $copy, $section);
     }
 
-    private function render(Request $request, int $collection, int $item, ?int $copyId): View
+    private function render(Request $request, int $collection, int $item, ?int $copyId, string $section): View
     {
         $collectionModel = $this->findCollection($request, $collection);
         $itemModel = $this->findItem($collectionModel, $item, [
@@ -65,20 +65,17 @@ class ItemHistoryController extends Controller
             'item' => $itemModel,
             'tags' => $this->accountTags($request),
             'selectedCopy' => $selectedCopy,
-            'section' => $this->section($request),
+            'section' => $this->section($section),
             'currencies' => $this->currencyOptions(),
         ]);
     }
 
     /**
-     * Which section of the history to show. The section is a query parameter so
-     * a copy's history stays one url per copy, and it falls back to the timeline
-     * rather than trusting whatever the query string holds.
+     * Which section of the history to show. Each section is its own url, and it
+     * falls back to the timeline rather than trusting whatever the url holds.
      */
-    private function section(Request $request): string
+    private function section(string $section): string
     {
-        $section = (string) $request->query('section', 'timeline');
-
         return in_array($section, self::SECTIONS, true) ? $section : 'timeline';
     }
 

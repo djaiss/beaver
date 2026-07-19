@@ -77,7 +77,7 @@
 
       @foreach ($item->copies as $copy)
         <a
-          href="{{ route('items.history.show', [$collection, $item, $copy]) }}"
+          href="{{ route('items.history.section', [$collection, $item, $copy, $section]) }}"
           data-turbo="true"
           @class([
               'flex items-center gap-2.5 rounded-full border px-3.5 py-2 transition-colors',
@@ -143,7 +143,7 @@
       <nav class="flex flex-col gap-0.5 lg:sticky lg:top-6" data-test="history-sections">
         @foreach ($sectionsMeta as $meta)
           <a
-            href="{{ route('items.history.show', [$collection, $item, $selectedCopy]) }}?section={{ $meta['key'] }}"
+            href="{{ route('items.history.section', [$collection, $item, $selectedCopy, $meta['key']]) }}"
             data-turbo="true"
             @class([
                 'flex items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors',

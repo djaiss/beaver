@@ -33,7 +33,7 @@ it('records a transaction against a copy', function () {
         'note' => 'Bought the day Ross said we were on a break.',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']));
+    $response->assertRedirect(route('items.history.section', [$collection, $item, $copy, 'transactions']));
     $response->assertSessionHas('status', 'Transaction recorded');
 
     $transaction = Transaction::query()->first();
@@ -205,7 +205,7 @@ it('updates a transaction', function () {
         'amount' => '350',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']));
+    $response->assertRedirect(route('items.history.section', [$collection, $item, $copy, 'transactions']));
     $response->assertSessionHas('status', 'Transaction updated');
 
     $transaction->refresh();
@@ -279,7 +279,7 @@ it('deletes a transaction', function () {
 
     $response = $this->actingAs($user)->delete(route('transactions.destroy', [$collection, $item, $copy, $transaction]));
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']));
+    $response->assertRedirect(route('items.history.section', [$collection, $item, $copy, 'transactions']));
     $response->assertSessionHas('status', 'Transaction deleted');
     $this->assertModelMissing($transaction);
 });
