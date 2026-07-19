@@ -25,6 +25,12 @@ enum ItemActionEnum: string
     case CopyCreation = 'copy_created';
     case CopyUpdate = 'copy_updated';
     case CopyDeletion = 'copy_deleted';
+    case TransactionCreation = 'transaction_created';
+    case TransactionUpdate = 'transaction_updated';
+    case TransactionDeletion = 'transaction_deleted';
+    case ProvenanceEventCreation = 'provenance_event_created';
+    case ProvenanceEventUpdate = 'provenance_event_updated';
+    case ProvenanceEventDeletion = 'provenance_event_deleted';
 
     public function translationKey(): string
     {
@@ -40,6 +46,12 @@ enum ItemActionEnum: string
             self::CopyCreation => 'added a copy',
             self::CopyUpdate => 'updated a copy',
             self::CopyDeletion => 'deleted a copy',
+            self::TransactionCreation => 'recorded a transaction',
+            self::TransactionUpdate => 'updated a transaction',
+            self::TransactionDeletion => 'deleted a transaction',
+            self::ProvenanceEventCreation => 'recorded a provenance event',
+            self::ProvenanceEventUpdate => 'updated a provenance event',
+            self::ProvenanceEventDeletion => 'deleted a provenance event',
         };
     }
 }

@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CopyStatus;
+use App\Enums\TransactionType;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\CopyFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -122,6 +124,57 @@ class Copy extends Model
     }
 
     /**
+     * Get every transaction involving the copy, most recent first.
+     *
+     * @return HasMany<Transaction, $this>
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class)->orderByDesc('occurred_at')->orderByDesc('id');
+    }
+
+    /**
+     * Get the transaction that brought the copy into the collection.
+     *
+     * The acquisition date and the purchase price are read from here rather than
+     * stored on the copy. It is the earliest transaction of a type that acquires
+     * (a purchase, a trade, a gift received, an inheritance), so a copy bought
+     * and later sold still reports when it was bought.
+     *
+     * @return HasOne<Transaction, $this>
+     */
+    public function acquiringTransaction(): HasOne
+    {
+        $acquiring = array_map(
+            fn (TransactionType $type): string => $type->value,
+            array_filter(TransactionType::cases(), fn (TransactionType $type): bool => $type->acquires()),
+        );
+
+        // The constraint goes through ofMany's second argument rather than a
+        // plain where on the relation: the aggregate runs in its own subquery,
+        // and a constraint outside it would pick the earliest transaction of any
+        // type and then discard it for not being an acquiring one.
+        return $this->hasOne(Transaction::class)->ofMany(
+            ['occurred_at' => 'min', 'id' => 'min'],
+            fn (Builder $query) => $query->whereIn('type', $acquiring),
+        );
+    }
+
+    /**
+     * Get the documented story of the copy, oldest first.
+     *
+     * Provenance reads as a narrative rather than as a feed, so unlike the
+     * transactions these run forwards. An event whose date is unknown carries
+     * none, and sorts to the front rather than being dropped.
+     *
+     * @return HasMany<ProvenanceEvent, $this>
+     */
+    public function provenanceEvents(): HasMany
+    {
+        return $this->hasMany(ProvenanceEvent::class)->orderBy('occurred_at')->orderBy('id');
+    }
+
+    /**
      * Get every valuation recorded against the copy, most recent first.
      *
      * @return HasMany<Valuation, $this>
@@ -158,5 +211,28 @@ class Copy extends Model
     public function estimatedValue(): ?int
     {
         return $this->latestValuation?->amount;
+    }
+
+    /**
+     * Get when the copy entered the collection.
+     *
+     * Null means it has no transaction saying how it was acquired, not that it
+     * arrived at an unknown date.
+     */
+    public function acquiredAt(): ?Carbon
+    {
+        return $this->acquiringTransaction?->occurred_at;
+    }
+
+    /**
+     * Get what was paid to acquire the copy, in cents.
+     *
+     * This is the total of the acquiring transaction, so it includes the tax,
+     * the fees and the shipping that came with it rather than the headline
+     * price alone.
+     */
+    public function pricePaid(): ?int
+    {
+        return $this->acquiringTransaction?->total();
     }
 }

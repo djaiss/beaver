@@ -36,6 +36,12 @@ enum UserActionEnum: string
     case CopyCreation = 'copy_created';
     case CopyUpdate = 'copy_updated';
     case CopyDeletion = 'copy_deleted';
+    case TransactionCreation = 'transaction_created';
+    case TransactionUpdate = 'transaction_updated';
+    case TransactionDeletion = 'transaction_deleted';
+    case ProvenanceEventCreation = 'provenance_event_created';
+    case ProvenanceEventUpdate = 'provenance_event_updated';
+    case ProvenanceEventDeletion = 'provenance_event_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -106,6 +112,12 @@ enum UserActionEnum: string
             self::CopyCreation => 'Added a copy of the item called :name',
             self::CopyUpdate => 'Updated a copy of the item called :name',
             self::CopyDeletion => 'Deleted a copy of the item called :name',
+            self::TransactionCreation => 'Recorded a transaction on the item called :name',
+            self::TransactionUpdate => 'Updated a transaction on the item called :name',
+            self::TransactionDeletion => 'Deleted a transaction on the item called :name',
+            self::ProvenanceEventCreation => 'Recorded a provenance event on the item called :name',
+            self::ProvenanceEventUpdate => 'Updated a provenance event on the item called :name',
+            self::ProvenanceEventDeletion => 'Deleted a provenance event on the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',

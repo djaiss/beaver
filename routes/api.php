@@ -30,10 +30,12 @@ use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\ItemPhotoSelectionController;
 use App\Http\Controllers\Api\ItemTagController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\ProvenanceEventController;
 use App\Http\Controllers\Api\SeriesController;
 use App\Http\Controllers\Api\SetController;
 use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TrashController;
 use Illuminate\Support\Facades\Route;
 
@@ -155,6 +157,20 @@ Route::name('api.')->group(function (): void {
         Route::post('items/{item}/copies', [CopyController::class, 'create'])->where('item', '[1-9][0-9]*')->name('items.copies.create');
         Route::put('items/{item}/copies/{copy}', [CopyController::class, 'update'])->where(['item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.copies.update');
         Route::delete('items/{item}/copies/{copy}', [CopyController::class, 'destroy'])->where(['item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.copies.destroy');
+
+        // the transactions recorded against a copy
+        Route::get('copies/{copy}/transactions', [TransactionController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.transactions');
+        Route::get('copies/{copy}/transactions/{transaction}', [TransactionController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('copies.transactions.show');
+        Route::post('copies/{copy}/transactions', [TransactionController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.transactions.create');
+        Route::put('copies/{copy}/transactions/{transaction}', [TransactionController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('copies.transactions.update');
+        Route::delete('copies/{copy}/transactions/{transaction}', [TransactionController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('copies.transactions.destroy');
+
+        // the documented story of a copy
+        Route::get('copies/{copy}/provenance-events', [ProvenanceEventController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.provenanceEvents');
+        Route::get('copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('copies.provenanceEvents.show');
+        Route::post('copies/{copy}/provenance-events', [ProvenanceEventController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.provenanceEvents.create');
+        Route::put('copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('copies.provenanceEvents.update');
+        Route::delete('copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('copies.provenanceEvents.destroy');
 
         // the photos of an item
         Route::get('items/{item}/photos', [ItemPhotoController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.photos');

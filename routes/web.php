@@ -31,6 +31,7 @@ use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LocationController;
+use App\Http\Controllers\App\ProvenanceEventController;
 use App\Http\Controllers\App\SeriesController;
 use App\Http\Controllers\App\SetController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
@@ -52,6 +53,7 @@ use App\Http\Controllers\App\Settings\UserController;
 use App\Http\Controllers\App\Settings\WebhookController;
 use App\Http\Controllers\App\StatisticsController;
 use App\Http\Controllers\App\TagController;
+use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\App\TrashController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
@@ -111,6 +113,16 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items', [ItemController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('items.create');
         Route::get('collections/{collection}/items/{item}/edit', [ItemController::class, 'edit'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.edit');
         Route::put('collections/{collection}/items/{item}', [ItemController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.update');
+
+        // transactions — owners and editors record what a copy cost, sold for or was traded against
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/transactions', [TransactionController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('transactions.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/transactions/{transaction}', [TransactionController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('transactions.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/transactions/{transaction}', [TransactionController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('transactions.destroy');
+
+        // provenance events — owners and editors record the story of a copy: who owned it, where it was shown, how it was authenticated
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/provenance-events', [ProvenanceEventController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('provenanceEvents.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('provenanceEvents.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('provenanceEvents.destroy');
 
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');

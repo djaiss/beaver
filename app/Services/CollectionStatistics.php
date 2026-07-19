@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\TransactionType;
 use App\Models\Category;
 use App\Models\Collection as CollectionModel;
 use App\Models\Condition;
@@ -28,8 +29,10 @@ use Illuminate\Support\Facades\DB;
  * built on that single reading rather than on a stored total.
  *
  * The two charts that run over time key off when a copy was acquired, which is
- * optional. Copies without a date are left out of those two rather than being
- * parked in an arbitrary month, so the screen reports how many were skipped.
+ * the date of the transaction that brought it in rather than a column on the
+ * copy. A copy with no such transaction has no acquisition date, and is left out
+ * of those two rather than parked in an arbitrary month, so the screen reports
+ * how many were skipped.
  *
  * Names are encrypted, so nothing can be grouped or sorted by name in SQL. The
  * aggregation happens on the foreign key, and the names are resolved afterwards.
@@ -125,9 +128,12 @@ class CollectionStatistics
         $values = $this->valued()->pluck('value', 'id');
         $acquired = $this->acquisitionDates();
 
+        // The keys are copy ids and the values are looked up by them, so the
+        // grouping has to preserve them. Without that the sum reads an empty
+        // lookup and every month comes out at zero.
         $monthly = $acquired
             ->filter(fn (Carbon $date): bool => $date->greaterThanOrEqualTo($start))
-            ->groupBy(fn (Carbon $date): string => $date->format('Y-m'))
+            ->groupBy(fn (Carbon $date): string => $date->format('Y-m'), preserveKeys: true)
             ->map(fn (Collection $dates): int => $dates->keys()->sum(fn (int $copyId): int => (int) ($values[$copyId] ?? 0)));
 
         $running = (int) $acquired
@@ -384,19 +390,30 @@ class CollectionStatistics
     /**
      * When each copy of the collection was acquired, keyed by copy id.
      *
-     * The acquisition date left the copy with the restructuring (#117): it is
-     * read from the transaction that acquired the copy, and transactions arrive
-     * with #118. Until then nothing carries an acquisition date, so the two
-     * charts over time render empty and every copy counts as undated.
+     * The acquisition date is not stored on the copy. It is the date of the
+     * earliest transaction that brought the copy in, so a copy bought and later
+     * sold still reports when it was bought, and a copy with only a fee against
+     * it has no acquisition date at all.
      *
-     * This is deliberately the only place that answers the question, so wiring
-     * it to the transactions is a change to one method rather than to four.
+     * This is deliberately the only place that answers the question, so the
+     * three charts that run on it cannot drift apart.
      *
      * @return Collection<int, Carbon>
      */
     private function acquisitionDates(): Collection
     {
-        return collect();
+        $acquiring = array_map(
+            fn (TransactionType $type): string => $type->value,
+            array_filter(TransactionType::cases(), fn (TransactionType $type): bool => $type->acquires()),
+        );
+
+        return DB::table('transactions')
+            ->whereIn('transactions.copy_id', $this->valued()->select('copies.id'))
+            ->whereIn('transactions.type', $acquiring)
+            ->groupBy('transactions.copy_id')
+            ->selectRaw('transactions.copy_id as copy_id, min(transactions.occurred_at) as acquired_at')
+            ->pluck('acquired_at', 'copy_id')
+            ->map(fn (string $date): Carbon => Carbon::parse($date));
     }
 
     /**

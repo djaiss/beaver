@@ -17,7 +17,8 @@ use Illuminate\View\View;
  * so the copy is chosen first and lives in the url: the bare tab lands on the
  * first copy, and each copy pill links to its own. Most of what the tab will
  * read from does not exist yet, so it shows the sections it will hold and fills
- * only the valuations, which are the one history the copy restructuring brought.
+ * the three that are built: the valuations, the transactions and the provenance,
+ * each in its own panel.
  */
 class ItemHistoryController extends Controller
 {
@@ -42,6 +43,8 @@ class ItemHistoryController extends Controller
             'copies.currentLocation',
             'copies.latestValuation',
             'copies.valuations',
+            'copies.transactions.provenanceEvent',
+            'copies.provenanceEvents.transaction',
             'category',
             'collectionType',
         ]);
@@ -63,6 +66,7 @@ class ItemHistoryController extends Controller
             'tags' => $this->accountTags($request),
             'selectedCopy' => $selectedCopy,
             'section' => $this->section($request),
+            'currencies' => $this->currencyOptions(),
         ]);
     }
 
@@ -76,6 +80,18 @@ class ItemHistoryController extends Controller
         $section = (string) $request->query('section', 'timeline');
 
         return in_array($section, self::SECTIONS, true) ? $section : 'timeline';
+    }
+
+    /**
+     * The currencies a transaction can be recorded in.
+     *
+     * @return array<string, string>
+     */
+    private function currencyOptions(): array
+    {
+        return collect(config('currencies'))
+            ->map(fn (array $currency, string $code): string => $currency['flag'].' '.$code)
+            ->all();
     }
 
     /**
