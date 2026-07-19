@@ -30,9 +30,7 @@
   </div>
 
   @if ($canManage)
-    <div x-show="addingEvent" x-cloak class="mb-4 rounded-xl border border-hairline bg-canvas p-5">
-      <p class="mb-4 text-base font-semibold text-ink">{{ __('New provenance event') }}</p>
-
+    <div x-show="addingEvent" x-cloak class="mb-4">
       @include('app.items.partials._provenanceEventForm', [
           'formId' => 'add-provenance-event-'.$selectedCopy->id,
           'action' => route('provenanceEvents.create', [$collection, $item, $selectedCopy]),
