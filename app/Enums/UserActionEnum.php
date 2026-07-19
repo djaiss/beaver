@@ -54,6 +54,7 @@ enum UserActionEnum: string
     case SeriesCreation = 'series_created';
     case SeriesUpdate = 'series_updated';
     case SeriesDeletion = 'series_deleted';
+    case GettingStartedUpdate = 'getting_started_updated';
     case TrashRestoration = 'trash_restored';
     case TrashEmptied = 'trash_emptied';
     case ApiKeyCreation = 'api_key_created';
@@ -118,6 +119,7 @@ enum UserActionEnum: string
             self::SeriesCreation => 'Created the series called :name',
             self::SeriesUpdate => 'Updated the series called :name',
             self::SeriesDeletion => 'Deleted the series called :name',
+            self::GettingStartedUpdate => 'Updated the getting started screen to :status',
             self::TrashRestoration => 'Restored the :type called :name from the trash',
             self::TrashEmptied => 'Emptied the trash, permanently deleting :count objects',
             self::ApiKeyCreation => 'Created an API key',
