@@ -31,6 +31,9 @@ enum ItemActionEnum: string
     case ProvenanceEventCreation = 'provenance_event_created';
     case ProvenanceEventUpdate = 'provenance_event_updated';
     case ProvenanceEventDeletion = 'provenance_event_deleted';
+    case ValuationCreation = 'valuation_created';
+    case ValuationUpdate = 'valuation_updated';
+    case ValuationDeletion = 'valuation_deleted';
 
     public function translationKey(): string
     {
@@ -52,6 +55,9 @@ enum ItemActionEnum: string
             self::ProvenanceEventCreation => 'recorded a provenance event',
             self::ProvenanceEventUpdate => 'updated a provenance event',
             self::ProvenanceEventDeletion => 'deleted a provenance event',
+            self::ValuationCreation => 'recorded a valuation',
+            self::ValuationUpdate => 'updated a valuation',
+            self::ValuationDeletion => 'deleted a valuation',
         };
     }
 }
