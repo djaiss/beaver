@@ -75,6 +75,7 @@
             <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" color="bg-brand">{{ __('Items') }}</x-sidebar-link>
             <x-sidebar-link :href="route('categories.index', $collection)" :active="request()->routeIs('categories.*')" color="bg-badge-violet">{{ __('Categories') }}</x-sidebar-link>
             <x-sidebar-link :href="route('sets.index', $collection)" :active="request()->routeIs('sets.*')" color="bg-badge-emerald">{{ __('Sets') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('statistics.index', $collection)" :active="request()->routeIs('statistics.*')" color="bg-badge-pink">{{ __('Statistics') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-orange">{{ __('Item details') }}</x-sidebar-link>
         </nav>
     @else
