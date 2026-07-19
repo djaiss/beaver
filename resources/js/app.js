@@ -11,6 +11,8 @@ import morph from '@alpinejs/morph';
 import ajax from '@imacrayon/alpine-ajax';
 import Popover from './components/popover';
 import RelationshipTypeSorter from './components/relationship-type-sorter';
+import SpinningCounter from './components/spinning-counter';
+import TiltCard from './components/tilt-card';
 import TypeSchemaValidator from './components/type-schema-validator';
 
 window.Alpine = Alpine;
@@ -23,6 +25,8 @@ Alpine.plugin(ajax);
 ajax.configure({ mergeStrategy: 'morph' });
 Alpine.data('popover', Popover);
 Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);
+Alpine.data('spinningCounter', SpinningCounter);
+Alpine.data('tiltCard', TiltCard);
 Alpine.data('typeSchemaValidator', TypeSchemaValidator);
 
 // --- Collection items view switching ---

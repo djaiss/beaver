@@ -8,28 +8,35 @@
           {{ $collection->emoji ?? '📦' }}
         </div>
       @else
-        {{-- The frame carries the shape, so the photo on screen and the counter
-             over it always share the same box, whichever photo is showing. --}}
-        <div class="relative aspect-4/3 w-full overflow-hidden rounded-xl border border-hairline">
-          @foreach ($item->photos as $photo)
-            <img
-              x-show="photo === {{ $loop->index }}"
-              @if (! $loop->first) x-cloak @endif
-              src="{{ $photo->url() }}"
-              alt="{{ $item->name }}"
-              class="absolute inset-0 size-full object-cover"
-            />
-          @endforeach
+        {{-- The outer element is the flat hit area the pointer is measured
+             against: it never transforms, so the card tilting underneath cannot
+             feed its own movement back into the reading. --}}
+        <div x-data="tiltCard" class="t-tilt">
+          {{-- The frame carries the shape, so the photo on screen and the counter
+               over it always share the same box, whichever photo is showing. --}}
+          <div class="t-tilt-card relative aspect-4/3 w-full overflow-hidden rounded-xl border border-hairline">
+            @foreach ($item->photos as $photo)
+              <img
+                x-show="photo === {{ $loop->index }}"
+                @if (! $loop->first) x-cloak @endif
+                src="{{ $photo->url() }}"
+                alt="{{ $item->name }}"
+                class="absolute inset-0 size-full object-cover"
+              />
+            @endforeach
 
-          {{-- Which of the photos is on screen. A single photo needs no counting. --}}
-          @if ($item->photos->count() > 1)
-            <span
-              class="absolute right-3.5 bottom-3.5 rounded-md bg-black/40 px-2.5 py-1 font-mono text-[11px] text-white"
-              data-test="photo-position"
-            >
-              <span x-text="photo + 1">1</span> / {{ $item->photos->count() }}
-            </span>
-          @endif
+            {{-- Which of the photos is on screen. A single photo needs no counting. --}}
+            @if ($item->photos->count() > 1)
+              <span
+                class="absolute right-3.5 bottom-3.5 rounded-md bg-black/40 px-2.5 py-1 font-mono text-[11px] text-white"
+                data-test="photo-position"
+              >
+                <span x-text="photo + 1">1</span> / {{ $item->photos->count() }}
+              </span>
+            @endif
+
+            <div class="t-tilt-glare"></div>
+          </div>
         </div>
       @endif
 
