@@ -9,6 +9,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ProvenanceEvent;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -83,4 +84,39 @@ it('leaves the transaction alone when the user may not delete it', function () {
     }
 
     $this->assertDatabaseHas('transactions', ['id' => $transaction->id]);
+});
+
+// The money was a fact about the exchange. The moment in the object's story
+// outlives the record of what was paid for it, so deleting the transaction
+// releases the event rather than taking it down too.
+it('unlinks the provenance event instead of deleting it', function () {
+    Queue::fake();
+    $ross = $this->createUser();
+    $transaction = transactionToDestroy($ross);
+    $event = ProvenanceEvent::factory()->create([
+        'copy_id' => $transaction->copy_id,
+        'transaction_id' => $transaction->id,
+    ]);
+
+    new DestroyTransaction(user: $ross, transaction: $transaction)->execute();
+
+    $event->refresh();
+
+    expect($event->exists)->toBeTrue();
+    expect($event->transaction_id)->toBeNull();
+});
+
+it('leaves the events of other transactions alone', function () {
+    Queue::fake();
+    $ross = $this->createUser();
+    $transaction = transactionToDestroy($ross);
+    $other = Transaction::factory()->create(['copy_id' => $transaction->copy_id]);
+    $keeper = ProvenanceEvent::factory()->create([
+        'copy_id' => $transaction->copy_id,
+        'transaction_id' => $other->id,
+    ]);
+
+    new DestroyTransaction(user: $ross, transaction: $transaction)->execute();
+
+    expect($keeper->refresh()->transaction_id)->toBe($other->id);
 });

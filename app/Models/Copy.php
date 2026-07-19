@@ -161,6 +161,20 @@ class Copy extends Model
     }
 
     /**
+     * Get the documented story of the copy, oldest first.
+     *
+     * Provenance reads as a narrative rather than as a feed, so unlike the
+     * transactions these run forwards. An event whose date is unknown carries
+     * none, and sorts to the front rather than being dropped.
+     *
+     * @return HasMany<ProvenanceEvent, $this>
+     */
+    public function provenanceEvents(): HasMany
+    {
+        return $this->hasMany(ProvenanceEvent::class)->orderBy('occurred_at')->orderBy('id');
+    }
+
+    /**
      * Get every valuation recorded against the copy, most recent first.
      *
      * @return HasMany<Valuation, $this>

@@ -5,8 +5,8 @@
   each copy has its own. The sections down the left are what the history will be
   assembled from. Almost none of them exist yet, so they are listed with what
   they are for rather than hidden: the shape of the screen is the point. The
-  timeline, the valuations and the transactions are the ones that are built, so
-  they are the only ones filled in.
+  timeline, the valuations, the transactions and the provenance are the ones
+  that are built, so they are the only ones filled in.
 
   The dot colours and shapes match the Kollek design: a round dot for the events
   that belong to the object's story, a square for the operational records.
@@ -19,7 +19,7 @@
       ['key' => 'timeline', 'label' => __('Timeline'), 'color' => 'var(--color-ink)', 'round' => true, 'ready' => true],
       ['key' => 'transactions', 'label' => __('Transactions'), 'color' => '#34d399', 'round' => false, 'ready' => true],
       ['key' => 'valuations', 'label' => __('Valuations'), 'color' => '#3b82f6', 'round' => false, 'ready' => true],
-      ['key' => 'provenance', 'label' => __('Provenance'), 'color' => '#6366f1', 'round' => true, 'ready' => false],
+      ['key' => 'provenance', 'label' => __('Provenance'), 'color' => '#6366f1', 'round' => true, 'ready' => true],
       ['key' => 'insurance', 'label' => __('Insurance'), 'color' => '#8b5cf6', 'round' => true, 'ready' => false],
       ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => false],
       ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => false],
@@ -47,7 +47,13 @@
     // rest are left blank rather than showing a zero that reads as a real count.
     $valuationCount = $selectedCopy->valuations->count();
     $transactionCount = $selectedCopy->transactions->count();
-    $counts = ['timeline' => $valuationCount, 'transactions' => $transactionCount, 'valuations' => $valuationCount];
+    $provenanceCount = $selectedCopy->provenanceEvents->count();
+    $counts = [
+        'timeline' => $valuationCount,
+        'transactions' => $transactionCount,
+        'valuations' => $valuationCount,
+        'provenance' => $provenanceCount,
+    ];
 
     // The acquisition date and price are read from the earliest transaction that
     // brought the copy in, not stored on the copy.
@@ -167,6 +173,8 @@
           @include('app.items.partials._historyTimeline')
         @elseif ($section === 'transactions')
           @include('app.items.partials._historyTransactions')
+        @elseif ($section === 'provenance')
+          @include('app.items.partials._historyProvenance')
         @elseif ($section === 'valuations')
           @include('app.items.partials._historyValuations')
         @else

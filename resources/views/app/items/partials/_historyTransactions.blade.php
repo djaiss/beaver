@@ -60,6 +60,11 @@
         <div class="flex flex-wrap items-start justify-between gap-3 px-4 py-3.5">
           <div class="min-w-0">
             <x-badge data-test="transaction-type-{{ $transaction->id }}">{{ $transaction->type->label() }}</x-badge>
+
+            @if ($transaction->provenanceEvent)
+              <x-badge color="violet" class="ml-1.5" data-test="transaction-provenance-{{ $transaction->id }}">{{ __('In the provenance') }}</x-badge>
+            @endif
+
             <p class="mt-1.5 truncate text-[13px] text-muted" data-test="transaction-counterparty-{{ $transaction->id }}">{{ $transaction->counterparty ?? __('No counterparty recorded.') }}</p>
           </div>
 
@@ -78,7 +83,7 @@
                 method="delete"
                 :action="route('transactions.destroy', [$collection, $item, $selectedCopy, $transaction])"
                 x-target="history-panel notifications"
-                x-on:ajax:before="confirm('{{ __('Delete this transaction? This cannot be undone.') }}') || $event.preventDefault()"
+                x-on:ajax:before="confirm('{{ $transaction->provenanceEvent ? __('Delete this transaction? Its provenance event is kept and simply unlinked. This cannot be undone.') : __('Delete this transaction? This cannot be undone.') }}') || $event.preventDefault()"
               >
                 <button type="submit" class="flex size-8 shrink-0 items-center justify-center rounded-md border border-hairline text-muted hover:bg-card" aria-label="{{ __('Delete transaction') }}" data-test="delete-transaction-{{ $transaction->id }}">
                   @svg('lucide-x', 'size-3.5')

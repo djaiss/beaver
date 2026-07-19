@@ -11,6 +11,7 @@ use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Transaction
@@ -102,6 +103,20 @@ class Transaction extends Model
     public function copy(): BelongsTo
     {
         return $this->belongsTo(Copy::class);
+    }
+
+    /**
+     * Get the provenance event this exchange produced, if any.
+     *
+     * Purchases, sales, trades, gifts and inheritances normally have one. Fees,
+     * taxes, shipping charges and refunds normally do not: they are the money
+     * around a change of ownership rather than the change itself.
+     *
+     * @return HasOne<ProvenanceEvent, $this>
+     */
+    public function provenanceEvent(): HasOne
+    {
+        return $this->hasOne(ProvenanceEvent::class);
     }
 
     /**

@@ -17,7 +17,8 @@ use Illuminate\View\View;
  * so the copy is chosen first and lives in the url: the bare tab lands on the
  * first copy, and each copy pill links to its own. Most of what the tab will
  * read from does not exist yet, so it shows the sections it will hold and fills
- * the ones that are built: the valuations, and the transactions in their panel.
+ * the three that are built: the valuations, the transactions and the provenance,
+ * each in its own panel.
  */
 class ItemHistoryController extends Controller
 {
@@ -42,7 +43,8 @@ class ItemHistoryController extends Controller
             'copies.currentLocation',
             'copies.latestValuation',
             'copies.valuations',
-            'copies.transactions',
+            'copies.transactions.provenanceEvent',
+            'copies.provenanceEvents.transaction',
             'category',
             'collectionType',
         ]);
