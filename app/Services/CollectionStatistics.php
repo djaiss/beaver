@@ -173,7 +173,14 @@ class CollectionStatistics
             $rows[] = ['label' => null, 'other' => false, 'count' => $uncategorised];
         }
 
-        return $this->withPercentages($rows, array_sum(array_column($rows, 'count')));
+        $total = array_sum(array_column($rows, 'count'));
+
+        return array_map(fn (array $row): array => [
+            'label' => $row['label'],
+            'other' => $row['other'],
+            'count' => $row['count'],
+            'percentage' => $this->percentage($row['count'], $total),
+        ], $rows);
     }
 
     /**
@@ -190,13 +197,20 @@ class CollectionStatistics
 
         $names = Condition::query()->whereIn('id', $rows->pluck('condition_id')->filter())->get()->keyBy('id');
 
-        return $this->withPercentages(
-            $rows->map(fn (Copy $row): array => [
+        $total = $this->copies()->count();
+
+        return $rows
+            ->map(fn (Copy $row): array => [
                 'label' => $names->get($row->condition_id)?->name,
                 'count' => (int) $row->getAttribute('total'),
-            ])->sortByDesc('count')->values()->all(),
-            $this->copies()->count(),
-        );
+            ])
+            ->sortByDesc('count')
+            ->map(fn (array $row): array => [
+                ...$row,
+                'percentage' => $this->percentage($row['count'], $total),
+            ])
+            ->values()
+            ->all();
     }
 
     /**
@@ -288,14 +302,10 @@ class CollectionStatistics
     }
 
     /**
-     * @param  list<array{label: string, count: int}>  $rows
-     * @return list<array{label: string, count: int, percentage: int}>
+     * What share of the whole a row stands for, rounded to a whole percent.
      */
-    private function withPercentages(array $rows, int $total): array
+    private function percentage(int $count, int $total): int
     {
-        return array_map(fn (array $row): array => [
-            ...$row,
-            'percentage' => $total === 0 ? 0 : (int) round(($row['count'] / $total) * 100),
-        ], $rows);
+        return $total === 0 ? 0 : (int) round(($count / $total) * 100);
     }
 }
