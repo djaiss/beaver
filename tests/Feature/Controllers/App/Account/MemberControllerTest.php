@@ -1,11 +1,14 @@
 <?php
 
 declare(strict_types=1);
+use App\Actions\UpdateUserAvatar;
 use App\Enums\PermissionEnum;
 use App\Mail\AccountInvitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -145,4 +148,27 @@ it('cannot demote the last owner', function () {
 
     $response->assertSessionHasErrors('role');
     expect($member->fresh()->role)->toBe(PermissionEnum::Owner->value);
+});
+
+it('shows the avatar of a member when they have one, and the initials otherwise', function () {
+    Storage::fake();
+
+    $owner = $this->createUser(['first_name' => 'Monica', 'last_name' => 'Geller']);
+    $owner->update(['role' => PermissionEnum::Owner->value]);
+
+    $rachel = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
+    $rachel->update(['account_id' => $owner->account_id]);
+
+    new UpdateUserAvatar(
+        user: $rachel,
+        file: UploadedFile::fake()->image('rachel.jpg', 400, 400),
+    )->execute();
+
+    $response = $this->actingAs($owner)->get(route('settings.members.index'));
+
+    $response->assertOk();
+    $response->assertSee(route('profile.avatar.show', ['user' => $rachel, 'size' => 32]), escape: false);
+
+    // Monica never uploaded one, so she keeps her initials.
+    $response->assertSee('MG');
 });
