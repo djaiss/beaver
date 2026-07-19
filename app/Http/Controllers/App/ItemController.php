@@ -55,7 +55,7 @@ class ItemController extends Controller
             'collection' => $collectionModel,
             'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
             'categories' => $this->categoryOptions($collectionModel),
-            'sets' => $account->sets()->orderBy('name')->get(),
+            'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
             'tags' => $this->accountTags($request),
@@ -74,7 +74,7 @@ class ItemController extends Controller
             'item' => $itemModel,
             'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
             'categories' => $this->categoryOptions($collectionModel),
-            'sets' => $account->sets()->orderBy('name')->get(),
+            'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
             'tags' => $this->accountTags($request),
@@ -102,7 +102,7 @@ class ItemController extends Controller
                 ? $collectionModel->categories()->find($validated['category_id'])
                 : null,
             set: isset($validated['set_id'])
-                ? $account->sets()->find($validated['set_id'])
+                ? $collectionModel->sets()->find($validated['set_id'])
                 : null,
             tagIds: $validated['tag_ids'] ?? [],
             newTagNames: $validated['new_tags'] ?? [],
@@ -135,7 +135,7 @@ class ItemController extends Controller
             : null;
 
         $set = isset($validated['set_id'])
-            ? $account->sets()->find($validated['set_id'])
+            ? $collectionModel->sets()->find($validated['set_id'])
             : null;
 
         new CreateItem(

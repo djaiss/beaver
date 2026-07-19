@@ -202,7 +202,7 @@ it('leaves the tags, custom field values and copies alone when updating an item'
     $collection->collectionTypes()->attach($type);
     $field = CustomField::factory()->create(['type_id' => $type->id]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create([
         'collection_id' => $collection->id,

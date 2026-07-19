@@ -25,7 +25,7 @@ it('permanently deletes everything in the trash', function () {
     $collection = Collection::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     $copy->delete();
     $item->delete();

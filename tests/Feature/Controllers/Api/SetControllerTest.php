@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
+use App\Models\Collection;
 use App\Models\Set;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -14,8 +15,10 @@ beforeEach(function () {
         'type',
         'id',
         'attributes' => [
+            'collection_id',
             'name',
             'description',
+            'target_count',
             'created_at',
             'updated_at',
         ],
@@ -27,8 +30,8 @@ beforeEach(function () {
 
 it('lists the sets of the account', function () {
     $user = $this->createUser();
-    Set::factory()->create(['account_id' => $user->account_id, 'name' => 'First set']);
-    Set::factory()->create(['account_id' => $user->account_id, 'name' => 'Second set']);
+    Set::factory()->forAccount($user->account_id)->create(['name' => 'First set']);
+    Set::factory()->forAccount($user->account_id)->create(['name' => 'Second set']);
 
     Sanctum::actingAs($user);
 
@@ -58,7 +61,7 @@ it('does not list sets from another account', function () {
 
 it('shows a set', function () {
     $user = $this->createUser();
-    $set = Set::factory()->create(['account_id' => $user->account_id, 'name' => 'Spider-Man run']);
+    $set = Set::factory()->forAccount($user->account_id)->create(['name' => 'Spider-Man run']);
 
     Sanctum::actingAs($user);
 
@@ -84,23 +87,27 @@ it('creates a set', function () {
     Queue::fake();
 
     $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
 
     Sanctum::actingAs($user);
 
     $response = $this->json('POST', '/api/sets', [
+        'collection_id' => $collection->id,
         'name' => 'Spider-Man run',
         'description' => 'Issues 1 to 10.',
+        'target_count' => 10,
     ]);
 
     $response
         ->assertCreated()
         ->assertJsonStructure(['data' => $this->jsonStructure])
         ->assertJsonPath('data.attributes.name', 'Spider-Man run')
-        ->assertJsonPath('data.attributes.description', 'Issues 1 to 10.');
+        ->assertJsonPath('data.attributes.description', 'Issues 1 to 10.')
+        ->assertJsonPath('data.attributes.target_count', 10);
 
     $set = Set::query()->latest('id')->first();
     expect($set->name)->toBe('Spider-Man run');
-    expect($set->account_id)->toBe($user->account_id);
+    expect($set->collection_id)->toBe($collection->id);
 });
 
 it('validates the name when creating a set', function () {
@@ -116,17 +123,21 @@ it('validates the name when creating a set', function () {
 it('restricts set creation to owners and editors', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
 
     Sanctum::actingAs($viewer);
 
-    $this->json('POST', '/api/sets', ['name' => 'Spider-Man run'])->assertNotFound();
+    $this->json('POST', '/api/sets', [
+        'collection_id' => $collection->id,
+        'name' => 'Spider-Man run',
+    ])->assertNotFound();
 });
 
 it('updates a set', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $set = Set::factory()->create(['account_id' => $user->account_id, 'name' => 'Old name']);
+    $set = Set::factory()->forAccount($user->account_id)->create(['name' => 'Old name']);
 
     Sanctum::actingAs($user);
 
@@ -144,7 +155,7 @@ it('updates a set', function () {
 it('restricts set updates to owners and editors', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     Sanctum::actingAs($viewer);
 
@@ -155,7 +166,7 @@ it('deletes a set', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $set = Set::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->forAccount($user->account_id)->create();
 
     Sanctum::actingAs($user);
 
@@ -167,7 +178,7 @@ it('deletes a set', function () {
 it('restricts set deletion to owners and editors', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     Sanctum::actingAs($viewer);
 

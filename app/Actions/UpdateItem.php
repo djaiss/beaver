@@ -104,7 +104,7 @@ class UpdateItem
             throw new ModelNotFoundException('Category not found');
         }
 
-        if ($this->set instanceof Set && $this->set->account_id !== $collection->account_id) {
+        if ($this->set instanceof Set && $this->set->collection_id !== $collection->id) {
             throw new ModelNotFoundException('Set not found');
         }
 

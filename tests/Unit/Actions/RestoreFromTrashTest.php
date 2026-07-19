@@ -47,7 +47,7 @@ it('clears who deleted the object once it is restored', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Monica', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     $this->actingAs($editor);
     $set->delete();

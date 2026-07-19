@@ -7,13 +7,13 @@ namespace App\Actions;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
-use App\Models\Account;
+use App\Models\Collection;
 use App\Models\Set;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Create a set within an account. Only owners and editors may do so.
+ * Create a set within a collection. Only owners and editors may do so.
  */
 class CreateSet
 {
@@ -21,9 +21,10 @@ class CreateSet
 
     public function __construct(
         private readonly User $user,
-        private readonly Account $account,
+        private readonly Collection $collection,
         private string $name,
         private ?string $description = null,
+        private readonly ?int $targetCount = null,
     ) {}
 
     public function execute(): Set
@@ -39,8 +40,8 @@ class CreateSet
 
     private function validate(): void
     {
-        if (! $this->account->allowsManagementBy($this->user)) {
-            throw new ModelNotFoundException('Account not found');
+        if (! $this->collection->account->allowsManagementBy($this->user)) {
+            throw new ModelNotFoundException('Collection not found');
         }
     }
 
@@ -53,9 +54,10 @@ class CreateSet
     private function create(): void
     {
         $this->set = Set::query()->create([
-            'account_id' => $this->account->id,
+            'collection_id' => $this->collection->id,
             'name' => $this->name,
             'description' => $this->description,
+            'target_count' => $this->targetCount,
         ]);
     }
 

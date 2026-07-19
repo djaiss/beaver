@@ -63,7 +63,7 @@ class ItemController extends Controller
             description: $validated['description'] ?? null,
             collectionType: isset($validated['type_id']) ? $account->collectionTypes()->find($validated['type_id']) : null,
             category: isset($validated['category_id']) ? $collection->categories()->find($validated['category_id']) : null,
-            set: isset($validated['set_id']) ? $account->sets()->find($validated['set_id']) : null,
+            set: isset($validated['set_id']) ? $collection->sets()->find($validated['set_id']) : null,
         )->execute();
 
         return new ItemResource($item)

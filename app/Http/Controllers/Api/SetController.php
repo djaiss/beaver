@@ -43,15 +43,20 @@ class SetController extends Controller
     public function create(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'collection_id' => ['required', 'integer'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'target_count' => ['nullable', 'integer', 'min:1', 'max:100000'],
         ]);
+
+        $collection = $request->user()->account->collections()->findOrFail($validated['collection_id']);
 
         $set = new CreateSet(
             user: $request->user(),
-            account: $request->user()->account,
+            collection: $collection,
             name: $validated['name'],
             description: $validated['description'] ?? null,
+            targetCount: $validated['target_count'] ?? null,
         )->execute();
 
         return new SetResource($set)
@@ -68,6 +73,7 @@ class SetController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'target_count' => ['nullable', 'integer', 'min:1', 'max:100000'],
         ]);
 
         $set = new UpdateSet(
@@ -75,6 +81,7 @@ class SetController extends Controller
             set: $set,
             name: $validated['name'],
             description: $validated['description'] ?? null,
+            targetCount: $validated['target_count'] ?? null,
         )->execute();
 
         return new SetResource($set)

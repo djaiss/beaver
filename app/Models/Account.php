@@ -11,6 +11,7 @@ use Database\Factories\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Class Account
@@ -127,13 +128,13 @@ class Account extends Model
     }
 
     /**
-     * Get the sets that belong to the account.
+     * Get the sets that belong to the account, through the collections they live in.
      *
-     * @return HasMany<Set, $this>
+     * @return HasManyThrough<Set, Collection, $this>
      */
-    public function sets(): HasMany
+    public function sets(): HasManyThrough
     {
-        return $this->hasMany(Set::class);
+        return $this->hasManyThrough(Set::class, Collection::class);
     }
 
     /**

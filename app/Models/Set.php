@@ -22,9 +22,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * still needed.
  *
  * @property int $id
- * @property int $account_id
+ * @property int $collection_id
  * @property string $name
  * @property string|null $description
+ * @property int|null $target_count
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -53,9 +54,10 @@ class Set extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'account_id',
+        'collection_id',
         'name',
         'description',
+        'target_count',
     ];
 
     /**
@@ -68,17 +70,18 @@ class Set extends Model
         return [
             'name' => 'encrypted',
             'description' => 'encrypted',
+            'target_count' => 'integer',
         ];
     }
 
     /**
-     * Get the account the set belongs to.
+     * Get the collection the set belongs to.
      *
-     * @return BelongsTo<Account, $this>
+     * @return BelongsTo<Collection, $this>
      */
-    public function account(): BelongsTo
+    public function collection(): BelongsTo
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Collection::class);
     }
 
     /**

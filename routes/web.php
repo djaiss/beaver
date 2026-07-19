@@ -24,6 +24,7 @@ use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LocationController;
+use App\Http\Controllers\App\SetController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
 use App\Http\Controllers\App\Settings\EmailSentController;
@@ -62,6 +63,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
     // browsing the categories of a collection is read only, so any role may do it
     Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('categories.index');
+    // browsing the sets of a collection is read only, so any role may do it
+    Route::get('collections/{collection}/sets', [SetController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('sets.index');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
@@ -89,6 +92,13 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/categories', [CategoryController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('categories.create');
         Route::put('collections/{collection}/categories/{category}', [CategoryController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.update');
         Route::delete('collections/{collection}/categories/{category}', [CategoryController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.destroy');
+    });
+
+    // sets — owners and editors may create, update and delete the sets of a collection
+    Route::middleware(['editor'])->group(function (): void {
+        Route::post('collections/{collection}/sets', [SetController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('sets.create');
+        Route::put('collections/{collection}/sets/{set}', [SetController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'set' => '[1-9][0-9]*'])->name('sets.update');
+        Route::delete('collections/{collection}/sets/{set}', [SetController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'set' => '[1-9][0-9]*'])->name('sets.destroy');
     });
 
     // locations — owners and editors may create, update and delete locations

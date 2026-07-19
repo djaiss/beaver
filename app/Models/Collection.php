@@ -130,6 +130,16 @@ class Collection extends Model
     }
 
     /**
+     * Get the sets being tracked within the collection.
+     *
+     * @return HasMany<Set, $this>
+     */
+    public function sets(): HasMany
+    {
+        return $this->hasMany(Set::class);
+    }
+
+    /**
      * Get the remembered view preferences, one per user who has opened the collection.
      *
      * @return HasMany<CollectionView, $this>
