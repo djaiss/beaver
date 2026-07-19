@@ -53,4 +53,14 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Indicate that the user administers the whole instance.
+     */
+    public function instanceAdministrator(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_instance_administrator' => true,
+        ]);
+    }
 }

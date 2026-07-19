@@ -23,6 +23,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int $id
  * @property int $account_id
  * @property string $role
+ * @property bool $is_instance_administrator
  * @property string $first_name
  * @property string $last_name
  * @property string $nickname
@@ -60,6 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'account_id',
         'role',
+        'is_instance_administrator',
         'first_name',
         'last_name',
         'nickname',
@@ -111,6 +113,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_recovery_codes' => 'encrypted:array',
             'auto_delete_user' => 'boolean',
+            'is_instance_administrator' => 'boolean',
         ];
     }
 
@@ -237,5 +240,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isOwner(): bool
     {
         return $this->role === PermissionEnum::Owner->value;
+    }
+
+    /**
+     * Check if the user administers the whole instance. This is orthogonal to
+     * the role, which only ever applies within the user's own account: an
+     * instance administrator gains nothing extra inside their own account.
+     */
+    public function isInstanceAdministrator(): bool
+    {
+        return $this->is_instance_administrator === true;
     }
 }

@@ -89,6 +89,19 @@ It reads every photo off the disk, so give it a moment on a large library. It is
 safe to run again at any time, and photos uploaded from then on are indexed as
 they arrive.
 
+## Administering the instance
+
+The instance administration lives at `/instance-admin` and lists every account
+and user on the instance. It is gated on a per user flag that nobody has by
+default, so grant it to yourself once after registering your user:
+
+```bash
+docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+```
+
+Pass `--revoke` to take it away again. The flag is separate from the owner,
+editor and viewer roles, which only ever apply inside a single account.
+
 ## Backups
 
 ```bash

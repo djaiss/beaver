@@ -54,3 +54,11 @@ it('encrypts the two factor secret and recovery codes at rest', function () {
     $this->assertStringNotContainsString($secret, (string) $raw->two_factor_secret);
     $this->assertStringNotContainsString('ABC123', (string) $raw->two_factor_recovery_codes);
 });
+
+it('knows whether it administers the instance', function () {
+    $monica = User::factory()->instanceAdministrator()->create();
+    $ross = User::factory()->create();
+
+    expect($monica->isInstanceAdministrator())->toBeTrue();
+    expect($ross->isInstanceAdministrator())->toBeFalse();
+});
