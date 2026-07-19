@@ -23,6 +23,7 @@ class UpdateCategory
         private readonly Category $category,
         private string $name,
         private ?int $parentId = null,
+        private ?string $description = null,
     ) {}
 
     public function execute(): Category
@@ -82,11 +83,16 @@ class UpdateCategory
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+
+        if ($this->description !== null) {
+            $this->description = TextSanitizer::plainText($this->description);
+        }
     }
 
     private function update(): void
     {
         $this->category->name = $this->name;
+        $this->category->description = $this->description;
         $this->category->parent_id = $this->parentId;
         $this->category->updated_by_id = $this->user->id;
         $this->category->updated_by_name = $this->user->getFullName();

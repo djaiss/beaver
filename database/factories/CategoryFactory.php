@@ -24,6 +24,7 @@ class CategoryFactory extends Factory
             'collection_id' => Collection::factory(),
             'parent_id' => null,
             'name' => fake()->randomElement(['Spider-Man', 'X-Men', 'Avengers', 'Fantastic Four']),
+            'description' => fake()->sentence(),
         ];
     }
 }

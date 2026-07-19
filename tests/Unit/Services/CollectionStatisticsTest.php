@@ -143,6 +143,49 @@ it('spreads the items across the categories, biggest first', function (): void {
         ->and($categories[1])->toBe(['label' => 'X-Men', 'other' => false, 'count' => 1, 'percentage' => 25]);
 });
 
+it('keeps every category whole in the breakdown, with what it is worth', function (): void {
+    $collection = Collection::factory()->create();
+    $spiderMan = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    $xMen = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'X-Men']);
+    $empty = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Wolverine']);
+
+    $amazing = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $spiderMan->id]);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $spiderMan->id]);
+    $newMutants = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $xMen->id]);
+    Copy::factory()->create(['item_id' => $amazing->id, 'estimated_value' => 60000]);
+    Copy::factory()->create(['item_id' => $newMutants->id, 'estimated_value' => 40000]);
+
+    $breakdown = new CollectionStatistics(collection: $collection)->categoryBreakdown();
+
+    expect($breakdown)->toHaveCount(3)
+        ->and($breakdown[0])->toBe(['id' => $spiderMan->id, 'name' => 'Spider-Man', 'count' => 2, 'value' => 60000])
+        ->and($breakdown[1])->toBe(['id' => $xMen->id, 'name' => 'X-Men', 'count' => 1, 'value' => 40000])
+        ->and($breakdown[2])->toBe(['id' => $empty->id, 'name' => 'Wolverine', 'count' => 0, 'value' => 0]);
+});
+
+it('has an empty breakdown when the collection has no categories', function (): void {
+    $collection = Collection::factory()->create();
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => null]);
+
+    expect(new CollectionStatistics(collection: $collection)->categoryBreakdown())->toBe([]);
+});
+
+it('leaves the categories of another collection out of the breakdown', function (): void {
+    $collection = Collection::factory()->create();
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
+
+    $other = Collection::factory()->create();
+    $otherCategory = Category::factory()->create(['collection_id' => $other->id, 'name' => 'X-Men']);
+    $otherItem = Item::factory()->create(['collection_id' => $other->id, 'category_id' => $otherCategory->id]);
+    Copy::factory()->create(['item_id' => $otherItem->id, 'estimated_value' => 99000]);
+
+    $breakdown = new CollectionStatistics(collection: $collection)->categoryBreakdown();
+
+    expect($breakdown)->toHaveCount(1)
+        ->and($breakdown[0]['name'])->toBe('Spider-Man');
+});
+
 it('gathers the items that sit in no category', function (): void {
     $collection = Collection::factory()->create();
     $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);

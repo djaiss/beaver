@@ -1,4 +1,6 @@
-@props(['collection' => null])
+@use('App\Helpers\Palette')
+
+@props(['collection' => null, 'categories' => null])
 
 @php
     $user = auth()->user();
@@ -68,15 +70,34 @@
             {{ __('Back to collections') }}
         </a>
 
-        {{-- Item details has no route of its own yet, so it points back at the collection.
-             It gets its own page as the concept is built. --}}
         <nav class="flex flex-col gap-0.5">
             <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $collection->name }}</p>
             <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" color="bg-brand">{{ __('Items') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('categories.index', $collection)" :active="request()->routeIs('categories.*')" color="bg-badge-violet">{{ __('Categories') }}</x-sidebar-link>
             <x-sidebar-link :href="route('sets.index', $collection)" :active="request()->routeIs('sets.*')" color="bg-badge-emerald">{{ __('Sets') }}</x-sidebar-link>
             <x-sidebar-link :href="route('statistics.index', $collection)" :active="request()->routeIs('statistics.*')" color="bg-badge-pink">{{ __('Statistics') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-orange">{{ __('Item details') }}</x-sidebar-link>
+        </nav>
+
+        {{-- The categories are the navigation of the collection, so they are listed here
+             rather than hidden behind the screen that manages them. Nesting is flattened:
+             the tree is what the manage screen is for. --}}
+        @if ($categories?->isNotEmpty())
+            <nav class="flex flex-col gap-0.5">
+                <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Categories') }}</p>
+                @foreach ($categories as $category)
+                    <x-sidebar-link
+                        :href="route('categories.show', [$collection, $category])"
+                        :active="request()->routeIs('categories.show') && (int) request()->route('category') === $category->id"
+                        :dot="Palette::forId($category->id)"
+                        :count="$category->items_count"
+                        data-test="sidebar-category-{{ $category->id }}"
+                    >{{ $category->name }}</x-sidebar-link>
+                @endforeach
+            </nav>
+        @endif
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Manage collection') }}</p>
+            <x-sidebar-link :href="route('categories.index', $collection)" :active="request()->routeIs('categories.index')" icon="folder-tree">{{ __('Manage categories') }}</x-sidebar-link>
         </nav>
     @else
         <nav class="flex flex-col gap-0.5">

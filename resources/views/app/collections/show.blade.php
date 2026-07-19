@@ -94,6 +94,10 @@
                 @include('app.collections.partials._toolbar')
             @endif
 
+            @if ($category)
+                @include('app.collections.partials._category-panel')
+            @endif
+
             @if ($items->isEmpty())
                 <div class="mt-8 rounded-lg border border-hairline">
                     <x-empty-state>
@@ -122,6 +126,13 @@
                 </div>
 
                 @include('app.collections.partials._pagination')
+
+                @if ($category)
+                    <div class="mt-5 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted-soft">
+                        <span>{{ __('Showing :shown of :total items in :category', ['shown' => number_format($items->count()), 'total' => number_format($itemCount), 'category' => $category->name]) }}</span>
+                        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="font-semibold text-ink transition-colors hover:text-muted">{{ __('See all items in collection →') }}</a>
+                    </div>
+                @endif
             @endif
         </div>
     </x-app-layout>

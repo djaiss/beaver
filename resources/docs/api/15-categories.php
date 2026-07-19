@@ -6,11 +6,12 @@ use App\Services\ApiDocumentation;
 
 $base = ApiDocumentation::baseUrl();
 
-$category = fn (string $id, string $name, ?string $parentId): array => [
+$category = fn (string $id, string $name, ?string $parentId, ?string $description = null): array => [
     'type' => 'category',
     'id' => $id,
     'attributes' => [
         'name' => $name,
+        'description' => $description,
         'collection_id' => '1',
         'parent_id' => $parentId,
         'created_at' => 1752537600,
@@ -68,6 +69,14 @@ $parentParam = [
     'example' => '1',
 ];
 
+$descriptionParam = [
+    'name' => 'description',
+    'type' => 'string',
+    'required' => false,
+    'description' => 'What the category holds, shown on the category page. Maximum 255 characters.',
+    'example' => 'Key issues and full runs from the 1990s Marvel era.',
+];
+
 return [
     'name' => 'Categories',
     'sections' => [
@@ -83,7 +92,7 @@ return [
             'queryParams' => $pagination,
             'returns' => 'A paginated list of category objects.',
             'response' => ApiDocumentation::paginated([
-                $category('1', 'Marvel', null),
+                $category('1', 'Marvel', null, 'Key issues and full runs from the 1990s Marvel era.'),
                 $category('2', 'Spider-Man', '1'),
             ], '/collections/1/categories'),
         ],
@@ -98,7 +107,7 @@ return [
             'permissions' => 'Any member of the account.',
             'pathParams' => [$collectionId, $categoryId],
             'returns' => 'A category object, or 404 when the category does not belong to your account.',
-            'response' => ['data' => $category('1', 'Marvel', null)],
+            'response' => ['data' => $category('1', 'Marvel', null, 'Key issues and full runs from the 1990s Marvel era.')],
         ],
         [
             'id' => 'categories-create',
@@ -110,10 +119,10 @@ return [
             'description' => 'Create a category within a collection.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$collectionId],
-            'bodyParams' => [$nameParam, $parentParam],
+            'bodyParams' => [$nameParam, $parentParam, $descriptionParam],
             'returns' => 'The created category object.',
             'responseStatus' => 201,
-            'response' => ['data' => $category('1', 'Marvel', null)],
+            'response' => ['data' => $category('1', 'Marvel', null, 'Key issues and full runs from the 1990s Marvel era.')],
         ],
         [
             'id' => 'categories-update',
@@ -122,10 +131,10 @@ return [
             'method' => 'PUT',
             'path' => '/collections/{collection}/categories/{category}',
             'examplePath' => '/collections/1/categories/2',
-            'description' => 'Update the name and parent of a category. A category cannot be its own parent, nor be nested under one of its own descendants.',
+            'description' => 'Update the name, description and parent of a category. A category cannot be its own parent, nor be nested under one of its own descendants.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$collectionId, $categoryId],
-            'bodyParams' => [$nameParam, $parentParam],
+            'bodyParams' => [$nameParam, $parentParam, $descriptionParam],
             'returns' => 'The updated category object.',
             'response' => ['data' => $category('2', 'Spider-Man', '1')],
         ],

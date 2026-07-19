@@ -100,6 +100,35 @@ it('creates a category', function () {
     expect($category->parent_id)->toBeNull();
 });
 
+it('creates a category with a description', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->post('/collections/'.$collection->id.'/categories', [
+        'name' => 'Spider-Man',
+        'description' => 'Wall-crawler key issues and full runs.',
+    ]);
+
+    expect(Category::query()->first()->description)->toBe('Wall-crawler key issues and full runs.');
+});
+
+it('updates the description of a category', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+
+    $this->actingAs($user)->put('/collections/'.$collection->id.'/categories/'.$category->id, [
+        'name' => 'Spider-Man',
+        'description' => 'Everything with a web in it.',
+    ]);
+
+    expect($category->fresh()->description)->toBe('Everything with a web in it.');
+});
+
 it('creates a nested category from a form-encoded parent id', function () {
     Queue::fake();
 
@@ -245,6 +274,58 @@ it('shows the items of a single category on its own url', function () {
     $response->assertOk()
         ->assertSee('Amazing Fantasy 15')
         ->assertDontSee('Action Comics 1');
+});
+
+it('describes the category and its place in the collection on its own page', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+    $spiderMan = Category::factory()->create([
+        'collection_id' => $collection->id,
+        'name' => 'Spider-Man',
+        'description' => 'Wall-crawler key issues and full runs.',
+    ]);
+    $xMen = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'X-Men']);
+    Item::factory()->count(3)->create(['collection_id' => $collection->id, 'category_id' => $spiderMan->id]);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $xMen->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories/'.$spiderMan->id);
+
+    $response->assertOk()
+        ->assertSee('Wall-crawler key issues and full runs.')
+        ->assertSee('Category in Marvel Comics 1990s')
+        // Three of the four items in the collection sit in this category.
+        ->assertSee('75%')
+        ->assertSee('Other categories')
+        ->assertSee('data-test="sibling-category-'.$xMen->id.'"', false);
+});
+
+it('does not show the category panel on the collection itself', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk()
+        ->assertDontSee('Other categories')
+        ->assertDontSee('avg. item');
+});
+
+it('lists the categories of the collection in the sidebar', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk()
+        ->assertSee('data-test="sidebar-category-'.$category->id.'"', false)
+        ->assertSee('Manage collection')
+        ->assertSee('Manage categories')
+        // The placeholder entry that led nowhere is gone.
+        ->assertDontSee('Item details');
 });
 
 it('shows the category in the breadcrumb of its own page', function () {

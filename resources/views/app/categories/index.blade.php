@@ -79,6 +79,11 @@
               </div>
             </div>
 
+            <div class="mb-5">
+              <x-input id="description" :label="__('Description')" placeholder="{{ __('e.g. Wall-crawler key issues and full runs.') }}" :error="$errors->get('description')" />
+              <p class="mt-1.5 text-xs text-muted-soft">{{ __('Shown on the category page. Optional.') }}</p>
+            </div>
+
             <div class="flex justify-end gap-2.5">
               <x-button.secondary type="button" x-on:click="showAddForm = false">
                 {{ __('Cancel') }}

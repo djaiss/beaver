@@ -16,9 +16,9 @@
 
     <nav class="flex shrink-0 items-center gap-1">
         <span class="rounded-md bg-card px-3 py-1.5 text-[13px] font-medium text-ink">{{ __('Items') }}</span>
-        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink">{{ __('Categories') }}</a>
-        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink">{{ __('Sets') }}</a>
-        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink">{{ __('Item details') }}</a>
+        <a href="{{ route('sets.index', $collection) }}" data-turbo="true" class="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink">{{ __('Sets') }}</a>
+        <a href="{{ route('statistics.index', $collection) }}" data-turbo="true" class="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink">{{ __('Statistics') }}</a>
+        <a href="{{ route('categories.index', $collection) }}" data-turbo="true" class="rounded-md px-3 py-1.5 text-[13px] font-medium text-muted transition-colors hover:text-ink">{{ __('Manage categories') }}</a>
     </nav>
 
     <div class="flex-1"></div>

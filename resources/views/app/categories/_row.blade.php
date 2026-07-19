@@ -1,3 +1,5 @@
+@use('App\Helpers\Palette')
+
 @php
   $category = $node['category'];
   $hasChildren = count($node['children']) > 0;
@@ -6,11 +8,6 @@
   $rowOptions = collect($parentOptions)
       ->except([$category->id])
       ->all();
-
-  // Categories have no colour of their own, so the dot is derived from the id. It only has to
-  // be stable and varied, never meaningful.
-  $dots = ['bg-badge-orange', 'bg-badge-violet', 'bg-badge-emerald', 'bg-brand', 'bg-badge-pink', 'bg-warning'];
-  $dot = $dots[$category->id % count($dots)];
 @endphp
 
 <div
@@ -18,6 +15,7 @@
     expanded: true,
     editing: false,
     editName: @js($category->name),
+    editDescription: @js($category->description ?? ''),
     editParentId: @js((string) ($category->parent_id ?? '')),
     branch: @js(Str::lower($branchText($node))),
     get visible() {
@@ -39,7 +37,11 @@
         @endif
       </div>
 
-      <span class="size-2.5 shrink-0 rounded-sm {{ $depth === 0 ? $dot : 'bg-hairline' }}"></span>
+      @if ($depth === 0)
+        <span class="size-2.5 shrink-0 rounded-sm" style="background-color: {{ Palette::forId($category->id) }}"></span>
+      @else
+        <span class="size-2.5 shrink-0 rounded-sm bg-hairline"></span>
+      @endif
 
       <div class="min-w-0 flex-1">
         <div class="{{ $depth === 0 ? 'text-[15px] font-semibold' : 'text-sm font-medium' }} truncate text-ink" data-test="category-name-{{ $category->id }}">{{ $category->name }}</div>
@@ -94,6 +96,12 @@
           </select>
           <x-error :messages="$errors->get('parent_id')" class="mt-2" />
         </div>
+      </div>
+
+      <div class="mb-3.5">
+        <x-label>{{ __('Description') }}</x-label>
+        <input name="description" x-model="editDescription" placeholder="{{ __('Shown on the category page. Optional.') }}" class="mt-1.5 h-9 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink" data-test="category-description-input-{{ $category->id }}" />
+        <x-error :messages="$errors->get('description')" class="mt-2" />
       </div>
 
       <div class="flex justify-end gap-2.5">

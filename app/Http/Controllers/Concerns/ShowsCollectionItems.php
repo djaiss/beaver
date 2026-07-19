@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Concerns;
 use App\Models\Category;
 use App\Models\Collection;
 use App\Models\Copy;
+use App\Services\CollectionStatistics;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -25,6 +26,10 @@ trait ShowsCollectionItems
 
     private function collectionItemsView(Request $request, Collection $collection, ?Category $category = null): View
     {
+        // Only the category page shows the panel that needs these, so the plain
+        // collection page does not pay for the extra queries.
+        $statistics = $category === null ? null : new CollectionStatistics(collection: $collection);
+
         $query = fn () => $collection->items()
             ->when($category, fn ($items) => $items->where('category_id', $category->id));
 
@@ -41,6 +46,8 @@ trait ShowsCollectionItems
             'items' => $items,
             'itemCount' => $query()->count(),
             'totalValue' => (int) Copy::whereIn('item_id', $query()->select('id'))->sum('estimated_value'),
+            'categoryBreakdown' => $statistics?->categoryBreakdown() ?? [],
+            'collectionTotals' => $statistics?->totals(),
         ]);
     }
 }

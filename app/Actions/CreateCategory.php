@@ -26,6 +26,7 @@ class CreateCategory
         private readonly Collection $collection,
         private string $name,
         private ?int $parentId = null,
+        private ?string $description = null,
     ) {}
 
     public function execute(): Category
@@ -53,6 +54,10 @@ class CreateCategory
     private function sanitize(): void
     {
         $this->name = TextSanitizer::plainText($this->name);
+
+        if ($this->description !== null) {
+            $this->description = TextSanitizer::plainText($this->description);
+        }
     }
 
     private function create(): void
@@ -61,6 +66,7 @@ class CreateCategory
             'collection_id' => $this->collection->id,
             'parent_id' => $this->parentId,
             'name' => $this->name,
+            'description' => $this->description,
         ]);
     }
 

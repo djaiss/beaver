@@ -184,6 +184,38 @@ class CollectionStatistics
     }
 
     /**
+     * Every category of the collection with what it holds, biggest first. Unlike
+     * byCategory(), which folds the tail into an "Other" slice for the chart,
+     * this keeps each category whole, so a category page can say where it sits
+     * among its siblings.
+     *
+     * @return list<array{id: int, name: string, count: int, value: int}>
+     */
+    public function categoryBreakdown(): array
+    {
+        $values = Copy::query()
+            ->join('items', 'items.id', '=', 'copies.item_id')
+            ->where('items.collection_id', $this->collection->id)
+            ->whereNotNull('items.category_id')
+            ->groupBy('items.category_id')
+            ->selectRaw('items.category_id as category_id, sum(copies.estimated_value) as total')
+            ->pluck('total', 'category_id');
+
+        return $this->collection->categories()
+            ->withCount('items')
+            ->get()
+            ->map(fn (Category $category): array => [
+                'id' => $category->id,
+                'name' => $category->name,
+                'count' => $category->items_count,
+                'value' => (int) ($values[$category->id] ?? 0),
+            ])
+            ->sortByDesc('count')
+            ->values()
+            ->all();
+    }
+
+    /**
      * The condition the copies are in.
      *
      * @return list<array{label: ?string, count: int, percentage: int}>
