@@ -44,7 +44,7 @@
         <div class="my-6 h-px bg-hairline"></div>
 
         <div class="flex items-center gap-3.5">
-          <x-avatar-initials name="Regis Freyd" class="size-13 shrink-0 text-base" />
+          <x-image src="{{ asset('images/regis.png') }}" srcset="{{ asset('images/regis.png') }}, {{ asset('images/regis@2x.png') }} 2x" height="52" width="52" alt="Regis Freyd" class="rounded-full" />
 
           <div class="min-w-0 flex-1">
             <p class="text-[15px] font-semibold text-ink">{{ __('Regis') }}</p>
