@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
 
+/*
+ * Model events stay on while seeding. A collection gets its uuid from a
+ * `creating` hook, so muting them would write rows the app cannot serve.
+ */
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         // Run seeders in the correct order
         $this->call([
             UserSeeder::class,
+            CollectionSeeder::class,
         ]);
 
         $this->displayLoginInfo();
