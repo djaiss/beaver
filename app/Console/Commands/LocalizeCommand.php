@@ -96,7 +96,9 @@ class LocalizeCommand extends Command
      */
     private function extractKeysFromContent(string $content): array
     {
-        $functions = ['__', 'trans', '@lang', 'trans_key'];
+        // trans_choice carries the pluralized keys, e.g. ":count item|:count items". It was
+        // missing here, so none of them ever reached the locale files.
+        $functions = ['__', 'trans', 'trans_choice', '@lang', 'trans_key'];
         $patterns = [];
 
         foreach ($functions as $function) {
