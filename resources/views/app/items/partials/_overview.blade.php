@@ -115,6 +115,7 @@
             __('Category') => $item->category
                 ? ($item->category->parent ? $item->category->parent->name . ' › ' . $item->category->name : $item->category->name)
                 : '—',
+            __('Series') => $item->series?->name ?? '—',
             __('Set') => $item->set?->name ?? '—',
             __('Copies owned') => number_format($item->copies->count()),
             __('Est. value') => $totalEstimated > 0 ? $money($totalEstimated) : '—',
@@ -130,6 +131,34 @@
         </div>
       @endforeach
     </div>
+
+    {{-- Series. Sits above the set card: a series is the wider grouping, a set the narrower one. --}}
+    @if ($item->series)
+      <div class="rounded-xl border border-hairline p-4.5">
+        <div class="mb-2 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="size-2.5 shrink-0 rounded-sm bg-brand"></span>
+            <p class="text-[13px] font-semibold text-ink">{{ __('Series') }}</p>
+          </div>
+          <span class="shrink-0 rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-brand uppercase">{{ __('Account-wide') }}</span>
+        </div>
+
+        <p class="text-base font-semibold text-ink">{{ $item->series->name }}</p>
+
+        @if ($item->series->description)
+          <p class="mt-1 text-[13px] leading-relaxed text-muted">{{ $item->series->description }}</p>
+        @endif
+
+        <p class="mt-2.5 text-xs text-muted-soft" data-test="series-span">
+          {{ __(':items across :collections', [
+              'items' => trans_choice(':count item|:count items', $seriesItemCount, ['count' => $seriesItemCount]),
+              'collections' => trans_choice(':count collection|:count collections', $seriesCollectionCount, ['count' => $seriesCollectionCount]),
+          ]) }}
+        </p>
+
+        <a href="{{ route('series.show', $item->series_id) }}" data-turbo="true" class="mt-3.5 inline-block text-[13px] font-semibold text-ink transition-opacity hover:opacity-75">{{ __('View series →') }}</a>
+      </div>
+    @endif
 
     {{-- Set completion --}}
     @if ($item->set)

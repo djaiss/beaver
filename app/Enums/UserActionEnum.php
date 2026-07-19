@@ -51,6 +51,9 @@ enum UserActionEnum: string
     case SetCreation = 'set_created';
     case SetUpdate = 'set_updated';
     case SetDeletion = 'set_deleted';
+    case SeriesCreation = 'series_created';
+    case SeriesUpdate = 'series_updated';
+    case SeriesDeletion = 'series_deleted';
     case TrashRestoration = 'trash_restored';
     case TrashEmptied = 'trash_emptied';
     case ApiKeyCreation = 'api_key_created';
@@ -112,6 +115,9 @@ enum UserActionEnum: string
             self::SetCreation => 'Created the set called :name',
             self::SetUpdate => 'Updated the set called :name',
             self::SetDeletion => 'Deleted the set called :name',
+            self::SeriesCreation => 'Created the series called :name',
+            self::SeriesUpdate => 'Updated the series called :name',
+            self::SeriesDeletion => 'Deleted the series called :name',
             self::TrashRestoration => 'Restored the :type called :name from the trash',
             self::TrashEmptied => 'Emptied the trash, permanently deleting :count objects',
             self::ApiKeyCreation => 'Created an API key',

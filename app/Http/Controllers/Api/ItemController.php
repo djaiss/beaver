@@ -52,6 +52,7 @@ class ItemController extends Controller
             'type_id' => ['nullable', 'integer'],
             'category_id' => ['nullable', 'integer'],
             'set_id' => ['nullable', 'integer'],
+            'series_id' => ['nullable', 'integer'],
         ]);
 
         $account = $request->user()->account;
@@ -64,6 +65,7 @@ class ItemController extends Controller
             collectionType: isset($validated['type_id']) ? $account->collectionTypes()->find($validated['type_id']) : null,
             category: isset($validated['category_id']) ? $collection->categories()->find($validated['category_id']) : null,
             set: isset($validated['set_id']) ? $collection->sets()->find($validated['set_id']) : null,
+            series: isset($validated['series_id']) ? $account->series()->find($validated['series_id']) : null,
         )->execute();
 
         return new ItemResource($item)
@@ -96,6 +98,7 @@ class ItemController extends Controller
             // category and set are passed back to leave them where they are.
             category: $item->category,
             set: $item->set,
+            series: $item->series,
         )->execute();
 
         return new ItemResource($item)

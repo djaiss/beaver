@@ -82,6 +82,9 @@
             <x-sidebar-link :href="route('dashboard.index')" :active="request()->routeIs('dashboard.*')" icon="layout-grid">{{ __('Dashboard') }}</x-sidebar-link>
             <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.index')" :active="request()->routeIs('collections.*')" icon="layers">{{ __('Collections') }}</x-sidebar-link>
+            {{-- A series spans collections rather than living in one, so it sits beside them
+                 in the workspace nav rather than inside a collection. --}}
+            <x-sidebar-link :href="route('series.index')" :active="request()->routeIs('series.*')" icon="library">{{ __('Series') }}</x-sidebar-link>
             <x-sidebar-link :href="route('locations.index')" :active="request()->routeIs('locations.*')" icon="map-pin">{{ __('Locations') }}</x-sidebar-link>
             @if ($user->isOwner())
                 <x-sidebar-link :href="route('settings.index')" :active="false" icon="settings">{{ __('Account settings') }}</x-sidebar-link>

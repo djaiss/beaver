@@ -17,6 +17,7 @@ use App\Models\Copy;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
+use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
@@ -49,6 +50,7 @@ class CreateItem
         private readonly ?CollectionType $collectionType = null,
         private readonly ?Category $category = null,
         private readonly ?Set $set = null,
+        private readonly ?Series $series = null,
         private readonly array $tagIds = [],
         private readonly array $newTagNames = [],
         private readonly array $customFieldValues = [],
@@ -91,6 +93,12 @@ class CreateItem
 
         if ($this->set instanceof Set && $this->set->collection_id !== $this->collection->id) {
             throw new ModelNotFoundException('Set not found');
+        }
+
+        // A series is account-wide, so it only has to share the account, not the collection.
+        // That is the point of it: one series gathers items from several collections.
+        if ($this->series instanceof Series && $this->series->account_id !== $this->collection->account_id) {
+            throw new ModelNotFoundException('Series not found');
         }
 
         $this->validateTags();
@@ -142,6 +150,7 @@ class CreateItem
             'category_id' => $this->category?->id,
             'type_id' => $this->collectionType?->id,
             'set_id' => $this->set?->id,
+            'series_id' => $this->series?->id,
             'name' => $this->name,
             'description' => $this->description,
         ]);

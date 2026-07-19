@@ -16,6 +16,7 @@ $item = fn (string $id, string $name, ?string $description): array => [
         'type_id' => null,
         'category_id' => null,
         'set_id' => null,
+        'series_id' => null,
         'created_at' => 1752537600,
         'updated_at' => 1752537600,
     ],
@@ -91,7 +92,15 @@ $setParam = [
     'name' => 'set_id',
     'type' => 'integer',
     'required' => false,
-    'description' => 'The ID of the set the item is part of. Must be a set of your account.',
+    'description' => 'The ID of the set the item is part of. Must be a set of the same collection as the item.',
+    'example' => '1',
+];
+
+$seriesParam = [
+    'name' => 'series_id',
+    'type' => 'integer',
+    'required' => false,
+    'description' => 'The ID of the series the item belongs to. A series is account-wide, so it only has to belong to your account, not to the item\'s collection.',
     'example' => '1',
 ];
 
@@ -137,7 +146,7 @@ return [
             'description' => 'Create an item within a collection.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$collectionId],
-            'bodyParams' => [$nameParam, $descriptionParam, $typeParam, $categoryParam, $setParam],
+            'bodyParams' => [$nameParam, $descriptionParam, $typeParam, $categoryParam, $setParam, $seriesParam],
             'returns' => 'The created item object.',
             'responseStatus' => 201,
             'response' => ['data' => $item('1', 'Amazing Spider-Man #1', 'Near mint condition.')],

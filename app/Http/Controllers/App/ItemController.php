@@ -29,6 +29,7 @@ class ItemController extends Controller
             'tags',
             'category.parent',
             'set',
+            'series',
             'collectionType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
             'collectionType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
             'collectionType.ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
@@ -42,6 +43,9 @@ class ItemController extends Controller
             // The set counts what is owned. How many entries a set should hold
             // is not tracked yet, so completion cannot be worked out.
             'setItemCount' => $itemModel->set?->items()->count() ?? 0,
+            // The series card reports its reach, which is the whole point of a series.
+            'seriesItemCount' => $itemModel->series?->items()->count() ?? 0,
+            'seriesCollectionCount' => $itemModel->series?->items()->distinct()->count('collection_id') ?? 0,
         ]);
     }
 
@@ -56,6 +60,7 @@ class ItemController extends Controller
             'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
             'categories' => $this->categoryOptions($collectionModel),
             'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
+            'series' => $account->series()->get()->sortBy(fn ($one): string => mb_strtolower($one->name))->values(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
             'tags' => $this->accountTags($request),
@@ -75,6 +80,7 @@ class ItemController extends Controller
             'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
             'categories' => $this->categoryOptions($collectionModel),
             'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
+            'series' => $account->series()->get()->sortBy(fn ($one): string => mb_strtolower($one->name))->values(),
             'conditions' => $account->conditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
             'tags' => $this->accountTags($request),
@@ -103,6 +109,9 @@ class ItemController extends Controller
                 : null,
             set: isset($validated['set_id'])
                 ? $collectionModel->sets()->find($validated['set_id'])
+                : null,
+            series: isset($validated['series_id'])
+                ? $account->series()->find($validated['series_id'])
                 : null,
             tagIds: $validated['tag_ids'] ?? [],
             newTagNames: $validated['new_tags'] ?? [],
@@ -138,6 +147,10 @@ class ItemController extends Controller
             ? $collectionModel->sets()->find($validated['set_id'])
             : null;
 
+        $series = isset($validated['series_id'])
+            ? $account->series()->find($validated['series_id'])
+            : null;
+
         new CreateItem(
             user: $request->user(),
             collection: $collectionModel,
@@ -146,6 +159,7 @@ class ItemController extends Controller
             collectionType: $type,
             category: $category,
             set: $set,
+            series: $series,
             tagIds: $validated['tag_ids'] ?? [],
             newTagNames: $validated['new_tags'] ?? [],
             customFieldValues: $validated['custom_fields'] ?? [],
@@ -172,6 +186,7 @@ class ItemController extends Controller
             'type_id' => ['nullable', 'integer'],
             'category_id' => ['nullable', 'integer'],
             'set_id' => ['nullable', 'integer'],
+            'series_id' => ['nullable', 'integer'],
             'tag_ids' => ['array'],
             'tag_ids.*' => ['integer'],
             'new_tags' => ['array'],
