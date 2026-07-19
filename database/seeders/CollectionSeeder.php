@@ -8,6 +8,7 @@ use App\Actions\CreateCategory;
 use App\Actions\CreateCollection;
 use App\Actions\CreateItem;
 use App\Actions\CreateSet;
+use App\Enums\CopyStatus;
 use App\Enums\VisibilityEnum;
 use App\Models\Category;
 use App\Models\Collection;
@@ -160,11 +161,11 @@ class CollectionSeeder extends Seeder
      * the seeder happened to run. Without this every item reads as added today,
      * and the "added this month" figure claims the whole collection.
      *
-     * @param  list<array{acquired_at: string|null, ...}>  $copies
+     * @param  list<array{backdate_to: string|null, ...}>  $copies
      */
     private function backdate(Item $item, array $copies): void
     {
-        $dates = array_filter(array_column($copies, 'acquired_at'));
+        $dates = array_filter(array_column($copies, 'backdate_to'));
 
         if ($dates === []) {
             return;
@@ -174,17 +175,21 @@ class CollectionSeeder extends Seeder
     }
 
     /**
-     * The copies of one item. Most items are owned once, every seventh is owned
-     * twice, and every eleventh has no acquisition date so the screen has a
-     * reason to say some copies are undated.
+     * The copies of one item. Most items are owned once, and every seventh is
+     * owned twice.
      *
      * The conditions and the locations are drawn from a weighted table rather
      * than cycled through, otherwise every bar of those two breakdowns comes out
      * the same length and the charts say nothing.
      *
+     * `backdate_to` is not a column on a copy. It is when this seed pretends the
+     * item entered the collection, used only to backdate the item itself, and it
+     * is ignored when the copy is written. When transactions land the real
+     * acquisition date comes from them instead.
+     *
      * @param  EloquentCollection<int, Condition>  $conditions
      * @param  EloquentCollection<int, Location>  $locations
-     * @return list<array{condition_id: int|null, location_id: int|null, acquired_at: string|null, price_paid: int, estimated_value: int}>
+     * @return list<array{condition_id: int|null, current_location_id: int|null, status: CopyStatus, quantity: int, estimated_value: int, backdate_to: string|null}>
      */
     private function copiesFor(int $counter, int $lowValue, int $highValue, EloquentCollection $conditions, EloquentCollection $locations): array
     {
@@ -202,10 +207,11 @@ class CollectionSeeder extends Seeder
 
             $copies[] = [
                 'condition_id' => $conditions->isEmpty() ? null : $conditions[self::WEIGHTS[$seed % count(self::WEIGHTS)] % $conditions->count()]->id,
-                'location_id' => $locations->isEmpty() ? null : $locations[self::WEIGHTS[($seed + 5) % count(self::WEIGHTS)] % $locations->count()]->id,
-                'acquired_at' => $counter % 11 === 0 ? null : Carbon::now()->subMonths($monthsAgo)->subDays($seed % 28)->format('Y-m-d'),
-                'price_paid' => (int) round($value * 0.6),
+                'current_location_id' => $locations->isEmpty() ? null : $locations[self::WEIGHTS[($seed + 5) % count(self::WEIGHTS)] % $locations->count()]->id,
+                'status' => CopyStatus::Owned,
+                'quantity' => 1,
                 'estimated_value' => $value,
+                'backdate_to' => Carbon::now()->subMonths($monthsAgo)->subDays($seed % 28)->format('Y-m-d'),
             ];
         }
 

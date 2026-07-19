@@ -7,6 +7,7 @@
         'violet' => 'bg-badge-violet text-white',
         'emerald' => 'bg-badge-emerald text-white',
         'success' => 'bg-success/10 text-success',
+        'error' => 'bg-error/10 text-error',
         default => 'bg-card text-ink',
     };
 @endphp

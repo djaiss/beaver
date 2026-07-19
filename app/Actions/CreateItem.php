@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\CopyStatus;
 use App\Enums\FieldTypeEnum;
 use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\ValuationConfidence;
+use App\Enums\ValuationType;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
@@ -21,6 +24,7 @@ use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Valuation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
@@ -39,7 +43,7 @@ class CreateItem
      * @param  list<int>  $tagIds  ids of existing account tags to apply
      * @param  list<string>  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>  $customFieldValues  custom field id to raw value
-     * @param  list<array{condition_id?: int|null, location_id?: int|null, acquired_at?: string|null, price_paid?: int|null, estimated_value?: int|null}>  $copies
+     * @param  list<array{identifier?: string|null, condition_id?: int|null, current_location_id?: int|null, status?: CopyStatus|null, quantity?: int|null, disposed_at?: string|null, note?: string|null, estimated_value?: int|null}>  $copies
      * @param  list<UploadedFile>  $photos  in the order they should appear, the first becoming the cover
      */
     public function __construct(
@@ -125,7 +129,7 @@ class CreateItem
 
         foreach ($this->copies as $copy) {
             $conditionId = $copy['condition_id'] ?? null;
-            $locationId = $copy['location_id'] ?? null;
+            $locationId = $copy['current_location_id'] ?? null;
 
             if ($conditionId !== null && ! in_array($conditionId, $conditionIds, true)) {
                 throw new ModelNotFoundException('Condition not found');
@@ -243,14 +247,43 @@ class CreateItem
         foreach ($this->copies as $copy) {
             $created = Copy::query()->create([
                 'item_id' => $this->item->id,
+                'identifier' => $copy['identifier'] ?? null,
                 'condition_id' => $copy['condition_id'] ?? null,
-                'location_id' => $copy['location_id'] ?? null,
-                'acquired_at' => $copy['acquired_at'] ?? null,
-                'price_paid' => $copy['price_paid'] ?? null,
-                'estimated_value' => $copy['estimated_value'] ?? null,
+                'current_location_id' => $copy['current_location_id'] ?? null,
+                'status' => $copy['status'] ?? CopyStatus::Owned,
+                'quantity' => $copy['quantity'] ?? 1,
+                'disposed_at' => $copy['disposed_at'] ?? null,
+                'note' => $copy['note'] ?? null,
             ]);
             $this->stampAuthorOn($created);
+
+            $this->valueCopy($created, $copy['estimated_value'] ?? null);
         }
+    }
+
+    /**
+     * Record what a copy is reckoned to be worth.
+     *
+     * The estimated value is no longer a column on the copy, so a figure given
+     * with the row opens its valuation history rather than being written to the
+     * copy itself.
+     */
+    private function valueCopy(Copy $copy, ?int $estimatedValue): void
+    {
+        if ($estimatedValue === null) {
+            return;
+        }
+
+        $valuation = new Valuation([
+            'copy_id' => $copy->id,
+            'type' => ValuationType::UserEstimate,
+            'amount' => $estimatedValue,
+            'currency_code' => $this->collection->currency,
+            'valued_at' => now()->toDateString(),
+            'confidence' => ValuationConfidence::Unknown,
+        ]);
+
+        $this->stampAuthorOn($valuation);
     }
 
     /**

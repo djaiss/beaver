@@ -34,7 +34,7 @@ trait ShowsCollectionItems
             ->when($category, fn ($items) => $items->where('category_id', $category->id));
 
         $items = $query()
-            ->with(['mainPhoto', 'copies.condition', 'copies.location'])
+            ->with(['mainPhoto', 'copies.condition', 'copies.currentLocation', 'copies.latestValuation'])
             ->orderByDesc('id')
             ->paginate(self::ITEMS_PER_PAGE)
             ->withQueryString();
@@ -45,7 +45,14 @@ trait ShowsCollectionItems
             'view' => $collection->viewForUser($request->user()),
             'items' => $items,
             'itemCount' => $query()->count(),
-            'totalValue' => (int) Copy::whereIn('item_id', $query()->select('id'))->sum('estimated_value'),
+            // A copy carries no value of its own any more, so the total is the
+            // sum of what each was last valued at. The valuations are eager
+            // loaded rather than summed in SQL, which would mean a correlated
+            // subquery per row to find the latest one.
+            'totalValue' => (int) Copy::whereIn('item_id', $query()->select('id'))
+                ->with('latestValuation')
+                ->get()
+                ->sum(fn (Copy $copy): int => $copy->estimatedValue() ?? 0),
             'categoryBreakdown' => $statistics?->categoryBreakdown() ?? [],
             'collectionTotals' => $statistics?->totals(),
         ]);

@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
+ * The estimated value is not a column on the copy any more, it is read from the
+ * latest valuation. It stays in the payload because it is still what the copy is
+ * currently worth, but it is read only: writing it records a valuation.
+ *
  * @mixin Copy
  */
 class CopyResource extends JsonResource
@@ -25,11 +29,14 @@ class CopyResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'item_id' => (string) $this->item_id,
+                'identifier' => $this->identifier,
                 'condition_id' => $this->condition_id !== null ? (string) $this->condition_id : null,
-                'location_id' => $this->location_id !== null ? (string) $this->location_id : null,
-                'acquired_at' => $this->acquired_at?->timestamp,
-                'price_paid' => $this->price_paid,
-                'estimated_value' => $this->estimated_value,
+                'current_location_id' => $this->current_location_id !== null ? (string) $this->current_location_id : null,
+                'status' => $this->status->value,
+                'quantity' => $this->quantity,
+                'disposed_at' => $this->disposed_at?->timestamp,
+                'note' => $this->note,
+                'estimated_value' => $this->estimatedValue(),
                 'created_at' => $this->created_at->timestamp,
                 'updated_at' => $this->updated_at?->timestamp,
             ],

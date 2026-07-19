@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Actions\UpdateItem;
+use App\Enums\CopyStatus;
 use App\Enums\FieldTypeEnum;
 use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
@@ -19,6 +20,7 @@ use App\Models\ItemPhoto;
 use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
+use App\Models\Valuation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -370,7 +372,7 @@ it('adds, updates and deletes copies', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $kept = Copy::factory()->create(['item_id' => $item->id, 'price_paid' => 100]);
+    $kept = Copy::factory()->create(['item_id' => $item->id, 'quantity' => 1]);
     $removed = Copy::factory()->create(['item_id' => $item->id]);
 
     $updated = new UpdateItem(
@@ -378,19 +380,61 @@ it('adds, updates and deletes copies', function () {
         item: $item,
         name: 'Amazing Spider-Man #1',
         copies: [
-            ['id' => $kept->id, 'price_paid' => 2500],
+            ['id' => $kept->id, 'identifier' => 'CGC 1234567', 'quantity' => 3, 'status' => CopyStatus::Loaned],
             ['estimated_value' => 9900],
         ],
     )->execute();
 
     expect($updated->copies()->count())->toBe(2);
-    expect($kept->fresh()->price_paid)->toBe(2500);
+    expect($kept->fresh()->identifier)->toBe('CGC 1234567');
+    expect($kept->fresh()->quantity)->toBe(3);
+    expect($kept->fresh()->status)->toBe(CopyStatus::Loaned);
     expect($kept->fresh()->updated_by_name)->toBe('Monica Geller');
-    expect($updated->copies()->whereNull('id')->exists())->toBeFalse();
-    expect($updated->copies()->where('estimated_value', 9900)->exists())->toBeTrue();
+
+    $added = $updated->copies()->where('id', '!=', $kept->id)->first();
+
+    expect($added->estimatedValue())->toBe(9900);
 
     $this->assertSoftDeleted('copies', ['id' => $removed->id]);
     expect($removed->fresh()->deleted_by_name)->toBe('Monica Geller');
+});
+
+// Valuations are append-only, so revaluing a copy keeps what it used to be worth
+// and a value that has not moved writes nothing at all.
+it('appends a valuation only when the estimated value of a copy moves', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    $first = Valuation::factory()->create([
+        'copy_id' => $copy->id,
+        'amount' => 39000,
+        'valued_at' => '2026-07-01',
+    ]);
+
+    new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        copies: [['id' => $copy->id, 'estimated_value' => 42000]],
+    )->execute();
+
+    expect($copy->fresh()->valuations()->count())->toBe(2);
+    expect($copy->fresh()->estimatedValue())->toBe(42000);
+    expect($first->fresh()->amount)->toBe(39000);
+
+    new UpdateItem(
+        user: $owner,
+        item: $item->fresh(),
+        name: 'Amazing Spider-Man #1',
+        copies: [['id' => $copy->id, 'estimated_value' => 42000]],
+    )->execute();
+
+    expect($copy->fresh()->valuations()->count())->toBe(2);
 });
 
 it('throws when a copy belongs to another item', function () {

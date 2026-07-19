@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use App\Enums\CopyStatus;
 use App\Enums\FieldTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Models\Category;
@@ -17,6 +18,7 @@ use App\Models\Location;
 use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
+use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
@@ -315,7 +317,15 @@ it('creates an item with all its parts and redirects to the collection', functio
         'new_tags' => ['First Issue'],
         'custom_fields' => [$field->id => '300'],
         'copies' => [
-            ['condition_id' => $condition->id, 'location_id' => $location->id, 'acquired_at' => '2026-07-17', 'price_paid' => '42.00', 'estimated_value' => '99.00'],
+            [
+                'identifier' => 'CGC 1234567',
+                'condition_id' => $condition->id,
+                'current_location_id' => $location->id,
+                'status' => CopyStatus::Loaned->value,
+                'quantity' => '2',
+                'note' => 'Lent to Joey.',
+                'estimated_value' => '99.00',
+            ],
         ],
     ]);
 
@@ -328,8 +338,13 @@ it('creates an item with all its parts and redirects to the collection', functio
     expect($item->tags)->toHaveCount(2);
     expect($item->customFieldValues->first()->value)->toBe('300');
     expect($item->copies)->toHaveCount(1);
-    expect($item->copies->first()->price_paid)->toBe(4200);
-    expect($item->copies->first()->estimated_value)->toBe(9900);
+    expect($item->copies->first()->identifier)->toBe('CGC 1234567');
+    expect($item->copies->first()->current_location_id)->toBe($location->id);
+    expect($item->copies->first()->status)->toBe(CopyStatus::Loaned);
+    expect($item->copies->first()->quantity)->toBe(2);
+    expect($item->copies->first()->note)->toBe('Lent to Joey.');
+    // The estimated value is a valuation now, not a column on the copy.
+    expect($item->copies->first()->estimatedValue())->toBe(9900);
 });
 
 it('requires a name', function () {
@@ -376,6 +391,31 @@ it('shows the edit item form filled in with the current values', function () {
     $response->assertSee('Silver age');
     $response->assertSee('Signed');
     $response->assertSee('Comics');
+});
+
+// The estimated value lives in the valuations now, so the form has to read the
+// latest one back rather than a column on the copy.
+it('fills the copy rows of the edit form with the current values', function () {
+    $user = $this->createUser();
+    $account = $user->account;
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create([
+        'item_id' => $item->id,
+        'identifier' => 'CGC 1234567',
+        'status' => CopyStatus::Loaned,
+        'quantity' => 2,
+        'note' => 'Lent to Joey.',
+    ]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 42000]);
+
+    $response = $this->actingAs($user)->get(route('items.edit', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('CGC 1234567');
+    $response->assertSee('Lent to Joey.');
+    $response->assertSee('420.00');
+    $response->assertSee('Loaned out');
 });
 
 it('offers the edit link on the item page', function () {
@@ -434,7 +474,7 @@ it('updates an item with all its parts and redirects to the item', function () {
     $location = Location::factory()->create(['account_id' => $account->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Fantastic Four #1']);
-    $keptCopy = Copy::factory()->create(['item_id' => $item->id, 'price_paid' => 100]);
+    $keptCopy = Copy::factory()->create(['item_id' => $item->id]);
     $droppedCopy = Copy::factory()->create(['item_id' => $item->id]);
 
     $response = $this->actingAs($user)->put(route('items.update', [$collection, $item]), [
@@ -447,7 +487,16 @@ it('updates an item with all its parts and redirects to the item', function () {
         'new_tags' => ['First Issue'],
         'custom_fields' => [$field->id => '300'],
         'copies' => [
-            ['id' => $keptCopy->id, 'condition_id' => $condition->id, 'location_id' => $location->id, 'acquired_at' => '2026-07-17', 'price_paid' => '42.00', 'estimated_value' => '99.00'],
+            [
+                'id' => $keptCopy->id,
+                'identifier' => 'CGC 1234567',
+                'condition_id' => $condition->id,
+                'current_location_id' => $location->id,
+                'status' => CopyStatus::Sold->value,
+                'quantity' => '2',
+                'disposed_at' => '2026-07-17',
+                'estimated_value' => '99.00',
+            ],
         ],
     ]);
 
@@ -464,7 +513,11 @@ it('updates an item with all its parts and redirects to the item', function () {
     expect($item->customFieldValues->first()->value)->toBe('300');
     expect($item->copies)->toHaveCount(1);
     expect($item->copies->first()->id)->toBe($keptCopy->id);
-    expect($item->copies->first()->price_paid)->toBe(4200);
+    expect($item->copies->first()->identifier)->toBe('CGC 1234567');
+    expect($item->copies->first()->status)->toBe(CopyStatus::Sold);
+    expect($item->copies->first()->quantity)->toBe(2);
+    expect($item->copies->first()->disposed_at->toDateString())->toBe('2026-07-17');
+    expect($item->copies->first()->estimatedValue())->toBe(9900);
     $this->assertSoftDeleted('copies', ['id' => $droppedCopy->id]);
 });
 
@@ -525,13 +578,13 @@ it('accepts a condition and a location sent as strings when creating', function 
     $this->actingAs($user)->post("/collections/{$collection->id}/items", [
         'name' => 'Amazing Spider-Man #1',
         'copies' => [
-            ['condition_id' => (string) $condition->id, 'location_id' => (string) $location->id],
+            ['condition_id' => (string) $condition->id, 'current_location_id' => (string) $location->id],
         ],
     ])->assertRedirect("/collections/{$collection->id}");
 
     $item = Item::query()->firstWhere('collection_id', $collection->id);
     expect($item->copies->first()->condition_id)->toBe($condition->id);
-    expect($item->copies->first()->location_id)->toBe($location->id);
+    expect($item->copies->first()->current_location_id)->toBe($location->id);
 });
 
 it('accepts copy ids, conditions and locations sent as strings when updating', function () {
@@ -547,13 +600,13 @@ it('accepts copy ids, conditions and locations sent as strings when updating', f
     $this->actingAs($user)->put(route('items.update', [$collection, $item]), [
         'name' => 'Amazing Spider-Man #1',
         'copies' => [
-            ['id' => (string) $copy->id, 'condition_id' => (string) $condition->id, 'location_id' => (string) $location->id],
+            ['id' => (string) $copy->id, 'condition_id' => (string) $condition->id, 'current_location_id' => (string) $location->id],
         ],
     ])->assertRedirect("/collections/{$collection->id}/items/{$item->id}");
 
     $copy->refresh();
     expect($copy->condition_id)->toBe($condition->id);
-    expect($copy->location_id)->toBe($location->id);
+    expect($copy->current_location_id)->toBe($location->id);
     expect($item->refresh()->copies)->toHaveCount(1);
 });
 

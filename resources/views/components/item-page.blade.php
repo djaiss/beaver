@@ -10,6 +10,7 @@
     $navigation = [
         ['overview', __('Overview'), null, route('items.show', [$collection, $item])],
         ['copies', __('Copies'), $item->copies->count(), route('items.copies.index', [$collection, $item])],
+        ['history', __('History'), null, route('items.history.index', [$collection, $item])],
         ['activities', __('Activity'), null, route('items.activities.index', [$collection, $item])],
         ['roadmap', __('Roadmap'), null, route('items.roadmap.index', [$collection, $item])],
     ];

@@ -6,6 +6,7 @@ namespace App\Http\Controllers\App;
 
 use App\Actions\CreateItem;
 use App\Actions\UpdateItem;
+use App\Enums\CopyStatus;
 use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ItemController extends Controller
@@ -194,10 +196,13 @@ class ItemController extends Controller
             'custom_fields' => ['array'],
             'copies' => ['array'],
             'copies.*.id' => ['nullable', 'integer'],
+            'copies.*.identifier' => ['nullable', 'string', 'max:255'],
             'copies.*.condition_id' => ['nullable', 'integer'],
-            'copies.*.location_id' => ['nullable', 'integer'],
-            'copies.*.acquired_at' => ['nullable', 'date'],
-            'copies.*.price_paid' => ['nullable', 'numeric', 'min:0'],
+            'copies.*.current_location_id' => ['nullable', 'integer'],
+            'copies.*.status' => ['nullable', Rule::enum(CopyStatus::class)],
+            'copies.*.quantity' => ['nullable', 'integer', 'min:1'],
+            'copies.*.disposed_at' => ['nullable', 'date'],
+            'copies.*.note' => ['nullable', 'string', 'max:2000'],
             'copies.*.estimated_value' => ['nullable', 'numeric', 'min:0'],
             'photos' => ['array'],
             'photos.*' => ['image', 'max:10240'],
@@ -209,20 +214,23 @@ class ItemController extends Controller
 
     /**
      * Turn the validated copy rows into the shape the action expects, converting
-     * the price fields from currency units into integer cents.
+     * the estimated value from currency units into integer cents.
      *
      * @param  array<int, array<string, mixed>>  $copies
-     * @return list<array{id: int|null, condition_id: int|null, location_id: int|null, acquired_at: string|null, price_paid: int|null, estimated_value: int|null}>
+     * @return list<array{id: int|null, identifier: string|null, condition_id: int|null, current_location_id: int|null, status: CopyStatus, quantity: int, disposed_at: string|null, note: string|null, estimated_value: int|null}>
      */
     private function copies(array $copies): array
     {
         return collect($copies)
             ->map(fn (array $copy): array => [
                 'id' => $this->toId($copy['id'] ?? null),
+                'identifier' => $this->toText($copy['identifier'] ?? null),
                 'condition_id' => $this->toId($copy['condition_id'] ?? null),
-                'location_id' => $this->toId($copy['location_id'] ?? null),
-                'acquired_at' => $copy['acquired_at'] ?? null,
-                'price_paid' => $this->toCents($copy['price_paid'] ?? null),
+                'current_location_id' => $this->toId($copy['current_location_id'] ?? null),
+                'status' => CopyStatus::tryFrom((string) ($copy['status'] ?? '')) ?? CopyStatus::Owned,
+                'quantity' => max(1, (int) ($copy['quantity'] ?? 1)),
+                'disposed_at' => $this->toText($copy['disposed_at'] ?? null),
+                'note' => $this->toText($copy['note'] ?? null),
                 'estimated_value' => $this->toCents($copy['estimated_value'] ?? null),
             ])
             ->all();
@@ -284,6 +292,19 @@ class ItemController extends Controller
         }
 
         return (int) $id;
+    }
+
+    /**
+     * An input the user left alone still submits, so its empty string is brought
+     * back to null rather than stored as a blank value.
+     */
+    private function toText(mixed $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (string) $value;
     }
 
     private function toCents(mixed $amount): ?int

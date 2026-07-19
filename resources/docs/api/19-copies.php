@@ -6,16 +6,19 @@ use App\Services\ApiDocumentation;
 
 $base = ApiDocumentation::baseUrl();
 
-$copy = fn (string $id, ?string $conditionId, ?int $pricePaid): array => [
+$copy = fn (string $id, ?string $conditionId, ?int $estimatedValue): array => [
     'type' => 'copy',
     'id' => $id,
     'attributes' => [
         'item_id' => '1',
+        'identifier' => null,
         'condition_id' => $conditionId,
-        'location_id' => null,
-        'acquired_at' => 1752537600,
-        'price_paid' => $pricePaid,
-        'estimated_value' => null,
+        'current_location_id' => null,
+        'status' => 'owned',
+        'quantity' => 1,
+        'disposed_at' => null,
+        'note' => null,
+        'estimated_value' => $estimatedValue,
         'created_at' => 1752537600,
         'updated_at' => 1752537600,
     ],
@@ -57,6 +60,13 @@ $copyId = [
 
 $bodyParams = [
     [
+        'name' => 'identifier',
+        'type' => 'string',
+        'required' => false,
+        'description' => 'A reference of your own for this copy, such as a serial or a shelf number.',
+        'example' => 'CP-0042',
+    ],
+    [
         'name' => 'condition_id',
         'type' => 'integer',
         'required' => false,
@@ -71,24 +81,38 @@ $bodyParams = [
         'example' => '1',
     ],
     [
-        'name' => 'acquired_at',
+        'name' => 'status',
         'type' => 'string',
         'required' => false,
-        'description' => 'The date the copy was acquired, in YYYY-MM-DD format.',
+        'description' => 'Where the copy sits in its lifecycle. One of owned, ordered, loaned, sold, gifted, lost, stolen, disposed or other. Defaults to owned.',
+        'example' => 'owned',
+    ],
+    [
+        'name' => 'quantity',
+        'type' => 'integer',
+        'required' => false,
+        'description' => 'How many identical units this copy stands for. At least 1, and defaults to 1.',
+        'example' => '1',
+    ],
+    [
+        'name' => 'disposed_at',
+        'type' => 'string',
+        'required' => false,
+        'description' => 'The date the copy left the collection, in YYYY-MM-DD format.',
         'example' => '2024-01-15',
     ],
     [
-        'name' => 'price_paid',
-        'type' => 'integer',
+        'name' => 'note',
+        'type' => 'string',
         'required' => false,
-        'description' => 'The price paid for the copy, in the smallest currency unit (e.g. cents).',
-        'example' => '1200',
+        'description' => 'A free form note about the copy.',
+        'example' => 'Signed by the artist.',
     ],
     [
         'name' => 'estimated_value',
         'type' => 'integer',
         'required' => false,
-        'description' => 'The estimated value of the copy, in the smallest currency unit (e.g. cents).',
+        'description' => 'What the copy is currently reckoned to be worth, in the smallest currency unit (e.g. cents). Recorded as a new valuation rather than overwriting the previous one.',
         'example' => '5000',
     ],
 ];
@@ -102,13 +126,13 @@ return [
             'method' => 'GET',
             'path' => '/items/{item}/copies',
             'examplePath' => '/items/1/copies',
-            'description' => 'Retrieve the physical copies owned of an item. Each copy carries its own condition, location and acquisition details.',
+            'description' => 'Retrieve the physical copies owned of an item. Each copy carries its own identifier, condition, location and status.',
             'permissions' => 'Any member of the account.',
             'pathParams' => [$itemId],
             'queryParams' => $pagination,
             'returns' => 'A paginated list of copy objects.',
             'response' => ApiDocumentation::paginated([
-                $copy('1', '1', 1200),
+                $copy('1', '1', 5000),
                 $copy('2', null, null),
             ], '/items/1/copies'),
         ],
@@ -123,7 +147,7 @@ return [
             'permissions' => 'Any member of the account.',
             'pathParams' => [$itemId, $copyId],
             'returns' => 'A copy object, or 404 when the copy does not belong to your account.',
-            'response' => ['data' => $copy('1', '1', 1200)],
+            'response' => ['data' => $copy('1', '1', 5000)],
         ],
         [
             'id' => 'copies-create',
@@ -138,7 +162,7 @@ return [
             'bodyParams' => $bodyParams,
             'returns' => 'The created copy object.',
             'responseStatus' => 201,
-            'response' => ['data' => $copy('1', '1', 1200)],
+            'response' => ['data' => $copy('1', '1', 5000)],
         ],
         [
             'id' => 'copies-update',
@@ -147,12 +171,12 @@ return [
             'method' => 'PUT',
             'path' => '/items/{item}/copies/{copy}',
             'examplePath' => '/items/1/copies/1',
-            'description' => 'Update the condition, location and acquisition details of a copy.',
+            'description' => 'Update the identifier, condition, location, status and estimated value of a copy.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$itemId, $copyId],
             'bodyParams' => $bodyParams,
             'returns' => 'The updated copy object.',
-            'response' => ['data' => $copy('1', '1', 1200)],
+            'response' => ['data' => $copy('1', '1', 5000)],
         ],
         [
             'id' => 'copies-destroy',

@@ -1,3 +1,5 @@
+@use('App\Enums\CopyStatus')
+
 @php
     // The add and the edit screens share this body. On the add screen there is no
     // item, so every field falls back to an empty value.
@@ -17,18 +19,22 @@
         ->mapWithKeys(fn ($value) => [(string) $value->custom_field_id => $value->value])
         ->all() ?? [];
 
-    // A copy stores money in cents, so it is brought back to currency units for
-    // the form, which is what the controller converts again on the way in.
+    $copyStatuses = CopyStatus::options();
+
+    // A valuation stores money in cents, so it is brought back to currency units
+    // for the form, which is what the controller converts again on the way in.
     $existingCopies = $item?->copies->map(fn ($copy) => [
         'id' => $copy->id,
+        'identifier' => $copy->identifier ?? '',
         'condition_id' => (string) $copy->condition_id,
-        'location_id' => (string) $copy->location_id,
-        'acquired_at' => $copy->acquired_at?->format('Y-m-d') ?? '',
-        'price_paid' => $copy->price_paid === null ? '' : number_format($copy->price_paid / 100, 2, '.', ''),
-        'estimated_value' => $copy->estimated_value === null ? '' : number_format($copy->estimated_value / 100, 2, '.', ''),
+        'current_location_id' => (string) $copy->current_location_id,
+        'status' => $copy->status->value,
+        'quantity' => $copy->quantity,
+        'note' => $copy->note ?? '',
+        'estimated_value' => $copy->estimatedValue() === null ? '' : number_format($copy->estimatedValue() / 100, 2, '.', ''),
     ])->values()->all() ?? [];
 
-    $blankCopy = ['id' => null, 'condition_id' => '', 'location_id' => '', 'acquired_at' => '', 'price_paid' => '', 'estimated_value' => ''];
+    $blankCopy = ['id' => null, 'identifier' => '', 'condition_id' => '', 'current_location_id' => '', 'status' => CopyStatus::Owned->value, 'quantity' => 1, 'note' => '', 'estimated_value' => ''];
 
     $selectedCategoryId = old('category_id', $item?->category_id);
     $selectedSetId = old('set_id', $item?->set_id);
@@ -452,7 +458,7 @@
             </div>
             <div>
               <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Location') }}</label>
-              <select :name="`copies[${index}][location_id]`" x-model="copy.location_id" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
+              <select :name="`copies[${index}][current_location_id]`" x-model="copy.current_location_id" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
                 <option value="">{{ __('Not set') }}</option>
                 @foreach ($locations as $location)
                   <option value="{{ $location->id }}">{{ $location->name }}</option>
@@ -463,17 +469,31 @@
 
           <div class="mt-3.5 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
             <div>
-              <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Acquired on') }}</label>
-              <input type="date" :name="`copies[${index}][acquired_at]`" x-model="copy.acquired_at" class="h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink" />
+              <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Status') }}</label>
+              <select :name="`copies[${index}][status]`" x-model="copy.status" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
+                @foreach ($copyStatuses as $value => $label)
+                  <option value="{{ $value }}">{{ $label }}</option>
+                @endforeach
+              </select>
             </div>
             <div>
-              <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Price paid') }}</label>
-              <input type="number" step="0.01" min="0" placeholder="0.00" :name="`copies[${index}][price_paid]`" x-model="copy.price_paid" class="h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink placeholder-muted-soft" />
+              <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Quantity') }}</label>
+              <input type="number" step="1" min="1" :name="`copies[${index}][quantity]`" x-model="copy.quantity" class="h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink" />
             </div>
             <div>
               <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Est. value') }}</label>
               <input type="number" step="0.01" min="0" placeholder="0.00" :name="`copies[${index}][estimated_value]`" x-model="copy.estimated_value" class="h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink placeholder-muted-soft" />
             </div>
+          </div>
+
+          <div class="mt-3.5">
+            <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Identifier') }}</label>
+            <input type="text" placeholder="{{ __('e.g. CGC 9.8 serial') }}" :name="`copies[${index}][identifier]`" x-model="copy.identifier" class="h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink placeholder-muted-soft" />
+          </div>
+
+          <div class="mt-3.5">
+            <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Note') }}</label>
+            <textarea rows="2" placeholder="{{ __('Anything specific to this copy…') }}" :name="`copies[${index}][note]`" x-model="copy.note" class="w-full rounded-md border border-hairline bg-input px-3 py-2 text-sm text-ink placeholder-muted-soft"></textarea>
           </div>
         </div>
       </template>

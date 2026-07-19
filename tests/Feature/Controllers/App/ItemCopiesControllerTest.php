@@ -1,12 +1,14 @@
 <?php
 
 declare(strict_types=1);
+use App\Enums\CopyStatus;
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
 use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -17,24 +19,123 @@ it('shows the copies of an item with their condition and location', function () 
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Near Mint']);
     $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Display Case']);
-    Copy::factory()->create([
+    $copy = Copy::factory()->create([
         'item_id' => $item->id,
         'condition_id' => $condition->id,
-        'location_id' => $location->id,
-        'price_paid' => 18000,
-        'estimated_value' => 42000,
+        'current_location_id' => $location->id,
     ]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 42000, 'valued_at' => '2026-01-01']);
 
     $response = $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]));
 
     $response->assertOk();
+    $response->assertSee('data-test="copy-'.$copy->id.'"', false);
     $response->assertSee('Near Mint');
     $response->assertSee('Display Case');
     $response->assertSee('$420');
-    $response->assertSee('$180');
 });
 
-it('shows the provenance placeholder on a copy', function () {
+// The copy carries no value of its own any more, so the figure shown has to be
+// the most recent valuation rather than the first or the sum of them.
+it('shows the latest valuation of a copy', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 10000, 'valued_at' => '2024-01-01']);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 25000, 'valued_at' => '2026-01-01']);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('latest valuation')
+        ->assertSee('$250')
+        ->assertDontSee('$100');
+});
+
+it('shows a dash when a copy has never been valued', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('latest valuation')
+        ->assertDontSee('total est. value');
+});
+
+it('shows the status of a copy', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id, 'status' => CopyStatus::Loaned]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="copy-status"', false)
+        ->assertSee('Loaned out');
+});
+
+it('shows the identifier of a copy when it has one', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id, 'identifier' => 'CENTRAL-PERK-01']);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="copy-identifier"', false)
+        ->assertSee('CENTRAL-PERK-01');
+});
+
+it('does not show an identifier chip when the copy has none', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id, 'identifier' => null]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertDontSee('data-test="copy-identifier"', false);
+});
+
+// One instance is the ordinary case, so calling it out would only be noise.
+it('calls out the quantity only when the copy stands for more than one instance', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $single = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id, 'quantity' => 6]);
+    Copy::factory()->create(['item_id' => $single->id, 'quantity' => 1]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="copy-quantity"', false)
+        ->assertSee('× 6');
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $single]))
+        ->assertOk()
+        ->assertDontSee('data-test="copy-quantity"', false);
+});
+
+it('shows the note of a copy, and says so when there is none', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $noted = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $noted->id, 'note' => 'Signed by Gunther.']);
+    Copy::factory()->create(['item_id' => $item->id, 'note' => null]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $noted]))
+        ->assertOk()
+        ->assertSee('Signed by Gunther.');
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('No note on this copy.');
+});
+
+it('links a copy to the history tab', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
@@ -42,7 +143,23 @@ it('shows the provenance placeholder on a copy', function () {
 
     $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
         ->assertOk()
-        ->assertSee('Provenance');
+        ->assertSee('data-test="copy-history-link"', false)
+        ->assertSee(route('items.history.index', [$collection, $item]), false);
+});
+
+it('sums what every copy was last valued at', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $first = Copy::factory()->create(['item_id' => $item->id]);
+    $second = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $first->id, 'amount' => 30000, 'valued_at' => '2026-01-01']);
+    Valuation::factory()->create(['copy_id' => $second->id, 'amount' => 20000, 'valued_at' => '2026-01-01']);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('2 physical copies')
+        ->assertSee('total est. value $500');
 });
 
 it('tells the reader when an item has no copies', function () {
@@ -52,6 +169,7 @@ it('tells the reader when an item has no copies', function () {
 
     $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
         ->assertOk()
+        ->assertSee('data-test="no-copies"', false)
         ->assertSee('No copies of this item yet.');
 });
 

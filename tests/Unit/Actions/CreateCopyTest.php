@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 use App\Actions\CreateCopy;
+use App\Enums\CopyStatus;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\ValuationConfidence;
+use App\Enums\ValuationType;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
 use App\Models\Condition;
@@ -32,18 +35,24 @@ it('creates a copy and stamps the author', function () {
         item: $item,
         condition: $condition,
         location: $location,
-        acquiredAt: '2026-07-17',
-        pricePaid: 4200,
+        identifier: 'CGC 1234567',
+        status: CopyStatus::Loaned,
+        quantity: 2,
+        disposedAt: '2026-07-17',
+        note: 'Lent to Joey.',
         estimatedValue: 9900,
     )->execute();
 
     expect($copy)->toBeInstanceOf(Copy::class);
     expect($copy->item_id)->toBe($item->id);
     expect($copy->condition_id)->toBe($condition->id);
-    expect($copy->location_id)->toBe($location->id);
-    expect($copy->acquired_at->toDateString())->toBe('2026-07-17');
-    expect($copy->price_paid)->toBe(4200);
-    expect($copy->estimated_value)->toBe(9900);
+    expect($copy->current_location_id)->toBe($location->id);
+    expect($copy->identifier)->toBe('CGC 1234567');
+    expect($copy->status)->toBe(CopyStatus::Loaned);
+    expect($copy->quantity)->toBe(2);
+    expect($copy->disposed_at->toDateString())->toBe('2026-07-17');
+    expect($copy->note)->toBe('Lent to Joey.');
+    expect($copy->estimatedValue())->toBe(9900);
 
     $this->assertDatabaseHas('copies', [
         'id' => $copy->id,
@@ -75,10 +84,42 @@ it('creates a copy with only an item', function () {
     )->execute();
 
     expect($copy->condition_id)->toBeNull();
-    expect($copy->location_id)->toBeNull();
-    expect($copy->acquired_at)->toBeNull();
-    expect($copy->price_paid)->toBeNull();
-    expect($copy->estimated_value)->toBeNull();
+    expect($copy->current_location_id)->toBeNull();
+    expect($copy->identifier)->toBeNull();
+    expect($copy->status)->toBe(CopyStatus::Owned);
+    expect($copy->quantity)->toBe(1);
+    expect($copy->disposed_at)->toBeNull();
+    expect($copy->note)->toBeNull();
+    expect($copy->estimatedValue())->toBeNull();
+});
+
+// The estimated value is no longer a column, so a figure given with the copy has
+// to open its valuation history instead.
+it('records the estimated value as a valuation rather than a column', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $copy = new CreateCopy(
+        user: $owner,
+        item: $item,
+        estimatedValue: 42000,
+    )->execute();
+
+    expect($copy->valuations()->count())->toBe(1);
+
+    $valuation = $copy->valuations()->first();
+
+    expect($valuation->amount)->toBe(42000);
+    expect($valuation->type)->toBe(ValuationType::UserEstimate);
+    expect($valuation->currency_code)->toBe('USD');
+    expect($valuation->confidence)->toBe(ValuationConfidence::Unknown);
+    expect($valuation->valued_at->toDateString())->toBe(now()->toDateString());
+    expect($valuation->created_by_id)->toBe($owner->id);
 });
 
 it('throws when the condition belongs to another account', function () {
