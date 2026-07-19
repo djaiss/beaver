@@ -67,12 +67,12 @@
             {{ __('Back to collections') }}
         </a>
 
-        {{-- The sections below have no routes of their own yet, so they all point back at the
+        {{-- Sets and item details have no routes of their own yet, so they point back at the
              collection. They get their own pages as each concept is built. --}}
         <nav class="flex flex-col gap-0.5">
             <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $collection->name }}</p>
-            <x-sidebar-link :href="route('collections.show', $collection)" :active="true" color="bg-brand">{{ __('Items') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-violet">{{ __('Categories') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" color="bg-brand">{{ __('Items') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('categories.index', $collection)" :active="request()->routeIs('categories.*')" color="bg-badge-violet">{{ __('Categories') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-emerald">{{ __('Sets') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.show', $collection)" :active="false" color="bg-badge-orange">{{ __('Item details') }}</x-sidebar-link>
         </nav>

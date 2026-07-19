@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\App\Account\AccountController;
 use App\Http\Controllers\App\Account\InvitationController;
 use App\Http\Controllers\App\Account\MemberController;
+use App\Http\Controllers\App\CategoryController;
 use App\Http\Controllers\App\CollectionController;
 use App\Http\Controllers\App\CollectionItemViewController;
 use App\Http\Controllers\App\CollectionTypeController;
@@ -59,6 +60,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('collections/{collection}/items/{item}/activities', [ItemActivitiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.activities.index');
     Route::get('collections/{collection}/items/{item}/roadmap', [ItemRoadmapController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.roadmap.index');
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
+    // browsing the categories of a collection is read only, so any role may do it
+    Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('categories.index');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
@@ -79,6 +82,13 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');
         Route::delete('collections/{collection}/items/{item}/tags/{tag}', [ItemTagController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'tag' => '[1-9][0-9]*'])->name('items.tags.destroy');
+    });
+
+    // categories — owners and editors may create, update and delete the categories of a collection
+    Route::middleware(['editor'])->group(function (): void {
+        Route::post('collections/{collection}/categories', [CategoryController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('categories.create');
+        Route::put('collections/{collection}/categories/{category}', [CategoryController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.update');
+        Route::delete('collections/{collection}/categories/{category}', [CategoryController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.destroy');
     });
 
     // locations — owners and editors may create, update and delete locations
