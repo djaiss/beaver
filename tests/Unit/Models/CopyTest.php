@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 use App\Enums\CopyStatus;
+use App\Enums\TransactionType;
 use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Transaction;
 use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -126,4 +128,41 @@ it('soft deletes', function () {
     $this->assertSoftDeleted($copy);
     expect(Copy::query()->find($copy->id))->toBeNull();
     expect(Copy::withTrashed()->find($copy->id))->not->toBeNull();
+});
+
+it('has many transactions, most recent first', function () {
+    $copy = Copy::factory()->create();
+    Transaction::factory()->create(['copy_id' => $copy->id, 'occurred_at' => '2024-01-01']);
+    Transaction::factory()->create(['copy_id' => $copy->id, 'occurred_at' => '2026-01-01']);
+
+    expect($copy->transactions)->toHaveCount(2);
+    expect($copy->transactions->first()->occurred_at->toDateString())->toBe('2026-01-01');
+});
+
+// The acquisition is the earliest transaction that brought the copy in, so a
+// copy bought and later sold still reports when it was bought.
+it('reads its acquisition from the earliest acquiring transaction', function () {
+    $copy = Copy::factory()->create();
+    Transaction::factory()->create(['copy_id' => $copy->id, 'type' => TransactionType::Sale, 'occurred_at' => '2020-01-01']);
+    Transaction::factory()->create(['copy_id' => $copy->id, 'type' => TransactionType::Purchase, 'occurred_at' => '2024-06-01', 'amount' => 1000, 'fee_amount' => 200, 'shipping_amount' => 300, 'total_amount' => null]);
+    Transaction::factory()->create(['copy_id' => $copy->id, 'type' => TransactionType::Purchase, 'occurred_at' => '2026-01-01']);
+
+    expect($copy->acquiredAt()->toDateString())->toBe('2024-06-01');
+    expect($copy->pricePaid())->toBe(1500);
+});
+
+// A fee is money around an acquisition, not the acquisition itself.
+it('does not read its acquisition from a fee', function () {
+    $copy = Copy::factory()->create();
+    Transaction::factory()->create(['copy_id' => $copy->id, 'type' => TransactionType::Fee, 'occurred_at' => '2020-01-01']);
+
+    expect($copy->acquiredAt())->toBeNull();
+    expect($copy->pricePaid())->toBeNull();
+});
+
+it('has no acquisition until a transaction says how it was acquired', function () {
+    $copy = Copy::factory()->create();
+
+    expect($copy->acquiredAt())->toBeNull();
+    expect($copy->pricePaid())->toBeNull();
 });

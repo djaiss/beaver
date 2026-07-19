@@ -8,7 +8,9 @@ use App\Actions\CreateCategory;
 use App\Actions\CreateCollection;
 use App\Actions\CreateItem;
 use App\Actions\CreateSet;
+use App\Actions\CreateTransaction;
 use App\Enums\CopyStatus;
+use App\Enums\TransactionType;
 use App\Enums\VisibilityEnum;
 use App\Models\Category;
 use App\Models\Collection;
@@ -149,11 +151,44 @@ class CollectionSeeder extends Seeder
                     copies: $copies,
                 )->execute();
 
+                $this->recordAcquisitions($user, $item, $copies);
                 $this->backdate($item, $copies);
             }
         }
 
         $this->command->info('Created '.$counter.' items.');
+    }
+
+    /**
+     * Record how each copy was acquired.
+     *
+     * The acquisition date and the purchase price are not columns on a copy:
+     * they are read from the transaction that brought it in. Seeding those
+     * transactions is what gives the statistics screen its two charts over time,
+     * which would otherwise sit flat however much the collection holds.
+     *
+     * Every eleventh copy is left without one, so the screen has a reason to say
+     * that some copies have no acquisition recorded.
+     *
+     * @param  list<array{backdate_to: string|null, estimated_value: int, ...}>  $copies
+     */
+    private function recordAcquisitions(User $user, Item $item, array $copies): void
+    {
+        foreach ($item->copies as $index => $copy) {
+            $seeded = $copies[$index] ?? null;
+
+            if ($seeded === null || $seeded['backdate_to'] === null) {
+                continue;
+            }
+
+            new CreateTransaction(
+                user: $user,
+                copy: $copy,
+                type: TransactionType::Purchase,
+                occurredAt: $seeded['backdate_to'],
+                amount: (int) round($seeded['estimated_value'] * 0.6),
+            )->execute();
+        }
     }
 
     /**
@@ -211,7 +246,7 @@ class CollectionSeeder extends Seeder
                 'status' => CopyStatus::Owned,
                 'quantity' => 1,
                 'estimated_value' => $value,
-                'backdate_to' => Carbon::now()->subMonths($monthsAgo)->subDays($seed % 28)->format('Y-m-d'),
+                'backdate_to' => $counter % 11 === 0 ? null : Carbon::now()->subMonths($monthsAgo)->subDays($seed % 28)->format('Y-m-d'),
             ];
         }
 

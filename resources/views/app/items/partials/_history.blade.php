@@ -5,17 +5,19 @@
   each copy has its own. The sections down the left are what the history will be
   assembled from. Almost none of them exist yet, so they are listed with what
   they are for rather than hidden: the shape of the screen is the point. The
-  timeline and the valuations are the ones the copy restructuring brought, so
+  timeline, the valuations and the transactions are the ones that are built, so
   they are the only ones filled in.
 
   The dot colours and shapes match the Kollek design: a round dot for the events
   that belong to the object's story, a square for the operational records.
 --}}
 
+@use('App\Helpers\Money')
+
 @php
   $sectionsMeta = [
       ['key' => 'timeline', 'label' => __('Timeline'), 'color' => 'var(--color-ink)', 'round' => true, 'ready' => true],
-      ['key' => 'transactions', 'label' => __('Transactions'), 'color' => '#34d399', 'round' => false, 'ready' => false],
+      ['key' => 'transactions', 'label' => __('Transactions'), 'color' => '#34d399', 'round' => false, 'ready' => true],
       ['key' => 'valuations', 'label' => __('Valuations'), 'color' => '#3b82f6', 'round' => false, 'ready' => true],
       ['key' => 'provenance', 'label' => __('Provenance'), 'color' => '#6366f1', 'round' => true, 'ready' => false],
       ['key' => 'insurance', 'label' => __('Insurance'), 'color' => '#8b5cf6', 'round' => true, 'ready' => false],
@@ -44,7 +46,13 @@
     // The count each section shows. Only the built sections carry data, so the
     // rest are left blank rather than showing a zero that reads as a real count.
     $valuationCount = $selectedCopy->valuations->count();
-    $counts = ['timeline' => $valuationCount, 'valuations' => $valuationCount];
+    $transactionCount = $selectedCopy->transactions->count();
+    $counts = ['timeline' => $valuationCount, 'transactions' => $transactionCount, 'valuations' => $valuationCount];
+
+    // The acquisition date and price are read from the earliest transaction that
+    // brought the copy in, not stored on the copy.
+    $acquisition = $selectedCopy->acquiringTransaction;
+    $acquisitionTotal = $acquisition?->total();
 
     $statusTextColor = match ($selectedCopy->status->color()) {
         'emerald' => 'text-badge-emerald',
@@ -56,7 +64,7 @@
     };
   @endphp
 
-  <div class="flex flex-col gap-6" data-test="history-copy-{{ $selectedCopy->id }}">
+  <div id="history-panel" class="flex flex-col gap-6" data-test="history-copy-{{ $selectedCopy->id }}">
     {{-- Copy selector. Each copy is its own url, so these are links. --}}
     <div class="flex flex-wrap items-center gap-2.5">
       <span class="text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Physical copy') }}</span>
@@ -85,7 +93,6 @@
     {{-- Summary strip: the current state of the chosen copy at a glance. --}}
     <div class="grid grid-cols-2 overflow-hidden rounded-xl border border-hairline lg:grid-cols-4" data-test="history-summary">
       @php
-        $acquiredValue = '—';
         $summary = [
             [
                 'label' => __('Status'),
@@ -101,9 +108,11 @@
             ],
             [
                 'label' => __('Acquired'),
-                'value' => $acquiredValue,
+                'value' => $acquisition ? $acquisition->occurred_at->isoFormat('MMM D, YYYY') : '—',
                 'valueClass' => 'text-ink',
-                'sub' => __('From a transaction'),
+                'sub' => $acquisition
+                    ? ($acquisitionTotal !== null ? Money::format($acquisitionTotal, $acquisition->currency_code) : $acquisition->type->label())
+                    : __('No acquisition recorded'),
             ],
             [
                 'label' => __('Location'),
@@ -156,6 +165,8 @@
 
         @if ($section === 'timeline')
           @include('app.items.partials._historyTimeline')
+        @elseif ($section === 'transactions')
+          @include('app.items.partials._historyTransactions')
         @elseif ($section === 'valuations')
           @include('app.items.partials._historyValuations')
         @else

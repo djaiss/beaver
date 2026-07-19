@@ -3,11 +3,13 @@
 declare(strict_types=1);
 use App\Enums\CopyStatus;
 use App\Enums\PermissionEnum;
+use App\Enums\TransactionType;
 use App\Models\Collection;
 use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Transaction;
 use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -209,4 +211,56 @@ it('does not show the copies of an item that belongs to a different collection',
     $item = Item::factory()->create(['collection_id' => $other->id]);
 
     $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))->assertNotFound();
+});
+
+// The acquisition date and the price paid are not columns on the copy. Both are
+// read from the earliest transaction that brought it in.
+it('shows the acquisition date and the price paid of a copy', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Transaction::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => TransactionType::Purchase,
+        'amount' => 10000,
+        'tax_amount' => 500,
+        'total_amount' => null,
+        'currency_code' => 'USD',
+        'occurred_at' => '2024-06-02',
+    ]);
+    Transaction::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => TransactionType::Sale,
+        'amount' => 90000,
+        'currency_code' => 'USD',
+        'occurred_at' => '2026-01-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="copy-acquired-at"', false)
+        ->assertSee('data-test="copy-price-paid"', false)
+        ->assertSee('Jun 2024')
+        ->assertSee('$105');
+});
+
+it('leaves the acquisition facts empty when nothing says how the copy arrived', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Transaction::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => TransactionType::Sale,
+        'amount' => 90000,
+        'currency_code' => 'USD',
+        'occurred_at' => '2026-01-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('Acquired')
+        ->assertSee('Price paid')
+        ->assertDontSee('$900');
 });

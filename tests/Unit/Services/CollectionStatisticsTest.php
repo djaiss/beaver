@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\TransactionType;
 use App\Models\Category;
 use App\Models\Collection;
 use App\Models\Condition;
@@ -9,6 +10,7 @@ use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
 use App\Models\Set;
+use App\Models\Transaction;
 use App\Models\Valuation;
 use App\Services\CollectionStatistics;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,6 +29,23 @@ function valuedCopy(array $attributes, int $amount): Copy
         'copy_id' => $copy->id,
         'amount' => $amount,
         'valued_at' => '2026-01-01',
+    ]);
+
+    return $copy;
+}
+
+/**
+ * A copy acquired on a given date, which is the date of the transaction that
+ * brought it in rather than a column on the copy.
+ */
+function acquiredCopy(array $attributes, int $amount, string $acquiredAt): Copy
+{
+    $copy = valuedCopy($attributes, $amount);
+
+    Transaction::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => TransactionType::Purchase,
+        'occurred_at' => $acquiredAt,
     ]);
 
     return $copy;
@@ -95,28 +114,46 @@ it('ignores the items of another collection', function (): void {
         ->and($totals['value'])->toBe(5000);
 });
 
-// The acquisition date left the copy with #117 and comes back with the
-// transactions of #118. Until then nothing carries one, so every copy is
-// undated. Flip this back deliberately when transactions land.
-it('counts every copy as undated until transactions carry the acquisition date', function (): void {
+// A copy is undated when no transaction says how it was acquired, which is not
+// the same as having been acquired on an unknown date.
+it('counts the copies no transaction says how it was acquired', function (): void {
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
+    acquiredCopy(['item_id' => $item->id], 10000, '2026-03-01');
     Copy::factory()->count(2)->create(['item_id' => $item->id]);
 
     $totals = new CollectionStatistics(collection: $collection)->totals();
 
-    expect($totals['undatedCopies'])->toBe(2)
-        ->and($totals['undatedCopies'])->toBe($totals['copies']);
+    expect($totals['copies'])->toBe(3)
+        ->and($totals['undatedCopies'])->toBe(2);
 });
 
-// Same reason as above: no acquisition date means nothing can be attributed to
-// the current month, whatever the copies are worth (#118).
-it('adds no value this month until transactions carry the acquisition date', function (): void {
+// A fee is money around an acquisition, not the acquisition itself, so it must
+// not give the copy a date it never got.
+it('does not treat a fee as the acquisition of a copy', function (): void {
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    valuedCopy(['item_id' => $item->id], 75000);
+    $copy = valuedCopy(['item_id' => $item->id], 10000);
+    Transaction::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => TransactionType::Fee,
+        'occurred_at' => '2026-03-01',
+    ]);
 
-    expect(new CollectionStatistics(collection: $collection)->totals()['valueAddedThisMonth'])->toBe(0);
+    expect(new CollectionStatistics(collection: $collection)->totals()['undatedCopies'])->toBe(1);
+});
+
+it('adds up what was acquired this month', function (): void {
+    Date::setTestNow('2026-07-15');
+
+    $collection = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    acquiredCopy(['item_id' => $item->id], 75000, '2026-07-02');
+    acquiredCopy(['item_id' => $item->id], 20000, '2026-06-02');
+
+    expect(new CollectionStatistics(collection: $collection)->totals()['valueAddedThisMonth'])->toBe(75000);
+
+    Date::setTestNow();
 });
 
 it('has no average when the collection is empty', function (): void {
@@ -159,40 +196,42 @@ it('has no set completion when no set carries a target', function (): void {
     expect(new CollectionStatistics(collection: $collection)->setsCompletion())->toBeNull();
 });
 
-// The line runs off the acquisition dates, which nothing carries until #118, so
-// it reads flat at zero however much the collection is worth. This asserts the
-// intermediate state on purpose, so #118 flips it back rather than someone
-// treating a flat line as a bug.
-it('draws a flat value line until transactions carry the acquisition date', function (): void {
+// The line is a running total, so a copy acquired before the window still has
+// to be in the first point rather than appearing out of nowhere.
+it('runs the value line as a total, carrying what came before the window', function (): void {
     Date::setTestNow('2026-07-15');
 
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    valuedCopy(['item_id' => $item->id], 10000);
-    valuedCopy(['item_id' => $item->id], 5000);
+    acquiredCopy(['item_id' => $item->id], 10000, '2020-01-01');
+    acquiredCopy(['item_id' => $item->id], 5000, '2026-07-02');
 
     $value = new CollectionStatistics(collection: $collection)->valueOverTime();
 
     expect($value)->toHaveCount(12)
+        ->and($value[0]['value'])->toBe(10000)
         ->and($value[11]['label'])->toBe('Jul')
-        ->and(array_column($value, 'value'))->toBe(array_fill(0, 12, 0));
+        ->and($value[11]['value'])->toBe(15000);
 
     Date::setTestNow();
 });
 
-// Same reason as the value line above (#118).
-it('counts no acquisition in any month until transactions carry the date', function (): void {
+it('counts the acquisitions of each month', function (): void {
     Date::setTestNow('2026-07-15');
 
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    Copy::factory()->count(4)->create(['item_id' => $item->id]);
+    acquiredCopy(['item_id' => $item->id], 100, '2026-07-02');
+    acquiredCopy(['item_id' => $item->id], 100, '2026-07-20');
+    acquiredCopy(['item_id' => $item->id], 100, '2026-06-02');
+    Copy::factory()->create(['item_id' => $item->id]);
 
     $acquisitions = new CollectionStatistics(collection: $collection)->acquisitionsPerMonth();
 
     expect($acquisitions)->toHaveCount(12)
         ->and($acquisitions[11]['label'])->toBe('Jul')
-        ->and(array_column($acquisitions, 'count'))->toBe(array_fill(0, 12, 0));
+        ->and($acquisitions[11]['count'])->toBe(2)
+        ->and($acquisitions[10]['count'])->toBe(1);
 
     Date::setTestNow();
 });

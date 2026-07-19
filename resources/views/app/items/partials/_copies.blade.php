@@ -1,3 +1,5 @@
+@use('App\Helpers\Money')
+
 <div class="flex max-w-3xl flex-col gap-4">
   <div class="flex flex-wrap items-center justify-between gap-3">
     <p class="text-sm text-muted">
@@ -41,25 +43,32 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3">
         @php
+          // The acquisition date and the price paid are not columns on the copy.
+          // Both are read from the transaction that brought it in, so a copy with
+          // no such transaction simply has neither.
+          $pricePaid = $copy->pricePaid();
+
           $facts = [
-              __('Condition') => $copy->condition?->name ?? '—',
-              __('Location') => $copy->currentLocation?->name ?? '—',
-              __('Quantity') => number_format($copy->quantity),
-              __('Disposed') => $copy->disposed_at?->isoFormat('MMM YYYY') ?? '—',
+              ['test' => 'copy-condition', 'label' => __('Condition'), 'value' => $copy->condition?->name ?? '—'],
+              ['test' => 'copy-location', 'label' => __('Location'), 'value' => $copy->currentLocation?->name ?? '—'],
+              ['test' => 'copy-quantity-fact', 'label' => __('Quantity'), 'value' => number_format($copy->quantity)],
+              ['test' => 'copy-acquired-at', 'label' => __('Acquired'), 'value' => $copy->acquiredAt()?->isoFormat('MMM YYYY') ?? '—'],
+              ['test' => 'copy-price-paid', 'label' => __('Price paid'), 'value' => $pricePaid === null ? '—' : Money::format($pricePaid, $copy->acquiringTransaction?->currency_code)],
+              ['test' => 'copy-disposed-at', 'label' => __('Disposed'), 'value' => $copy->disposed_at?->isoFormat('MMM YYYY') ?? '—'],
           ];
         @endphp
 
-        @foreach ($facts as $label => $value)
-          <div class="border-b border-hairline px-5 py-3.5 last:border-r-0 sm:border-b-0 sm:border-r sm:border-r-hairline">
-            <p class="mb-1 text-xs text-muted-soft">{{ $label }}</p>
-            <p class="truncate text-sm font-semibold text-ink">{{ $value }}</p>
+        @foreach ($facts as $fact)
+          <div class="border-b border-hairline px-5 py-3.5 {{ $loop->iteration % 3 !== 0 ? 'sm:border-r sm:border-r-hairline' : '' }}" data-test="{{ $fact['test'] }}">
+            <p class="mb-1 text-xs text-muted-soft">{{ $fact['label'] }}</p>
+            <p class="truncate text-sm font-semibold text-ink">{{ $fact['value'] }}</p>
           </div>
         @endforeach
       </div>
 
-      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-hairline px-5 py-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
         <p class="min-w-0 flex-1 text-[13px] leading-relaxed text-muted">{{ $copy->note ?? __('No note on this copy.') }}</p>
 
         <a
