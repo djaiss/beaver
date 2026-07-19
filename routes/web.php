@@ -70,6 +70,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
     // browsing the categories of a collection is read only, so any role may do it
     Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('categories.index');
+    Route::get('collections/{collection}/categories/{category}', [CategoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.show');
     // browsing the sets of a collection is read only, so any role may do it
     Route::get('collections/{collection}/sets', [SetController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('sets.index');
     // series are account-wide rather than per collection, so they hang off the dashboard

@@ -3,7 +3,7 @@
         <a
             href="{{ route('items.show', [$collection, $row['id']]) }}"
             data-turbo="true"
-            x-show="cardVisible(@js($row['name']), @js($row['categoryId']))"
+            x-show="cardVisible(@js($row['name']))"
             class="block overflow-hidden rounded-xl border border-hairline bg-canvas transition-colors hover:border-muted"
         >
             @if ($row['photoUrl'])

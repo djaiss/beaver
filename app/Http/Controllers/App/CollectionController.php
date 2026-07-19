@@ -8,9 +8,9 @@ use App\Actions\CreateCollection;
 use App\Actions\DestroyCollection;
 use App\Actions\UpdateCollection;
 use App\Enums\VisibilityEnum;
+use App\Http\Controllers\Concerns\ShowsCollectionItems;
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
-use App\Models\Copy;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,14 +19,10 @@ use Illuminate\View\View;
 
 class CollectionController extends Controller
 {
+    use ShowsCollectionItems;
+
     /** @var list<string> */
     private const array EMOJI_OPTIONS = ['📦', '📚', '💿', '🃏', '🍷', '🎮', '🧸', '🪙', '🖼️', '⌚', '👟', '📷'];
-
-    /**
-     * Searching and filtering the items happens in the browser, over the rows of
-     * the current page only, so the page holds as many items as it reasonably can.
-     */
-    private const int ITEMS_PER_PAGE = 1000;
 
     public function index(Request $request): View
     {
@@ -49,19 +45,7 @@ class CollectionController extends Controller
             abort(404);
         }
 
-        $items = $collectionModel->items()
-            ->with(['mainPhoto', 'copies.condition', 'copies.location'])
-            ->orderByDesc('id')
-            ->paginate(self::ITEMS_PER_PAGE)
-            ->withQueryString();
-
-        return view('app.collections.show', [
-            'collection' => $collectionModel,
-            'view' => $collectionModel->viewForUser($request->user()),
-            'items' => $items,
-            'itemCount' => $collectionModel->items()->count(),
-            'totalValue' => (int) Copy::whereIn('item_id', $collectionModel->items()->select('id'))->sum('estimated_value'),
-        ]);
+        return $this->collectionItemsView($request, $collectionModel);
     }
 
     public function new(Request $request): View

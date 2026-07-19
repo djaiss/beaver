@@ -232,3 +232,73 @@ it('refuses to let a viewer delete a category', function () {
 
     $this->assertModelExists($category);
 });
+
+it('shows the items of a single category on its own url', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id, 'name' => 'Amazing Fantasy 15']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => null, 'name' => 'Action Comics 1']);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories/'.$category->id);
+
+    $response->assertOk()
+        ->assertSee('Amazing Fantasy 15')
+        ->assertDontSee('Action Comics 1');
+});
+
+it('shows the category in the breadcrumb of its own page', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories/'.$category->id);
+
+    $response->assertOk()
+        ->assertSeeInOrder(['Collections', 'Marvel Comics 1990s', 'Spider-Man'])
+        ->assertSee(route('collections.show', $collection->id), false);
+});
+
+it('keeps the category filter on an empty category', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories/'.$category->id);
+
+    $response->assertOk()
+        ->assertSee('No items in this category yet.')
+        ->assertSee('data-test="category-filter-'.$category->id.'"', false);
+});
+
+it('links every category of the collection from the item list', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id);
+
+    $response->assertOk()
+        ->assertSee(route('categories.show', [$collection->id, $category->id]), false);
+});
+
+it('cannot see a category of another accounts collection', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create();
+    $category = Category::factory()->create(['collection_id' => $collection->id]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id.'/categories/'.$category->id)
+        ->assertNotFound();
+});
+
+it('cannot see a category that belongs to another collection', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $other = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $other->id]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id.'/categories/'.$category->id)
+        ->assertNotFound();
+});
