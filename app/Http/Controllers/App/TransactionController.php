@@ -53,7 +53,7 @@ class TransactionController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.section', [$collectionModel, $itemModel, $copyModel, 'transactions'])
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'transactions'])
             ->with('status', __('Transaction recorded'))
             ->with('status_description', __('The transaction was added to the history of this copy.'));
     }
@@ -84,7 +84,7 @@ class TransactionController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.section', [$collectionModel, $itemModel, $copyModel, 'transactions'])
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'transactions'])
             ->with('status', __('Transaction updated'))
             ->with('status_description', __('Your changes to the transaction were saved.'));
     }
@@ -101,7 +101,7 @@ class TransactionController extends Controller
             transaction: $transactionModel,
         )->execute();
 
-        return to_route('items.history.section', [$collectionModel, $itemModel, $copyModel, 'transactions'])
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'transactions'])
             ->with('status', __('Transaction deleted'))
             ->with('status_description', __('The transaction was removed from the history of this copy.'));
     }

@@ -56,7 +56,7 @@ class ProvenanceEventController extends Controller
             transaction: $this->findLinkedTransaction($copyModel, $validated['transaction_id'] ?? null),
         )->execute();
 
-        return to_route('items.history.section', [$collectionModel, $itemModel, $copyModel, 'provenance'])
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'provenance'])
             ->with('status', __('Provenance event recorded'))
             ->with('status_description', __('The event was added to the story of this copy.'));
     }
@@ -88,7 +88,7 @@ class ProvenanceEventController extends Controller
             transaction: $this->findLinkedTransaction($copyModel, $validated['transaction_id'] ?? null),
         )->execute();
 
-        return to_route('items.history.section', [$collectionModel, $itemModel, $copyModel, 'provenance'])
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'provenance'])
             ->with('status', __('Provenance event updated'))
             ->with('status_description', __('Your changes to the event were saved.'));
     }
@@ -105,7 +105,7 @@ class ProvenanceEventController extends Controller
             event: $eventModel,
         )->execute();
 
-        return to_route('items.history.section', [$collectionModel, $itemModel, $copyModel, 'provenance'])
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'provenance'])
             ->with('status', __('Provenance event deleted'))
             ->with('status_description', __('The event was removed from the story of this copy.'));
     }

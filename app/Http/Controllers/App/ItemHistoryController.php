@@ -26,15 +26,15 @@ class ItemHistoryController extends Controller
 
     public function index(Request $request, int $collection, int $item): View
     {
-        return $this->render($request, $collection, $item, null, 'timeline');
+        return $this->render($request, $collection, $item, null, null);
     }
 
-    public function show(Request $request, int $collection, int $item, int $copy, string $section = 'timeline'): View
+    public function show(Request $request, int $collection, int $item, int $copy, ?string $section = null): View
     {
         return $this->render($request, $collection, $item, $copy, $section);
     }
 
-    private function render(Request $request, int $collection, int $item, ?int $copyId, string $section): View
+    private function render(Request $request, int $collection, int $item, ?int $copyId, ?string $section): View
     {
         $collectionModel = $this->findCollection($request, $collection);
         $itemModel = $this->findItem($collectionModel, $item, [
@@ -74,7 +74,7 @@ class ItemHistoryController extends Controller
      * Which section of the history to show. Each section is its own url, and it
      * falls back to the timeline rather than trusting whatever the url holds.
      */
-    private function section(string $section): string
+    private function section(?string $section): string
     {
         return in_array($section, self::SECTIONS, true) ? $section : 'timeline';
     }

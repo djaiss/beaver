@@ -37,7 +37,7 @@ it('records a provenance event against a copy', function () {
         'verification_note' => 'Checked against the auction catalogue.',
     ]);
 
-    $response->assertRedirect(route('items.history.section', [$collection, $item, $copy, 'provenance']));
+    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'provenance']));
     $response->assertSessionHas('status', 'Provenance event recorded');
 
     $event = ProvenanceEvent::query()->first();
@@ -263,7 +263,7 @@ it('updates a provenance event', function () {
         'to_party' => 'The Natural History Museum',
     ]);
 
-    $response->assertRedirect(route('items.history.section', [$collection, $item, $copy, 'provenance']));
+    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'provenance']));
     $response->assertSessionHas('status', 'Provenance event updated');
 
     $event->refresh();
@@ -364,7 +364,7 @@ it('deletes a provenance event', function () {
 
     $response = $this->actingAs($user)->delete(route('provenanceEvents.destroy', [$collection, $item, $copy, $event]));
 
-    $response->assertRedirect(route('items.history.section', [$collection, $item, $copy, 'provenance']));
+    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'provenance']));
     $response->assertSessionHas('status', 'Provenance event deleted');
     $this->assertModelMissing($event);
 });
