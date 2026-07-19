@@ -34,6 +34,9 @@ enum ItemActionEnum: string
     case ValuationCreation = 'valuation_created';
     case ValuationUpdate = 'valuation_updated';
     case ValuationDeletion = 'valuation_deleted';
+    case InsuranceRecordCreation = 'insurance_record_created';
+    case InsuranceRecordUpdate = 'insurance_record_updated';
+    case InsuranceRecordDeletion = 'insurance_record_deleted';
 
     public function translationKey(): string
     {
@@ -58,6 +61,9 @@ enum ItemActionEnum: string
             self::ValuationCreation => 'recorded a valuation',
             self::ValuationUpdate => 'updated a valuation',
             self::ValuationDeletion => 'deleted a valuation',
+            self::InsuranceRecordCreation => 'recorded an insurance record',
+            self::InsuranceRecordUpdate => 'updated an insurance record',
+            self::InsuranceRecordDeletion => 'deleted an insurance record',
         };
     }
 }
