@@ -1,92 +1,182 @@
 {{--
-  The chronological view across everything hanging off a copy.
+  The history of one copy, chosen first and read a section at a time.
 
-  Almost none of what this tab will read from exists yet, so the sections are
-  listed with what they are for rather than hidden until they are built: the
-  shape of the screen is the point, and an empty section says more about what is
-  coming than no section at all. Valuations are the one history the copy
-  restructuring brought with it, so they are the only ones filled in.
+  A copy is picked with the pills at the top, and the choice lives in the url so
+  each copy has its own. The sections down the left are what the history will be
+  assembled from. Almost none of them exist yet, so they are listed with what
+  they are for rather than hidden: the shape of the screen is the point. The
+  timeline and the valuations are the ones the copy restructuring brought, so
+  they are the only ones filled in.
+
+  The dot colours and shapes match the Kollek design: a round dot for the events
+  that belong to the object's story, a square for the operational records.
 --}}
 
 @php
-  $sections = [
-      ['key' => 'timeline', 'label' => __('Timeline'), 'blurb' => __('Everything that has happened to this copy, oldest first.'), 'ready' => true],
-      ['key' => 'transactions', 'label' => __('Transactions'), 'blurb' => __('Financial and ownership exchanges. The source of truth for prices, fees and totals.'), 'ready' => false],
-      ['key' => 'provenance', 'label' => __('Provenance'), 'blurb' => __('Meaningful events in ownership, custody, origin and authenticity. No financial data lives here.'), 'ready' => false],
-      ['key' => 'valuations', 'label' => __('Valuations'), 'blurb' => __('What the copy has been reckoned to be worth, over time.'), 'ready' => true],
-      ['key' => 'insurance', 'label' => __('Insurance'), 'blurb' => __('Coverage, and how the insured value has moved.'), 'ready' => false],
-      ['key' => 'maintenance', 'label' => __('Maintenance'), 'blurb' => __('Cleaning, repair, servicing and restoration performed on the copy.'), 'ready' => false],
-      ['key' => 'loans', 'label' => __('Loans'), 'blurb' => __('Custody out and back, without ownership changing.'), 'ready' => false],
-      ['key' => 'locations', 'label' => __('Locations'), 'blurb' => __('Where the copy has been kept.'), 'ready' => false],
-      ['key' => 'documents', 'label' => __('Documents'), 'blurb' => __('Files attached to the copy or to anything hanging off it.'), 'ready' => false],
+  $sectionsMeta = [
+      ['key' => 'timeline', 'label' => __('Timeline'), 'color' => 'var(--color-ink)', 'round' => true, 'ready' => true],
+      ['key' => 'transactions', 'label' => __('Transactions'), 'color' => '#34d399', 'round' => false, 'ready' => false],
+      ['key' => 'valuations', 'label' => __('Valuations'), 'color' => '#3b82f6', 'round' => false, 'ready' => true],
+      ['key' => 'provenance', 'label' => __('Provenance'), 'color' => '#6366f1', 'round' => true, 'ready' => false],
+      ['key' => 'insurance', 'label' => __('Insurance'), 'color' => '#8b5cf6', 'round' => true, 'ready' => false],
+      ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => false],
+      ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => false],
+      ['key' => 'locations', 'label' => __('Locations'), 'color' => '#14b8a6', 'round' => false, 'ready' => false],
+      ['key' => 'documents', 'label' => __('Documents'), 'color' => '#64748b', 'round' => false, 'ready' => false],
   ];
 @endphp
 
-<div class="flex flex-col gap-6">
-  @forelse ($item->copies as $copy)
-    <div class="overflow-hidden rounded-xl border border-hairline" data-test="history-copy-{{ $copy->id }}">
-      <div class="flex flex-wrap items-center gap-2.5 border-b border-hairline px-5 py-4">
-        <p class="text-[15px] font-semibold text-ink">{{ __('Copy :number', ['number' => $loop->iteration]) }}</p>
+@if ($item->copies->isEmpty())
+  <div class="rounded-xl border border-hairline">
+    <x-empty-state data-test="no-copies-to-track">
+      <x-slot:icon>
+        <x-lucide-clock class="size-6 text-muted" />
+      </x-slot>
 
-        @if ($copy->identifier)
-          <span class="rounded-md bg-card px-2 py-0.5 font-mono text-xs text-muted">{{ $copy->identifier }}</span>
+      {{ __('This item has no copies, so there is nothing to track the history of.') }}
+    </x-empty-state>
+  </div>
+@else
+  @php
+    $copyNumber = $item->copies->search(fn ($copy) => $copy->id === $selectedCopy->id) + 1;
+    $latestValuation = $selectedCopy->latestValuation;
+
+    // The count each section shows. Only the built sections carry data, so the
+    // rest are left blank rather than showing a zero that reads as a real count.
+    $valuationCount = $selectedCopy->valuations->count();
+    $counts = ['timeline' => $valuationCount, 'valuations' => $valuationCount];
+
+    $statusTextColor = match ($selectedCopy->status->color()) {
+        'emerald' => 'text-badge-emerald',
+        'orange' => 'text-badge-orange',
+        'pink' => 'text-badge-pink',
+        'violet' => 'text-badge-violet',
+        'error' => 'text-error',
+        default => 'text-ink',
+    };
+  @endphp
+
+  <div class="flex flex-col gap-6" data-test="history-copy-{{ $selectedCopy->id }}">
+    {{-- Copy selector. Each copy is its own url, so these are links. --}}
+    <div class="flex flex-wrap items-center gap-2.5">
+      <span class="text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Physical copy') }}</span>
+
+      @foreach ($item->copies as $copy)
+        <a
+          href="{{ route('items.history.show', [$collection, $item, $copy]) }}"
+          data-turbo="true"
+          @class([
+              'flex items-center gap-2.5 rounded-full border px-3.5 py-2 transition-colors',
+              'border-ink bg-card' => $copy->id === $selectedCopy->id,
+              'border-hairline hover:border-ink' => $copy->id !== $selectedCopy->id,
+          ])
+          @if ($copy->id === $selectedCopy->id) aria-current="page" @endif
+          data-test="history-copy-pill-{{ $copy->id }}"
+        >
+          <span class="size-[7px] shrink-0 rounded-full" style="background-color: {{ $copy->status->color() === 'error' ? 'var(--color-error)' : '#34d399' }}"></span>
+          <span class="text-[13px] font-semibold text-ink">{{ __('Copy :number', ['number' => $loop->iteration]) }}</span>
+          @if ($copy->condition)
+            <span class="text-xs text-muted-soft">{{ $copy->condition->name }}</span>
+          @endif
+        </a>
+      @endforeach
+    </div>
+
+    {{-- Summary strip: the current state of the chosen copy at a glance. --}}
+    <div class="grid grid-cols-2 overflow-hidden rounded-xl border border-hairline lg:grid-cols-4" data-test="history-summary">
+      @php
+        $acquiredValue = '—';
+        $summary = [
+            [
+                'label' => __('Status'),
+                'value' => $selectedCopy->status->label(),
+                'valueClass' => $statusTextColor,
+                'sub' => __('Copy :number', ['number' => $copyNumber]) . ($selectedCopy->identifier ? ' · ' . $selectedCopy->identifier : ''),
+            ],
+            [
+                'label' => __('Current value'),
+                'value' => $latestValuation ? $money($latestValuation->amount) : '—',
+                'valueClass' => 'text-ink',
+                'sub' => $latestValuation?->type->label() ?? __('No valuation yet'),
+            ],
+            [
+                'label' => __('Acquired'),
+                'value' => $acquiredValue,
+                'valueClass' => 'text-ink',
+                'sub' => __('From a transaction'),
+            ],
+            [
+                'label' => __('Location'),
+                'value' => $selectedCopy->currentLocation?->name ?? '—',
+                'valueClass' => 'text-ink',
+                'sub' => $selectedCopy->condition?->name ?? '—',
+            ],
+        ];
+      @endphp
+
+      @foreach ($summary as $stat)
+        <div class="border-b border-hairline px-5 py-4 last:border-r-0 sm:border-r sm:border-r-hairline lg:border-b-0">
+          <p class="mb-1.5 text-xs text-muted-soft">{{ $stat['label'] }}</p>
+          <p class="text-lg font-semibold {{ $stat['valueClass'] }}">{{ $stat['value'] }}</p>
+          <p class="mt-0.5 truncate text-xs text-muted-soft">{{ $stat['sub'] }}</p>
+        </div>
+      @endforeach
+    </div>
+
+    {{-- The sub-nav and the section it selects. --}}
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[200px_1fr] lg:items-start">
+      <nav class="flex flex-col gap-0.5 lg:sticky lg:top-6" data-test="history-sections">
+        @foreach ($sectionsMeta as $meta)
+          <a
+            href="{{ route('items.history.show', [$collection, $item, $selectedCopy]) }}?section={{ $meta['key'] }}"
+            data-turbo="true"
+            @class([
+                'flex items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors',
+                'bg-card' => $section === $meta['key'],
+                'hover:bg-card/60' => $section !== $meta['key'],
+            ])
+            data-test="history-section-{{ $meta['key'] }}"
+          >
+            <span class="flex items-center gap-2.5">
+              <span class="size-2 shrink-0 {{ $meta['round'] ? 'rounded-full' : 'rounded-sm' }}" style="background-color: {{ $meta['color'] }}"></span>
+              <span class="text-[13.5px] {{ $section === $meta['key'] ? 'font-semibold text-ink' : 'font-medium text-muted' }}">{{ $meta['label'] }}</span>
+            </span>
+
+            @if (($counts[$meta['key']] ?? 0) > 0)
+              <span class="text-[11px] font-semibold text-muted-soft">{{ $counts[$meta['key']] }}</span>
+            @endif
+          </a>
+        @endforeach
+      </nav>
+
+      <div class="min-w-0">
+        @php
+          $active = collect($sectionsMeta)->firstWhere('key', $section);
+        @endphp
+
+        @if ($section === 'timeline')
+          @include('app.items.partials._historyTimeline')
+        @elseif ($section === 'valuations')
+          @include('app.items.partials._historyValuations')
+        @else
+          {{-- A section that has no screen yet. The nav still lists it, so the
+               content says what it will hold rather than showing nothing. --}}
+          <div class="mb-4">
+            <p class="text-lg font-semibold text-ink">{{ $active['label'] }}</p>
+          </div>
+
+          <div class="rounded-xl border border-hairline">
+            <x-empty-state data-test="history-section-soon">
+              <x-slot:icon>
+                <x-lucide-clock class="size-6 text-muted" />
+              </x-slot>
+
+              {{ __('This part of the history is not built yet.') }}
+              <x-soon />
+            </x-empty-state>
+          </div>
         @endif
-
-        <x-badge :color="$copy->status->color()">{{ $copy->status->label() }}</x-badge>
-      </div>
-
-      <div class="grid grid-cols-1 gap-6 p-5 lg:grid-cols-[190px_1fr]">
-        {{-- The sections this history is assembled from. --}}
-        <div class="flex flex-col gap-0.5">
-          @foreach ($sections as $section)
-            <div class="flex items-center justify-between gap-2 rounded-md px-2.5 py-2">
-              <span class="text-[13px] font-medium {{ $section['ready'] ? 'text-ink' : 'text-muted-soft' }}">{{ $section['label'] }}</span>
-
-              @unless ($section['ready'])
-                <x-soon />
-              @endunless
-            </div>
-          @endforeach
-        </div>
-
-        <div class="min-w-0">
-          <p class="mb-1 text-[15px] font-semibold text-ink">{{ __('Timeline') }}</p>
-          <p class="mb-4 text-[13px] leading-relaxed text-muted">{{ __('Everything that has happened to this copy, oldest first. The sections listed alongside are what it will be assembled from.') }}</p>
-
-          @forelse ($copy->valuations->sortBy('valued_at') as $valuation)
-            <div class="flex items-start gap-3 border-b border-hairline-soft py-3 last:border-b-0" data-test="history-valuation-{{ $valuation->id }}">
-              <span class="mt-1.5 size-2 shrink-0 rounded-full bg-badge-violet"></span>
-
-              <div class="min-w-0 flex-1">
-                <p class="text-sm font-semibold text-ink">{{ __('Valued at :amount', ['amount' => $money($valuation->amount)]) }}</p>
-                <p class="text-xs text-muted-soft">{{ $valuation->type->label() }}</p>
-              </div>
-
-              <span class="shrink-0 font-mono text-xs text-muted-soft">{{ $valuation->valued_at->isoFormat('MMM YYYY') }}</span>
-            </div>
-          @empty
-            <div class="rounded-xl border border-hairline">
-              <x-empty-state data-test="no-history">
-                <x-slot:icon>
-                  <x-lucide-clock class="size-6 text-muted" />
-                </x-slot>
-
-                {{ __('Nothing has been recorded against this copy yet.') }}
-              </x-empty-state>
-            </div>
-          @endforelse
-        </div>
       </div>
     </div>
-  @empty
-    <div class="rounded-xl border border-hairline">
-      <x-empty-state data-test="no-copies-to-track">
-        <x-slot:icon>
-          <x-lucide-clock class="size-6 text-muted" />
-        </x-slot>
-
-        {{ __('This item has no copies, so there is nothing to track the history of.') }}
-      </x-empty-state>
-    </div>
-  @endforelse
-</div>
+  </div>
+@endif

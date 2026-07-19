@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('shows the history of an item', function () {
+it('lands on the first copy and shows its summary', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
@@ -22,12 +22,30 @@ it('shows the history of an item', function () {
         'status' => CopyStatus::Loaned,
     ]);
 
-    $response = $this->actingAs($user)->get(route('items.history.index', [$collection, $item]));
-
-    $response->assertOk()
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
         ->assertSee('data-test="history-copy-'.$copy->id.'"', false)
+        ->assertSee('data-test="history-summary"', false)
         ->assertSee('CENTRAL-PERK-01')
         ->assertSee('Loaned out');
+});
+
+// The copy lives in the url, so every copy is offered as a pill and the chosen
+// one is marked current.
+it('offers a pill for every copy and marks the selected one', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $first = Copy::factory()->create(['item_id' => $item->id]);
+    $second = Copy::factory()->create(['item_id' => $item->id]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $second]))
+        ->assertOk()
+        ->assertSee('data-test="history-copy-pill-'.$first->id.'"', false)
+        ->assertSee('data-test="history-copy-pill-'.$second->id.'"', false)
+        // The selected copy's container is the second one.
+        ->assertSee('data-test="history-copy-'.$second->id.'"', false)
+        ->assertDontSee('data-test="history-copy-'.$first->id.'"', false);
 });
 
 it('marks the history tab as the current page', function () {
@@ -51,11 +69,12 @@ it('lists the sections the history is assembled from', function () {
 
     $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
         ->assertOk()
+        ->assertSee('data-test="history-sections"', false)
         ->assertSeeInOrder([
             'Timeline',
             'Transactions',
-            'Provenance',
             'Valuations',
+            'Provenance',
             'Insurance',
             'Maintenance',
             'Loans',
@@ -90,6 +109,48 @@ it('shows the valuations of a copy on its timeline, oldest first', function () {
         ->assertSeeInOrder(['Jan 2024', 'Mar 2026']);
 });
 
+// The section is a query parameter on the copy's url, so the valuations section
+// renders its own panel while the copy stays the same.
+it('shows the valuations section when it is selected', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 5000]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy]).'?section=valuations')
+        ->assertOk()
+        ->assertSee('What the copy has been reckoned to be worth, over time. The most recent is its current estimated value.')
+        ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false);
+});
+
+// A section with no screen yet still appears in the nav, and its content says so
+// rather than showing nothing.
+it('shows a placeholder for a section that is not built yet', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy]).'?section=insurance')
+        ->assertOk()
+        ->assertSee('data-test="history-section-soon"', false)
+        ->assertSee('This part of the history is not built yet.');
+});
+
+// A section the query string invents is not trusted; it falls back to the
+// timeline rather than erroring.
+it('falls back to the timeline for an unknown section', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy]).'?section=nonsense')
+        ->assertOk()
+        ->assertSee('Everything that has happened to this copy, oldest first. The sections listed alongside are what it is assembled from.');
+});
+
 it('shows the empty state when nothing has been recorded against a copy', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
@@ -112,6 +173,18 @@ it('shows the empty state when the item has no copies at all', function () {
         ->assertSee('data-test="no-copies-to-track"', false)
         ->assertSee('This item has no copies, so there is nothing to track the history of.')
         ->assertDontSee('data-test="no-history"', false);
+});
+
+// A copy named in the url has to be one of this item's own.
+it('does not show a copy that belongs to another item', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $otherItem = Item::factory()->create(['collection_id' => $collection->id]);
+    $strangerCopy = Copy::factory()->create(['item_id' => $otherItem->id]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $strangerCopy]))
+        ->assertNotFound();
 });
 
 it('lets a viewer read the history of an item', function () {
