@@ -1,8 +1,10 @@
 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     @foreach ($rows as $row)
-        <div
+        <a
+            href="{{ route('items.show', [$collection, $row['id']]) }}"
+            data-turbo="true"
             x-show="cardVisible(@js($row['name']), @js($row['categoryId']))"
-            class="overflow-hidden rounded-xl border border-hairline bg-canvas"
+            class="block overflow-hidden rounded-xl border border-hairline bg-canvas transition-colors hover:border-muted"
         >
             @if ($row['photoUrl'])
                 <img src="{{ $row['photoUrl'] }}" alt="{{ $row['name'] }}" loading="lazy" class="h-36 w-full object-cover" />
@@ -12,7 +14,7 @@
                 </div>
             @endif
             <div class="p-3.5">
-                <a href="{{ route('items.show', [$collection, $row['id']]) }}" data-turbo="true" class="mb-2 block truncate text-sm font-semibold text-ink transition-colors hover:text-muted">{{ $row['name'] }}</a>
+                <span class="mb-2 block truncate text-sm font-semibold text-ink">{{ $row['name'] }}</span>
                 <div class="mb-2">
                     <x-badge>{{ $row['condition'] }}</x-badge>
                 </div>
@@ -21,6 +23,6 @@
                     <span class="shrink-0 font-semibold text-ink">{{ $row['value'] }}</span>
                 </div>
             </div>
-        </div>
+        </a>
     @endforeach
 </div>
