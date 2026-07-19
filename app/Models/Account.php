@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property int $id
  * @property string $name
  * @property string $currency_code
+ * @property bool $show_getting_started
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -43,6 +44,7 @@ class Account extends Model
     protected $fillable = [
         'name',
         'currency_code',
+        'show_getting_started',
     ];
 
     /**
@@ -54,6 +56,7 @@ class Account extends Model
     {
         return [
             'name' => 'encrypted',
+            'show_getting_started' => 'boolean',
         ];
     }
 
@@ -171,6 +174,15 @@ class Account extends Model
     public function roleFor(User $user): ?string
     {
         return $user->account_id === $this->id ? $user->role : null;
+    }
+
+    /**
+     * Whether the user owns the account. Distinct from User::isOwner(), which
+     * only reads the role and does not check the user belongs to this account.
+     */
+    public function isOwnedBy(User $user): bool
+    {
+        return $this->roleFor($user) === PermissionEnum::Owner->value;
     }
 
     /**

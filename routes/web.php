@@ -17,6 +17,7 @@ use App\Http\Controllers\App\CustomFieldGroupFieldController;
 use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\GettingStartedController;
 use App\Http\Controllers\App\ItemActivitiesController;
 use App\Http\Controllers\App\ItemController;
 use App\Http\Controllers\App\ItemCopiesController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\App\SetController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
 use App\Http\Controllers\App\Settings\EmailSentController;
+use App\Http\Controllers\App\Settings\GettingStartedController as SettingsGettingStartedController;
 use App\Http\Controllers\App\Settings\LogController;
 use App\Http\Controllers\App\Settings\PasswordController;
 use App\Http\Controllers\App\Settings\RecoveryCodeController;
@@ -49,6 +51,10 @@ Route::put('/locale', [LocaleController::class, 'update'])->name('locale.update'
 Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(function (): void {
     // dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
+    // getting started — the screen a new account lands on until it has something in it.
+    // Reading it is open to any role; dismissing it changes the whole account, so it is not.
+    Route::get('getting-started', [GettingStartedController::class, 'index'])->name('gettingStarted.index');
 
     // placeholder sections for the future collection domain
     Route::get('collections', [CollectionController::class, 'index'])->name('collections.index');
@@ -152,7 +158,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
     // account settings — the account and its members (owners only)
     Route::middleware(['owner'])->group(function (): void {
+        Route::delete('getting-started', [GettingStartedController::class, 'destroy'])->name('gettingStarted.destroy');
+
         Route::get('settings', [AccountController::class, 'index'])->name('settings.index');
+        Route::put('settings/getting-started', [SettingsGettingStartedController::class, 'update'])->name('settings.gettingStarted.update');
         Route::put('settings', [AccountController::class, 'update'])->name('settings.update');
         Route::delete('settings', [AccountController::class, 'destroy'])->name('settings.destroy');
 

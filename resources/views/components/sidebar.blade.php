@@ -79,6 +79,10 @@
     @else
         <nav class="flex flex-col gap-0.5">
             <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
+            {{-- Only while the account still wants the screen. Dismissing it takes the link with it. --}}
+            @if ($user->account->show_getting_started)
+                <x-sidebar-link :href="route('gettingStarted.index')" :active="request()->routeIs('gettingStarted.*')" icon="rocket">{{ __('Getting started') }}</x-sidebar-link>
+            @endif
             <x-sidebar-link :href="route('dashboard.index')" :active="request()->routeIs('dashboard.*')" icon="layout-grid">{{ __('Dashboard') }}</x-sidebar-link>
             <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.index')" :active="request()->routeIs('collections.*')" icon="layers">{{ __('Collections') }}</x-sidebar-link>

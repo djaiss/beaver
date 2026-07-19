@@ -21,6 +21,22 @@
         </x-form>
       </x-box>
 
+      {{-- Getting started --}}
+      <x-box title="{{ __('Getting started screen') }}">
+        <p class="mb-4 text-sm text-muted">{{ __('The welcome screen and setup checklist new accounts land on. Turn it back on to bring it into the sidebar, for everyone in the account.') }}</p>
+
+        <x-form id="getting-started-form" x-target="getting-started-form" method="put" :action="route('settings.gettingStarted.update')" class="space-y-4">
+          <x-select id="show_getting_started" :label="__('Show the getting started screen')" :options="[
+            'yes' => __('Yes'),
+            'no' => __('No'),
+          ]" :selected="old('show_getting_started', $account->show_getting_started ? 'yes' : 'no')" :error="$errors->get('show_getting_started')" required />
+
+          <div class="flex items-center justify-end">
+            <x-button type="submit" data-test="save-getting-started">{{ __('Save') }}</x-button>
+          </div>
+        </x-form>
+      </x-box>
+
       {{-- Danger zone --}}
       <x-box title="{{ __('Delete account') }}">
         <p class="mb-4 text-sm text-muted">{{ __('Permanently delete this account, all of its members, and everything it contains. This cannot be undone.') }}</p>
