@@ -2,20 +2,29 @@
 
 <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     @if ($view !== ItemViewEnum::Table && $collection->categories->isNotEmpty())
+        {{-- Each category is a page of its own, so the filter is a set of links
+             rather than something the browser hides and shows. --}}
         <div class="flex flex-wrap gap-1.5 rounded-full bg-card p-1.5">
-            <button
-                type="button"
-                @click="category = 'all'"
-                :class="category === 'all' ? 'bg-canvas text-ink shadow-sm' : 'text-muted hover:text-ink'"
-                class="cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors"
-            >{{ __('All') }}</button>
-            @foreach ($collection->categories as $category)
-                <button
-                    type="button"
-                    @click="category = @js((string) $category->id)"
-                    :class="category === @js((string) $category->id) ? 'bg-canvas text-ink shadow-sm' : 'text-muted hover:text-ink'"
-                    class="cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors"
-                >{{ $category->name }}</button>
+            <a
+                href="{{ route('collections.show', $collection) }}"
+                data-turbo="true"
+                @class([
+                    'rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors',
+                    'bg-canvas text-ink shadow-sm' => ! $category,
+                    'text-muted hover:text-ink' => $category,
+                ])
+            >{{ __('All') }}</a>
+            @foreach ($collection->categories->sortBy('name') as $option)
+                <a
+                    href="{{ route('categories.show', [$collection, $option]) }}"
+                    data-turbo="true"
+                    @class([
+                        'rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors',
+                        'bg-canvas text-ink shadow-sm' => $category?->id === $option->id,
+                        'text-muted hover:text-ink' => $category?->id !== $option->id,
+                    ])
+                    data-test="category-filter-{{ $option->id }}"
+                >{{ $option->name }}</a>
             @endforeach
         </div>
     @else

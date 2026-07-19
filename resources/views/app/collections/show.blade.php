@@ -18,7 +18,6 @@
         return [
             'id' => $item->id,
             'name' => $item->name,
-            'categoryId' => (string) ($item->category_id ?? ''),
             'photoUrl' => $item->mainPhoto?->url(),
             'condition' => $first?->condition?->name ?? '—',
             'location' => $first?->location?->name ?? '—',
@@ -81,15 +80,19 @@
                 view: @js($view->value),
                 serverView: @js($view->value),
                 q: '',
-                category: 'all',
                 switchView(target) { switchCollectionView(this, target); },
-                cardVisible(name, cat) {
-                    return (this.category === 'all' || this.category === cat)
-                        && (this.q === '' || name.toLowerCase().includes(this.q.toLowerCase()));
+                cardVisible(name) {
+                    return this.q === '' || name.toLowerCase().includes(this.q.toLowerCase());
                 },
             }"
         >
             @include('app.collections.partials._header')
+
+            {{-- An empty category still shows the filter, otherwise there is no way
+                 back to the other categories from it. --}}
+            @if ($items->isNotEmpty() || $category)
+                @include('app.collections.partials._toolbar')
+            @endif
 
             @if ($items->isEmpty())
                 <div class="mt-8 rounded-lg border border-hairline">
@@ -97,7 +100,9 @@
                         <x-slot:icon>
                             <x-lucide-layers class="size-6 text-muted" />
                         </x-slot>
-                        @if ($canManage)
+                        @if ($category)
+                            {{ __('No items in this category yet.') }}
+                        @elseif ($canManage)
                             {{ __('No items yet. Add your first one to start cataloging.') }}
                         @else
                             {{ __('No items yet.') }}
@@ -105,8 +110,6 @@
                     </x-empty-state>
                 </div>
             @else
-                @include('app.collections.partials._toolbar')
-
                 {{-- Which view is visible on first paint is decided here, server side. Alpine
                      takes over the display once it boots, but until then x-show is inert, so
                      without this the page would paint the grid whatever the remembered view is. --}}

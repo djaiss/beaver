@@ -29,7 +29,7 @@
         <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
         @if ($item->category)
           <span class="text-muted-soft">/</span>
-          <span class="font-medium text-muted-soft">{{ $item->category->name }}</span>
+          <a href="{{ route('categories.show', [$collection, $item->category]) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink" data-test="breadcrumb-category">{{ $item->category->name }}</a>
         @endif
         <span class="text-muted-soft">/</span>
         <span class="truncate font-medium text-ink">{{ $item->name }}</span>

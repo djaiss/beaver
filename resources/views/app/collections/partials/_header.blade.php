@@ -4,7 +4,13 @@
 <div class="mb-6 flex items-center gap-1.5 text-[13px]">
     <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
     <span class="text-muted-soft">/</span>
-    <span class="truncate font-medium text-ink">{{ $collection->name }}</span>
+    @if ($category)
+        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+        <span class="text-muted-soft">/</span>
+        <span class="truncate font-medium text-ink">{{ $category->name }}</span>
+    @else
+        <span class="truncate font-medium text-ink">{{ $collection->name }}</span>
+    @endif
 </div>
 
 <div class="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start">

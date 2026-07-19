@@ -8,6 +8,7 @@ use App\Actions\CreateCategory;
 use App\Actions\DestroyCategory;
 use App\Actions\UpdateCategory;
 use App\Http\Controllers\Concerns\FindsItems;
+use App\Http\Controllers\Concerns\ShowsCollectionItems;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Collection as CollectionModel;
@@ -20,6 +21,7 @@ use Illuminate\View\View;
 class CategoryController extends Controller
 {
     use FindsItems;
+    use ShowsCollectionItems;
 
     public function index(Request $request, int $collection): View
     {
@@ -34,6 +36,18 @@ class CategoryController extends Controller
             'totalCount' => $categories->count(),
             'topLevelCount' => $categories->whereNull('parent_id')->count(),
         ]);
+    }
+
+    /**
+     * The items of the collection, narrowed down to the ones filed under this
+     * category. It is the collection screen, over a smaller set of items.
+     */
+    public function show(Request $request, int $collection, int $category): View
+    {
+        $collectionModel = $this->findCollection($request, $collection);
+        $collectionModel->load(['collectionTypes', 'categories']);
+
+        return $this->collectionItemsView($request, $collectionModel, $this->findCategory($collectionModel, $category));
     }
 
     public function create(Request $request, int $collection): RedirectResponse

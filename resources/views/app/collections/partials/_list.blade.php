@@ -1,7 +1,7 @@
 <div class="overflow-hidden rounded-xl border border-hairline">
     @foreach ($rows as $row)
         <div
-            x-show="cardVisible(@js($row['name']), @js($row['categoryId']))"
+            x-show="cardVisible(@js($row['name']))"
             class="flex items-center gap-3.5 border-b border-hairline-soft px-4 py-3 last:border-b-0"
         >
             @if ($row['photoUrl'])
