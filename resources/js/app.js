@@ -58,6 +58,28 @@ window.switchCollectionView = (component, target) => {
   component.view = target;
 };
 
+// --- Photos view switching ---
+// Both layouts are rendered on the page, so the switch itself is instant and this only
+// saves the choice for the current user, in the background. Failing to save is not worth
+// interrupting anyone over: the layout still changed, it just will not be remembered.
+window.switchPhotoView = (target) => {
+  const url = document.getElementById('photos-view-endpoint')?.value;
+
+  if (!url) {
+    return;
+  }
+
+  fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+    },
+    body: JSON.stringify({ view: target }),
+  }).catch(() => {});
+};
+
 // --- Light/dark theme ---
 // The initial class is set before paint by the inline script in partials/meta.
 Alpine.store('theme', {

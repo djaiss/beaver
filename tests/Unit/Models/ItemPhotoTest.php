@@ -1,8 +1,10 @@
 <?php
 
 declare(strict_types=1);
+use App\Models\Collection;
 use App\Models\Item;
 use App\Models\ItemPhoto;
+use App\Models\ItemPhotoSearchToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
@@ -62,4 +64,45 @@ it('has no main photo when the item has no photo', function () {
     $item = Item::factory()->create();
 
     expect($item->mainPhoto)->toBeNull();
+});
+
+it('has search tokens', function () {
+    $photo = ItemPhoto::factory()->create();
+    ItemPhotoSearchToken::create(['item_photo_id' => $photo->id, 'token' => str_repeat('a', 64)]);
+
+    expect($photo->searchTokens()->exists())->toBeTrue();
+});
+
+it('reads the dimensions as a pair', function () {
+    $photo = ItemPhoto::factory()->make(['width' => 2400, 'height' => 1800]);
+
+    expect($photo->dimensions())->toBe('2400 × 1800');
+});
+
+it('has no dimensions when they were never recorded', function () {
+    expect(ItemPhoto::factory()->make(['width' => null, 'height' => null])->dimensions())->toBeNull();
+    expect(ItemPhoto::factory()->make(['width' => 2400, 'height' => null])->dimensions())->toBeNull();
+});
+
+it('names the format without the mime prefix', function () {
+    expect(ItemPhoto::factory()->make(['mime_type' => 'image/jpeg'])->format())->toBe('JPEG');
+    expect(ItemPhoto::factory()->make(['mime_type' => 'image/png'])->format())->toBe('PNG');
+    expect(ItemPhoto::factory()->make(['mime_type' => 'image/webp'])->format())->toBe('WEBP');
+});
+
+it('copes with a mime type that has no subtype', function () {
+    expect(ItemPhoto::factory()->make(['mime_type' => 'image'])->format())->toBe('IMAGE');
+});
+
+it('scopes to the photos of one account', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $mine = ItemPhoto::factory()->create(['item_id' => $item->id]);
+    $theirs = ItemPhoto::factory()->create();
+
+    $found = ItemPhoto::query()->ofAccount($user->account)->pluck('id');
+
+    expect($found)->toContain($mine->id);
+    expect($found)->not->toContain($theirs->id);
 });

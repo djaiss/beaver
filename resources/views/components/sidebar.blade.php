@@ -60,6 +60,7 @@
             <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Administration') }}</p>
             <x-sidebar-link :href="route('settings.types.index')" :active="request()->routeIs('settings.types.*')" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.tags.index')" :active="request()->routeIs('settings.tags.*')" icon="tag">{{ __('Tags') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('settings.photos.index')" :active="request()->routeIs('settings.photos.*')" icon="image">{{ __('Photos') }}</x-sidebar-link>
         </nav>
     @elseif ($isCollection)
         <a href="{{ route('collections.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">

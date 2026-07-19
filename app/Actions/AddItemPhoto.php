@@ -54,6 +54,7 @@ class AddItemPhoto
         $this->store();
         $this->create();
         $this->stampAuthor();
+        $this->index();
         $this->log();
 
         return $this->itemPhoto;
@@ -87,15 +88,45 @@ class AddItemPhoto
 
     private function create(): void
     {
+        [$width, $height] = $this->dimensions();
+
         $this->itemPhoto = ItemPhoto::query()->create([
             'item_id' => $this->item->id,
             'path' => $this->path,
             'filename' => $this->file->getClientOriginalName(),
             'mime_type' => $this->file->getMimeType(),
             'size' => $this->file->getSize(),
+            'width' => $width,
+            'height' => $height,
             'is_main' => $this->isFirstPhoto(),
             'position' => $this->nextPosition(),
         ]);
+    }
+
+    /**
+     * Read the pixel size off the file. A file the reader cannot make sense of
+     * is still stored, it simply has no dimensions to show.
+     *
+     * @return array{0: int|null, 1: int|null}
+     */
+    private function dimensions(): array
+    {
+        $size = @getimagesize((string) $this->file->getRealPath());
+
+        if ($size === false) {
+            return [null, null];
+        }
+
+        return [(int) $size[0], (int) $size[1]];
+    }
+
+    /**
+     * The photo is made searchable straight away rather than on a queue, so it
+     * can be found the moment the upload finishes.
+     */
+    private function index(): void
+    {
+        new IndexItemPhotoSearchTokens(itemPhoto: $this->itemPhoto)->execute();
     }
 
     /**

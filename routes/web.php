@@ -33,6 +33,10 @@ use App\Http\Controllers\App\Settings\EmailSentController;
 use App\Http\Controllers\App\Settings\GettingStartedController as SettingsGettingStartedController;
 use App\Http\Controllers\App\Settings\LogController;
 use App\Http\Controllers\App\Settings\PasswordController;
+use App\Http\Controllers\App\Settings\PhotoController;
+use App\Http\Controllers\App\Settings\PhotoCoverController;
+use App\Http\Controllers\App\Settings\PhotoSelectionController;
+use App\Http\Controllers\App\Settings\PhotoViewController;
 use App\Http\Controllers\App\Settings\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\SecurityController;
 use App\Http\Controllers\App\Settings\SettingsController;
@@ -203,6 +207,17 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('settings/tags', [TagController::class, 'create'])->name('settings.tags.create');
         Route::put('settings/tags/{tag}', [TagController::class, 'update'])->where('tag', '[1-9][0-9]*')->name('settings.tags.update');
         Route::delete('settings/tags/{tag}', [TagController::class, 'destroy'])->where('tag', '[1-9][0-9]*')->name('settings.tags.destroy');
+    });
+
+    // account settings: photos — owners and editors manage every image in the account
+    Route::middleware(['editor'])->group(function (): void {
+        Route::get('settings/photos', [PhotoController::class, 'index'])->name('settings.photos.index');
+        // remembering the layout is a private preference, so it is saved on its own
+        // rather than carried in the query string
+        Route::put('settings/photos/view', [PhotoViewController::class, 'update'])->name('settings.photos.view.update');
+        Route::put('settings/photos/{itemPhoto}/cover', [PhotoCoverController::class, 'update'])->where('itemPhoto', '[1-9][0-9]*')->name('settings.photos.cover.update');
+        Route::delete('settings/photos/{itemPhoto}', [PhotoController::class, 'destroy'])->where('itemPhoto', '[1-9][0-9]*')->name('settings.photos.destroy');
+        Route::delete('settings/photos/selection', [PhotoSelectionController::class, 'destroy'])->name('settings.photos.selection.destroy');
     });
 
     // account settings: trash — owners and editors restore what has been deleted

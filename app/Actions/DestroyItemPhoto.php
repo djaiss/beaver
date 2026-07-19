@@ -53,6 +53,12 @@ class DestroyItemPhoto
         DB::transaction(function (): void {
             $wasMain = $this->itemPhoto->is_main;
 
+            // The foreign key cascades on MySQL and Postgres, but SQLite only
+            // enforces one when the connection asks it to, and SQLite is a
+            // supported way to run this app. Clearing the hashes here means the
+            // index cannot outlive the photo whatever the database is.
+            $this->itemPhoto->searchTokens()->delete();
+
             $this->itemPhoto->delete();
 
             if (! $wasMain) {

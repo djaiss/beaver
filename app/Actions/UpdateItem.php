@@ -10,6 +10,7 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
+use App\Jobs\ReindexItemPhotos;
 use App\Models\Category;
 use App\Models\CollectionType;
 use App\Models\Copy;
@@ -85,6 +86,7 @@ class UpdateItem
         });
 
         $this->syncPhotos();
+        $this->reindexPhotos();
         $this->log();
 
         return $this->item;
@@ -373,6 +375,15 @@ class UpdateItem
      * survives, and so an item emptied of its photos lets the first new one
      * take the role on its own.
      */
+    /**
+     * A photo is searchable by the name of its item, so a rename leaves every
+     * photo of the item indexed under the name it no longer has.
+     */
+    private function reindexPhotos(): void
+    {
+        ReindexItemPhotos::dispatch($this->item)->onQueue('low');
+    }
+
     private function syncPhotos(): void
     {
         $this->deletePhotos();

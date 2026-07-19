@@ -74,6 +74,21 @@ On boot the `app` container runs `php artisan migrate --force`, which applies
 set `RUN_MIGRATIONS=false` and run `docker compose exec app php artisan migrate
 --force` when you choose.
 
+### One-off step after upgrading to the photos screen
+
+The photos screen searches encrypted file names through an index the app keeps
+beside them, and shows the pixel size of each image. Neither exists for photos
+uploaded before that release, so the screen finds nothing until the index is
+built once:
+
+```bash
+docker compose exec app php artisan photos:rebuild-search-index
+```
+
+It reads every photo off the disk, so give it a moment on a large library. It is
+safe to run again at any time, and photos uploaded from then on are indexed as
+they arrive.
+
 ## Backups
 
 ```bash
