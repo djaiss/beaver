@@ -52,6 +52,7 @@ use App\Http\Controllers\App\Settings\UserController;
 use App\Http\Controllers\App\Settings\WebhookController;
 use App\Http\Controllers\App\StatisticsController;
 use App\Http\Controllers\App\TagController;
+use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\App\TrashController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
@@ -77,10 +78,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // each tab of an item is its own page, with overview living on the item's own url
     Route::get('collections/{collection}/items/{item}', [ItemController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.show');
     Route::get('collections/{collection}/items/{item}/copies', [ItemCopiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.copies.index');
-    // The history is read one copy at a time, so a copy lives in the url. The
-    // bare url lands on the first copy; each copy pill links to its own.
+    // The history is read one copy at a time, and one section at a time, so both
+    // the copy and the section live in the url. The bare url lands on the first
+    // copy's timeline; each copy pill and each section link to their own url, so
+    // every subsection is directly addressable and bookmarkable.
     Route::get('collections/{collection}/items/{item}/history', [ItemHistoryController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.history.index');
-    Route::get('collections/{collection}/items/{item}/history/{copy}', [ItemHistoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.history.show');
+    Route::get('collections/{collection}/items/{item}/history/{copy}/{section?}', [ItemHistoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('items.history.show');
     Route::get('collections/{collection}/items/{item}/activities', [ItemActivitiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.activities.index');
     Route::get('collections/{collection}/items/{item}/roadmap', [ItemRoadmapController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.roadmap.index');
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
@@ -111,6 +114,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items', [ItemController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('items.create');
         Route::get('collections/{collection}/items/{item}/edit', [ItemController::class, 'edit'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.edit');
         Route::put('collections/{collection}/items/{item}', [ItemController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.update');
+
+        // transactions — owners and editors record what a copy cost, sold for or was traded against
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/transactions', [TransactionController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('transactions.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/transactions/{transaction}', [TransactionController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('transactions.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/transactions/{transaction}', [TransactionController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('transactions.destroy');
 
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');

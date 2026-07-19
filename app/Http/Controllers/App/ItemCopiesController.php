@@ -24,6 +24,7 @@ class ItemCopiesController extends Controller
             'copies.condition',
             'copies.currentLocation',
             'copies.latestValuation',
+            'copies.acquiringTransaction',
             'category',
             'collectionType',
         ]);

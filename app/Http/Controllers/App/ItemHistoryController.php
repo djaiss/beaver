@@ -17,7 +17,8 @@ use Illuminate\View\View;
  * so the copy is chosen first and lives in the url: the bare tab lands on the
  * first copy, and each copy pill links to its own. Most of what the tab will
  * read from does not exist yet, so it shows the sections it will hold and fills
- * only the valuations, which are the one history the copy restructuring brought.
+ * the two that are built: the valuations the copy restructuring brought, and the
+ * transactions in their own panel.
  */
 class ItemHistoryController extends Controller
 {
@@ -25,15 +26,15 @@ class ItemHistoryController extends Controller
 
     public function index(Request $request, int $collection, int $item): View
     {
-        return $this->render($request, $collection, $item, null);
+        return $this->render($request, $collection, $item, null, null);
     }
 
-    public function show(Request $request, int $collection, int $item, int $copy): View
+    public function show(Request $request, int $collection, int $item, int $copy, ?string $section = null): View
     {
-        return $this->render($request, $collection, $item, $copy);
+        return $this->render($request, $collection, $item, $copy, $section);
     }
 
-    private function render(Request $request, int $collection, int $item, ?int $copyId): View
+    private function render(Request $request, int $collection, int $item, ?int $copyId, ?string $section): View
     {
         $collectionModel = $this->findCollection($request, $collection);
         $itemModel = $this->findItem($collectionModel, $item, [
@@ -42,6 +43,7 @@ class ItemHistoryController extends Controller
             'copies.currentLocation',
             'copies.latestValuation',
             'copies.valuations',
+            'copies.transactions',
             'category',
             'collectionType',
         ]);
@@ -62,19 +64,18 @@ class ItemHistoryController extends Controller
             'item' => $itemModel,
             'tags' => $this->accountTags($request),
             'selectedCopy' => $selectedCopy,
-            'section' => $this->section($request),
+            'section' => $this->section($section),
+            'currencies' => $this->currencyOptions(),
         ]);
     }
 
     /**
-     * Which section of the history to show. The section is a query parameter so
-     * a copy's history stays one url per copy, and it falls back to the timeline
-     * rather than trusting whatever the query string holds.
+     * Which section of the history to show. The section is its own segment of the
+     * url so every subsection is directly addressable, and it falls back to the
+     * timeline rather than trusting whatever the url holds.
      */
-    private function section(Request $request): string
+    private function section(?string $section): string
     {
-        $section = (string) $request->query('section', 'timeline');
-
         return in_array($section, self::SECTIONS, true) ? $section : 'timeline';
     }
 
@@ -92,4 +93,16 @@ class ItemHistoryController extends Controller
         'locations',
         'documents',
     ];
+
+    /**
+     * The currencies a transaction can be recorded in.
+     *
+     * @return array<string, string>
+     */
+    private function currencyOptions(): array
+    {
+        return collect(config('currencies'))
+            ->map(fn (array $currency, string $code): string => $currency['flag'].' '.$code)
+            ->all();
+    }
 }

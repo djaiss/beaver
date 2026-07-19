@@ -25,6 +25,9 @@ enum ItemActionEnum: string
     case CopyCreation = 'copy_created';
     case CopyUpdate = 'copy_updated';
     case CopyDeletion = 'copy_deleted';
+    case TransactionCreation = 'transaction_created';
+    case TransactionUpdate = 'transaction_updated';
+    case TransactionDeletion = 'transaction_deleted';
 
     public function translationKey(): string
     {
@@ -40,6 +43,9 @@ enum ItemActionEnum: string
             self::CopyCreation => 'added a copy',
             self::CopyUpdate => 'updated a copy',
             self::CopyDeletion => 'deleted a copy',
+            self::TransactionCreation => 'recorded a transaction',
+            self::TransactionUpdate => 'updated a transaction',
+            self::TransactionDeletion => 'deleted a transaction',
         };
     }
 }
