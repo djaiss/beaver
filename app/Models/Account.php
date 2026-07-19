@@ -128,6 +128,16 @@ class Account extends Model
     }
 
     /**
+     * Get the series that belong to the account.
+     *
+     * @return HasMany<Series, $this>
+     */
+    public function series(): HasMany
+    {
+        return $this->hasMany(Series::class);
+    }
+
+    /**
      * Get the sets that belong to the account, through the collections they live in.
      *
      * @return HasManyThrough<Set, Collection, $this>

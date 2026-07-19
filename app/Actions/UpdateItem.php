@@ -17,6 +17,7 @@ use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
 use App\Models\ItemPhoto;
+use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
@@ -60,6 +61,7 @@ class UpdateItem
         private readonly ?CollectionType $collectionType = null,
         private readonly ?Category $category = null,
         private readonly ?Set $set = null,
+        private readonly ?Series $series = null,
         private readonly ?array $tagIds = null,
         private readonly ?array $newTagNames = null,
         private readonly ?array $customFieldValues = null,
@@ -106,6 +108,11 @@ class UpdateItem
 
         if ($this->set instanceof Set && $this->set->collection_id !== $collection->id) {
             throw new ModelNotFoundException('Set not found');
+        }
+
+        // A series is account-wide, so it only has to share the account, not the collection.
+        if ($this->series instanceof Series && $this->series->account_id !== $collection->account_id) {
+            throw new ModelNotFoundException('Series not found');
         }
 
         $this->validateTags();
@@ -172,6 +179,7 @@ class UpdateItem
             $this->change('Type', $this->item->collectionType?->name, $this->collectionType?->name),
             $this->change('Category', $this->item->category?->name, $this->category?->name),
             $this->change('Set', $this->item->set?->name, $this->set?->name),
+            $this->change('Series', $this->item->series?->name, $this->series?->name),
         ]));
     }
 
@@ -209,6 +217,7 @@ class UpdateItem
         $this->item->type_id = $this->collectionType?->id;
         $this->item->category_id = $this->category?->id;
         $this->item->set_id = $this->set?->id;
+        $this->item->series_id = $this->series?->id;
         $this->item->updated_by_id = $this->user->id;
         $this->item->updated_by_name = $this->user->getFullName();
         $this->item->save();

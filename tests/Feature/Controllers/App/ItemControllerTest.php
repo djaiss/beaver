@@ -14,6 +14,7 @@ use App\Models\CustomFieldValue;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use App\Models\Location;
+use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -733,4 +734,49 @@ it('does not count the photos of an item that has none', function () {
     $this->actingAs($user)->get(route('items.show', [$collection, $item]))
         ->assertOk()
         ->assertDontSee('photo-position', false);
+});
+
+it('shows the series of an item on the overview, with its reach', function () {
+    $user = $this->createUser();
+    $series = Series::factory()->create([
+        'account_id' => $user->account_id,
+        'name' => 'Harry Potter',
+        'description' => 'The wizarding world.',
+    ]);
+
+    $books = Collection::factory()->create(['account_id' => $user->account_id]);
+    $lego = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $books->id, 'series_id' => $series->id]);
+    Item::factory()->create(['collection_id' => $lego->id, 'series_id' => $series->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$books->id.'/items/'.$item->id);
+
+    $response->assertOk()
+        ->assertSee('Harry Potter')
+        ->assertSee('The wizarding world.')
+        ->assertSee('Account-wide')
+        ->assertSee('2 items across 2 collections')
+        ->assertSee('View series');
+});
+
+it('does not show the series card on an item without a series', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'series_id' => null]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id.'/items/'.$item->id)
+        ->assertOk()
+        ->assertDontSee('Account-wide');
+});
+
+it('offers the series of the account on the item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    Series::factory()->create(['account_id' => $user->account_id, 'name' => 'Star Wars']);
+    Series::factory()->create(['name' => 'Another account’s series']);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id.'/items/new')
+        ->assertOk()
+        ->assertSee('Star Wars')
+        ->assertDontSee('Another account’s series');
 });

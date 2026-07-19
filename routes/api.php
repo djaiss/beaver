@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\ItemLogController;
 use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\SeriesController;
 use App\Http\Controllers\Api\SetController;
 use App\Http\Controllers\Api\TagController;
 use Illuminate\Support\Facades\Route;
@@ -118,6 +119,13 @@ Route::name('api.')->group(function (): void {
         Route::post('sets', [SetController::class, 'create'])->name('sets.create');
         Route::put('sets/{set}', [SetController::class, 'update'])->where('set', '[1-9][0-9]*')->name('sets.update');
         Route::delete('sets/{set}', [SetController::class, 'destroy'])->where('set', '[1-9][0-9]*')->name('sets.destroy');
+
+        // series
+        Route::get('series', [SeriesController::class, 'index'])->name('series');
+        Route::get('series/{series}', [SeriesController::class, 'show'])->where('series', '[1-9][0-9]*')->name('series.show');
+        Route::post('series', [SeriesController::class, 'create'])->name('series.create');
+        Route::put('series/{series}', [SeriesController::class, 'update'])->where('series', '[1-9][0-9]*')->name('series.update');
+        Route::delete('series/{series}', [SeriesController::class, 'destroy'])->where('series', '[1-9][0-9]*')->name('series.destroy');
 
         // the physical copies owned of an item
         Route::get('items/{item}/copies', [CopyController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.copies');

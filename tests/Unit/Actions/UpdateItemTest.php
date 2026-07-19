@@ -16,6 +16,7 @@ use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
 use App\Models\ItemPhoto;
+use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -650,3 +651,63 @@ it('records no chips when nothing on the item moved', function () {
         callback: fn (LogItemAction $job): bool => $job->parameters === null,
     );
 });
+
+it('links the item to a series of the account', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $series = Series::factory()->create(['account_id' => $account->id]);
+
+    $item = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: $item->name,
+        series: $series,
+    )->execute();
+
+    expect($item->series_id)->toBe($series->id);
+});
+
+it('unlinks the series when none is passed', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $series = Series::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'series_id' => $series->id]);
+
+    $item = new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: $item->name,
+    )->execute();
+
+    expect($item->series_id)->toBeNull();
+});
+
+it('refuses a series from another account', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $series = Series::factory()->create();
+
+    new UpdateItem(
+        user: $owner,
+        item: $item,
+        name: $item->name,
+        series: $series,
+    )->execute();
+})->throws(ModelNotFoundException::class);

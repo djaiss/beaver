@@ -61,6 +61,7 @@ class Item extends Model
         'category_id',
         'type_id',
         'set_id',
+        'series_id',
         'name',
         'description',
     ];
@@ -116,6 +117,17 @@ class Item extends Model
     public function set(): BelongsTo
     {
         return $this->belongsTo(Set::class);
+    }
+
+    /**
+     * Get the series the item belongs to, if any. A series is account-wide, so it
+     * may gather items from collections other than this one.
+     *
+     * @return BelongsTo<Series, $this>
+     */
+    public function series(): BelongsTo
+    {
+        return $this->belongsTo(Series::class);
     }
 
     /**

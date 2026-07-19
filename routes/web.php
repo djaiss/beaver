@@ -24,6 +24,7 @@ use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LocationController;
+use App\Http\Controllers\App\SeriesController;
 use App\Http\Controllers\App\SetController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
@@ -65,6 +66,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('categories.index');
     // browsing the sets of a collection is read only, so any role may do it
     Route::get('collections/{collection}/sets', [SetController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('sets.index');
+    // series are account-wide rather than per collection, so they hang off the dashboard
+    // instead of a collection. Browsing them is read only, so any role may do it.
+    Route::get('series', [SeriesController::class, 'index'])->name('series.index');
+    Route::get('series/{series}', [SeriesController::class, 'show'])->where('series', '[1-9][0-9]*')->name('series.show');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
@@ -99,6 +104,13 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/sets', [SetController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('sets.create');
         Route::put('collections/{collection}/sets/{set}', [SetController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'set' => '[1-9][0-9]*'])->name('sets.update');
         Route::delete('collections/{collection}/sets/{set}', [SetController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'set' => '[1-9][0-9]*'])->name('sets.destroy');
+    });
+
+    // series — owners and editors may create, update and delete the series of the account
+    Route::middleware(['editor'])->group(function (): void {
+        Route::post('series', [SeriesController::class, 'create'])->name('series.create');
+        Route::put('series/{series}', [SeriesController::class, 'update'])->where('series', '[1-9][0-9]*')->name('series.update');
+        Route::delete('series/{series}', [SeriesController::class, 'destroy'])->where('series', '[1-9][0-9]*')->name('series.destroy');
     });
 
     // locations — owners and editors may create, update and delete locations

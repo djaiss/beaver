@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\Item;
+use App\Models\Series;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin Item
+ * @mixin Series
  */
-class ItemResource extends JsonResource
+class SeriesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,21 +21,16 @@ class ItemResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'item',
+            'type' => 'series',
             'id' => (string) $this->id,
             'attributes' => [
                 'name' => $this->name,
                 'description' => $this->description,
-                'collection_id' => (string) $this->collection_id,
-                'type_id' => $this->type_id !== null ? (string) $this->type_id : null,
-                'category_id' => $this->category_id !== null ? (string) $this->category_id : null,
-                'set_id' => $this->set_id !== null ? (string) $this->set_id : null,
-                'series_id' => $this->series_id !== null ? (string) $this->series_id : null,
                 'created_at' => $this->created_at->timestamp,
                 'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.collections.items.show', [$this->collection_id, $this->id]),
+                'self' => route('api.series.show', $this->id),
             ],
         ];
     }

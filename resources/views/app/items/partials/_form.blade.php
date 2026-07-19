@@ -32,6 +32,7 @@
 
     $selectedCategoryId = old('category_id', $item?->category_id);
     $selectedSetId = old('set_id', $item?->set_id);
+    $selectedSeriesId = old('series_id', $item?->series_id);
     // The photos the item already has, in the order the item screen shows them.
     $existingPhotos = ($item?->photos ?? collect())
         ->map(fn ($photo): array => ['id' => $photo->id, 'url' => $photo->url()])
@@ -324,7 +325,7 @@
       </div>
     </div>
 
-    {{-- Category & set --}}
+    {{-- Category, set & series --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
         <x-label for="category_id">{{ __('Category') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
@@ -358,6 +359,24 @@
           </p>
         @endif
       </div>
+    </div>
+
+    {{-- Series. Account-wide, so unlike the set above this lists every series of the account,
+         not just the ones already used in this collection. --}}
+    <div>
+      <x-label for="series_id">{{ __('Series') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+      <select id="series_id" name="series_id" class="mt-2 h-11 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
+        <option value="">{{ __('No series') }}</option>
+        @foreach ($series as $one)
+          <option value="{{ $one->id }}" @selected($selectedSeriesId == $one->id)>{{ $one->name }}</option>
+        @endforeach
+      </select>
+      @if ($series->isEmpty())
+        <p class="mt-2 text-[13px] text-muted-soft">
+          {{ __('This account has no series yet.') }}
+          <a href="{{ route('series.index') }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
+        </p>
+      @endif
     </div>
 
     {{-- Tags --}}

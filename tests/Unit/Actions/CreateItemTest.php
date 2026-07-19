@@ -13,6 +13,7 @@ use App\Models\Condition;
 use App\Models\CustomField;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -389,3 +390,43 @@ it('creates an item without any photo', function () {
     expect($item->photos()->count())->toBe(0);
     expect($item->mainPhoto()->first())->toBeNull();
 });
+
+it('links the item to a series from another collection of the account', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    // The series was born in the books collection but the item lands in the films one.
+    // A series is account-wide, so that is allowed where a set would not be.
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $series = Series::factory()->create(['account_id' => $account->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'The Empire Strikes Back (4K)',
+        series: $series,
+    )->execute();
+
+    expect($item->series_id)->toBe($series->id);
+});
+
+it('refuses a series from another account', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $series = Series::factory()->create();
+
+    new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'Millennium Falcon 75192',
+        series: $series,
+    )->execute();
+})->throws(ModelNotFoundException::class);
