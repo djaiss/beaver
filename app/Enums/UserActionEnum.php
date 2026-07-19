@@ -42,6 +42,9 @@ enum UserActionEnum: string
     case ProvenanceEventCreation = 'provenance_event_created';
     case ProvenanceEventUpdate = 'provenance_event_updated';
     case ProvenanceEventDeletion = 'provenance_event_deleted';
+    case ValuationCreation = 'valuation_created';
+    case ValuationUpdate = 'valuation_updated';
+    case ValuationDeletion = 'valuation_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -118,6 +121,9 @@ enum UserActionEnum: string
             self::ProvenanceEventCreation => 'Recorded a provenance event on the item called :name',
             self::ProvenanceEventUpdate => 'Updated a provenance event on the item called :name',
             self::ProvenanceEventDeletion => 'Deleted a provenance event on the item called :name',
+            self::ValuationCreation => 'Recorded a valuation on the item called :name',
+            self::ValuationUpdate => 'Updated a valuation on the item called :name',
+            self::ValuationDeletion => 'Deleted a valuation on the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',

@@ -37,6 +37,7 @@ use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\TransactionController;
 use App\Http\Controllers\Api\TrashController;
+use App\Http\Controllers\Api\ValuationController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function (): void {
@@ -171,6 +172,13 @@ Route::name('api.')->group(function (): void {
         Route::post('copies/{copy}/provenance-events', [ProvenanceEventController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.provenanceEvents.create');
         Route::put('copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('copies.provenanceEvents.update');
         Route::delete('copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('copies.provenanceEvents.destroy');
+
+        // what a copy is reckoned to be worth over time
+        Route::get('copies/{copy}/valuations', [ValuationController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.valuations');
+        Route::get('copies/{copy}/valuations/{valuation}', [ValuationController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('copies.valuations.show');
+        Route::post('copies/{copy}/valuations', [ValuationController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.valuations.create');
+        Route::put('copies/{copy}/valuations/{valuation}', [ValuationController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('copies.valuations.update');
+        Route::delete('copies/{copy}/valuations/{valuation}', [ValuationController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('copies.valuations.destroy');
 
         // the photos of an item
         Route::get('items/{item}/photos', [ItemPhotoController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.photos');

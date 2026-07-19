@@ -125,8 +125,8 @@ it('shows the valuations section when it is selected', function () {
 
     $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'valuations']))
         ->assertOk()
-        ->assertSee('What the copy has been reckoned to be worth, over time. The most recent is its current estimated value.')
-        ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false);
+        ->assertSee('Append-only value estimates over time. The latest is shown as the current estimated value.')
+        ->assertSee('data-test="valuation-'.$valuation->id.'"', false);
 });
 
 // A section with no screen yet still appears in the nav, and its content says so

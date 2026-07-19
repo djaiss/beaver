@@ -55,6 +55,7 @@ use App\Http\Controllers\App\StatisticsController;
 use App\Http\Controllers\App\TagController;
 use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\App\TrashController;
+use App\Http\Controllers\App\ValuationController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -124,6 +125,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items/{item}/copies/{copy}/provenance-events', [ProvenanceEventController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('provenanceEvents.create');
         Route::put('collections/{collection}/items/{item}/copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('provenanceEvents.update');
         Route::delete('collections/{collection}/items/{item}/copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('provenanceEvents.destroy');
+
+        // valuations — owners and editors record what a copy is reckoned to be worth over time
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/valuations', [ValuationController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('valuations.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/valuations/{valuation}', [ValuationController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('valuations.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/valuations/{valuation}', [ValuationController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('valuations.destroy');
 
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');
