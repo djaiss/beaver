@@ -29,6 +29,14 @@
         },
       }"
     >
+      <div class="mb-5 flex items-center gap-1.5 text-[13px]">
+        <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
+        <span class="text-muted-soft">/</span>
+        <a href="{{ route('collections.show', $collection->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+        <span class="text-muted-soft">/</span>
+        <span class="font-medium text-ink">{{ __('Categories') }}</span>
+      </div>
+
       <div class="mb-2 flex items-start justify-between gap-4">
         <div>
           <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Categories') }}</h1>

@@ -37,6 +37,18 @@ it('counts the items filed under a category', function () {
         ->assertSeeInOrder(['1 top-level', '1 category total']);
 });
 
+it('shows a breadcrumb back to the collection', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories');
+
+    $response->assertOk()
+        ->assertSeeInOrder(['Collections', 'Marvel Comics 1990s', 'Categories'])
+        ->assertSee(route('collections.index'), false)
+        ->assertSee(route('collections.show', $collection->id), false);
+});
+
 it('shows the empty state when the collection has no categories', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
