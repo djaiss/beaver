@@ -91,7 +91,7 @@
                 <span class="size-2.5 shrink-0 rounded-sm {{ $kpi['dot'] }}"></span>
                 <span class="text-[13px] font-medium text-muted">{{ $kpi['label'] }}</span>
               </div>
-              <div class="text-[28px] font-semibold tracking-tight text-ink">{{ $kpi['value'] }}</div>
+              <div x-data="spinningCounter" class="text-[28px] leading-9 font-semibold tracking-tight text-ink">{{ $kpi['value'] }}</div>
               <div class="text-[13px] font-medium text-muted-soft">{{ $kpi['note'] }}</div>
             </div>
           @endforeach

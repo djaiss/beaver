@@ -158,3 +158,45 @@ select:hover:not(:disabled) {
 :is(h1, h2, h3, h4, h5, h6):hover .heading-anchor {
   opacity: 1;
 }
+
+/* The spinning counter, driven by resources/js/components/spinning-counter.js.
+   The cell height is written by the component from the type the number is
+   already rendered in, so a reel lines up whatever size it is used at. */
+.t-reel {
+  --reel-cell: 30px;
+  --reel-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  display: inline-flex;
+  align-items: center;
+  height: var(--reel-cell);
+  font-variant-numeric: tabular-nums;
+}
+
+.t-reel-col {
+  position: relative;
+  height: var(--reel-cell);
+  overflow: hidden;
+  /* Soft-fade the window edges instead of hard-cropping. */
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+
+.t-reel-strip {
+  display: flex;
+  flex-direction: column;
+  will-change: transform, filter;
+}
+
+.t-reel-digit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--reel-cell);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-reel-strip {
+    transition: none !important;
+    filter: none !important;
+  }
+}
