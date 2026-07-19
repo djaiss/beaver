@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\CopyStatus;
 use App\Models\Copy;
 use App\Models\Item;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -22,11 +23,13 @@ class CopyFactory extends Factory
     {
         return [
             'item_id' => Item::factory(),
+            'identifier' => null,
             'condition_id' => null,
-            'location_id' => null,
-            'acquired_at' => fake()->date(),
-            'price_paid' => fake()->numberBetween(100, 500000),
-            'estimated_value' => fake()->numberBetween(100, 500000),
+            'current_location_id' => null,
+            'status' => CopyStatus::Owned,
+            'quantity' => 1,
+            'disposed_at' => null,
+            'note' => null,
         ];
     }
 }

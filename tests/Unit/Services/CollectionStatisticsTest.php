@@ -9,19 +9,36 @@ use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
 use App\Models\Set;
+use App\Models\Valuation;
 use App\Services\CollectionStatistics;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 
 uses(RefreshDatabase::class);
 
+/**
+ * A copy worth a given amount, which now takes two rows rather than one column.
+ */
+function valuedCopy(array $attributes, int $amount): Copy
+{
+    $copy = Copy::factory()->create($attributes);
+
+    Valuation::factory()->create([
+        'copy_id' => $copy->id,
+        'amount' => $amount,
+        'valued_at' => '2026-01-01',
+    ]);
+
+    return $copy;
+}
+
 it('counts the items and sums what the copies are worth', function (): void {
     $collection = Collection::factory()->create();
     $spiderMan = Item::factory()->create(['collection_id' => $collection->id]);
     $xMen = Item::factory()->create(['collection_id' => $collection->id]);
-    Copy::factory()->create(['item_id' => $spiderMan->id, 'estimated_value' => 60000]);
-    Copy::factory()->create(['item_id' => $spiderMan->id, 'estimated_value' => 20000]);
-    Copy::factory()->create(['item_id' => $xMen->id, 'estimated_value' => 40000]);
+    valuedCopy(['item_id' => $spiderMan->id], 60000);
+    valuedCopy(['item_id' => $spiderMan->id], 20000);
+    valuedCopy(['item_id' => $xMen->id], 40000);
 
     $totals = new CollectionStatistics(collection: $collection)->totals();
 
@@ -31,11 +48,46 @@ it('counts the items and sums what the copies are worth', function (): void {
         ->and($totals['average'])->toBe(60000);
 });
 
+// The whole point of the valuations table: what a copy is worth is the most
+// recent reading, not the first one and not the sum of them.
+it('reads what a copy is worth from its latest valuation', function (): void {
+    $collection = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 10000, 'valued_at' => '2024-01-01']);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 25000, 'valued_at' => '2026-01-01']);
+
+    expect(new CollectionStatistics(collection: $collection)->totals()['value'])->toBe(25000);
+});
+
+// Two valuations on the same day would otherwise be picked between arbitrarily.
+it('breaks a tie on the valuation date with the newer row', function (): void {
+    $collection = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 10000, 'valued_at' => '2026-01-01']);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 20000, 'valued_at' => '2026-01-01']);
+
+    expect(new CollectionStatistics(collection: $collection)->totals()['value'])->toBe(20000);
+});
+
+it('counts a copy nobody has valued as worth nothing', function (): void {
+    $collection = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id]);
+    valuedCopy(['item_id' => $item->id], 30000);
+
+    $totals = new CollectionStatistics(collection: $collection)->totals();
+
+    expect($totals['copies'])->toBe(2)
+        ->and($totals['value'])->toBe(30000);
+});
+
 it('ignores the items of another collection', function (): void {
     $collection = Collection::factory()->create();
     $other = Collection::factory()->create();
-    Copy::factory()->create(['item_id' => Item::factory()->create(['collection_id' => $collection->id])->id, 'estimated_value' => 5000]);
-    Copy::factory()->create(['item_id' => Item::factory()->create(['collection_id' => $other->id])->id, 'estimated_value' => 999900]);
+    valuedCopy(['item_id' => Item::factory()->create(['collection_id' => $collection->id])->id], 5000);
+    valuedCopy(['item_id' => Item::factory()->create(['collection_id' => $other->id])->id], 999900);
 
     $totals = new CollectionStatistics(collection: $collection)->totals();
 
@@ -43,13 +95,28 @@ it('ignores the items of another collection', function (): void {
         ->and($totals['value'])->toBe(5000);
 });
 
-it('reports how many copies have no acquisition date', function (): void {
+// The acquisition date left the copy with #117 and comes back with the
+// transactions of #118. Until then nothing carries one, so every copy is
+// undated. Flip this back deliberately when transactions land.
+it('counts every copy as undated until transactions carry the acquisition date', function (): void {
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    Copy::factory()->create(['item_id' => $item->id, 'acquired_at' => null]);
-    Copy::factory()->create(['item_id' => $item->id, 'acquired_at' => Date::now()]);
+    Copy::factory()->count(2)->create(['item_id' => $item->id]);
 
-    expect(new CollectionStatistics(collection: $collection)->totals()['undatedCopies'])->toBe(1);
+    $totals = new CollectionStatistics(collection: $collection)->totals();
+
+    expect($totals['undatedCopies'])->toBe(2)
+        ->and($totals['undatedCopies'])->toBe($totals['copies']);
+});
+
+// Same reason as above: no acquisition date means nothing can be attributed to
+// the current month, whatever the copies are worth (#118).
+it('adds no value this month until transactions carry the acquisition date', function (): void {
+    $collection = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    valuedCopy(['item_id' => $item->id], 75000);
+
+    expect(new CollectionStatistics(collection: $collection)->totals()['valueAddedThisMonth'])->toBe(0);
 });
 
 it('has no average when the collection is empty', function (): void {
@@ -92,39 +159,40 @@ it('has no set completion when no set carries a target', function (): void {
     expect(new CollectionStatistics(collection: $collection)->setsCompletion())->toBeNull();
 });
 
-it('runs the value up month by month, carrying what came before the window', function (): void {
+// The line runs off the acquisition dates, which nothing carries until #118, so
+// it reads flat at zero however much the collection is worth. This asserts the
+// intermediate state on purpose, so #118 flips it back rather than someone
+// treating a flat line as a bug.
+it('draws a flat value line until transactions carry the acquisition date', function (): void {
     Date::setTestNow('2026-07-15');
 
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 10000, 'acquired_at' => '2020-01-01']);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 5000, 'acquired_at' => '2026-07-02']);
+    valuedCopy(['item_id' => $item->id], 10000);
+    valuedCopy(['item_id' => $item->id], 5000);
 
     $value = new CollectionStatistics(collection: $collection)->valueOverTime();
 
     expect($value)->toHaveCount(12)
-        ->and($value[0]['value'])->toBe(10000)
-        ->and($value[11]['value'])->toBe(15000)
-        ->and($value[11]['label'])->toBe('Jul');
+        ->and($value[11]['label'])->toBe('Jul')
+        ->and(array_column($value, 'value'))->toBe(array_fill(0, 12, 0));
 
     Date::setTestNow();
 });
 
-it('counts the copies acquired each month', function (): void {
+// Same reason as the value line above (#118).
+it('counts no acquisition in any month until transactions carry the date', function (): void {
     Date::setTestNow('2026-07-15');
 
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    Copy::factory()->count(3)->create(['item_id' => $item->id, 'acquired_at' => '2026-07-02']);
-    Copy::factory()->create(['item_id' => $item->id, 'acquired_at' => '2026-06-02']);
-    Copy::factory()->create(['item_id' => $item->id, 'acquired_at' => null]);
+    Copy::factory()->count(4)->create(['item_id' => $item->id]);
 
     $acquisitions = new CollectionStatistics(collection: $collection)->acquisitionsPerMonth();
 
     expect($acquisitions)->toHaveCount(12)
-        ->and($acquisitions[11]['count'])->toBe(3)
-        ->and($acquisitions[10]['count'])->toBe(1)
-        ->and($acquisitions[0]['count'])->toBe(0);
+        ->and($acquisitions[11]['label'])->toBe('Jul')
+        ->and(array_column($acquisitions, 'count'))->toBe(array_fill(0, 12, 0));
 
     Date::setTestNow();
 });
@@ -152,8 +220,8 @@ it('keeps every category whole in the breakdown, with what it is worth', functio
     $amazing = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $spiderMan->id]);
     Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $spiderMan->id]);
     $newMutants = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $xMen->id]);
-    Copy::factory()->create(['item_id' => $amazing->id, 'estimated_value' => 60000]);
-    Copy::factory()->create(['item_id' => $newMutants->id, 'estimated_value' => 40000]);
+    valuedCopy(['item_id' => $amazing->id], 60000);
+    valuedCopy(['item_id' => $newMutants->id], 40000);
 
     $breakdown = new CollectionStatistics(collection: $collection)->categoryBreakdown();
 
@@ -178,7 +246,7 @@ it('leaves the categories of another collection out of the breakdown', function 
     $other = Collection::factory()->create();
     $otherCategory = Category::factory()->create(['collection_id' => $other->id, 'name' => 'X-Men']);
     $otherItem = Item::factory()->create(['collection_id' => $other->id, 'category_id' => $otherCategory->id]);
-    Copy::factory()->create(['item_id' => $otherItem->id, 'estimated_value' => 99000]);
+    valuedCopy(['item_id' => $otherItem->id], 99000);
 
     $breakdown = new CollectionStatistics(collection: $collection)->categoryBreakdown();
 
@@ -235,8 +303,8 @@ it('sums the value sitting in each location', function (): void {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $attic = Location::factory()->create(['account_id' => $collection->account_id, 'name' => 'Attic']);
     $garage = Location::factory()->create(['account_id' => $collection->account_id, 'name' => 'Garage']);
-    Copy::factory()->create(['item_id' => $item->id, 'location_id' => $attic->id, 'estimated_value' => 30000]);
-    Copy::factory()->create(['item_id' => $item->id, 'location_id' => $garage->id, 'estimated_value' => 80000]);
+    valuedCopy(['item_id' => $item->id, 'current_location_id' => $attic->id], 30000);
+    valuedCopy(['item_id' => $item->id, 'current_location_id' => $garage->id], 80000);
 
     $locations = new CollectionStatistics(collection: $collection)->valueByLocation();
 
@@ -250,9 +318,9 @@ it('ranks the items by what all of their copies are worth together', function ()
     $collection = Collection::factory()->create();
     $rachel = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
     $monica = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Monica Geller']);
-    Copy::factory()->create(['item_id' => $rachel->id, 'estimated_value' => 30000]);
-    Copy::factory()->create(['item_id' => $rachel->id, 'estimated_value' => 30000]);
-    Copy::factory()->create(['item_id' => $monica->id, 'estimated_value' => 50000]);
+    valuedCopy(['item_id' => $rachel->id], 30000);
+    valuedCopy(['item_id' => $rachel->id], 30000);
+    valuedCopy(['item_id' => $monica->id], 50000);
 
     $top = new CollectionStatistics(collection: $collection)->topItems();
 
@@ -266,7 +334,7 @@ it('leaves out the items no copy has put a value on', function (): void {
     $collection = Collection::factory()->create();
     Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
     $monica = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Monica Geller']);
-    Copy::factory()->create(['item_id' => $monica->id, 'estimated_value' => 50000]);
+    valuedCopy(['item_id' => $monica->id], 50000);
 
     $top = new CollectionStatistics(collection: $collection)->topItems();
 
@@ -279,8 +347,8 @@ it('names the condition and the location of the copy carrying the most value', f
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
     $mint = Condition::factory()->create(['account_id' => $collection->account_id, 'name' => 'Mint']);
     $attic = Location::factory()->create(['account_id' => $collection->account_id, 'name' => 'Attic']);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 100, 'condition_id' => null, 'location_id' => null]);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 90000, 'condition_id' => $mint->id, 'location_id' => $attic->id]);
+    valuedCopy(['item_id' => $item->id, 'condition_id' => null, 'current_location_id' => null], 100);
+    valuedCopy(['item_id' => $item->id, 'condition_id' => $mint->id, 'current_location_id' => $attic->id], 90000);
 
     $top = new CollectionStatistics(collection: $collection)->topItems();
 

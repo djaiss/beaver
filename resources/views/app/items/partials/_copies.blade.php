@@ -14,23 +14,40 @@
   </div>
 
   @forelse ($item->copies as $copy)
-    <div class="overflow-hidden rounded-xl border border-hairline">
+    @php
+      $estimated = $copy->estimatedValue();
+    @endphp
+
+    <div class="overflow-hidden rounded-xl border border-hairline" data-test="copy-{{ $copy->id }}">
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-4">
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
           <p class="text-[15px] font-semibold text-ink">{{ __('Copy :number', ['number' => $loop->iteration]) }}</p>
-          <x-badge>{{ $copy->condition?->name ?? __('No condition') }}</x-badge>
+
+          @if ($copy->identifier)
+            <span class="rounded-md bg-card px-2 py-0.5 font-mono text-xs text-muted" data-test="copy-identifier">{{ $copy->identifier }}</span>
+          @endif
+
+          <x-badge :color="$copy->status->color()" data-test="copy-status">{{ $copy->status->label() }}</x-badge>
+
+          {{-- One instance is the ordinary case, so saying so would only be noise. --}}
+          @if ($copy->quantity > 1)
+            <span class="text-[13px] text-muted" data-test="copy-quantity">{{ __('× :count', ['count' => number_format($copy->quantity)]) }}</span>
+          @endif
         </div>
 
-        <p class="text-base font-semibold text-ink">{{ $copy->estimated_value ? $money((int) $copy->estimated_value) : '—' }}</p>
+        <div class="text-right">
+          <p class="text-base font-semibold text-ink">{{ $estimated === null ? '—' : $money($estimated) }}</p>
+          <p class="text-[11px] text-muted-soft">{{ __('latest valuation') }}</p>
+        </div>
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4">
         @php
           $facts = [
               __('Condition') => $copy->condition?->name ?? '—',
-              __('Location') => $copy->location?->name ?? '—',
-              __('Acquired') => $copy->acquired_at?->isoFormat('MMM YYYY') ?? '—',
-              __('Price paid') => $copy->price_paid ? $money((int) $copy->price_paid) : '—',
+              __('Location') => $copy->currentLocation?->name ?? '—',
+              __('Quantity') => number_format($copy->quantity),
+              __('Disposed') => $copy->disposed_at?->isoFormat('MMM YYYY') ?? '—',
           ];
         @endphp
 
@@ -42,14 +59,17 @@
         @endforeach
       </div>
 
-      {{-- Where a copy came from is not recorded anywhere yet. --}}
-      <div class="border-t border-hairline bg-card px-5 py-4">
-        <div class="flex items-center gap-2">
-          <p class="text-xs font-semibold tracking-wide text-muted-soft uppercase">{{ __('Provenance') }}</p>
-          <x-soon />
-        </div>
+      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-hairline px-5 py-4">
+        <p class="min-w-0 flex-1 text-[13px] leading-relaxed text-muted">{{ $copy->note ?? __('No note on this copy.') }}</p>
 
-        <p class="mt-2 text-[13px] text-muted-soft">{{ __('A copy does not record where it came from yet, so there is no history to show.') }}</p>
+        <a
+          href="{{ route('items.history.index', [$collection, $item]) }}"
+          data-turbo="true"
+          class="shrink-0 text-[13px] font-semibold text-ink transition-opacity hover:opacity-75"
+          data-test="copy-history-link"
+        >
+          {{ __('View full history →') }}
+        </a>
       </div>
     </div>
   @empty

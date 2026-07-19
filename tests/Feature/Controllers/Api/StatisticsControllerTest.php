@@ -6,6 +6,7 @@ use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Set;
+use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 
@@ -43,8 +44,10 @@ it('shows the statistics of a collection', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1']);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 1000, 'acquired_at' => '2020-01-01']);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 2000, 'acquired_at' => '2020-02-01']);
+    $first = Copy::factory()->create(['item_id' => $item->id]);
+    $second = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $first->id, 'amount' => 1000]);
+    Valuation::factory()->create(['copy_id' => $second->id, 'amount' => 2000]);
 
     Sanctum::actingAs($user);
 

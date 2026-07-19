@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 use App\Actions\CreateItem;
+use App\Enums\CopyStatus;
 use App\Enums\FieldTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\ValuationConfidence;
+use App\Enums\ValuationType;
 use App\Jobs\LogUserAction;
 use App\Models\Category;
 use App\Models\Collection;
@@ -154,7 +157,7 @@ it('creates the copies along with the item', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
     $condition = Condition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
@@ -163,15 +166,85 @@ it('creates the copies along with the item', function () {
         collection: $collection,
         name: 'Amazing Spider-Man #1',
         copies: [
-            ['condition_id' => $condition->id, 'location_id' => $location->id, 'acquired_at' => '2026-07-17', 'price_paid' => 4200, 'estimated_value' => 9900],
-            ['condition_id' => null, 'location_id' => null, 'acquired_at' => null, 'price_paid' => null, 'estimated_value' => null],
+            [
+                'identifier' => 'CGC 1234567',
+                'condition_id' => $condition->id,
+                'current_location_id' => $location->id,
+                'status' => CopyStatus::Loaned,
+                'quantity' => 2,
+                'disposed_at' => null,
+                'note' => 'Lent to Joey.',
+                'estimated_value' => 9900,
+            ],
+            [],
         ],
     )->execute();
 
     expect($item->copies)->toHaveCount(2);
-    expect($item->copies->first()->condition_id)->toBe($condition->id);
-    expect($item->copies->first()->price_paid)->toBe(4200);
-    expect($item->copies->first()->created_by_id)->toBe($owner->id);
+
+    $first = $item->copies->first();
+
+    expect($first->condition_id)->toBe($condition->id);
+    expect($first->current_location_id)->toBe($location->id);
+    expect($first->identifier)->toBe('CGC 1234567');
+    expect($first->status)->toBe(CopyStatus::Loaned);
+    expect($first->quantity)->toBe(2);
+    expect($first->note)->toBe('Lent to Joey.');
+    expect($first->created_by_id)->toBe($owner->id);
+
+    // A copy row that says nothing falls back to one owned copy.
+    expect($item->copies->last()->status)->toBe(CopyStatus::Owned);
+    expect($item->copies->last()->quantity)->toBe(1);
+});
+
+// The estimated value is no longer a column, so a figure given with a copy row
+// has to open that copy's valuation history instead.
+it('records the estimated value of a copy as a valuation', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'Amazing Spider-Man #1',
+        copies: [['estimated_value' => 42000]],
+    )->execute();
+
+    $copy = $item->copies->first();
+
+    expect($copy->estimatedValue())->toBe(42000);
+    expect($copy->valuations()->count())->toBe(1);
+
+    $valuation = $copy->valuations()->first();
+
+    expect($valuation->type)->toBe(ValuationType::UserEstimate);
+    expect($valuation->currency_code)->toBe('USD');
+    expect($valuation->confidence)->toBe(ValuationConfidence::Unknown);
+    expect($valuation->valued_at->toDateString())->toBe(now()->toDateString());
+    expect($valuation->created_by_id)->toBe($owner->id);
+});
+
+it('leaves a copy without any valuation when no estimated value is given', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        collection: $collection,
+        name: 'Amazing Spider-Man #1',
+        copies: [['condition_id' => null]],
+    )->execute();
+
+    expect($item->copies->first()->valuations()->count())->toBe(0);
+    expect($item->copies->first()->estimatedValue())->toBeNull();
 });
 
 it('throws when a copy condition belongs to another account', function () {

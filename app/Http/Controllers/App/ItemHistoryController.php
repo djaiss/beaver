@@ -10,9 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * The copies tab of an item. Reading an item is open to any role.
+ * The history tab of an item. Reading an item is open to any role.
+ *
+ * The tab is the chronological view across everything hanging off a copy. Most
+ * of what it will read from does not exist yet, so for now it shows the sections
+ * it will hold and fills only the valuations, which are the one history the copy
+ * restructuring brought with it.
  */
-class ItemCopiesController extends Controller
+class ItemHistoryController extends Controller
 {
     use FindsItems;
 
@@ -23,12 +28,12 @@ class ItemCopiesController extends Controller
             'tags',
             'copies.condition',
             'copies.currentLocation',
-            'copies.latestValuation',
+            'copies.valuations',
             'category',
             'collectionType',
         ]);
 
-        return view('app.items.copies', [
+        return view('app.items.history', [
             'collection' => $collectionModel,
             'item' => $itemModel,
             'tags' => $this->accountTags($request),

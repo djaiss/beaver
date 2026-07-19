@@ -12,8 +12,9 @@ use App\Models\Item;
 use App\Models\Location;
 use App\Models\Set;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * The numbers behind the statistics screen of a collection.
@@ -22,9 +23,13 @@ use Illuminate\Support\Collection;
  * what carries the money, the condition and the location. Three copies of the
  * same comic are three amounts, not one.
  *
- * The two charts that run over time key off `acquired_at`, which is optional.
- * Copies without one are left out of those two rather than being parked in an
- * arbitrary month, so the screen reports how many were skipped.
+ * What a copy is worth is no longer a column on it. Valuations are append-only,
+ * so the current figure is the most recent one, and every money number here is
+ * built on that single reading rather than on a stored total.
+ *
+ * The two charts that run over time key off when a copy was acquired, which is
+ * optional. Copies without a date are left out of those two rather than being
+ * parked in an arbitrary month, so the screen reports how many were skipped.
  *
  * Names are encrypted, so nothing can be grouped or sorted by name in SQL. The
  * aggregation happens on the foreign key, and the names are resolved afterwards.
@@ -51,17 +56,29 @@ class CollectionStatistics
     public function totals(): array
     {
         $items = $this->collection->items()->count();
-        $value = (int) $this->copies()->sum('estimated_value');
+
+        // The value is an alias over a subquery, so it has to be summed from
+        // outside the query that builds it rather than aggregated in place.
+        $copies = DB::query()->fromSub($this->valued(), 'valued')->count();
+        $value = (int) DB::query()->fromSub($this->valued(), 'valued')->sum('valued.value');
         $startOfMonth = Carbon::now()->startOfMonth();
+
+        $acquired = $this->acquisitionDates();
+        $valuesByCopy = $this->valued()->pluck('value', 'id');
+
+        $acquiredThisMonth = $acquired
+            ->filter(fn (Carbon $date): bool => $date->greaterThanOrEqualTo($startOfMonth))
+            ->keys()
+            ->sum(fn (int $copyId): int => (int) ($valuesByCopy[$copyId] ?? 0));
 
         return [
             'items' => $items,
-            'copies' => $this->copies()->count(),
+            'copies' => $copies,
             'value' => $value,
             'average' => $items === 0 ? 0 : (int) round($value / $items),
             'itemsAddedThisMonth' => $this->collection->items()->where('created_at', '>=', $startOfMonth)->count(),
-            'valueAddedThisMonth' => (int) $this->copies()->where('acquired_at', '>=', $startOfMonth)->sum('estimated_value'),
-            'undatedCopies' => $this->copies()->whereNull('acquired_at')->count(),
+            'valueAddedThisMonth' => (int) $acquiredThisMonth,
+            'undatedCopies' => max(0, $copies - $acquired->count()),
         ];
     }
 
@@ -105,14 +122,18 @@ class CollectionStatistics
     public function valueOverTime(): array
     {
         $start = $this->windowStart();
+        $values = $this->valued()->pluck('value', 'id');
+        $acquired = $this->acquisitionDates();
 
-        $monthly = $this->datedCopies()
-            ->where('acquired_at', '>=', $start)
-            ->get(['acquired_at', 'estimated_value'])
-            ->groupBy(fn (Copy $copy): string => $copy->acquired_at->format('Y-m'))
-            ->map(fn (Collection $copies): int => (int) $copies->sum('estimated_value'));
+        $monthly = $acquired
+            ->filter(fn (Carbon $date): bool => $date->greaterThanOrEqualTo($start))
+            ->groupBy(fn (Carbon $date): string => $date->format('Y-m'))
+            ->map(fn (Collection $dates): int => $dates->keys()->sum(fn (int $copyId): int => (int) ($values[$copyId] ?? 0)));
 
-        $running = (int) $this->datedCopies()->where('acquired_at', '<', $start)->sum('estimated_value');
+        $running = (int) $acquired
+            ->filter(fn (Carbon $date): bool => $date->lessThan($start))
+            ->keys()
+            ->sum(fn (int $copyId): int => (int) ($values[$copyId] ?? 0));
 
         return array_map(function (Carbon $month) use ($monthly, &$running): array {
             $running += $monthly->get($month->format('Y-m'), 0);
@@ -128,11 +149,10 @@ class CollectionStatistics
      */
     public function acquisitionsPerMonth(): array
     {
-        $monthly = $this->datedCopies()
-            ->where('acquired_at', '>=', $this->windowStart())
-            ->get(['acquired_at'])
-            ->groupBy(fn (Copy $copy): string => $copy->acquired_at->format('Y-m'))
-            ->map(fn (Collection $copies): int => $copies->count());
+        $monthly = $this->acquisitionDates()
+            ->filter(fn (Carbon $date): bool => $date->greaterThanOrEqualTo($this->windowStart()))
+            ->groupBy(fn (Carbon $date): string => $date->format('Y-m'))
+            ->map(fn (Collection $dates): int => $dates->count());
 
         return array_map(fn (Carbon $month): array => [
             'label' => $month->translatedFormat('M'),
@@ -193,12 +213,11 @@ class CollectionStatistics
      */
     public function categoryBreakdown(): array
     {
-        $values = Copy::query()
-            ->join('items', 'items.id', '=', 'copies.item_id')
-            ->where('items.collection_id', $this->collection->id)
-            ->whereNotNull('items.category_id')
-            ->groupBy('items.category_id')
-            ->selectRaw('items.category_id as category_id, sum(copies.estimated_value) as total')
+        $values = DB::query()
+            ->fromSub($this->valued(), 'valued')
+            ->whereNotNull('valued.category_id')
+            ->groupBy('valued.category_id')
+            ->selectRaw('valued.category_id as category_id, sum(valued.value) as total')
             ->pluck('total', 'category_id');
 
         return $this->collection->categories()
@@ -222,19 +241,20 @@ class CollectionStatistics
      */
     public function byCondition(): array
     {
-        $rows = $this->copies()
-            ->selectRaw('condition_id, count(*) as total')
-            ->groupBy('condition_id')
+        $rows = DB::query()
+            ->fromSub($this->valued(), 'valued')
+            ->selectRaw('valued.condition_id as condition_id, count(*) as total')
+            ->groupBy('valued.condition_id')
             ->get();
 
         $names = Condition::query()->whereIn('id', $rows->pluck('condition_id')->filter())->get()->keyBy('id');
 
-        $total = $this->copies()->count();
+        $total = (int) $rows->sum('total');
 
         return $rows
-            ->map(fn (Copy $row): array => [
+            ->map(fn (object $row): array => [
                 'label' => $names->get($row->condition_id)?->name,
-                'count' => (int) $row->getAttribute('total'),
+                'count' => (int) $row->total,
             ])
             ->sortByDesc('count')
             ->map(fn (array $row): array => [
@@ -252,17 +272,18 @@ class CollectionStatistics
      */
     public function valueByLocation(): array
     {
-        $rows = $this->copies()
-            ->selectRaw('location_id, sum(estimated_value) as total')
-            ->groupBy('location_id')
+        $rows = DB::query()
+            ->fromSub($this->valued(), 'valued')
+            ->selectRaw('valued.current_location_id as current_location_id, sum(valued.value) as total')
+            ->groupBy('valued.current_location_id')
             ->get();
 
-        $names = Location::query()->whereIn('id', $rows->pluck('location_id')->filter())->get()->keyBy('id');
+        $names = Location::query()->whereIn('id', $rows->pluck('current_location_id')->filter())->get()->keyBy('id');
 
         return $rows
-            ->map(fn (Copy $row): array => [
-                'label' => $names->get($row->location_id)?->name,
-                'value' => (int) $row->getAttribute('total'),
+            ->map(fn (object $row): array => [
+                'label' => $names->get($row->current_location_id)?->name,
+                'value' => (int) $row->total,
             ])
             ->filter(fn (array $row): bool => $row['value'] > 0)
             ->sortByDesc('value')
@@ -279,41 +300,101 @@ class CollectionStatistics
      */
     public function topItems(): array
     {
-        return $this->collection->items()
-            ->withSum('copies', 'estimated_value')
-            ->with(['copies.condition', 'copies.location'])
-            ->orderByDesc('copies_sum_estimated_value')
+        $totals = DB::query()
+            ->fromSub($this->valued(), 'valued')
+            ->selectRaw('valued.item_id as item_id, sum(valued.value) as total')
+            ->groupBy('valued.item_id')
+            ->having('total', '>', 0)
+            ->orderByDesc('total')
             ->limit(self::TOP_ITEMS)
+            ->pluck('total', 'item_id');
+
+        if ($totals->isEmpty()) {
+            return [];
+        }
+
+        $items = Item::query()
+            ->whereIn('id', $totals->keys())
+            ->with(['copies.condition', 'copies.currentLocation', 'copies.latestValuation'])
             ->get()
-            ->filter(fn (Item $item): bool => (int) $item->getAttribute('copies_sum_estimated_value') > 0)
-            ->map(function (Item $item): array {
-                $copy = $item->copies->sortByDesc('estimated_value')->first();
+            ->keyBy('id');
+
+        return $totals
+            ->map(function (int|string $total, int|string $itemId) use ($items): ?array {
+                $item = $items->get((int) $itemId);
+
+                if (! $item instanceof Item) {
+                    return null;
+                }
+
+                $copy = $item->copies->sortByDesc(fn (Copy $copy): int => $copy->estimatedValue() ?? 0)->first();
 
                 return [
                     'item' => $item,
-                    'value' => (int) $item->getAttribute('copies_sum_estimated_value'),
+                    'value' => (int) $total,
                     'condition' => $copy?->condition?->name,
-                    'location' => $copy?->location?->name,
+                    'location' => $copy?->currentLocation?->name,
                 ];
             })
+            ->filter()
             ->values()
             ->all();
     }
 
     /**
-     * @return Builder<Copy>
+     * Every copy of the collection, with what it is currently worth.
+     *
+     * A copy carries no value of its own any more, so the figure is the amount
+     * of its most recent valuation, or zero when it has never been valued. The
+     * id breaks ties on the date, so a copy valued twice in one day reads the
+     * second of the two rather than picking arbitrarily.
+     *
+     * The category comes along because the category breakdown groups by it, and
+     * doing that here saves every caller its own join back to the items.
      */
-    private function copies(): Builder
+    private function valued(): QueryBuilder
     {
-        return Copy::query()->whereIn('item_id', $this->collection->items()->select('items.id'));
+        $latest = DB::table('valuations')
+            ->select('valuations.amount')
+            ->whereColumn('valuations.copy_id', 'copies.id')
+            ->orderByDesc('valuations.valued_at')
+            ->orderByDesc('valuations.id')
+            ->limit(1);
+
+        return DB::table('copies')
+            ->join('items', 'items.id', '=', 'copies.item_id')
+            ->where('items.collection_id', $this->collection->id)
+            ->whereNull('items.deleted_at')
+            ->whereNull('copies.deleted_at')
+            ->select([
+                'copies.id',
+                'copies.item_id',
+                'copies.condition_id',
+                'copies.current_location_id',
+                'items.category_id',
+            ])
+            ->selectSub(
+                DB::query()->selectRaw('coalesce(('.$latest->toSql().'), 0)')->mergeBindings($latest),
+                'value',
+            );
     }
 
     /**
-     * @return Builder<Copy>
+     * When each copy of the collection was acquired, keyed by copy id.
+     *
+     * The acquisition date left the copy with the restructuring (#117): it is
+     * read from the transaction that acquired the copy, and transactions arrive
+     * with #118. Until then nothing carries an acquisition date, so the two
+     * charts over time render empty and every copy counts as undated.
+     *
+     * This is deliberately the only place that answers the question, so wiring
+     * it to the transactions is a change to one method rather than to four.
+     *
+     * @return Collection<int, Carbon>
      */
-    private function datedCopies(): Builder
+    private function acquisitionDates(): Collection
     {
-        return $this->copies()->whereNotNull('acquired_at');
+        return collect();
     }
 
     /**

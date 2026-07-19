@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\CopyStatus;
 use App\Enums\FieldTypeEnum;
 use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\ValuationConfidence;
+use App\Enums\ValuationType;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
@@ -22,6 +25,7 @@ use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Valuation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
@@ -49,7 +53,7 @@ class UpdateItem
      * @param  list<int>|null  $tagIds  ids of existing account tags to apply
      * @param  list<string>|null  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>|null  $customFieldValues  custom field id to raw value
-     * @param  list<array{id?: int|null, condition_id?: int|null, location_id?: int|null, acquired_at?: string|null, price_paid?: int|null, estimated_value?: int|null}>|null  $copies
+     * @param  list<array{id?: int|null, identifier?: string|null, condition_id?: int|null, current_location_id?: int|null, status?: CopyStatus|null, quantity?: int|null, disposed_at?: string|null, note?: string|null, estimated_value?: int|null}>|null  $copies
      * @param  list<UploadedFile>  $photos  new photos, appended after the ones the item already has
      * @param  list<int>  $deletedPhotoIds  ids of photos of this item to remove
      * @param  int|null  $mainPhotoId  id of the photo to make the cover, among those the item keeps
@@ -148,7 +152,7 @@ class UpdateItem
         foreach ($this->copies as $copy) {
             $id = $copy['id'] ?? null;
             $conditionId = $copy['condition_id'] ?? null;
-            $locationId = $copy['location_id'] ?? null;
+            $locationId = $copy['current_location_id'] ?? null;
 
             if ($id !== null && ! in_array($id, $copyIds, true)) {
                 throw new ModelNotFoundException('Copy not found');
@@ -334,11 +338,13 @@ class UpdateItem
 
         foreach ($this->copies as $copy) {
             $attributes = [
+                'identifier' => $copy['identifier'] ?? null,
                 'condition_id' => $copy['condition_id'] ?? null,
-                'location_id' => $copy['location_id'] ?? null,
-                'acquired_at' => $copy['acquired_at'] ?? null,
-                'price_paid' => $copy['price_paid'] ?? null,
-                'estimated_value' => $copy['estimated_value'] ?? null,
+                'current_location_id' => $copy['current_location_id'] ?? null,
+                'status' => $copy['status'] ?? CopyStatus::Owned,
+                'quantity' => $copy['quantity'] ?? 1,
+                'disposed_at' => $copy['disposed_at'] ?? null,
+                'note' => $copy['note'] ?? null,
             ];
 
             $id = $copy['id'] ?? null;
@@ -347,6 +353,7 @@ class UpdateItem
                 $existing = $this->item->copies()->findOrFail($id);
                 $existing->fill($attributes);
                 $this->stampAuthorOn($existing);
+                $this->valueCopy($existing, $copy['estimated_value'] ?? null);
 
                 $keptIds[] = $id;
 
@@ -357,10 +364,48 @@ class UpdateItem
             $created->created_by_id = $this->user->id;
             $created->created_by_name = $this->user->getFullName();
             $this->stampAuthorOn($created);
+            $this->valueCopy($created, $copy['estimated_value'] ?? null);
 
             $keptIds[] = $created->id;
         }
 
+        $this->deleteMissingCopies($keptIds);
+    }
+
+    /**
+     * Record what a copy is reckoned to be worth, if it moved.
+     *
+     * Valuations are append-only, so a copy worth more than it was keeps the old
+     * figure and gains a new one. A value that has not changed writes nothing,
+     * which keeps the timeline free of rows that say nothing happened.
+     */
+    private function valueCopy(Copy $copy, ?int $estimatedValue): void
+    {
+        if ($estimatedValue === null || $estimatedValue === $copy->estimatedValue()) {
+            return;
+        }
+
+        $valuation = new Valuation([
+            'copy_id' => $copy->id,
+            'type' => ValuationType::UserEstimate,
+            'amount' => $estimatedValue,
+            'currency_code' => $this->item->collection->currency,
+            'valued_at' => now()->toDateString(),
+            'confidence' => ValuationConfidence::Unknown,
+        ]);
+
+        $valuation->created_by_id = $this->user->id;
+        $valuation->created_by_name = $this->user->getFullName();
+        $this->stampAuthorOn($valuation);
+
+        $copy->unsetRelation('latestValuation')->unsetRelation('valuations');
+    }
+
+    /**
+     * @param  list<int>  $keptIds
+     */
+    private function deleteMissingCopies(array $keptIds): void
+    {
         // A soft delete only writes deleted_at, so who did it is stamped first.
         $this->item->copies()->whereNotIn('id', $keptIds)->get()->each(function (Copy $copy): void {
             $copy->deleted_by_id = $this->user->id;

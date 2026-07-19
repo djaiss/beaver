@@ -13,11 +13,13 @@ return new class extends Migration
         Schema::create('copies', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('item_id')->comment('item this is a physical copy of');
-            $table->unsignedBigInteger('condition_id')->nullable()->comment('condition of the copy, null when unknown');
-            $table->unsignedBigInteger('location_id')->nullable()->comment('where the copy is physically stored, null when unknown');
-            $table->date('acquired_at')->nullable()->comment('date the copy was obtained, null when unknown');
-            $table->unsignedInteger('price_paid')->nullable()->comment('amount paid for the copy, in cents, null when unknown');
-            $table->unsignedInteger('estimated_value')->nullable()->comment('estimated worth of the copy, in cents, null when unknown');
+            $table->text('identifier')->nullable()->comment('account defined identifier for this copy, null when it has none');
+            $table->unsignedBigInteger('condition_id')->nullable()->comment('current condition of the copy, null when unknown');
+            $table->unsignedBigInteger('current_location_id')->nullable()->comment('where the copy is currently stored, mirrors the open location history record, null when unknown');
+            $table->string('status')->default('owned')->comment('where the copy sits in its lifecycle, a CopyStatus value');
+            $table->unsignedInteger('quantity')->default(1)->comment('how many identical instances this row stands for');
+            $table->date('disposed_at')->nullable()->comment('date the copy left the collection, null while it is still held');
+            $table->text('note')->nullable()->comment('free text about the copy, null when none');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the copy');
             $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the copy');
@@ -29,7 +31,7 @@ return new class extends Migration
 
             // Deleting a condition or location leaves its copies alone: they drop back to none.
             $table->foreign('condition_id')->references('id')->on('conditions')->nullOnDelete();
-            $table->foreign('location_id')->references('id')->on('locations')->nullOnDelete();
+            $table->foreign('current_location_id')->references('id')->on('locations')->nullOnDelete();
         });
     }
 

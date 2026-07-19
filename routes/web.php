@@ -26,6 +26,7 @@ use App\Http\Controllers\App\Instance\UserController as InstanceUserController;
 use App\Http\Controllers\App\ItemActivitiesController;
 use App\Http\Controllers\App\ItemController;
 use App\Http\Controllers\App\ItemCopiesController;
+use App\Http\Controllers\App\ItemHistoryController;
 use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
@@ -76,6 +77,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // each tab of an item is its own page, with overview living on the item's own url
     Route::get('collections/{collection}/items/{item}', [ItemController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.show');
     Route::get('collections/{collection}/items/{item}/copies', [ItemCopiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.copies.index');
+    Route::get('collections/{collection}/items/{item}/history', [ItemHistoryController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.history.index');
     Route::get('collections/{collection}/items/{item}/activities', [ItemActivitiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.activities.index');
     Route::get('collections/{collection}/items/{item}/roadmap', [ItemRoadmapController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.roadmap.index');
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');

@@ -1,10 +1,12 @@
 <?php
 
 declare(strict_types=1);
+use App\Enums\CopyStatus;
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
@@ -27,10 +29,13 @@ beforeEach(function () {
         'id',
         'attributes' => [
             'item_id',
+            'identifier',
             'condition_id',
-            'location_id',
-            'acquired_at',
-            'price_paid',
+            'current_location_id',
+            'status',
+            'quantity',
+            'disposed_at',
+            'note',
             'estimated_value',
             'created_at',
             'updated_at',
@@ -72,7 +77,13 @@ it('does not list copies of an item from another account', function () {
 it('shows a copy', function () {
     $user = $this->createUser();
     $item = itemForAccount($user->account_id);
-    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    $copy = Copy::factory()->create([
+        'item_id' => $item->id,
+        'identifier' => 'CP-0042',
+        'status' => CopyStatus::Loaned,
+        'quantity' => 3,
+        'note' => 'Lent to Chandler Bing',
+    ]);
 
     Sanctum::actingAs($user);
 
@@ -81,7 +92,37 @@ it('shows a copy', function () {
         ->assertJsonStructure(['data' => $this->jsonStructure])
         ->assertJsonPath('data.type', 'copy')
         ->assertJsonPath('data.id', (string) $copy->id)
+        ->assertJsonPath('data.attributes.identifier', 'CP-0042')
+        ->assertJsonPath('data.attributes.status', 'loaned')
+        ->assertJsonPath('data.attributes.quantity', 3)
+        ->assertJsonPath('data.attributes.note', 'Lent to Chandler Bing')
         ->assertJsonPath('data.links.self', route('api.items.copies.show', [$item->id, $copy->id]));
+});
+
+it('shows the estimated value of a copy from its latest valuation', function () {
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 1000, 'valued_at' => '2024-01-15']);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 5000, 'valued_at' => '2024-06-15']);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', '/api/items/'.$item->id.'/copies/'.$copy->id)
+        ->assertOk()
+        ->assertJsonPath('data.attributes.estimated_value', 5000);
+});
+
+it('shows a null estimated value for a copy that has never been valued', function () {
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', '/api/items/'.$item->id.'/copies/'.$copy->id)
+        ->assertOk()
+        ->assertJsonPath('data.attributes.estimated_value', null);
 });
 
 it('creates a copy', function () {
@@ -93,30 +134,92 @@ it('creates a copy', function () {
     Sanctum::actingAs($user);
 
     $response = $this->json('POST', '/api/items/'.$item->id.'/copies', [
-        'acquired_at' => '2024-01-15',
-        'price_paid' => 1200,
+        'identifier' => 'CP-0042',
+        'status' => CopyStatus::Loaned->value,
+        'quantity' => 2,
+        'note' => 'Lent to Joey Tribbiani',
         'estimated_value' => 5000,
     ]);
 
     $response
         ->assertCreated()
         ->assertJsonPath('data.attributes.item_id', (string) $item->id)
-        ->assertJsonPath('data.attributes.price_paid', 1200);
+        ->assertJsonPath('data.attributes.identifier', 'CP-0042')
+        ->assertJsonPath('data.attributes.status', 'loaned')
+        ->assertJsonPath('data.attributes.quantity', 2)
+        ->assertJsonPath('data.attributes.estimated_value', 5000);
 
     $copy = Copy::query()->latest('id')->first();
     expect($copy->item_id)->toBe($item->id);
-    expect($copy->price_paid)->toBe(1200);
+    expect($copy->status)->toBe(CopyStatus::Loaned);
+    expect($copy->quantity)->toBe(2);
 });
 
-it('validates the price when creating a copy', function () {
+it('creates a copy that is owned by default', function () {
+    Queue::fake();
+
     $user = $this->createUser();
     $item = itemForAccount($user->account_id);
 
     Sanctum::actingAs($user);
 
-    $this->json('POST', '/api/items/'.$item->id.'/copies', ['price_paid' => -1])
+    $this->json('POST', '/api/items/'.$item->id.'/copies', [])
+        ->assertCreated()
+        ->assertJsonPath('data.attributes.status', 'owned')
+        ->assertJsonPath('data.attributes.quantity', 1)
+        ->assertJsonPath('data.attributes.estimated_value', null);
+});
+
+it('records the estimated value of a new copy as a valuation', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/items/'.$item->id.'/copies', ['estimated_value' => 5000])
+        ->assertCreated();
+
+    $copy = Copy::query()->latest('id')->first();
+
+    $this->assertDatabaseHas('valuations', [
+        'copy_id' => $copy->id,
+        'amount' => 5000,
+    ]);
+});
+
+it('validates the status when creating a copy', function () {
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/items/'.$item->id.'/copies', ['status' => 'smelly-cat'])
         ->assertUnprocessable()
-        ->assertJsonValidationErrors(['price_paid']);
+        ->assertJsonValidationErrors(['status']);
+});
+
+it('validates the quantity when creating a copy', function () {
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/items/'.$item->id.'/copies', ['quantity' => 0])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['quantity']);
+});
+
+it('validates the estimated value when creating a copy', function () {
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/items/'.$item->id.'/copies', ['estimated_value' => -1])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['estimated_value']);
 });
 
 it('restricts copy creation to owners and editors', function () {
@@ -134,17 +237,42 @@ it('updates a copy', function () {
 
     $user = $this->createUser();
     $item = itemForAccount($user->account_id);
-    $copy = Copy::factory()->create(['item_id' => $item->id, 'price_paid' => 100]);
+    $copy = Copy::factory()->create(['item_id' => $item->id, 'quantity' => 1]);
 
     Sanctum::actingAs($user);
 
     $this->json('PUT', '/api/items/'.$item->id.'/copies/'.$copy->id, [
-        'price_paid' => 9900,
+        'identifier' => 'CP-0007',
+        'status' => CopyStatus::Sold->value,
+        'quantity' => 4,
+        'disposed_at' => '2024-01-15',
     ])
         ->assertOk()
-        ->assertJsonPath('data.attributes.price_paid', 9900);
+        ->assertJsonPath('data.attributes.identifier', 'CP-0007')
+        ->assertJsonPath('data.attributes.status', 'sold')
+        ->assertJsonPath('data.attributes.quantity', 4);
 
-    expect($copy->refresh()->price_paid)->toBe(9900);
+    $copy->refresh();
+    expect($copy->status)->toBe(CopyStatus::Sold);
+    expect($copy->quantity)->toBe(4);
+    expect($copy->disposed_at->toDateString())->toBe('2024-01-15');
+});
+
+it('records a new valuation when the estimated value of a copy moves', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $item = itemForAccount($user->account_id);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 1000, 'valued_at' => '2020-01-01']);
+
+    Sanctum::actingAs($user);
+
+    $this->json('PUT', '/api/items/'.$item->id.'/copies/'.$copy->id, ['estimated_value' => 9900])
+        ->assertOk()
+        ->assertJsonPath('data.attributes.estimated_value', 9900);
+
+    expect($copy->refresh()->valuations()->count())->toBe(2);
 });
 
 it('restricts copy updates to owners and editors', function () {
@@ -155,7 +283,7 @@ it('restricts copy updates to owners and editors', function () {
 
     Sanctum::actingAs($viewer);
 
-    $this->json('PUT', '/api/items/'.$item->id.'/copies/'.$copy->id, ['price_paid' => 500])
+    $this->json('PUT', '/api/items/'.$item->id.'/copies/'.$copy->id, ['quantity' => 5])
         ->assertNotFound();
 });
 

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\CopyStatus;
 use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
+use App\Enums\ValuationConfidence;
+use App\Enums\ValuationType;
 use App\Helpers\Money;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
@@ -13,6 +16,7 @@ use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Location;
 use App\Models\User;
+use App\Models\Valuation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -33,8 +37,11 @@ class UpdateCopy
         private readonly Copy $copy,
         private readonly ?Condition $condition = null,
         private readonly ?Location $location = null,
-        private readonly ?string $acquiredAt = null,
-        private readonly ?int $pricePaid = null,
+        private readonly ?string $identifier = null,
+        private readonly CopyStatus $status = CopyStatus::Owned,
+        private readonly int $quantity = 1,
+        private readonly ?string $disposedAt = null,
+        private readonly ?string $note = null,
         private readonly ?int $estimatedValue = null,
     ) {}
 
@@ -43,6 +50,7 @@ class UpdateCopy
         $this->validate();
         $this->captureChanges();
         $this->update();
+        $this->value();
         $this->log();
 
         return $this->copy;
@@ -73,11 +81,14 @@ class UpdateCopy
         $currency = $this->copy->item->collection->currency;
 
         $this->changes = array_values(array_filter([
+            $this->change('Identifier', $this->copy->identifier, $this->identifier),
             $this->change('Condition', $this->copy->condition?->name, $this->condition?->name),
-            $this->change('Location', $this->copy->location?->name, $this->location?->name),
-            $this->change('Acquired', $this->copy->acquired_at?->toDateString(), $this->acquiredAt),
-            $this->change('Price paid', $this->amount($this->copy->price_paid, $currency), $this->amount($this->pricePaid, $currency)),
-            $this->change('Estimated value', $this->amount($this->copy->estimated_value, $currency), $this->amount($this->estimatedValue, $currency)),
+            $this->change('Location', $this->copy->currentLocation?->name, $this->location?->name),
+            $this->change('Status', $this->copy->status->label(), $this->status->label()),
+            $this->change('Quantity', (string) $this->copy->quantity, (string) $this->quantity),
+            $this->change('Disposed', $this->copy->disposed_at?->toDateString(), $this->disposedAt),
+            $this->change('Note', $this->copy->note, $this->note),
+            $this->change('Estimated value', $this->amount($this->copy->estimatedValue(), $currency), $this->amount($this->estimatedValue, $currency)),
         ]));
     }
 
@@ -101,15 +112,49 @@ class UpdateCopy
     private function update(): void
     {
         $this->copy->fill([
+            'identifier' => $this->identifier,
             'condition_id' => $this->condition?->id,
-            'location_id' => $this->location?->id,
-            'acquired_at' => $this->acquiredAt,
-            'price_paid' => $this->pricePaid,
-            'estimated_value' => $this->estimatedValue,
+            'current_location_id' => $this->location?->id,
+            'status' => $this->status,
+            'quantity' => $this->quantity,
+            'disposed_at' => $this->disposedAt,
+            'note' => $this->note,
         ]);
         $this->copy->updated_by_id = $this->user->id;
         $this->copy->updated_by_name = $this->user->getFullName();
         $this->copy->save();
+    }
+
+    /**
+     * Record a new estimated value, if it moved.
+     *
+     * Valuations are append-only: a copy that is worth more than it was keeps
+     * the old figure and gains a new one, so the history of what it has been
+     * worth survives the edit. A value that has not changed writes nothing,
+     * which keeps the timeline free of rows that say nothing happened.
+     */
+    private function value(): void
+    {
+        if ($this->estimatedValue === null || $this->estimatedValue === $this->copy->estimatedValue()) {
+            return;
+        }
+
+        $valuation = new Valuation([
+            'copy_id' => $this->copy->id,
+            'type' => ValuationType::UserEstimate,
+            'amount' => $this->estimatedValue,
+            'currency_code' => $this->copy->item->collection->currency,
+            'valued_at' => now()->toDateString(),
+            'confidence' => ValuationConfidence::Unknown,
+        ]);
+
+        $valuation->created_by_id = $this->user->id;
+        $valuation->created_by_name = $this->user->getFullName();
+        $valuation->updated_by_id = $this->user->id;
+        $valuation->updated_by_name = $this->user->getFullName();
+        $valuation->save();
+
+        $this->copy->unsetRelation('latestValuation')->unsetRelation('valuations');
     }
 
     private function log(): void

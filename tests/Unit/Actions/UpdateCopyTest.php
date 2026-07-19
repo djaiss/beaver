@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 use App\Actions\UpdateCopy;
+use App\Enums\CopyStatus;
 use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
@@ -12,6 +13,7 @@ use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Valuation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -26,7 +28,7 @@ it('updates a copy and stamps the editor', function () {
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $copy = Copy::factory()->create(['item_id' => $item->id, 'price_paid' => 100]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
     $condition = Condition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
@@ -35,16 +37,22 @@ it('updates a copy and stamps the editor', function () {
         copy: $copy,
         condition: $condition,
         location: $location,
-        acquiredAt: '2026-07-17',
-        pricePaid: 4200,
+        identifier: 'CGC 1234567',
+        status: CopyStatus::Sold,
+        quantity: 3,
+        disposedAt: '2026-07-17',
+        note: 'Sold to Gunther.',
         estimatedValue: 9900,
     )->execute();
 
     expect($copy->condition_id)->toBe($condition->id);
-    expect($copy->location_id)->toBe($location->id);
-    expect($copy->acquired_at->toDateString())->toBe('2026-07-17');
-    expect($copy->price_paid)->toBe(4200);
-    expect($copy->estimated_value)->toBe(9900);
+    expect($copy->current_location_id)->toBe($location->id);
+    expect($copy->identifier)->toBe('CGC 1234567');
+    expect($copy->status)->toBe(CopyStatus::Sold);
+    expect($copy->quantity)->toBe(3);
+    expect($copy->disposed_at->toDateString())->toBe('2026-07-17');
+    expect($copy->note)->toBe('Sold to Gunther.');
+    expect($copy->estimatedValue())->toBe(9900);
 
     $this->assertDatabaseHas('copies', [
         'id' => $copy->id,
@@ -76,7 +84,54 @@ it('clears the condition and location when none are given', function () {
     )->execute();
 
     expect($copy->condition_id)->toBeNull();
-    expect($copy->location_id)->toBeNull();
+    expect($copy->current_location_id)->toBeNull();
+});
+
+// Valuations are append-only, so what a copy was worth survives being revalued.
+it('appends a valuation when the estimated value moves and keeps the old one', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    $first = Valuation::factory()->create([
+        'copy_id' => $copy->id,
+        'amount' => 39000,
+        'valued_at' => '2026-07-01',
+    ]);
+
+    $copy = new UpdateCopy(
+        user: $owner,
+        copy: $copy,
+        estimatedValue: 42000,
+    )->execute();
+
+    expect($copy->valuations()->count())->toBe(2);
+    expect($copy->estimatedValue())->toBe(42000);
+    expect($first->fresh()->amount)->toBe(39000);
+});
+
+it('does not append a valuation when the estimated value has not moved', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 42000]);
+
+    $copy = new UpdateCopy(
+        user: $owner,
+        copy: $copy,
+        estimatedValue: 42000,
+    )->execute();
+
+    expect($copy->valuations()->count())->toBe(1);
 });
 
 it('throws when the condition belongs to another account', function () {
@@ -143,12 +198,10 @@ it('records the values that moved on the activity of the item', function () {
     $nowIn = Location::factory()->create(['account_id' => $account->id, 'name' => 'Display Case']);
     $copy = Copy::factory()->create([
         'item_id' => $item->id,
-        'location_id' => $wasIn->id,
+        'current_location_id' => $wasIn->id,
         'condition_id' => null,
-        'acquired_at' => null,
-        'price_paid' => null,
-        'estimated_value' => 39000,
     ]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 39000]);
 
     new UpdateCopy(
         user: $editor,
@@ -180,10 +233,7 @@ it('records no chips when nothing on the copy moved', function () {
     $copy = Copy::factory()->create([
         'item_id' => $item->id,
         'condition_id' => $condition->id,
-        'location_id' => null,
-        'acquired_at' => null,
-        'price_paid' => null,
-        'estimated_value' => null,
+        'current_location_id' => null,
     ]);
 
     new UpdateCopy(user: $editor, copy: $copy, condition: $condition)->execute();

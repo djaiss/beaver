@@ -8,15 +8,32 @@ use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+/**
+ * A copy worth a given amount, which now takes two rows rather than one column.
+ */
+function valuedCopyOnStatistics(array $attributes, int $amount): Copy
+{
+    $copy = Copy::factory()->create($attributes);
+
+    Valuation::factory()->create([
+        'copy_id' => $copy->id,
+        'amount' => $amount,
+        'valued_at' => '2026-01-01',
+    ]);
+
+    return $copy;
+}
 
 it('shows the statistics of a collection', function (): void {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 84200]);
+    valuedCopyOnStatistics(['item_id' => $item->id], 84200);
 
     $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
 
@@ -57,7 +74,7 @@ it('breaks the items down by category, condition and location', function (): voi
     $item = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
     $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Mint']);
     $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Attic']);
-    Copy::factory()->create(['item_id' => $item->id, 'condition_id' => $condition->id, 'location_id' => $location->id, 'estimated_value' => 1000]);
+    valuedCopyOnStatistics(['item_id' => $item->id, 'condition_id' => $condition->id, 'current_location_id' => $location->id], 1000);
 
     $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
 
@@ -74,7 +91,7 @@ it('links every top item to its own page', function (): void {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
-    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 90000]);
+    valuedCopyOnStatistics(['item_id' => $item->id], 90000);
 
     $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
 
@@ -84,11 +101,14 @@ it('links every top item to its own page', function (): void {
         ->assertSee(route('items.show', [$collection->id, $item->id]), false);
 });
 
+// The acquisition date left the copy with #117 and comes back with the
+// transactions of #118, so for now every copy reads as undated. Flip this back
+// deliberately when transactions land.
 it('says how many copies are missing an acquisition date', function (): void {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    Copy::factory()->create(['item_id' => $item->id, 'acquired_at' => null]);
+    Copy::factory()->create(['item_id' => $item->id]);
 
     $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
 

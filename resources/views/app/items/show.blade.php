@@ -23,8 +23,9 @@
 
     $money = fn (int $cents): string => Money::format($cents, $collection->currency);
 
-    $totalEstimated = (int) $item->copies->sum('estimated_value');
-    $totalPaid = (int) $item->copies->sum('price_paid');
+    // A copy carries no value of its own any more, so the total is the sum of
+    // what each one was last valued at.
+    $totalEstimated = (int) $item->copies->sum(fn ($copy): int => $copy->estimatedValue() ?? 0);
 
     $ungroupedFields = $type?->ungroupedCustomFields ?? collect();
     $fieldGroups = $type?->customFieldGroups ?? collect();

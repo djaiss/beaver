@@ -116,7 +116,6 @@
             __('Set') => $item->set?->name ?? '—',
             __('Copies owned') => number_format($item->copies->count()),
             __('Est. value') => $totalEstimated > 0 ? $money($totalEstimated) : '—',
-            __('Total paid') => $totalPaid > 0 ? $money($totalPaid) : '—',
             __('Photos') => number_format($item->photos->count()),
         ];
       @endphp

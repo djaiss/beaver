@@ -13,14 +13,14 @@
     $rows = $items->getCollection()->map(function ($item) use ($money) {
         $copies = $item->copies;
         $first = $copies->first();
-        $valueCents = (int) $copies->sum('estimated_value');
+        $valueCents = (int) $copies->sum(fn ($copy): int => $copy->estimatedValue() ?? 0);
 
         return [
             'id' => $item->id,
             'name' => $item->name,
             'photoUrl' => $item->mainPhoto?->url(),
             'condition' => $first?->condition?->name ?? '—',
-            'location' => $first?->location?->name ?? '—',
+            'location' => $first?->currentLocation?->name ?? '—',
             'quantity' => $copies->count(),
             'value' => $valueCents > 0 ? $money($valueCents) : '—',
             'added' => $item->created_at->isoFormat('MMM D, YYYY'),
