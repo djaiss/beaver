@@ -33,26 +33,23 @@
         </div>
       @endif
 
-      <div class="mt-3 flex flex-wrap gap-2.5">
-        @foreach ($item->photos as $photo)
-          <button
-            type="button"
-            x-on:click="photo = {{ $loop->index }}"
-            :class="photo === {{ $loop->index }} ? 'border-ink' : 'border-hairline'"
-            class="relative h-[60px] w-[78px] shrink-0 cursor-pointer overflow-hidden rounded-lg border-2"
-          >
-            <img src="{{ $photo->url() }}" alt="" class="size-full object-cover" />
-            @if ($photo->is_main)
-              <span class="absolute top-1 left-1 rounded bg-black/55 px-1.5 py-px text-[9px] font-semibold text-white">{{ __('Main') }}</span>
-            @endif
-          </button>
-        @endforeach
-
-        {{-- Uploading a photo from this screen is not built yet. --}}
-        <span class="flex h-[60px] w-[78px] shrink-0 cursor-not-allowed items-center justify-center rounded-lg border border-dashed border-hairline">
-          <x-soon />
-        </span>
-      </div>
+      @if ($item->photos->isNotEmpty())
+        <div class="mt-3 flex flex-wrap gap-2.5">
+          @foreach ($item->photos as $photo)
+            <button
+              type="button"
+              x-on:click="photo = {{ $loop->index }}"
+              :class="photo === {{ $loop->index }} ? 'border-ink' : 'border-hairline'"
+              class="relative h-[60px] w-[78px] shrink-0 cursor-pointer overflow-hidden rounded-lg border-2"
+            >
+              <img src="{{ $photo->url() }}" alt="" class="size-full object-cover" />
+              @if ($photo->is_main)
+                <span class="absolute top-1 left-1 rounded bg-black/55 px-1.5 py-px text-[9px] font-semibold text-white">{{ __('Main') }}</span>
+              @endif
+            </button>
+          @endforeach
+        </div>
+      @endif
     </div>
 
     {{-- Description --}}
