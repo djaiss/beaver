@@ -23,7 +23,12 @@ it('shows the api docs portal', function () {
         ->assertSee('Create a copy')
         ->assertSee('Upload an item photo')
         ->assertSee('List item activity')
-        ->assertSee('Get API key');
+        ->assertSee('Get API key')
+        ->assertSee('Get the statistics of a collection')
+        ->assertSee('List the trash')
+        ->assertSee('Get the account')
+        ->assertSee('List members')
+        ->assertSee('List pending invitations');
 });
 
 it('shows the whole reference as markdown', function () {

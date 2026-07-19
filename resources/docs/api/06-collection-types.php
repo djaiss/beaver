@@ -216,5 +216,29 @@ return [
             'returns' => 'An empty response.',
             'responseStatus' => 204,
         ],
+        [
+            'id' => 'collection-types-import',
+            'title' => 'Import a collection type',
+            'label' => 'Import a type',
+            'method' => 'POST',
+            'path' => '/collection-types/import',
+            'description' => 'Rebuild a collection type from a JSON document, in the exact shape the export endpoint hands out. This creates a new type with its groups and fields. It never updates an existing one, so importing the same document twice gives you two types.',
+            'body' => [
+                'The document is sent as a string in the json parameter, not as a nested object. A document that is not valid JSON, that is missing the type key, or that names a field type the app does not know is rejected with a 422 response.',
+            ],
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'bodyParams' => [
+                [
+                    'name' => 'json',
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'The exported document, as a JSON encoded string. Maximum 100000 characters.',
+                    'example' => '{"schemaVersion":1,"type":{"name":"Comics","color":"#fb923c","groups":[],"standaloneFields":[]}}',
+                ],
+            ],
+            'returns' => 'The created collection_type object.',
+            'responseStatus' => 201,
+            'response' => ['data' => $type('1', 'Comics', '#fb923c')],
+        ],
     ],
 ];

@@ -134,5 +134,30 @@ return [
             'returns' => 'An empty response.',
             'responseStatus' => 204,
         ],
+        [
+            'id' => 'custom-field-groups-order',
+            'title' => 'Move a custom field group',
+            'label' => 'Move a group',
+            'method' => 'PUT',
+            'path' => '/collection-types/{collectionType}/custom-field-groups/{group}/order',
+            'examplePath' => '/collection-types/1/custom-field-groups/1/order',
+            'description' => 'Move a group one step up or down among the groups of its type. This is how the order of the sections on an item form is changed.',
+            'body' => [
+                'Moving a group that is already first up, or already last down, leaves the order untouched and still returns a 200 response.',
+            ],
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'pathParams' => [$typeId, $groupId],
+            'bodyParams' => [
+                [
+                    'name' => 'direction',
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'The direction to move the group in. One of up or down.',
+                    'example' => 'down',
+                ],
+            ],
+            'returns' => 'The moved custom_field_group object, with its new position.',
+            'response' => ['data' => $group('1', 'Publishing info', 1)],
+        ],
     ],
 ];

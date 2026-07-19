@@ -187,5 +187,30 @@ return [
             'returns' => 'An empty response.',
             'responseStatus' => 204,
         ],
+        [
+            'id' => 'custom-fields-order',
+            'title' => 'Move a custom field',
+            'label' => 'Move a field',
+            'method' => 'PUT',
+            'path' => '/collection-types/{collectionType}/custom-fields/{customField}/order',
+            'examplePath' => '/collection-types/1/custom-fields/2/order',
+            'description' => 'Move a field one step up or down among the fields of its group, or among the standalone fields of the type when it has no group. Use the update endpoint instead to set a position directly.',
+            'body' => [
+                'Moving a field that is already first up, or already last down, leaves the order untouched and still returns a 200 response. A field never crosses into another group this way.',
+            ],
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'pathParams' => [$typeId, $fieldId],
+            'bodyParams' => [
+                [
+                    'name' => 'direction',
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'The direction to move the field in. One of up or down.',
+                    'example' => 'up',
+                ],
+            ],
+            'returns' => 'The moved custom_field object, with its new position.',
+            'response' => ['data' => $field('2', 'Grade', 'select', ['NM', 'VF', 'FN'], 1)],
+        ],
     ],
 ];
