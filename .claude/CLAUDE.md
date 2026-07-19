@@ -24,7 +24,7 @@ Do not excessively use emojis.
 
 - `app/Actions`: one class per user action, holding the business logic. Controllers stay thin and delegate here. Most of the app lives in this folder.
 - `app/Models`: Eloquent models. `app/Models/Concerns` holds shared model traits, such as `HasAuthor`.
-- `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs).
+- `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs). `app/Http/Controllers/Concerns` holds shared controller traits, such as `FindsItems`.
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
 - `app/Jobs`: queued jobs. `app/Mail`: mailables. `app/Enums`: enums. `app/Helpers`: helpers.
 - `app/Services`: `ApiDocumentation` builds the API reference served at `/docs` from the endpoint definition files in `resources/docs/api`.
@@ -35,6 +35,29 @@ Do not excessively use emojis.
 - `database`: `migrations`, `factories`, `seeders`, plus `data` for seed files such as countries.
 - `lang`: one JSON file per locale.
 - `tests`: `Unit` (models, actions, jobs), `Feature` (controllers), `Browser` (Pest browser tests).
+
+## The API
+
+The JSON API mirrors the web app: same Actions, same rules, one endpoint for
+everything the app can do. When you add a capability to the app, add it to the
+API in the same PR, and document it in `resources/docs/api` (a route without
+documentation fails the suite).
+
+Authorization is enforced inside the Actions, not by route middleware. An action
+checks the role itself and throws `ModelNotFoundException`, so a user who may not
+do something gets a 404 rather than a 403, and cross tenant lookups look exactly
+the same. The `owner` and `editor` middleware on the web routes are a UX layer on
+top of that, not the gate itself. Do not read `routes/api.php` alone to decide
+whether an endpoint is protected, and do not add the middleware to API routes:
+that would split the rule across two places.
+
+Read endpoints have no action to enforce anything, so anything owner only when
+read (the member roster, pending invitations) gates in the controller through the
+`EnsuresAccountOwner` concern.
+
+Never hand an Eloquent model straight to a JSON response. Go through a Resource,
+or project the fields explicitly, so a service returning a model does not leak a
+whole row.
 
 ## Models
 
@@ -52,7 +75,7 @@ An `Account` is the tenant. Everything in the collection domain belongs to exact
 - `ItemPhoto`: a photo of an item. `mainPhoto` is the one flagged `is_main`, served over a streamed route.
 - `CustomFieldValue`: one item's value for one custom field.
 - `Category`: groups items within a collection, and nests into itself through `parent_id`.
-- `Set`: a named series of items to complete. Belongs to an account rather than a collection.
+- `Set`: a named series of items to complete. Belongs to a collection through `collection_id`, and reaches its account through it. A `target_count` above zero is what makes the set count towards the completion statistics.
 - `Tag`: a reusable label shared across the account, attached to items through a pivot.
 - `Condition`: the state of a copy (New, Damaged). A null `account_id` marks a seeded system default shared across accounts.
 - `CollectionView`: remembers one user's chosen items layout (grid, list, table) for one collection.
