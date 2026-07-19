@@ -49,6 +49,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer'],
+            'description' => ['nullable', 'string', 'max:255'],
         ]);
 
         $category = new CreateCategory(
@@ -56,6 +57,7 @@ class CategoryController extends Controller
             collection: $collection,
             name: $validated['name'],
             parentId: $validated['parent_id'] ?? null,
+            description: $validated['description'] ?? null,
         )->execute();
 
         return new CategoryResource($category)
@@ -73,6 +75,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer'],
+            'description' => ['nullable', 'string', 'max:255'],
         ]);
 
         $category = new UpdateCategory(
@@ -80,6 +83,7 @@ class CategoryController extends Controller
             category: $category,
             name: $validated['name'],
             parentId: $validated['parent_id'] ?? null,
+            description: $validated['description'] ?? null,
         )->execute();
 
         return new CategoryResource($category)

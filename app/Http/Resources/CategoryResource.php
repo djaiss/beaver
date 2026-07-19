@@ -25,6 +25,7 @@ class CategoryResource extends JsonResource
             'id' => (string) $this->id,
             'attributes' => [
                 'name' => $this->name,
+                'description' => $this->description,
                 'collection_id' => (string) $this->collection_id,
                 'parent_id' => $this->parent_id !== null ? (string) $this->parent_id : null,
                 'created_at' => $this->created_at->timestamp,

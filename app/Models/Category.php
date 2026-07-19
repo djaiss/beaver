@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $collection_id
  * @property int|null $parent_id
  * @property string $name
+ * @property string|null $description
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -55,6 +56,7 @@ class Category extends Model
         'collection_id',
         'parent_id',
         'name',
+        'description',
     ];
 
     /**
@@ -66,6 +68,7 @@ class Category extends Model
     {
         return [
             'name' => 'encrypted',
+            'description' => 'encrypted',
         ];
     }
 

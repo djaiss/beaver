@@ -57,6 +57,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer'],
+            'description' => ['nullable', 'string', 'max:255'],
         ]);
 
         new CreateCategory(
@@ -64,6 +65,7 @@ class CategoryController extends Controller
             collection: $collectionModel,
             name: $validated['name'],
             parentId: isset($validated['parent_id']) ? (int) $validated['parent_id'] : null,
+            description: $validated['description'] ?? null,
         )->execute();
 
         return to_route('categories.index', $collectionModel->id)
@@ -79,6 +81,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => ['nullable', 'integer'],
+            'description' => ['nullable', 'string', 'max:255'],
         ]);
 
         new UpdateCategory(
@@ -86,6 +89,7 @@ class CategoryController extends Controller
             category: $categoryModel,
             name: $validated['name'],
             parentId: isset($validated['parent_id']) ? (int) $validated['parent_id'] : null,
+            description: $validated['description'] ?? null,
         )->execute();
 
         return to_route('categories.index', $collectionModel->id)

@@ -42,6 +42,33 @@ it('updates a category name and parent', function () {
     );
 });
 
+it('updates the description, and clears it when none is given', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'description' => 'Old description']);
+
+    $category = new UpdateCategory(
+        user: $editor,
+        category: $category,
+        name: 'Spider-Man',
+        description: '<strong>Key issues from the 1990s.</strong>',
+    )->execute();
+
+    expect($category->description)->toBe('Key issues from the 1990s.');
+
+    $category = new UpdateCategory(
+        user: $editor,
+        category: $category,
+        name: 'Spider-Man',
+    )->execute();
+
+    expect($category->description)->toBeNull();
+});
+
 it('throws when set as its own parent', function () {
     Queue::fake();
     $this->expectException(ValidationException::class);

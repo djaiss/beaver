@@ -16,6 +16,7 @@ beforeEach(function () {
         'id',
         'attributes' => [
             'name',
+            'description',
             'collection_id',
             'parent_id',
             'created_at',

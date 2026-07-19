@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Validation\ValidationException;
 
@@ -82,6 +83,44 @@ it('sanitizes the name', function () {
     )->execute();
 
     expect($category->name)->toBe('Marvel');
+});
+
+it('stores and sanitizes the description', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $category = new CreateCategory(
+        user: $owner,
+        collection: $collection,
+        name: 'Marvel',
+        description: '<strong>Key issues from the 1990s.</strong>',
+    )->execute();
+
+    expect($category->description)->toBe('Key issues from the 1990s.');
+
+    $raw = DB::table('categories')->where('id', $category->id)->value('description');
+    expect(decrypt($raw, false))->toBe('Key issues from the 1990s.');
+});
+
+it('leaves the description empty when none is given', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $category = new CreateCategory(
+        user: $owner,
+        collection: $collection,
+        name: 'Marvel',
+    )->execute();
+
+    expect($category->description)->toBeNull();
 });
 
 it('throws when the parent belongs to another collection', function () {

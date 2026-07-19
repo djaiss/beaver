@@ -41,6 +41,21 @@ it('encrypts the name at rest', function () {
     expect(decrypt($raw, false))->toBe('Spider-Man');
 });
 
+it('encrypts the description at rest', function () {
+    $category = Category::factory()->create(['description' => 'Wall-crawler key issues.']);
+
+    $raw = DB::table('categories')->where('id', $category->id)->value('description');
+
+    $this->assertNotSame('Wall-crawler key issues.', $raw);
+    expect(decrypt($raw, false))->toBe('Wall-crawler key issues.');
+});
+
+it('has no description by default', function () {
+    $category = Category::factory()->create(['description' => null]);
+
+    expect($category->description)->toBeNull();
+});
+
 it('soft deletes', function () {
     $category = Category::factory()->create();
 
