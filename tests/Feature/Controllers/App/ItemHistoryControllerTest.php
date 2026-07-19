@@ -114,8 +114,8 @@ it('shows the valuations of a copy on its timeline, oldest first', function () {
         ->assertSeeInOrder(['Jan 2024', 'Mar 2026']);
 });
 
-// The section is a query parameter on the copy's url, so the valuations section
-// renders its own panel while the copy stays the same.
+// Each section is its own url, so the valuations section renders its own panel
+// while the copy stays the same.
 it('shows the valuations section when it is selected', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
@@ -123,7 +123,7 @@ it('shows the valuations section when it is selected', function () {
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 5000]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy]).'?section=valuations')
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'valuations']))
         ->assertOk()
         ->assertSee('What the copy has been reckoned to be worth, over time. The most recent is its current estimated value.')
         ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false);
@@ -137,21 +137,21 @@ it('shows a placeholder for a section that is not built yet', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy]).'?section=insurance')
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'insurance']))
         ->assertOk()
         ->assertSee('data-test="history-section-soon"', false)
         ->assertSee('This part of the history is not built yet.');
 });
 
-// A section the query string invents is not trusted; it falls back to the
-// timeline rather than erroring.
+// A section the url invents is not trusted; it falls back to the timeline rather
+// than erroring.
 it('falls back to the timeline for an unknown section', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy]).'?section=nonsense')
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'nonsense']))
         ->assertOk()
         ->assertSee('Everything that has happened to this copy, oldest first. The sections listed alongside are what it is assembled from.');
 });
@@ -243,7 +243,7 @@ it('lists the transactions of a copy, newest first', function () {
         'occurred_at' => '2026-02-11',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-'.$older->id.'"', false)
         ->assertSee('data-test="transaction-'.$newer->id.'"', false)
@@ -269,7 +269,7 @@ it('adds the parts together when a transaction has no stored total', function ()
         'currency_code' => 'USD',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-total-'.$transaction->id.'"', false)
         ->assertSee('$120')
@@ -287,7 +287,7 @@ it('shows the reference number and the note of a transaction', function () {
         'note' => 'Bought the day Ross said we were on a break.',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-reference-'.$transaction->id.'"', false)
         ->assertSee('Invoice 4021')
@@ -300,7 +300,7 @@ it('says so when a copy has no transaction yet', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="no-transactions-'.$copy->id.'"', false)
         ->assertSee('No transaction has been recorded against this copy yet.');
@@ -313,7 +313,7 @@ it('offers an editor the forms to add, edit and delete a transaction', function 
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="new-transaction-'.$copy->id.'"', false)
         ->assertSee('data-test="create-transaction-form-'.$copy->id.'"', false)
@@ -330,7 +330,7 @@ it('asks for confirmation before deleting a transaction', function () {
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('Delete this transaction? This cannot be undone.');
 });
@@ -344,7 +344,7 @@ it('does not offer a viewer any way to change a transaction', function () {
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-'.$transaction->id.'"', false)
         ->assertDontSee('data-test="new-transaction-'.$copy->id.'"', false)
@@ -374,7 +374,7 @@ it('lists the provenance of a copy on a timeline, oldest first', function () {
         'occurred_at_precision' => DatePrecision::Exact,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-'.$older->id.'"', false)
         ->assertSee('data-test="provenance-event-'.$newer->id.'"', false)
@@ -403,7 +403,7 @@ it('renders a provenance date at the precision it was recorded at', function () 
         'occurred_at_precision' => DatePrecision::Unknown,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-date-'.$year->id.'"', false)
         ->assertSee('1987')
@@ -428,7 +428,7 @@ it('shows the parties, the location and the verified badge of a provenance event
         'verification_note' => 'Checked against the auction catalogue.',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-parties-'.$event->id.'"', false)
         ->assertSee('From Gunther to Ross Geller')
@@ -457,12 +457,12 @@ it('says when a provenance event is linked to a transaction, and on the transact
         'transaction_id' => $transaction->id,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-transaction-'.$event->id.'"', false)
         ->assertSee('Deleting that transaction keeps this event and only unlinks it.');
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-provenance-'.$transaction->id.'"', false)
         ->assertSee('In the provenance')
@@ -475,7 +475,7 @@ it('says so when a copy has no provenance event yet', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="no-provenance-'.$copy->id.'"', false)
         ->assertSee('No provenance event has been recorded against this copy yet.');
@@ -488,7 +488,7 @@ it('offers an editor the forms to add, edit and delete a provenance event', func
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="new-provenance-event-'.$copy->id.'"', false)
         ->assertSee('data-test="create-provenance-event-form-'.$copy->id.'"', false)
@@ -505,7 +505,7 @@ it('asks for confirmation before deleting a provenance event', function () {
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('Delete this provenance event? This cannot be undone.');
 });
@@ -519,7 +519,7 @@ it('does not offer a viewer any way to change a provenance event', function () {
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-'.$event->id.'"', false)
         ->assertDontSee('data-test="new-provenance-event-'.$copy->id.'"', false)
@@ -539,7 +539,7 @@ it('offers every provenance type, every precision and the copy transactions on t
         'occurred_at' => '1987-06-02',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('Significant restoration')
         ->assertSee('Custody transfer')
@@ -555,7 +555,7 @@ it('offers every transaction type and the currency of the collection on the form
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('Gift received')
         ->assertSee('Inheritance')
