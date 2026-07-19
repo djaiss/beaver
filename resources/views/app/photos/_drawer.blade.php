@@ -1,14 +1,17 @@
 {{-- Photo details. Everything it shows comes from the row already sent to the page, so
      opening it costs no request. --}}
 <template x-if="drawer">
+  {{-- Closing on a click of the backdrop uses .self rather than a .stop on the panel
+       below. A .stop would call stopPropagation() on every click inside the drawer,
+       and Turbo listens for link clicks on the document, so the links in here would
+       fall back to a full page load however they are marked. --}}
   <div
-    x-on:click="close()"
+    x-on:click.self="close()"
     x-on:keydown.escape.window="close()"
     class="fixed inset-0 z-40 flex justify-end bg-black/35"
     data-test="photo-drawer"
   >
     <div
-      x-on:click.stop
       x-transition:enter="transition duration-200 ease-out"
       x-transition:enter-start="translate-x-6 opacity-0"
       x-transition:enter-end="translate-x-0 opacity-100"

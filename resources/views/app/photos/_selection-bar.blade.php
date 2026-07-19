@@ -11,10 +11,13 @@
 >
   <span class="mr-2 text-[13px] font-semibold text-canvas" x-text="selectionLabel"></span>
 
+  {{-- Warn with a plain onsubmit rather than an Alpine handler: Alpine compiles an
+       x-on expression into an assignment, so a `return` inside one is a syntax error
+       and the handler never runs, which would delete the selection without asking. --}}
   <form
     method="post"
     action="{{ route('settings.photos.selection.destroy') }}"
-    x-on:submit="return confirmBulkDelete($event)"
+    onsubmit="return confirm('{{ __('Delete the selected photos? Their image files are removed for good and they disappear from their items. This cannot be undone.') }}')"
   >
     @csrf
     @method('delete')

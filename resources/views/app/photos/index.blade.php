@@ -52,13 +52,6 @@
           this.view = target
           switchPhotoView(target)
         },
-        confirmBulkDelete(event) {
-          const message = @js(__('Delete the selected photos? Their image files are removed for good and they disappear from their items. This cannot be undone.'))
-
-          if (! confirm(message)) {
-            event.preventDefault()
-          }
-        },
       }"
     >
       {{-- The endpoint that remembers the layout, read by switchPhotoView in app.js. --}}
