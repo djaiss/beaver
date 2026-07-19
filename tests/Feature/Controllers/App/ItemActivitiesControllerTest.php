@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use App\Actions\UpdateUserAvatar;
 use App\Enums\ItemActionEnum;
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
@@ -8,6 +9,8 @@ use App\Models\Item;
 use App\Models\ItemLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -120,4 +123,52 @@ it('does not show the activity of an item that belongs to a different collection
     $item = Item::factory()->create(['collection_id' => $other->id]);
 
     $this->actingAs($user)->get(route('items.activities.index', [$collection, $item]))->assertNotFound();
+});
+
+it('shows the avatar of the author when they have one', function () {
+    Storage::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $author = User::factory()->create([
+        'account_id' => $user->account_id,
+        'first_name' => 'Rachel',
+        'last_name' => 'Green',
+    ]);
+
+    new UpdateUserAvatar(
+        user: $author,
+        file: UploadedFile::fake()->image('rachel.jpg', 400, 400),
+    )->execute();
+
+    ItemLog::factory()->create([
+        'item_id' => $item->id,
+        'user_id' => $author->id,
+        'action' => ItemActionEnum::ItemCreation->value,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('items.activities.index', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee(route('profile.avatar.show', ['user' => $author, 'size' => 32]), escape: false);
+});
+
+it('falls back to the initials of the author when they have no avatar', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $author = User::factory()->create(['first_name' => 'Rachel', 'last_name' => 'Green']);
+
+    ItemLog::factory()->create([
+        'item_id' => $item->id,
+        'user_id' => $author->id,
+        'action' => ItemActionEnum::ItemCreation->value,
+    ]);
+
+    $response = $this->actingAs($user)->get(route('items.activities.index', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('RG');
 });

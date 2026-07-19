@@ -29,7 +29,7 @@ class CollectionController extends Controller
         $account = $request->user()->account;
 
         return view('app.collections.index', [
-            'collections' => $account->collections()->orderByDesc('updated_at')->get(),
+            'collections' => $account->collections()->with('createdBy')->orderByDesc('updated_at')->get(),
         ]);
     }
 

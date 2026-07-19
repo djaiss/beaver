@@ -5,7 +5,7 @@
       {{-- The avatar is the node on the line, and the connector below it joins
            the next entry. The last entry has nothing to join to. --}}
       <div class="flex shrink-0 flex-col items-center">
-        <x-avatar-initials :name="$entry->getUserName()" class="z-10 size-[30px] text-[11px]" />
+        <x-avatar :user="$entry->user" :name="$entry->getUserName()" :size="32" class="z-10 size-[30px] text-[11px]" />
 
         @unless ($loop->last)
           <div class="w-0.5 flex-1 bg-hairline"></div>
