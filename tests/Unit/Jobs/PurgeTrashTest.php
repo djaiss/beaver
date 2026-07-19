@@ -24,7 +24,7 @@ it('keeps what is still within the retention window', function () {
     $account = $this->createAccount();
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     $item->delete();
     $set->delete();

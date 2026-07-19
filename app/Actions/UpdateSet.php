@@ -22,6 +22,7 @@ class UpdateSet
         private readonly Set $set,
         private string $name,
         private ?string $description = null,
+        private readonly ?int $targetCount = null,
     ) {}
 
     public function execute(): Set
@@ -36,7 +37,7 @@ class UpdateSet
 
     private function validate(): void
     {
-        if (! $this->set->account->allowsManagementBy($this->user)) {
+        if (! $this->set->collection->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }
@@ -51,6 +52,7 @@ class UpdateSet
     {
         $this->set->name = $this->name;
         $this->set->description = $this->description;
+        $this->set->target_count = $this->targetCount;
         $this->set->updated_by_id = $this->user->id;
         $this->set->updated_by_name = $this->user->getFullName();
         $this->set->save();

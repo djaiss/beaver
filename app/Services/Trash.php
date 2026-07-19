@@ -60,9 +60,11 @@ class Trash
         $query = $modelClass::onlyTrashed();
 
         return match ($type) {
-            TrashableEnum::Collection, TrashableEnum::Set => $query->where('account_id', $this->account->id),
+            TrashableEnum::Collection => $query->where('account_id', $this->account->id),
 
-            TrashableEnum::Item, TrashableEnum::Category => $query->whereIn(
+            // A set hangs off a collection that may itself be trashed, so look through the
+            // trashed collections too.
+            TrashableEnum::Item, TrashableEnum::Category, TrashableEnum::Set => $query->whereIn(
                 'collection_id',
                 CollectionModel::withTrashed()->where('account_id', $this->account->id)->select('id'),
             ),

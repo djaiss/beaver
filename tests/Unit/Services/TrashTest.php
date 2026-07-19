@@ -18,7 +18,7 @@ it('lists every kind of soft deleted object belonging to the account', function 
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     $collection->delete();
     $item->delete();
@@ -36,7 +36,7 @@ it('lists every kind of soft deleted object belonging to the account', function 
 it('leaves out objects that are not deleted', function () {
     $account = $this->createAccount();
     $collection = Collection::factory()->create(['account_id' => $account->id]);
-    Set::factory()->create(['account_id' => $account->id]);
+    Set::factory()->forAccount($account->id)->create();
 
     $collection->delete();
 
@@ -60,8 +60,8 @@ it('leaves out objects belonging to another account', function () {
 
 it('sorts the most urgent rows first', function () {
     $account = $this->createAccount();
-    $old = Set::factory()->create(['account_id' => $account->id, 'name' => 'First Pressings']);
-    $recent = Set::factory()->create(['account_id' => $account->id, 'name' => 'Bronze Age']);
+    $old = Set::factory()->forAccount($account->id)->create(['name' => 'First Pressings']);
+    $recent = Set::factory()->forAccount($account->id)->create(['name' => 'Bronze Age']);
 
     $old->delete();
     $old->forceFill(['deleted_at' => now()->subDays(28)])->saveQuietly();

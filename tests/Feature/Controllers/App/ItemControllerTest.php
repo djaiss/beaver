@@ -59,6 +59,27 @@ it('points at the categories screen when the collection has none yet', function 
         ->assertSee('/collections/'.$collection->id.'/categories', false);
 });
 
+it('points at the sets screen when the collection has none yet', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/new")
+        ->assertOk()
+        ->assertSee('This collection has no sets yet.')
+        ->assertSee('/collections/'.$collection->id.'/sets', false);
+});
+
+it('does not offer the sets of another collection on the add item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $other = Collection::factory()->create(['account_id' => $user->account_id]);
+    Set::factory()->create(['collection_id' => $other->id, 'name' => 'Set from elsewhere']);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/new")
+        ->assertOk()
+        ->assertDontSee('Set from elsewhere');
+});
+
 it('does not offer the categories of another collection on the add item form', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
@@ -181,7 +202,7 @@ it('reads a rating custom field as stars', function () {
 it('flags the parts of the overview that are not built yet', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $set = Set::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
     Copy::factory()->create(['item_id' => $item->id]);
 
@@ -189,7 +210,36 @@ it('flags the parts of the overview that are not built yet', function () {
 
     $response->assertOk();
     $response->assertSee('Soon');
-    $response->assertSee('Set completion needs a target size');
+});
+
+it('shows how complete the set of an item is', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1-10', 'target_count' => 10]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+    Item::factory()->count(3)->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk()
+        ->assertSee('Part of a set')
+        ->assertSee('Amazing Spider-Man #1-10')
+        ->assertSee('4/10')
+        ->assertSee('style="width: 40%"', false)
+        ->assertSee(route('sets.index', $collection->id), false);
+});
+
+it('falls back to an item count when the set has no target', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id, 'target_count' => null]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
+
+    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
+
+    $response->assertOk()
+        ->assertSee('1 item in this set')
+        ->assertDontSee('data-test="set-completion-ratio"', false);
 });
 
 it('lets a viewer read an item', function () {
@@ -249,7 +299,7 @@ it('creates an item with all its parts and redirects to the collection', functio
     $collection->collectionTypes()->attach($type);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Number]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id]);
     $condition = Condition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
@@ -378,7 +428,7 @@ it('updates an item with all its parts and redirects to the item', function () {
     $collection->collectionTypes()->attach($type);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Number]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id]);
     $condition = Condition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);

@@ -18,7 +18,7 @@ it('updates a set name and description', function () {
     $account = $this->createAccount();
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $set = Set::factory()->create(['account_id' => $account->id, 'name' => 'Old name']);
+    $set = Set::factory()->forAccount($account->id)->create(['name' => 'Old name']);
 
     $set = new UpdateSet(
         user: $editor,
@@ -44,7 +44,7 @@ it('clears the description when null is given', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $set = Set::factory()->create(['account_id' => $account->id, 'description' => 'Something']);
+    $set = Set::factory()->forAccount($account->id)->create(['description' => 'Something']);
 
     $set = new UpdateSet(
         user: $owner,
@@ -62,7 +62,7 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->forAccount($account->id)->create();
 
     new UpdateSet(
         user: $viewer,

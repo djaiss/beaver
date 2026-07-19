@@ -351,6 +351,12 @@
             <option value="{{ $set->id }}" @selected($selectedSetId == $set->id)>{{ $set->name }}</option>
           @endforeach
         </select>
+        @if ($sets->isEmpty())
+          <p class="mt-2 text-[13px] text-muted-soft">
+            {{ __('This collection has no sets yet.') }}
+            <a href="{{ route('sets.index', $collection->id) }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
+          </p>
+        @endif
       </div>
     </div>
 

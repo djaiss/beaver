@@ -89,7 +89,7 @@ class CreateItem
             throw new ModelNotFoundException('Category not found');
         }
 
-        if ($this->set instanceof Set && $this->set->account_id !== $this->collection->account_id) {
+        if ($this->set instanceof Set && $this->set->collection_id !== $this->collection->id) {
             throw new ModelNotFoundException('Set not found');
         }
 

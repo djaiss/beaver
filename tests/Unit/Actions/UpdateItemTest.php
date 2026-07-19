@@ -184,7 +184,7 @@ it('links the item to a category and a set, and clears them when none are given'
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['account_id' => $account->id]);
+    $set = Set::factory()->create(['collection_id' => $collection->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
 
     $linked = new UpdateItem(

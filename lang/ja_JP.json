@@ -392,7 +392,6 @@
     "Session expired. Please login again.": "セッションの有効期限が切れました。もう一度ログインしてください。",
     "Set": "セット",
     "Set completion": "セットの完成度",
-    "Set completion needs a target size, which sets do not record yet.": "セットの達成度には目標数が必要ですが、セットはまだそれを記録していません。",
     "Set up": "設定",
     "Sets": "セット",
     "Sets in progress": "収集中のセット",

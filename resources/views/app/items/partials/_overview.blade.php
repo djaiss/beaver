@@ -133,20 +133,34 @@
 
     {{-- Set completion --}}
     @if ($item->set)
+      @php
+        // A set without a target has nothing to be complete against, so it shows a count only.
+        $setTarget = $item->set->target_count;
+        $hasSetTarget = $setTarget !== null && $setTarget > 0;
+        $setPercent = $hasSetTarget ? min(100, (int) round($setItemCount / $setTarget * 100)) : 0;
+      @endphp
+
       <div class="rounded-xl border border-hairline p-4.5">
         <div class="mb-1.5 flex items-center justify-between gap-3">
           <p class="text-[13px] font-semibold text-ink">{{ __('Part of a set') }}</p>
-          <x-soon />
+          @if ($hasSetTarget)
+            <span class="shrink-0 text-xs text-muted-soft" data-test="set-completion-ratio">{{ $setItemCount }}/{{ $setTarget }}</span>
+          @endif
         </div>
 
         <p class="text-[13px] text-muted">{{ $item->set->name }}</p>
 
-        <p class="mt-3 text-[13px] text-muted-soft">
-          {{ trans_choice(':count item in this set|:count items in this set', $setItemCount, ['count' => $setItemCount]) }}
-        </p>
+        @if ($hasSetTarget)
+          <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-hairline-soft">
+            <div class="h-full bg-brand" style="width: {{ $setPercent }}%"></div>
+          </div>
+        @else
+          <p class="mt-3 text-[13px] text-muted-soft">
+            {{ trans_choice(':count item in this set|:count items in this set', $setItemCount, ['count' => $setItemCount]) }}
+          </p>
+        @endif
 
-        {{-- How many entries a set should hold is not tracked, so completion cannot be shown yet. --}}
-        <p class="mt-1 text-[13px] text-muted-soft">{{ __('Set completion needs a target size, which sets do not record yet.') }}</p>
+        <a href="{{ route('sets.index', $item->collection_id) }}" data-turbo="true" class="mt-3.5 inline-block text-[13px] font-semibold text-ink transition-opacity hover:opacity-75">{{ __('View set →') }}</a>
       </div>
     @endif
 
