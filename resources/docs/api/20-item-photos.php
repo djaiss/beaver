@@ -135,5 +135,28 @@ return [
             'returns' => 'An empty response.',
             'responseStatus' => 204,
         ],
+        [
+            'id' => 'photos-destroy-many',
+            'title' => 'Delete several photos',
+            'label' => 'Delete several photos',
+            'method' => 'DELETE',
+            'path' => '/photos',
+            'description' => 'Delete several photos of your account in one call, removing their files from storage. The photos do not have to belong to the same item, which is why this endpoint is not nested under one.',
+            'body' => [
+                'The call is all or nothing. If any ID in the list does not belong to your account, nothing is deleted and the response is a 404. The call cannot be undone: deleted photos do not go to the trash.',
+            ],
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'bodyParams' => [
+                [
+                    'name' => 'photo_ids',
+                    'type' => 'array of integers',
+                    'required' => true,
+                    'description' => 'The IDs of the photos to delete. Must contain at least one ID, and every ID must belong to your account.',
+                    'example' => [1, 2],
+                ],
+            ],
+            'returns' => 'An empty response.',
+            'responseStatus' => 204,
+        ],
     ],
 ];

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Api\Account\AccountController;
+use App\Http\Controllers\Api\Account\InvitationController;
+use App\Http\Controllers\Api\Account\MemberController;
 use App\Http\Controllers\Api\Administration\AdministrationApiController;
 use App\Http\Controllers\Api\Administration\AdministrationLogsController;
 use App\Http\Controllers\Api\Administration\EmailSentController;
@@ -13,18 +16,25 @@ use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\CollectionTypeCollectionController;
 use App\Http\Controllers\Api\CollectionTypeController;
 use App\Http\Controllers\Api\CollectionTypeExportController;
+use App\Http\Controllers\Api\CollectionTypeImportController;
 use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CopyController;
 use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\CustomFieldGroupController;
+use App\Http\Controllers\Api\CustomFieldGroupOrderController;
+use App\Http\Controllers\Api\CustomFieldOrderController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\ItemLogController;
 use App\Http\Controllers\Api\ItemPhotoController;
+use App\Http\Controllers\Api\ItemPhotoSelectionController;
+use App\Http\Controllers\Api\ItemTagController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\SeriesController;
 use App\Http\Controllers\Api\SetController;
+use App\Http\Controllers\Api\StatisticsController;
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\TrashController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function (): void {
@@ -65,6 +75,9 @@ Route::name('api.')->group(function (): void {
         Route::put('collections/{collection}/items/{item}', [ItemController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('collections.items.update');
         Route::delete('collections/{collection}/items/{item}', [ItemController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('collections.items.destroy');
 
+        // the aggregates behind the statistics screen of a collection
+        Route::get('collections/{collection}/statistics', [StatisticsController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('collections.statistics');
+
         // collection types
         Route::get('collection-types', [CollectionTypeController::class, 'index'])->name('collectionTypes');
         Route::get('collection-types/{collectionType}', [CollectionTypeController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.show');
@@ -74,6 +87,9 @@ Route::name('api.')->group(function (): void {
 
         // the type's schema, as a portable JSON document
         Route::get('collection-types/{collectionType}/export', [CollectionTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.export.show');
+
+        // a type rebuilt from an exported JSON document
+        Route::post('collection-types/import', [CollectionTypeImportController::class, 'create'])->name('collectionTypes.import.create');
 
         // the collections a type applies to
         Route::put('collection-types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.collections.update');
@@ -85,12 +101,18 @@ Route::name('api.')->group(function (): void {
         Route::put('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.update');
         Route::delete('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.destroy');
 
+        // where a group sits among the type's groups
+        Route::put('collection-types/{collectionType}/custom-field-groups/{group}/order', [CustomFieldGroupOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.order.update');
+
         // custom fields
         Route::get('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields');
         Route::get('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.show');
         Route::post('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields.create');
         Route::put('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.update');
         Route::delete('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.destroy');
+
+        // where a field sits among its group's fields
+        Route::put('collection-types/{collectionType}/custom-fields/{customField}/order', [CustomFieldOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.order.update');
 
         // locations
         Route::get('locations', [LocationController::class, 'index'])->name('locations');
@@ -141,9 +163,37 @@ Route::name('api.')->group(function (): void {
         Route::put('items/{item}/photos/{photo}/main', [ItemPhotoController::class, 'main'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.main');
         Route::delete('items/{item}/photos/{photo}', [ItemPhotoController::class, 'destroy'])->where(['item' => '[1-9][0-9]*', 'photo' => '[1-9][0-9]*'])->name('items.photos.destroy');
 
+        // the tags an item carries, drawn from the shared pool of the account
+        Route::get('items/{item}/tags', [ItemTagController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.tags');
+        Route::post('items/{item}/tags', [ItemTagController::class, 'create'])->where('item', '[1-9][0-9]*')->name('items.tags.create');
+        Route::delete('items/{item}/tags/{tag}', [ItemTagController::class, 'destroy'])->where(['item' => '[1-9][0-9]*', 'tag' => '[1-9][0-9]*'])->name('items.tags.destroy');
+
+        // several photos of the account deleted in one call
+        Route::delete('photos', [ItemPhotoSelectionController::class, 'destroy'])->name('photos.destroy');
+
         // the activity trail of an item, written by the app as actions happen
         Route::get('items/{item}/logs', [ItemLogController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.logs');
         Route::get('items/{item}/logs/{log}', [ItemLogController::class, 'show'])->where(['item' => '[1-9][0-9]*', 'log' => '[1-9][0-9]*'])->name('items.logs.show');
+
+        // what the account soft deleted, and still has time to restore
+        Route::get('trash', [TrashController::class, 'index'])->name('trash');
+        Route::put('trash', [TrashController::class, 'update'])->name('trash.update');
+        Route::delete('trash', [TrashController::class, 'destroy'])->name('trash.destroy');
+
+        // the account itself
+        Route::get('account', [AccountController::class, 'show'])->name('account');
+        Route::put('account', [AccountController::class, 'update'])->name('account.update');
+        Route::delete('account', [AccountController::class, 'destroy'])->name('account.destroy');
+
+        // the people who have access to the account
+        Route::get('account/members', [MemberController::class, 'index'])->name('account.members');
+        Route::get('account/members/{member}', [MemberController::class, 'show'])->where('member', '[1-9][0-9]*')->name('account.members.show');
+        Route::post('account/members', [MemberController::class, 'create'])->name('account.members.create');
+        Route::put('account/members/{member}', [MemberController::class, 'update'])->where('member', '[1-9][0-9]*')->name('account.members.update');
+        Route::delete('account/members/{member}', [MemberController::class, 'destroy'])->where('member', '[1-9][0-9]*')->name('account.members.destroy');
+
+        // the invitations still waiting to be claimed
+        Route::get('account/invitations', [InvitationController::class, 'index'])->name('account.invitations');
 
         // api keys
         Route::get('administration/api', [AdministrationApiController::class, 'index'])->name('administration.api');

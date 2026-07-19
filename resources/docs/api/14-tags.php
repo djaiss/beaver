@@ -43,6 +43,13 @@ $tagId = [
     'description' => 'The ID of the tag.',
 ];
 
+$taggedItemId = [
+    'name' => 'item',
+    'type' => 'integer',
+    'required' => true,
+    'description' => 'The ID of the item.',
+];
+
 return [
     'name' => 'Tags',
     'sections' => [
@@ -126,6 +133,58 @@ return [
             'description' => 'Delete a tag.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$tagId],
+            'returns' => 'An empty response.',
+            'responseStatus' => 204,
+        ],
+        [
+            'id' => 'items-tags-list',
+            'title' => 'List the tags of an item',
+            'label' => 'List the tags of an item',
+            'method' => 'GET',
+            'path' => '/items/{item}/tags',
+            'examplePath' => '/items/1/tags',
+            'description' => 'Retrieve the tags attached to an item, oldest first. Tags are shared across the account, so the same tag can be on many items.',
+            'permissions' => 'Any member of the account.',
+            'pathParams' => [$taggedItemId],
+            'returns' => 'A list of tag objects, or 404 when the item does not belong to your account.',
+            'response' => ['data' => [$tag('1', 'Signed'), $tag('2', 'First Issue')]],
+        ],
+        [
+            'id' => 'items-tags-create',
+            'title' => 'Add a tag to an item',
+            'label' => 'Add a tag to an item',
+            'method' => 'POST',
+            'path' => '/items/{item}/tags',
+            'examplePath' => '/items/1/tags',
+            'description' => 'Attach a tag to an item by name. When the account already has a tag with that name it is reused, matching regardless of case, so this never creates duplicates. Otherwise the tag is created first, then attached.',
+            'body' => [
+                'Attaching a tag the item already carries is accepted and changes nothing.',
+            ],
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'pathParams' => [$taggedItemId],
+            'bodyParams' => [
+                [
+                    'name' => 'name',
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'The name of the tag to attach. Maximum 255 characters.',
+                    'example' => 'Signed',
+                ],
+            ],
+            'returns' => 'The attached tag object, whether it was reused or created.',
+            'responseStatus' => 201,
+            'response' => ['data' => $tag('1', 'Signed')],
+        ],
+        [
+            'id' => 'items-tags-destroy',
+            'title' => 'Remove a tag from an item',
+            'label' => 'Remove a tag from an item',
+            'method' => 'DELETE',
+            'path' => '/items/{item}/tags/{tag}',
+            'examplePath' => '/items/1/tags/1',
+            'description' => 'Detach a tag from an item. The tag itself is kept and stays available for other items. Use the delete tag endpoint to remove it from the account entirely.',
+            'permissions' => 'Owners and editors. Viewers get a 404 response.',
+            'pathParams' => [$taggedItemId, $tagId],
             'returns' => 'An empty response.',
             'responseStatus' => 204,
         ],
