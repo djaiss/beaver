@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\PermissionEnum;
+use App\Enums\PhotoViewEnum;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -36,6 +37,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $trial_ends_at
  * @property string $locale
  * @property bool $time_format_24h
+ * @property PhotoViewEnum $photos_view
  * @property bool $auto_delete_user
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
@@ -71,6 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_activity_at',
         'locale',
         'time_format_24h',
+        'photos_view',
         'auto_delete_user',
     ];
 
@@ -101,6 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'last_activity_at' => 'datetime',
             'time_format_24h' => 'boolean',
+            'photos_view' => PhotoViewEnum::class,
             'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_recovery_codes' => 'encrypted:array',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\PermissionEnum;
+use App\Enums\PhotoViewEnum;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -39,6 +40,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'locale' => 'en',
             'time_format_24h' => true,
+            'photos_view' => PhotoViewEnum::Grid,
         ];
     }
 

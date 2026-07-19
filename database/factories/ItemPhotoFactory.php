@@ -27,6 +27,8 @@ class ItemPhotoFactory extends Factory
             'filename' => fake()->word().'.jpg',
             'mime_type' => 'image/jpeg',
             'size' => fake()->numberBetween(1000, 5000000),
+            'width' => fake()->numberBetween(800, 4000),
+            'height' => fake()->numberBetween(800, 4000),
             'is_main' => false,
             'position' => 1,
         ];
