@@ -304,7 +304,9 @@ class CollectionStatistics
             ->fromSub($this->valued(), 'valued')
             ->selectRaw('valued.item_id as item_id, sum(valued.value) as total')
             ->groupBy('valued.item_id')
-            ->having('total', '>', 0)
+            // Postgres will not read a select alias in HAVING, so the aggregate
+            // is repeated here rather than referring to "total".
+            ->havingRaw('sum(valued.value) > 0')
             ->orderByDesc('total')
             ->limit(self::TOP_ITEMS)
             ->pluck('total', 'item_id');

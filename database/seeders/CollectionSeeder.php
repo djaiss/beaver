@@ -189,7 +189,7 @@ class CollectionSeeder extends Seeder
      *
      * @param  EloquentCollection<int, Condition>  $conditions
      * @param  EloquentCollection<int, Location>  $locations
-     * @return list<array{condition_id: int|null, current_location_id: int|null, status: string, quantity: int, estimated_value: int, backdate_to: string|null}>
+     * @return list<array{condition_id: int|null, current_location_id: int|null, status: CopyStatus, quantity: int, estimated_value: int, backdate_to: string|null}>
      */
     private function copiesFor(int $counter, int $lowValue, int $highValue, EloquentCollection $conditions, EloquentCollection $locations): array
     {
@@ -208,7 +208,7 @@ class CollectionSeeder extends Seeder
             $copies[] = [
                 'condition_id' => $conditions->isEmpty() ? null : $conditions[self::WEIGHTS[$seed % count(self::WEIGHTS)] % $conditions->count()]->id,
                 'current_location_id' => $locations->isEmpty() ? null : $locations[self::WEIGHTS[($seed + 5) % count(self::WEIGHTS)] % $locations->count()]->id,
-                'status' => CopyStatus::Owned->value,
+                'status' => CopyStatus::Owned,
                 'quantity' => 1,
                 'estimated_value' => $value,
                 'backdate_to' => Carbon::now()->subMonths($monthsAgo)->subDays($seed % 28)->format('Y-m-d'),
