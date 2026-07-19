@@ -35,7 +35,7 @@
             </div>
 
             <div class="flex shrink-0 items-center gap-4">
-              <x-avatar-initials :name="$collection->created_by_name ?? '?'" class="size-8 text-xs" />
+              <x-avatar :user="$collection->createdBy" :name="$collection->created_by_name ?? '?'" :size="32" class="size-8 text-xs" />
               <span class="w-20 text-right text-xs text-muted-soft">{{ $collection->updated_at?->diffForHumans() }}</span>
             </div>
           </a>

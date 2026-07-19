@@ -61,7 +61,7 @@
           <div class="overflow-hidden rounded-lg border border-hairline">
             @forelse ($activity as $entry)
               <div class="flex gap-3 border-b border-hairline-soft px-4 py-3.5 last:border-b-0">
-                <x-avatar-initials :name="$entry->name" class="size-8 text-xs" />
+                <x-avatar :user="$entry->user" :name="$entry->name" :size="32" class="size-8 text-xs" />
                 <div class="min-w-0">
                   <p class="text-sm leading-snug text-body">
                     <span class="font-semibold text-ink">{{ $entry->name }}</span>

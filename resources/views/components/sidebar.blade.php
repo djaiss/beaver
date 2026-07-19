@@ -126,7 +126,7 @@
     {{-- User block --}}
     <div x-data="{ open: false }" class="relative border-t border-hairline pt-3">
         <button type="button" @click="open = !open" class="cursor-pointer flex w-full items-center gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-canvas">
-            <x-avatar-initials :name="$user->getFullName()" class="size-8 text-xs" />
+            <x-avatar :user="$user" :size="32" class="size-8 text-xs" />
             <span class="flex min-w-0 flex-1 flex-col text-left">
                 <span class="truncate text-[13px] font-semibold text-ink">{{ $user->getFullName() }}</span>
                 <span class="text-xs text-muted-soft capitalize">{{ __(ucfirst($user->role)) }}</span>

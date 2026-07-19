@@ -29,6 +29,7 @@ use App\Http\Controllers\App\SeriesController;
 use App\Http\Controllers\App\SetController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
 use App\Http\Controllers\App\Settings\AutoDeleteUserController;
+use App\Http\Controllers\App\Settings\AvatarController;
 use App\Http\Controllers\App\Settings\EmailSentController;
 use App\Http\Controllers\App\Settings\GettingStartedController as SettingsGettingStartedController;
 use App\Http\Controllers\App\Settings\LogController;
@@ -137,6 +138,9 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // personal profile — each user manages their own (any authenticated user)
     Route::get('profile', [SettingsController::class, 'index'])->name('profile.index');
     Route::put('profile', [SettingsController::class, 'update'])->name('profile.update');
+    Route::post('profile/avatar', [AvatarController::class, 'update'])->name('profile.avatar.update');
+    Route::delete('profile/avatar', [AvatarController::class, 'destroy'])->name('profile.avatar.destroy');
+    Route::get('profile/avatar/{user}/{size}', [AvatarController::class, 'show'])->where('user', '[1-9][0-9]*')->where('size', '[1-9][0-9]*')->name('profile.avatar.show');
     Route::get('profile/logs', [LogController::class, 'index'])->name('profile.logs.index');
     Route::get('profile/emails', [EmailSentController::class, 'index'])->name('profile.emails.index');
 

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use App\Actions\UpdateUserAvatar;
 use App\Enums\ItemViewEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\VisibilityEnum;
@@ -10,7 +11,9 @@ use App\Models\CollectionView;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -429,4 +432,41 @@ it('renders an item main photo when there is one', function () {
     $this->actingAs($user)->get('/collections/'.$collection->id)
         ->assertOk()
         ->assertSee(route('items.photos.show', $photo), false);
+});
+
+it('shows the avatar of the collection author when they have one', function () {
+    Storage::fake();
+
+    $user = $this->createUser();
+
+    new UpdateUserAvatar(
+        user: $user,
+        file: UploadedFile::fake()->image('ross.jpg', 400, 400),
+    )->execute();
+
+    Collection::factory()->create([
+        'account_id' => $user->account_id,
+        'created_by_id' => $user->id,
+        'created_by_name' => 'Ross Geller',
+    ]);
+
+    $response = $this->actingAs($user->fresh())->get(route('collections.index'));
+
+    $response->assertOk();
+    $response->assertSee(route('profile.avatar.show', ['user' => $user, 'size' => 32]), escape: false);
+});
+
+it('falls back to the initials of the collection author when they have no avatar', function () {
+    $user = $this->createUser();
+
+    Collection::factory()->create([
+        'account_id' => $user->account_id,
+        'created_by_id' => $user->id,
+        'created_by_name' => 'Ross Geller',
+    ]);
+
+    $response = $this->actingAs($user)->get(route('collections.index'));
+
+    $response->assertOk();
+    $response->assertSee('RG');
 });

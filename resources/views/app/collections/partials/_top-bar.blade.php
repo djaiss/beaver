@@ -33,5 +33,5 @@
         <span class="block dark:hidden">@svg('lucide-moon', 'size-4')</span>
     </button>
 
-    <x-avatar-initials :name="auth()->user()->getFullName()" class="size-8 shrink-0 text-xs" />
+    <x-avatar :user="auth()->user()" :size="32" class="size-8 shrink-0 text-xs" />
 </header>

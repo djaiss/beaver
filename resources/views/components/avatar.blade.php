@@ -1,18 +1,28 @@
+{{--
+    The avatar of a user: their uploaded image when they have one, and the
+    generated initials otherwise. Sizes must be one of User::AVATAR_SIZES, as
+    those are the ones written to disk on upload.
+--}}
 @props([
-  'name',
-  'size' => 40,
-  'class' => '',
+    'user' => null,
+    'name' => null,
+    'size' => 32,
 ])
 
 @php
-  $initials = collect(explode(' ', trim($name)))
-    ->take(2)
-    ->map(fn ($word) => mb_strtoupper(mb_substr($word, 0, 1)))
-    ->implode('');
-
-  $avatar = new \App\Actions\CreateAvatarSVG($initials, $size);
+    $displayName = $name ?? $user?->getFullName() ?? '?';
 @endphp
 
-<span {{ $attributes->merge(['class' => 'inline-flex shrink-0 items-center justify-center ' . $class]) }} style="width: {{ $size }}px; height: {{ $size }}px" title="{{ $name }}">
-  {!! $avatar->render() !!}
-</span>
+@if($user?->hasAvatar())
+    <img
+        src="{{ $user->avatarUrl($size) }}"
+        srcset="{{ $user->avatarSrcset($size) }}"
+        width="{{ $size }}"
+        height="{{ $size }}"
+        alt="{{ $displayName }}"
+        title="{{ $displayName }}"
+        {{ $attributes->class('shrink-0 rounded-full object-cover') }}
+    >
+@else
+    <x-avatar-initials :name="$displayName" {{ $attributes }} />
+@endif

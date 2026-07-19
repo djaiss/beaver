@@ -20,7 +20,7 @@
         @foreach ($members as $member)
           <div class="flex flex-col gap-3 border-b border-hairline-soft px-4 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex min-w-0 items-center gap-3">
-              <x-avatar-initials :name="$member->getFullName()" class="size-9 text-xs" />
+              <x-avatar :user="$member" :size="32" class="size-9 text-xs" />
               <div class="min-w-0">
                 <p class="truncate text-sm font-semibold text-ink">{{ $member->getFullName() }}</p>
                 <p class="truncate text-xs text-muted">{{ $member->email }}</p>

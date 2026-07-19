@@ -10,6 +10,9 @@
         <p class="mt-1 text-sm text-muted">{{ __('Manage your personal details and account activity.') }}</p>
       </div>
 
+      <!-- avatar -->
+      @include('app.settings._avatar', ['user' => auth()->user(), 'errors' => $errors])
+
       <!-- update user details -->
       @include('app.settings._detail', ['user' => $user, 'errors' => $errors])
 

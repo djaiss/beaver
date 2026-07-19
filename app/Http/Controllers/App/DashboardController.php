@@ -28,10 +28,12 @@ class DashboardController extends Controller
 
         $activity = Log::query()
             ->whereIn('user_id', $userIds)
+            ->with('user')
             ->latest()
             ->limit(6)
             ->get()
             ->map(fn (Log $log): object => (object) [
+                'user' => $log->user,
                 'name' => $log->getUserName(),
                 'description' => $log->getTranslatedDescription(),
                 'createdAtHuman' => $log->created_at->diffForHumans(),
