@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Middleware\CheckMarketing;
 use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\EnsureEditorAccess;
+use App\Http\Middleware\EnsureInstanceAdministrator;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'set.locale' => SetLocale::class,
             'owner' => EnsureAccountOwner::class,
             'editor' => EnsureEditorAccess::class,
+            'instance.admin' => EnsureInstanceAdministrator::class,
             'marketing' => CheckMarketing::class,
         ]);
     })

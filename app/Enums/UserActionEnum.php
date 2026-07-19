@@ -69,6 +69,9 @@ enum UserActionEnum: string
     case AutoDeleteUserUpdate = 'user_auto_delete_updated';
     case TwoFaQrCodeGeneration = '2fa_qr_generated';
     case TwoFaRemoval = '2fa_removed';
+    case InstanceAccountDeletion = 'instance_account_deleted';
+    case InstanceUserDeletion = 'instance_user_deleted';
+    case InstanceAdministratorUpdate = 'instance_administrator_updated';
 
     public function translationKey(): string
     {
@@ -136,6 +139,9 @@ enum UserActionEnum: string
             self::AutoDeleteUserUpdate => 'Updated auto delete account setting to :status',
             self::TwoFaQrCodeGeneration => 'Generated 2FA QR code for setup',
             self::TwoFaRemoval => 'Removed 2FA from account',
+            self::InstanceAccountDeletion => 'Deleted the account called :name from the instance administration',
+            self::InstanceUserDeletion => 'Deleted the user :email from the instance administration',
+            self::InstanceAdministratorUpdate => 'Instance administration :status for :email',
         };
     }
 }

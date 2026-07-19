@@ -151,6 +151,16 @@ class Account extends Model
     }
 
     /**
+     * Get the items that belong to the account, through the collections they live in.
+     *
+     * @return HasManyThrough<Item, Collection, $this>
+     */
+    public function items(): HasManyThrough
+    {
+        return $this->hasManyThrough(Item::class, Collection::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>

@@ -6,6 +6,7 @@
     $user = auth()->user();
     $isProfile = request()->routeIs('profile.*');
     $isAccount = request()->routeIs('settings.*');
+    $isInstance = request()->routeIs('instanceAdmin.*');
     $isCollection = $collection !== null;
 @endphp
 
@@ -30,7 +31,20 @@
         <x-theme-toggle class="border border-hairline bg-canvas text-muted hover:text-ink" />
     </div>
 
-    @if ($isProfile)
+    @if ($isInstance)
+        <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
+            @svg('lucide-arrow-left', 'size-4')
+            {{ __('Back to app') }}
+        </a>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Manage') }}</p>
+            <x-sidebar-link :href="route('instanceAdmin.index')" :active="request()->routeIs('instanceAdmin.index')" icon="layout-grid">{{ __('Overview') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.accounts.index')" :active="request()->routeIs('instanceAdmin.accounts.*')" icon="users">{{ __('Accounts & users') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.support.index')" :active="request()->routeIs('instanceAdmin.support.*')" icon="message-square">{{ __('Support tickets') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.reviews.index')" :active="request()->routeIs('instanceAdmin.reviews.*')" icon="star">{{ __('User reviews') }}</x-sidebar-link>
+        </nav>
+    @elseif ($isProfile)
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
             @svg('lucide-arrow-left', 'size-4')
             {{ __('Back to dashboard') }}
@@ -145,6 +159,12 @@
                 @svg('lucide-user', 'size-4 text-muted')
                 {{ __('Profile') }}
             </a>
+            @if ($user->isInstanceAdministrator())
+                <a href="{{ route('instanceAdmin.index') }}" data-turbo="true" class="cursor-pointer flex items-center gap-2 rounded px-2 py-1.5 text-sm text-body transition-colors hover:bg-card hover:text-ink">
+                    @svg('lucide-shield', 'size-4 text-muted')
+                    {{ __('Instance admin') }}
+                </a>
+            @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="flex w-full cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm text-body transition-colors hover:bg-card hover:text-ink">

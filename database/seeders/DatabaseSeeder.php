@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
         $this->command->line('| An account with a lot of data:');
         $this->command->line('| username: admin@admin.com');
         $this->command->line('| password: admin123');
+        $this->command->line('| this one also administers the instance');
         $this->command->line('|----------------------------');
         $this->command->line('| A blank account:');
         $this->command->line('| username: blank@blank.com');

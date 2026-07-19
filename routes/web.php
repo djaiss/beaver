@@ -18,6 +18,11 @@ use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
 use App\Http\Controllers\App\GettingStartedController;
+use App\Http\Controllers\App\Instance\AccountController as InstanceAccountController;
+use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
+use App\Http\Controllers\App\Instance\ReviewController as InstanceReviewController;
+use App\Http\Controllers\App\Instance\SupportController as InstanceSupportController;
+use App\Http\Controllers\App\Instance\UserController as InstanceUserController;
 use App\Http\Controllers\App\ItemActivitiesController;
 use App\Http\Controllers\App\ItemController;
 use App\Http\Controllers\App\ItemCopiesController;
@@ -232,6 +237,22 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::get('settings/trash', [TrashController::class, 'index'])->name('settings.trash.index');
         Route::put('settings/trash', [TrashController::class, 'update'])->name('settings.trash.update');
         Route::delete('settings/trash', [TrashController::class, 'destroy'])->name('settings.trash.destroy');
+    });
+    // instance administration — spans every account on the instance, so it is
+    // gated on the per user flag rather than on any role within an account
+    Route::middleware(['instance.admin'])->prefix('instance-admin')->name('instanceAdmin.')->group(function (): void {
+        Route::get('/', [InstanceOverviewController::class, 'index'])->name('index');
+
+        Route::get('accounts', [InstanceAccountController::class, 'index'])->name('accounts.index');
+        Route::get('accounts/{account}', [InstanceAccountController::class, 'show'])->where('account', '[1-9][0-9]*')->name('accounts.show');
+        Route::delete('accounts/{account}', [InstanceAccountController::class, 'destroy'])->where('account', '[1-9][0-9]*')->name('accounts.destroy');
+
+        Route::delete('users/{user}', [InstanceUserController::class, 'destroy'])->where('user', '[1-9][0-9]*')->name('users.destroy');
+        Route::put('users/{user}/administrator', [InstanceUserController::class, 'update'])->where('user', '[1-9][0-9]*')->name('users.administrator.update');
+
+        // not built yet, these pages say so
+        Route::get('support', [InstanceSupportController::class, 'index'])->name('support.index');
+        Route::get('reviews', [InstanceReviewController::class, 'index'])->name('reviews.index');
     });
 });
 

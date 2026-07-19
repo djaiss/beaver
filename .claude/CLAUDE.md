@@ -59,12 +59,31 @@ Never hand an Eloquent model straight to a JSON response. Go through a Resource,
 or project the fields explicitly, so a service returning a model does not leak a
 whole row.
 
+## The instance administration
+
+`/instance-admin` looks across every account on the instance: how many there are,
+who is in them, and the ability to delete an account or a user. It is gated on the
+`is_instance_administrator` flag on the user through the `instance.admin`
+middleware, which answers 404 rather than 403 so the panel does not announce
+itself. The three actions behind it check the flag themselves, the same way the
+tenant actions check the role.
+
+This section is deliberately the one exception to mirroring the app in the JSON
+API. The API is tenant scoped, every endpoint resolves through the caller's
+account, and an instance wide surface has no place in it. Add capabilities here to
+the web app only, and do not add `resources/docs/api` entries for them.
+
+Grant the flag with `php artisan beaver:make-instance-administrator {email}`
+(`--revoke` takes it back). The seeded `admin@admin.com` user has it. Nobody can
+revoke their own flag or delete their own user from the panel, so an instance
+cannot be locked out of it.
+
 ## Models
 
 An `Account` is the tenant. Everything in the collection domain belongs to exactly one account and is role gated (owners and editors write, viewers read).
 
 - `Account`: the tenant. Owns the users, collections, types, locations and invitations, and answers the role questions (`allowsManagementBy()`).
-- `User`: an authenticated person. Belongs to one account, and carries its `role` (owner, editor, viewer) as a column.
+- `User`: an authenticated person. Belongs to one account, and carries its `role` (owner, editor, viewer) as a column. The separate `is_instance_administrator` flag is orthogonal to the role: it grants nothing extra inside the user's own account, and only unlocks the instance administration described below.
 - `Invitation`: a pending invite to join an account at a given role, claimed with a token.
 - `Collection`: a set of items being catalogued, such as "My Comics". Has a public uuid and a visibility (private, shared, public). Owns items, categories and the per user remembered views.
 - `CollectionType`: a user defined category (Comics, Vinyl, Wine) that decides which custom fields apply. It lives in the `types` table, so its foreign keys are `type_id`.
