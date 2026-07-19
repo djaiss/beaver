@@ -25,17 +25,7 @@
             <x-wordmark height="15" class="text-ink" />
         </a>
 
-        <button
-            type="button"
-            @click="$store.theme.toggle()"
-            class="flex size-8 items-center justify-center rounded-full border border-hairline bg-canvas text-muted transition-colors hover:text-ink"
-            aria-label="{{ __('Toggle theme') }}"
-        >
-            {{-- Driven by the `dark` class the inline script in partials/meta sets before paint,
-                 so the right icon is painted straight away instead of waiting on Alpine. --}}
-            <span class="hidden dark:block">@svg('lucide-sun', 'size-4 text-warning')</span>
-            <span class="block dark:hidden">@svg('lucide-moon', 'size-4')</span>
-        </button>
+        <x-theme-toggle class="border border-hairline bg-canvas text-muted hover:text-ink" />
     </div>
 
     @if ($isProfile)

@@ -30,6 +30,21 @@ it('shows the privacy section above the pricing section', function () {
         ->assertSeeInOrder(['id="privacy"', 'id="pricing"'], false);
 });
 
+it('offers a theme toggle in the footer', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/');
+
+    // The same component the logged in sidebar uses. Which icon shows is driven by the
+    // `dark` class that the script in partials/meta sets before paint, and that script
+    // falls back to the operating system preference when nothing has been chosen yet.
+    $response
+        ->assertOk()
+        ->assertSee('data-test="theme-toggle"', false)
+        ->assertSee('$store.theme.toggle()', false)
+        ->assertSee('prefers-color-scheme: dark', false);
+});
+
 it('offers to sign up when the visitor is a guest', function () {
     config()->set('marketing.show', true);
 
