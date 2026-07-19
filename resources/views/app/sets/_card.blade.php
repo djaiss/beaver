@@ -84,7 +84,7 @@
 
         <div class="w-[120px]">
           <x-label>{{ __('Target') }}</x-label>
-          <input name="target_count" type="number" min="1" value="{{ $set->target_count }}" placeholder="{{ __('10') }}" class="mt-1.5 h-9 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink" data-test="set-target-input-{{ $set->id }}" />
+          <input name="target_count" type="number" min="1" value="{{ $set->target_count }}" placeholder="10" class="mt-1.5 h-9 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink" data-test="set-target-input-{{ $set->id }}" />
           <x-error :messages="$errors->get('target_count')" class="mt-2" />
         </div>
       </div>

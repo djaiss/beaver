@@ -58,7 +58,7 @@
               </div>
 
               <div class="w-[120px]">
-                <x-input id="target_count" type="number" min="1" :label="__('Target')" placeholder="{{ __('10') }}" :error="$errors->get('target_count')" />
+                <x-input id="target_count" type="number" min="1" :label="__('Target')" placeholder="10" :error="$errors->get('target_count')" />
               </div>
             </div>
 

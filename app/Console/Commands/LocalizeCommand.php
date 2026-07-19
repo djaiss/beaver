@@ -86,7 +86,9 @@ class LocalizeCommand extends Command
             }
         }
 
-        return array_keys($keysByValue);
+        // A key that looks like a number, e.g. __('10'), comes back out of the array as an int,
+        // since PHP coerces numeric string keys. Cast it back so the callers keep their strings.
+        return array_map(strval(...), array_keys($keysByValue));
     }
 
     /**
