@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+use App\Enums\PermissionEnum;
+use App\Models\Category;
+use App\Models\Collection;
+use App\Models\Condition;
+use App\Models\Copy;
+use App\Models\Item;
+use App\Models\Location;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+it('shows the statistics of a collection', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
+    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 84200]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
+
+    $response->assertOk()
+        ->assertSee('Total items')
+        ->assertSee('Estimated value')
+        ->assertSee('$842')
+        ->assertSee('data-test="statistics-kpis"', false);
+});
+
+it('shows a breadcrumb back to the collection', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Marvel Comics 1990s']);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
+
+    $response->assertOk()
+        ->assertSeeInOrder(['Collections', 'Marvel Comics 1990s', 'Statistics'])
+        ->assertSee(route('collections.index'), false)
+        ->assertSee(route('collections.show', $collection->id), false);
+});
+
+it('shows the empty state when the collection holds no item', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
+
+    $response->assertOk()
+        ->assertSee('Nothing to measure yet')
+        ->assertSee('data-test="no-statistics"', false);
+});
+
+it('breaks the items down by category, condition and location', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
+    $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Mint']);
+    $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Attic']);
+    Copy::factory()->create(['item_id' => $item->id, 'condition_id' => $condition->id, 'location_id' => $location->id, 'estimated_value' => 1000]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
+
+    $response->assertOk()
+        ->assertSee('Spider-Man')
+        ->assertSee('Mint')
+        ->assertSee('Attic')
+        ->assertSee('data-test="items-by-category"', false)
+        ->assertSee('data-test="copies-by-condition"', false)
+        ->assertSee('data-test="value-by-location"', false);
+});
+
+it('links every top item to its own page', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
+    Copy::factory()->create(['item_id' => $item->id, 'estimated_value' => 90000]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
+
+    $response->assertOk()
+        ->assertSee('Rachel Green')
+        ->assertSee('data-test="top-item-'.$item->id.'"', false)
+        ->assertSee(route('items.show', [$collection->id, $item->id]), false);
+});
+
+it('says how many copies are missing an acquisition date', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    Copy::factory()->create(['item_id' => $item->id, 'acquired_at' => null]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
+
+    $response->assertOk()
+        ->assertSee('data-test="undated-copies"', false)
+        ->assertSee('1 copy has no acquisition date');
+});
+
+it('links the statistics from the sidebar of the collection', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories');
+
+    $response->assertOk()
+        ->assertSee(route('statistics.index', $collection->id), false)
+        ->assertSee('Statistics');
+});
+
+it('lets a viewer see the statistics', function (): void {
+    $user = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+
+    $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics')->assertOk();
+});
+
+it('cannot see the statistics of a collection of another account', function (): void {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create();
+
+    $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics')->assertNotFound();
+});

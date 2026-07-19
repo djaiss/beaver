@@ -43,6 +43,7 @@ use App\Http\Controllers\App\Settings\SettingsController;
 use App\Http\Controllers\App\Settings\TwoFAController;
 use App\Http\Controllers\App\Settings\UserController;
 use App\Http\Controllers\App\Settings\WebhookController;
+use App\Http\Controllers\App\StatisticsController;
 use App\Http\Controllers\App\TagController;
 use App\Http\Controllers\App\TrashController;
 use App\Http\Controllers\LocaleController;
@@ -77,6 +78,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('collections/{collection}/categories/{category}', [CategoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.show');
     // browsing the sets of a collection is read only, so any role may do it
     Route::get('collections/{collection}/sets', [SetController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('sets.index');
+    // the statistics of a collection are read only, so any role may see them
+    Route::get('collections/{collection}/statistics', [StatisticsController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('statistics.index');
     // series are account-wide rather than per collection, so they hang off the dashboard
     // instead of a collection. Browsing them is read only, so any role may do it.
     Route::get('series', [SeriesController::class, 'index'])->name('series.index');
