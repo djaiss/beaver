@@ -5,10 +5,13 @@ declare(strict_types=1);
 use App\Http\Controllers\Marketing\Docs\ApiDocsController;
 use App\Http\Controllers\Marketing\Docs\ApiDocsMarkdownController;
 use App\Http\Controllers\Marketing\MarketingController;
+use App\Http\Controllers\Marketing\PricingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['marketing'])->group(function (): void {
     Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
+
+    Route::get('pricing', PricingController::class)->name('marketing.pricing');
 
     Route::get('docs/api', [ApiDocsController::class, 'index'])->name('marketing.docs.api.index');
     Route::get('docs/api.md', [ApiDocsMarkdownController::class, 'index'])->name('marketing.docs.api.markdown.index');
