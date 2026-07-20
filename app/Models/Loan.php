@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DatePrecision;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
+use App\Enums\TimelineSource;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDocuments;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\LoanFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -174,5 +177,55 @@ class Loan extends Model
     public function isOverdue(): bool
     {
         return $this->status === LoanStatus::Overdue;
+    }
+
+    /**
+     * Map the loan to its unified-history entries.
+     *
+     * A loan leaves a mark twice: once when the object goes out, and again when
+     * it comes back, so a returned loan produces two entries. Only loans marked
+     * as part of the object's story read on the default timeline; an informal
+     * personal loan stays out of it until the complete view is asked for.
+     *
+     * @return list<TimelineEntry>
+     */
+    public function toTimelineEntries(): array
+    {
+        $entries = [new TimelineEntry(
+            source: TimelineSource::Loan,
+            sourceId: $this->id,
+            date: $this->loaned_at,
+            precision: DatePrecision::Exact,
+            title: $this->direction === LoanDirection::Outgoing
+                ? __('Loaned to :party', ['party' => $this->party])
+                : __('Borrowed from :party', ['party' => $this->party]),
+            summary: $this->purpose,
+            amountCents: null,
+            currencyCode: null,
+            meaningful: $this->include_in_provenance,
+        )];
+
+        if ($this->returned_at === null) {
+            return $entries;
+        }
+
+        $entries[] = new TimelineEntry(
+            source: TimelineSource::Loan,
+            sourceId: $this->id,
+            date: $this->returned_at,
+            precision: DatePrecision::Exact,
+            title: $this->direction === LoanDirection::Outgoing
+                ? __('Returned from :party', ['party' => $this->party])
+                : __('Returned to :party', ['party' => $this->party]),
+            summary: $this->conditionIn
+                ? __('Condition in: :condition', ['condition' => $this->conditionIn->name])
+                : __('Loan closed'),
+            amountCents: null,
+            currencyCode: null,
+            meaningful: $this->include_in_provenance,
+            qualifier: 'return',
+        );
+
+        return $entries;
     }
 }

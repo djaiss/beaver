@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DatePrecision;
 use App\Enums\MaintenanceType;
+use App\Enums\TimelineSource;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDocuments;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\MaintenanceRecordFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -150,5 +153,30 @@ class MaintenanceRecord extends Model
         }
 
         return $this->next_due_at->lessThanOrEqualTo(now()->addDays(self::DUE_SOON_DAYS));
+    }
+
+    /**
+     * Map the work to a unified-history entry.
+     *
+     * Routine care stays out of the default timeline. Work marked as part of the
+     * object's story, and any conservation or restoration, is significant enough
+     * to read there; the rest surfaces only in the complete view.
+     */
+    public function toTimelineEntry(): TimelineEntry
+    {
+        $meaningful = $this->include_in_provenance
+            || in_array($this->type, [MaintenanceType::Restoration, MaintenanceType::Conservation], true);
+
+        return new TimelineEntry(
+            source: TimelineSource::Maintenance,
+            sourceId: $this->id,
+            date: $this->performed_at,
+            precision: DatePrecision::Exact,
+            title: $this->title,
+            summary: $this->performed_by,
+            amountCents: $this->cost_amount,
+            currencyCode: $this->cost_currency_code,
+            meaningful: $meaningful,
+        );
     }
 }

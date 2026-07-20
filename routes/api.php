@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\CollectionTypeExportController;
 use App\Http\Controllers\Api\CollectionTypeImportController;
 use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CopyController;
+use App\Http\Controllers\Api\CopyHistoryController;
 use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\CustomFieldGroupController;
 use App\Http\Controllers\Api\CustomFieldGroupOrderController;
@@ -213,6 +214,9 @@ Route::name('api.')->group(function (): void {
         Route::get('documents/{document}', [DocumentController::class, 'show'])->where('document', '[1-9][0-9]*')->name('documents.show');
         Route::put('documents/{document}', [DocumentController::class, 'update'])->where('document', '[1-9][0-9]*')->name('documents.update');
         Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->where('document', '[1-9][0-9]*')->name('documents.destroy');
+
+        // the unified history of a copy; every record on it merged into one read
+        Route::get('copies/{copy}/history', [CopyHistoryController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.history');
 
         // the location history of a copy; creating a record moves the copy
         Route::get('copies/{copy}/location-history', [LocationHistoryController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.locationHistory');
