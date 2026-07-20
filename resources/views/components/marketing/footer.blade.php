@@ -17,7 +17,7 @@
                   'links' => [
                       ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
                       ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
-                      ['label' => __('Pricing'), 'url' => route('marketing.index') . '#pricing'],
+                      ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
                   ],
               ],
               [

@@ -86,9 +86,9 @@
 
         <nav class="flex flex-col gap-0.5">
             <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $collection->name }}</p>
-            <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" color="bg-brand">{{ __('Items') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('sets.index', $collection)" :active="request()->routeIs('sets.*')" color="bg-badge-emerald">{{ __('Sets') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('statistics.index', $collection)" :active="request()->routeIs('statistics.*')" color="bg-badge-pink">{{ __('Statistics') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" icon="library-big">{{ __('Items') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('sets.index', $collection)" :active="request()->routeIs('sets.*')" icon="radiation">{{ __('Sets') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('statistics.index', $collection)" :active="request()->routeIs('statistics.*')" icon="chart-no-axes-combined">{{ __('Statistics') }}</x-sidebar-link>
         </nav>
 
         {{-- The categories are the navigation of the collection, so they are listed here
@@ -115,13 +115,13 @@
         </nav>
     @else
         <nav class="flex flex-col gap-0.5">
-            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
+            <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
+            <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
             {{-- Only while the account still wants the screen. Dismissing it takes the link with it. --}}
             @if ($user->account->show_getting_started)
                 <x-sidebar-link :href="route('gettingStarted.index')" :active="request()->routeIs('gettingStarted.*')" icon="rocket">{{ __('Getting started') }}</x-sidebar-link>
             @endif
             <x-sidebar-link :href="route('dashboard.index')" :active="request()->routeIs('dashboard.*')" icon="layout-grid">{{ __('Dashboard') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.index')" :active="request()->routeIs('collections.*')" icon="layers">{{ __('Collections') }}</x-sidebar-link>
             {{-- A series spans collections rather than living in one, so it sits beside them
                  in the workspace nav rather than inside a collection. --}}
