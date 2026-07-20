@@ -137,7 +137,7 @@ it('shows a placeholder for a section that is not built yet', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'insurance']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'maintenance']))
         ->assertOk()
         ->assertSee('data-test="history-section-soon"', false)
         ->assertSee('This part of the history is not built yet.');

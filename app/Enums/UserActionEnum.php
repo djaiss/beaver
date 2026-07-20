@@ -45,6 +45,9 @@ enum UserActionEnum: string
     case ValuationCreation = 'valuation_created';
     case ValuationUpdate = 'valuation_updated';
     case ValuationDeletion = 'valuation_deleted';
+    case InsuranceRecordCreation = 'insurance_record_created';
+    case InsuranceRecordUpdate = 'insurance_record_updated';
+    case InsuranceRecordDeletion = 'insurance_record_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -124,6 +127,9 @@ enum UserActionEnum: string
             self::ValuationCreation => 'Recorded a valuation on the item called :name',
             self::ValuationUpdate => 'Updated a valuation on the item called :name',
             self::ValuationDeletion => 'Deleted a valuation on the item called :name',
+            self::InsuranceRecordCreation => 'Recorded an insurance record on the item called :name',
+            self::InsuranceRecordUpdate => 'Updated an insurance record on the item called :name',
+            self::InsuranceRecordDeletion => 'Deleted an insurance record on the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',

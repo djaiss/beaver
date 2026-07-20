@@ -45,6 +45,7 @@ class ItemHistoryController extends Controller
             'copies.valuations',
             'copies.transactions.provenanceEvent',
             'copies.provenanceEvents.transaction',
+            'copies.insuranceRecords',
             'category',
             'collectionType',
         ]);

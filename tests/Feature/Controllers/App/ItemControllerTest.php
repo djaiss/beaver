@@ -202,19 +202,6 @@ it('reads a rating custom field as stars', function () {
     $response->assertDontSee('>4<', false);
 });
 
-it('flags the parts of the overview that are not built yet', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $set = Set::factory()->create(['collection_id' => $collection->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
-    Copy::factory()->create(['item_id' => $item->id]);
-
-    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
-
-    $response->assertOk();
-    $response->assertSee('Soon');
-});
-
 it('shows how complete the set of an item is', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
@@ -540,6 +527,39 @@ it('does not let a viewer update an item', function () {
     $this->actingAs($viewer)->put(route('items.update', [$collection, $item]), [
         'name' => 'Amazing Spider-Man #1',
     ])->assertNotFound();
+});
+
+it('deletes an item', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->delete(route('items.destroy', [$collection, $item]));
+
+    $response->assertRedirect("/collections/{$collection->id}");
+    $response->assertSessionHas('status', 'Item deleted');
+    $this->assertSoftDeleted('items', ['id' => $item->id]);
+});
+
+it('does not let a viewer delete an item', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $this->actingAs($viewer)->delete(route('items.destroy', [$collection, $item]))->assertNotFound();
+    $this->assertDatabaseHas('items', ['id' => $item->id, 'deleted_at' => null]);
+});
+
+it('does not delete an item in another account', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+
+    $this->actingAs($user)->delete(route('items.destroy', [$foreign, $item]))->assertNotFound();
 });
 
 // An unchecked box submits nothing on its own, so the form carries an empty

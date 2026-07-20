@@ -58,20 +58,18 @@
         {{-- Adding a copy on its own has no screen on the web yet. --}}
         <div class="flex shrink-0 flex-wrap items-center gap-2">
           @if ($canManage)
-            <a
-              href="{{ route('items.edit', [$collection, $item]) }}"
-              data-turbo="true"
-              class="flex h-9 items-center gap-2 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-ink transition-colors hover:bg-card"
-              data-test="edit-item-button"
-            >
-              @svg('lucide-pencil', 'size-3.5 text-muted')
-              {{ __('Edit') }}
-            </a>
+            {{-- The delete button sits inside the menu, so its form lives outside and is reached with form=. --}}
+            <x-form method="delete" :action="route('items.destroy', [$collection, $item])" id="delete-item-form" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete :name? The item and all of its copies will no longer be accessible.', ['name' => $item->name]) }}')"></x-form>
+
+            <x-button.split :href="route('items.edit', [$collection, $item])" :label="__('Edit')" turbo data-test="edit-item-button">
+              <x-slot:icon>@svg('lucide-pencil', 'size-4')</x-slot>
+
+              <x-menu-item type="submit" form="delete-item-form" danger data-test="delete-item-button">
+                <x-slot:icon>@svg('lucide-trash-2', 'size-4')</x-slot>
+                {{ __('Delete item') }}
+              </x-menu-item>
+            </x-button.split>
           @endif
-          <span class="flex h-9 cursor-not-allowed items-center gap-2 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-muted-soft" data-test="add-copy-soon">
-            {{ __('Add copy') }}
-            <x-soon />
-          </span>
         </div>
       </div>
 
