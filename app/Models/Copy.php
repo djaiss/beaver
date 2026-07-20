@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\CopyStatus;
+use App\Enums\InsuranceStatus;
 use App\Enums\TransactionType;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDeleter;
@@ -234,5 +235,35 @@ class Copy extends Model
     public function pricePaid(): ?int
     {
         return $this->acquiringTransaction?->total();
+    }
+
+    /**
+     * Get every insurance record held against the copy.
+     *
+     * Coverage is historical, so these read newest window first, with the active
+     * record ahead of the expired and cancelled ones that came before it.
+     *
+     * @return HasMany<InsuranceRecord, $this>
+     */
+    public function insuranceRecords(): HasMany
+    {
+        return $this->hasMany(InsuranceRecord::class)->orderByDesc('starts_at')->orderByDesc('id');
+    }
+
+    /**
+     * Get the coverage currently in force, if any.
+     *
+     * A copy holds at most one active record per policy, but nothing stops two
+     * policies covering it at once, so this reads the most recently started of
+     * the active ones rather than assuming there is only one.
+     *
+     * @return HasOne<InsuranceRecord, $this>
+     */
+    public function activeInsuranceRecord(): HasOne
+    {
+        return $this->hasOne(InsuranceRecord::class)->ofMany(
+            ['starts_at' => 'max', 'id' => 'max'],
+            fn ($query) => $query->where('status', InsuranceStatus::Active->value),
+        );
     }
 }

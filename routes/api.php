@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\CustomFieldGroupController;
 use App\Http\Controllers\Api\CustomFieldGroupOrderController;
 use App\Http\Controllers\Api\CustomFieldOrderController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\InsuranceRecordController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\ItemLogController;
 use App\Http\Controllers\Api\ItemPhotoController;
@@ -179,6 +180,13 @@ Route::name('api.')->group(function (): void {
         Route::post('copies/{copy}/valuations', [ValuationController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.valuations.create');
         Route::put('copies/{copy}/valuations/{valuation}', [ValuationController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('copies.valuations.update');
         Route::delete('copies/{copy}/valuations/{valuation}', [ValuationController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('copies.valuations.destroy');
+
+        // the insurance coverage held against a copy
+        Route::get('copies/{copy}/insurance-records', [InsuranceRecordController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.insuranceRecords');
+        Route::get('copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('copies.insuranceRecords.show');
+        Route::post('copies/{copy}/insurance-records', [InsuranceRecordController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.insuranceRecords.create');
+        Route::put('copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('copies.insuranceRecords.update');
+        Route::delete('copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('copies.insuranceRecords.destroy');
 
         // the photos of an item
         Route::get('items/{item}/photos', [ItemPhotoController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.photos');

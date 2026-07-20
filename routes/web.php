@@ -23,6 +23,7 @@ use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewCont
 use App\Http\Controllers\App\Instance\ReviewController as InstanceReviewController;
 use App\Http\Controllers\App\Instance\SupportController as InstanceSupportController;
 use App\Http\Controllers\App\Instance\UserController as InstanceUserController;
+use App\Http\Controllers\App\InsuranceRecordController;
 use App\Http\Controllers\App\ItemActivitiesController;
 use App\Http\Controllers\App\ItemController;
 use App\Http\Controllers\App\ItemCopiesController;
@@ -131,6 +132,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items/{item}/copies/{copy}/valuations', [ValuationController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('valuations.create');
         Route::put('collections/{collection}/items/{item}/copies/{copy}/valuations/{valuation}', [ValuationController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('valuations.update');
         Route::delete('collections/{collection}/items/{item}/copies/{copy}/valuations/{valuation}', [ValuationController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('valuations.destroy');
+
+        // insurance records — owners and editors record what a copy is insured for as policies and values change
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/insurance-records', [InsuranceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('insuranceRecords.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('insuranceRecords.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('insuranceRecords.destroy');
 
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');
