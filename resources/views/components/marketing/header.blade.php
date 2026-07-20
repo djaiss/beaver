@@ -1,7 +1,7 @@
 @php
     $navigation = [
         ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
-        ['label' => __('Pricing'), 'url' => route('marketing.pricing')],
+        ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
         ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
         ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
     ];

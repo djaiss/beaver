@@ -9,7 +9,7 @@ use Illuminate\View\View;
 
 class PricingController extends Controller
 {
-    public function __invoke(): View
+    public function index(): View
     {
         return view('marketing.pricing');
     }

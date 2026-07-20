@@ -8,7 +8,7 @@ uses(RefreshDatabase::class);
 it('renders the pricing page', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get(route('marketing.pricing'));
+    $response = $this->get(route('marketing.pricing.index'));
 
     $response
         ->assertOk()
@@ -20,7 +20,7 @@ it('renders the pricing page', function () {
 it('offers to sign up when the visitor is a guest', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get(route('marketing.pricing'));
+    $response = $this->get(route('marketing.pricing.index'));
 
     $response
         ->assertOk()
@@ -32,7 +32,7 @@ it('offers to go back to the account when the visitor is signed in', function ()
     config()->set('marketing.show', true);
     $user = $this->createUser();
 
-    $response = $this->actingAs($user)->get(route('marketing.pricing'));
+    $response = $this->actingAs($user)->get(route('marketing.pricing.index'));
 
     $response
         ->assertOk()
@@ -43,5 +43,5 @@ it('offers to go back to the account when the visitor is signed in', function ()
 it('sends everyone to the login page when the marketing site is off', function () {
     config()->set('marketing.show', false);
 
-    $this->get(route('marketing.pricing'))->assertRedirect(route('login'));
+    $this->get(route('marketing.pricing.index'))->assertRedirect(route('login'));
 });
