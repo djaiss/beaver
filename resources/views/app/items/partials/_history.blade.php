@@ -24,7 +24,7 @@
       ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => true],
       ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => true],
       ['key' => 'locations', 'label' => __('Locations'), 'color' => '#14b8a6', 'round' => false, 'ready' => true],
-      ['key' => 'documents', 'label' => __('Documents'), 'color' => '#64748b', 'round' => false, 'ready' => false],
+      ['key' => 'documents', 'label' => __('Documents'), 'color' => '#64748b', 'round' => false, 'ready' => true],
   ];
 @endphp
 
@@ -52,6 +52,7 @@
     $maintenanceCount = $selectedCopy->maintenanceRecords->count();
     $loanCount = $selectedCopy->loans->count();
     $locationCount = $selectedCopy->locationHistory->count();
+    $documentCount = $selectedCopy->documents->count();
     $counts = [
         'timeline' => $valuationCount,
         'transactions' => $transactionCount,
@@ -61,6 +62,7 @@
         'maintenance' => $maintenanceCount,
         'loans' => $loanCount,
         'locations' => $locationCount,
+        'documents' => $documentCount,
     ];
 
     // The loan that currently has the copy out of custody, if any. It drives the
@@ -250,6 +252,8 @@
           @include('app.items.partials._historyLoans')
         @elseif ($section === 'locations')
           @include('app.items.partials._historyLocations')
+        @elseif ($section === 'documents')
+          @include('app.items.partials._historyDocuments')
         @else
           {{-- A section that has no screen yet. The nav still lists it, so the
                content says what it will hold rather than showing nothing. --}}

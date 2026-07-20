@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\MaintenanceType;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\MaintenanceRecordFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class MaintenanceRecord extends Model
 {
     use HasAuthor;
+    use HasDocuments;
 
     /** @use HasFactory<MaintenanceRecordFactory> */
     use HasFactory;

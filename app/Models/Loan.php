@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\LoanFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -56,6 +57,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Loan extends Model
 {
     use HasAuthor;
+    use HasDocuments;
 
     /** @use HasFactory<LoanFactory> */
     use HasFactory;

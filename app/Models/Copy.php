@@ -11,6 +11,7 @@ use App\Enums\LoanStatus;
 use App\Enums\TransactionType;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDeleter;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\CopyFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,6 +57,7 @@ class Copy extends Model
 {
     use HasAuthor;
     use HasDeleter;
+    use HasDocuments;
 
     /** @use HasFactory<CopyFactory> */
     use HasFactory;

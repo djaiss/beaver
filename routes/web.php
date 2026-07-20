@@ -17,6 +17,8 @@ use App\Http\Controllers\App\CustomFieldGroupFieldController;
 use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\DocumentController;
+use App\Http\Controllers\App\DocumentDownloadController;
 use App\Http\Controllers\App\GettingStartedController;
 use App\Http\Controllers\App\Instance\AccountController as InstanceAccountController;
 use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
@@ -93,6 +95,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('collections/{collection}/items/{item}/activities', [ItemActivitiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.activities.index');
     Route::get('collections/{collection}/items/{item}/roadmap', [ItemRoadmapController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.roadmap.index');
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
+    // documents live on the private disk, so their files are streamed through here rather than served directly, and only to the account they belong to
+    Route::get('documents/{document}', [DocumentDownloadController::class, 'show'])->where('document', '[1-9][0-9]*')->name('documents.show');
     // browsing the categories of a collection is read only, so any role may do it
     Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('categories.index');
     Route::get('collections/{collection}/categories/{category}', [CategoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.show');
@@ -152,6 +156,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}', [LoanController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.update');
         Route::put('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}/return', [LoanReturnController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.return.update');
         Route::delete('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}', [LoanController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.destroy');
+
+        // documents — owners and editors attach a file or an external link to a copy or one of its records, correct its details, and remove it
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/documents', [DocumentController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('documents.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/documents/{document}', [DocumentController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'document' => '[1-9][0-9]*'])->name('documents.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/documents/{document}', [DocumentController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'document' => '[1-9][0-9]*'])->name('documents.destroy');
 
         // location history — owners and editors move a copy between locations; creating a record is a move, update and destroy correct a past one
         Route::post('collections/{collection}/items/{item}/copies/{copy}/location-history', [LocationHistoryController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('locationHistory.create');

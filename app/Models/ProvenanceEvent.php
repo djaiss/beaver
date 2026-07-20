@@ -8,6 +8,7 @@ use App\Enums\DatePrecision;
 use App\Enums\ProvenanceEventType;
 use App\Helpers\ImpreciseDate;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\ProvenanceEventFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +55,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ProvenanceEvent extends Model
 {
     use HasAuthor;
+    use HasDocuments;
 
     /** @use HasFactory<ProvenanceEventFactory> */
     use HasFactory;

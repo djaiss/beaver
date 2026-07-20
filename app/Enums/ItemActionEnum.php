@@ -45,6 +45,9 @@ enum ItemActionEnum: string
     case LoanUpdate = 'loan_updated';
     case LoanReturn = 'loan_returned';
     case LoanDeletion = 'loan_deleted';
+    case DocumentUpload = 'document_uploaded';
+    case DocumentUpdate = 'document_updated';
+    case DocumentDeletion = 'document_deleted';
 
     public function translationKey(): string
     {
@@ -80,6 +83,9 @@ enum ItemActionEnum: string
             self::LoanUpdate => 'updated a loan',
             self::LoanReturn => 'marked a loan as returned',
             self::LoanDeletion => 'deleted a loan',
+            self::DocumentUpload => 'attached a document',
+            self::DocumentUpdate => 'updated a document',
+            self::DocumentDeletion => 'deleted a document',
         };
     }
 }

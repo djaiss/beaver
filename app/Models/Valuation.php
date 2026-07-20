@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\ValuationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,6 +47,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Valuation extends Model
 {
     use HasAuthor;
+    use HasDocuments;
 
     /** @use HasFactory<ValuationFactory> */
     use HasFactory;
