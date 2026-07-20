@@ -143,6 +143,11 @@
             ])
           </div>
         @endif
+
+        <div class="border-t border-hairline px-5 py-4">
+          <p class="mb-2.5 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
+          @include('app.items.partials._documentsFor', ['documentable' => $loan, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+        </div>
       </div>
     @empty
       <div class="rounded-xl border border-hairline">

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\InsuranceStatus;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\InsuranceRecordFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,6 +49,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class InsuranceRecord extends Model
 {
     use HasAuthor;
+    use HasDocuments;
 
     /** @use HasFactory<InsuranceRecordFactory> */
     use HasFactory;

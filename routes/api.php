@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\CustomFieldController;
 use App\Http\Controllers\Api\CustomFieldGroupController;
 use App\Http\Controllers\Api\CustomFieldGroupOrderController;
 use App\Http\Controllers\Api\CustomFieldOrderController;
+use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\InsuranceRecordController;
 use App\Http\Controllers\Api\ItemController;
@@ -205,6 +206,13 @@ Route::name('api.')->group(function (): void {
         Route::put('copies/{copy}/loans/{loan}', [LoanController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.update');
         Route::post('copies/{copy}/loans/{loan}/return', [LoanController::class, 'return'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.return');
         Route::delete('copies/{copy}/loans/{loan}', [LoanController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.destroy');
+
+        // the documents attached to a copy and every record on it; list and add under the copy, then reach one directly by its id
+        Route::get('copies/{copy}/documents', [DocumentController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.documents');
+        Route::post('copies/{copy}/documents', [DocumentController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.documents.create');
+        Route::get('documents/{document}', [DocumentController::class, 'show'])->where('document', '[1-9][0-9]*')->name('documents.show');
+        Route::put('documents/{document}', [DocumentController::class, 'update'])->where('document', '[1-9][0-9]*')->name('documents.update');
+        Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->where('document', '[1-9][0-9]*')->name('documents.destroy');
 
         // the location history of a copy; creating a record moves the copy
         Route::get('copies/{copy}/location-history', [LocationHistoryController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.locationHistory');

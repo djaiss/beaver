@@ -11,6 +11,7 @@ use App\Enums\TransactionType;
 use App\Enums\ValuationType;
 use App\Models\Collection;
 use App\Models\Copy;
+use App\Models\Document;
 use App\Models\Item;
 use App\Models\Loan;
 use App\Models\ProvenanceEvent;
@@ -132,18 +133,21 @@ it('shows the valuations section when it is selected', function () {
         ->assertSee('data-test="valuation-'.$valuation->id.'"', false);
 });
 
-// A section with no screen yet still appears in the nav, and its content says so
-// rather than showing nothing.
-it('shows a placeholder for a section that is not built yet', function () {
+// The documents section reads the documents attached to the copy as a whole.
+it('shows the documents section with the copy documents', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Document::factory()->for($copy, 'documentable')->create([
+        'account_id' => $user->account_id,
+        'name' => 'Certificate of authenticity',
+    ]);
 
     $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'documents']))
         ->assertOk()
-        ->assertSee('data-test="history-section-soon"', false)
-        ->assertSee('This part of the history is not built yet.');
+        ->assertSee('data-test="documents-for-copy-'.$copy->id.'"', false)
+        ->assertSee('Certificate of authenticity');
 });
 
 it('renders the loans section with the copy loans', function () {

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\TransactionType;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDocuments;
 use Carbon\Carbon;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,6 +49,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Transaction extends Model
 {
     use HasAuthor;
+    use HasDocuments;
 
     /** @use HasFactory<TransactionFactory> */
     use HasFactory;

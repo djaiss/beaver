@@ -15,6 +15,7 @@
           'sub' => $valuation->type->label(),
           'color' => '#3b82f6',
           'test' => 'history-valuation-'.$valuation->id,
+          'documents' => $valuation->documents->count(),
       ]))
       ->concat($selectedCopy->loans->map(fn ($loan): array => [
           'date' => $loan->loaned_at,
@@ -24,6 +25,7 @@
           'sub' => $loan->status->label(),
           'color' => '#ec4899',
           'test' => 'history-loan-'.$loan->id,
+          'documents' => $loan->documents->count(),
       ]))
       ->concat($selectedCopy->loans
           ->filter(fn ($loan): bool => $loan->returned_at !== null)
@@ -44,6 +46,7 @@
               'sub' => $record->type->label(),
               'color' => '#f59e0b',
               'test' => 'history-maintenance-'.$record->id,
+              'documents' => $record->documents->count(),
           ]))
       ->sortBy(fn (array $entry) => $entry['date']?->timestamp ?? 0)
       ->values();
@@ -62,6 +65,13 @@
       <p class="text-sm font-semibold text-ink">{{ $entry['title'] }}</p>
       <p class="text-xs text-muted-soft">{{ $entry['sub'] }}</p>
     </div>
+
+    @if (($entry['documents'] ?? 0) > 0)
+      <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-card px-2 py-0.5 text-[11px] font-semibold text-muted-soft" data-test="{{ $entry['test'] }}-documents" title="{{ trans_choice(':count document|:count documents', $entry['documents'], ['count' => $entry['documents']]) }}">
+        <x-lucide-paperclip class="size-3" />
+        {{ $entry['documents'] }}
+      </span>
+    @endif
 
     <span class="shrink-0 font-mono text-xs text-muted-soft">{{ $entry['date'] ? $entry['date']->isoFormat('MMM YYYY') : '—' }}</span>
   </div>

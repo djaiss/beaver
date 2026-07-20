@@ -56,6 +56,9 @@ enum UserActionEnum: string
     case LoanUpdate = 'loan_updated';
     case LoanReturn = 'loan_returned';
     case LoanDeletion = 'loan_deleted';
+    case DocumentUpload = 'document_uploaded';
+    case DocumentUpdate = 'document_updated';
+    case DocumentDeletion = 'document_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -146,6 +149,9 @@ enum UserActionEnum: string
             self::LoanUpdate => 'Updated a loan on the item called :name',
             self::LoanReturn => 'Marked a loan as returned on the item called :name',
             self::LoanDeletion => 'Deleted a loan on the item called :name',
+            self::DocumentUpload => 'Attached a document to the item called :name',
+            self::DocumentUpdate => 'Updated a document on the item called :name',
+            self::DocumentDeletion => 'Deleted a document from the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',

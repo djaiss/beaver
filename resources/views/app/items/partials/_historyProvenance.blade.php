@@ -123,6 +123,11 @@
             ])
           </div>
         @endif
+
+        <div class="mt-3 border-t border-hairline pt-3">
+          <p class="mb-2 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
+          @include('app.items.partials._documentsFor', ['documentable' => $event, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+        </div>
       </div>
     </div>
   @empty
