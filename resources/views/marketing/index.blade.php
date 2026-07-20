@@ -349,34 +349,47 @@
       {{ __('Not just books. Not just comics. Not just wine. If you collect it, :name catalogs it.', ['name' => config('app.name')]) }}
     </p>
 
-    <div class="mt-12 grid grid-cols-2 gap-4 text-left sm:grid-cols-3 lg:grid-cols-5">
-      @foreach ([
-          [__('Books'), '#fb923c', '#fdba74'],
-          [__('Comics'), '#8b5cf6', '#c4b5fd'],
-          [__('Manga'), '#34d399', '#6ee7b7'],
-          [__('Vinyl Records'), '#ec4899', '#f9a8d4'],
-          [__('CDs'), '#3b82f6', '#93c5fd'],
-          [__('DVDs'), '#fb923c', '#fdba74'],
-          [__('Blu-rays'), '#8b5cf6', '#c4b5fd'],
-          [__('Video Games'), '#34d399', '#6ee7b7'],
-          [__('Trading Cards'), '#ec4899', '#f9a8d4'],
-          [__('Coins'), '#3b82f6', '#93c5fd'],
-          [__('Stamps'), '#fb923c', '#fdba74'],
-          [__('Wine'), '#8b5cf6', '#c4b5fd'],
-          [__('Watches'), '#34d399', '#6ee7b7'],
-          [__('Toys'), '#ec4899', '#f9a8d4'],
-          [__('Action Figures'), '#3b82f6', '#93c5fd'],
-      ] as [$name, $from, $to])
-        <div class="overflow-hidden rounded-lg border border-hairline transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)]">
-          <div class="h-18" style="background: repeating-linear-gradient(135deg, {{ $from }} 0px, {{ $from }} 10px, {{ $to }} 10px, {{ $to }} 20px)"></div>
-          <p class="px-3.5 py-3 text-sm font-semibold text-ink">{{ $name }}</p>
+    @php
+        $collections = [
+            ['name' => __('Books'), 'spins' => false, 'svg' => '<rect x="22" y="60" width="52" height="13" rx="3" fill="#4f6bed"/><rect x="20" y="47" width="46" height="13" rx="3" fill="#e08a3c" transform="rotate(-4 43 53)"/><rect x="27" y="33" width="42" height="13" rx="3" fill="#3fae6b"/><rect x="22" y="63.5" width="6" height="6" rx="1.5" fill="#fff" opacity=".5"/>'],
+            ['name' => __('Comics'), 'spins' => false, 'svg' => '<rect x="24" y="20" width="44" height="56" rx="5" fill="#e0574f"/><rect x="30" y="26" width="32" height="44" rx="3" fill="#fdf1d6"/><path d="M38 34l4 8 8 2-6 5 2 8-8-4-8 4 2-8-6-5 8-2z" fill="#4f6bed"/><rect x="34" y="58" width="24" height="7" rx="3.5" fill="#e08a3c"/>'],
+            ['name' => __('Vinyl Records'), 'spins' => true, 'svg' => '<circle cx="48" cy="48" r="28" fill="#222"/><circle cx="48" cy="48" r="19" fill="none" stroke="#444" stroke-width="1.5"/><circle cx="48" cy="48" r="10" fill="#e08a3c"/><circle cx="48" cy="48" r="3" fill="#222"/>'],
+            ['name' => __('CDs'), 'spins' => true, 'svg' => '<circle cx="48" cy="48" r="28" fill="#c7ccd6"/><circle cx="48" cy="48" r="28" fill="none" stroke="#4f6bed" stroke-width="2" opacity=".35"/><circle cx="48" cy="48" r="18" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/><circle cx="48" cy="48" r="8" fill="#eef0f4"/><circle cx="48" cy="48" r="8" fill="none" stroke="#9aa1b0" stroke-width="1.5"/>'],
+            ['name' => __('Movies'), 'spins' => true, 'svg' => '<circle cx="48" cy="48" r="28" fill="#2b2b2b"/><circle cx="48" cy="48" r="7" fill="#c7ccd6"/><circle cx="48" cy="30" r="6" fill="#c7ccd6"/><circle cx="48" cy="66" r="6" fill="#c7ccd6"/><circle cx="30" cy="48" r="6" fill="#c7ccd6"/><circle cx="66" cy="48" r="6" fill="#c7ccd6"/>'],
+            ['name' => __('Video Games'), 'spins' => false, 'svg' => '<rect x="18" y="34" width="60" height="34" rx="17" fill="#3a3f4a"/><circle cx="34" cy="51" r="4" fill="#c7ccd6"/><rect x="30" y="47" width="8" height="8" rx="2" fill="#c7ccd6"/><rect x="26" y="47" width="16" height="8" rx="2" fill="#c7ccd6" opacity="0"/><circle cx="61" cy="45" r="3.5" fill="#e0574f"/><circle cx="68" cy="52" r="3.5" fill="#3fae6b"/><circle cx="54" cy="52" r="3.5" fill="#4f6bed"/><circle cx="61" cy="59" r="3.5" fill="#e08a3c"/>'],
+            ['name' => __('Trading Cards'), 'spins' => false, 'svg' => '<rect x="26" y="22" width="38" height="52" rx="5" fill="#4f6bed" transform="rotate(-8 45 48)"/><rect x="34" y="24" width="38" height="52" rx="5" fill="#fdf1d6"/><path d="M53 34l4 9 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z" fill="#e08a3c"/>'],
+            ['name' => __('Art'), 'spins' => false, 'svg' => '<rect x="20" y="24" width="56" height="48" rx="4" fill="#a8763c"/><rect x="27" y="31" width="42" height="34" rx="2" fill="#bfe3f2"/><circle cx="60" cy="41" r="5" fill="#e8c65a"/><path d="M27 65l14-18 10 11 8-8 10 15z" fill="#3fae6b"/>'],
+            ['name' => __('Collectibles'), 'spins' => false, 'svg' => '<circle cx="48" cy="32" r="12" fill="#e08a3c"/><path d="M32 76c0-11 7-19 16-19s16 8 16 19z" fill="#4f6bed"/><rect x="40" y="70" width="16" height="6" rx="2" fill="#2b2b2b"/>'],
+            ['name' => __('Memorabilia'), 'spins' => false, 'svg' => '<rect x="24" y="30" width="48" height="42" rx="4" fill="none" stroke="#9aa1b0" stroke-width="2.5"/><rect x="24" y="66" width="48" height="8" rx="2" fill="#2b2b2b"/><circle cx="48" cy="49" r="13" fill="#fdf1d6"/><path d="M40 44c4 3 12 3 16 0M40 54c4-3 12-3 16 0" stroke="#e0574f" stroke-width="1.5" fill="none"/>'],
+            ['name' => __('Watches'), 'spins' => false, 'svg' => '<rect x="42" y="16" width="12" height="18" rx="3" fill="#3a3f4a"/><rect x="42" y="62" width="12" height="18" rx="3" fill="#3a3f4a"/><circle cx="48" cy="48" r="19" fill="#eef0f4" stroke="#3a3f4a" stroke-width="3"/><path d="M48 48V37M48 48l8 5" stroke="#2b2b2b" stroke-width="2.5" stroke-linecap="round"/><circle cx="48" cy="48" r="2" fill="#e0574f"/>'],
+        ];
+    @endphp
+
+    {{-- The illustrations lift and grow on hover; discs (records, CDs, film reels) turn as they do. --}}
+    <div class="mt-12 grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6 lg:gap-5">
+      @foreach ($collections as $collection)
+        <div class="group flex flex-col items-center gap-y-3.5">
+          <div class="flex aspect-square w-full items-center justify-center overflow-hidden rounded-[20px] bg-card transition-shadow duration-200 group-hover:shadow-[0_8px_20px_rgba(17,17,17,0.08)]">
+            <span @class([
+                'flex h-[58%] w-[58%] items-center justify-center transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110',
+                'group-hover:rotate-[18deg]' => $collection['spins'],
+            ])>
+              <svg viewBox="0 0 96 96" class="h-full w-full overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">{!! $collection['svg'] !!}</svg>
+            </span>
+          </div>
+          <p class="text-base font-semibold tracking-[-0.2px] text-ink">{{ $collection['name'] }}</p>
         </div>
       @endforeach
 
-      <div class="flex flex-col items-center justify-center gap-y-1.5 rounded-lg border border-dashed border-hairline bg-sidebar p-4">
-        <span class="text-[22px] font-semibold tracking-[-0.5px] text-ink">+</span>
-        <p class="text-center text-[13px] font-semibold text-ink">{{ __('…and anything else') }}</p>
-        <p class="text-center text-xs text-muted-soft">{{ __('Create your own type') }}</p>
+      <div class="flex flex-col items-center gap-y-3.5">
+        <div class="flex aspect-square w-full items-center justify-center rounded-[20px] border border-dashed border-hairline bg-sidebar">
+          <div class="flex gap-x-1.5">
+            <span class="size-1.5 rounded-full bg-muted-soft"></span>
+            <span class="size-1.5 rounded-full bg-muted-soft"></span>
+            <span class="size-1.5 rounded-full bg-muted-soft"></span>
+          </div>
+        </div>
+        <p class="text-base font-semibold tracking-[-0.2px] text-muted">{{ __('And more…') }}</p>
       </div>
     </div>
   </section>
