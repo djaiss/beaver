@@ -39,8 +39,6 @@
           'openVar' => 'adding',
           'submitLabel' => __('Add record'),
           'dataTest' => 'create-insurance-form-'.$selectedCopy->id,
-          'formTitle' => __('New insurance record'),
-          'hint' => __('Adds a new coverage record for this copy.'),
           'record' => null,
       ])
     </div>
@@ -88,17 +86,6 @@
               <button type="button" x-on:click="editing = ! editing" class="flex h-8 shrink-0 items-center justify-center rounded-md border border-hairline px-3 text-[13px] font-semibold text-muted hover:bg-card" data-test="edit-insurance-{{ $record->id }}">
                 {{ __('Edit') }}
               </button>
-
-              <x-form
-                method="delete"
-                :action="route('insuranceRecords.destroy', [$collection, $item, $selectedCopy, $record])"
-                x-target="history-panel notifications"
-                x-on:ajax:before="confirm('{{ __('Delete this insurance record? This cannot be undone.') }}') || $event.preventDefault()"
-              >
-                <button type="submit" class="flex size-8 shrink-0 items-center justify-center rounded-md border border-hairline text-muted hover:bg-card" aria-label="{{ __('Delete insurance record') }}" data-test="delete-insurance-{{ $record->id }}">
-                  @svg('lucide-x', 'size-3.5')
-                </button>
-              </x-form>
             @endif
           </div>
         </div>
@@ -119,16 +106,15 @@
         @endif
 
         @if ($canManage)
-          <div x-show="editing" x-cloak class="border-t border-hairline p-4">
+          <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._insuranceRecordForm', [
                 'formId' => 'edit-insurance-'.$record->id,
                 'action' => route('insuranceRecords.update', [$collection, $item, $selectedCopy, $record]),
+                'deleteAction' => route('insuranceRecords.destroy', [$collection, $item, $selectedCopy, $record]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save changes'),
                 'dataTest' => 'edit-insurance-form-'.$record->id,
-                'formTitle' => __('Edit insurance record'),
-                'hint' => null,
                 'record' => $record,
             ])
           </div>

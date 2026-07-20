@@ -29,9 +29,7 @@
   </div>
 
   @if ($canManage)
-    <div x-show="adding" x-cloak class="mb-4 rounded-xl border border-hairline bg-canvas p-5">
-      <p class="mb-4 text-base font-semibold text-ink">{{ __('New transaction') }}</p>
-
+    <div x-show="adding" x-cloak class="mb-4">
       @include('app.items.partials._transactionForm', [
           'formId' => 'add-transaction-'.$selectedCopy->id,
           'action' => route('transactions.create', [$collection, $item, $selectedCopy]),
@@ -78,17 +76,6 @@
               <button type="button" x-on:click="editing = ! editing" class="flex h-8 shrink-0 items-center justify-center rounded-md border border-hairline px-3 text-[13px] font-semibold text-muted hover:bg-card" data-test="edit-transaction-{{ $transaction->id }}">
                 {{ __('Edit') }}
               </button>
-
-              <x-form
-                method="delete"
-                :action="route('transactions.destroy', [$collection, $item, $selectedCopy, $transaction])"
-                x-target="history-panel notifications"
-                x-on:ajax:before="confirm('{{ $transaction->provenanceEvent ? __('Delete this transaction? Its provenance event is kept and simply unlinked. This cannot be undone.') : __('Delete this transaction? This cannot be undone.') }}') || $event.preventDefault()"
-              >
-                <button type="submit" class="flex size-8 shrink-0 items-center justify-center rounded-md border border-hairline text-muted hover:bg-card" aria-label="{{ __('Delete transaction') }}" data-test="delete-transaction-{{ $transaction->id }}">
-                  @svg('lucide-x', 'size-3.5')
-                </button>
-              </x-form>
             @endif
           </div>
         </div>
@@ -115,6 +102,7 @@
             @include('app.items.partials._transactionForm', [
                 'formId' => 'edit-transaction-'.$transaction->id,
                 'action' => route('transactions.update', [$collection, $item, $selectedCopy, $transaction]),
+                'deleteAction' => route('transactions.destroy', [$collection, $item, $selectedCopy, $transaction]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save'),
