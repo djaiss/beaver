@@ -17,6 +17,18 @@ it('renders the pricing page', function () {
         ->assertSee('The Dam Accurate Pricing Calculator');
 });
 
+it('puts the price in perspective with the comparison grid', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get(route('marketing.pricing.index'));
+
+    $response
+        ->assertOk()
+        ->assertSee('What else is forty-nine bucks?')
+        ->assertSee('4 fancy oat-milk lattes')
+        ->assertSee('Zero monthly renewals');
+});
+
 it('offers to sign up when the visitor is a guest', function () {
     config()->set('marketing.show', true);
 

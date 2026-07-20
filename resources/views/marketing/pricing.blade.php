@@ -348,6 +348,45 @@
     </div>
   </section>
 
+  {{-- $49 IN PERSPECTIVE. The pun-filled comparison grid: what else forty-nine dollars buys,
+       each card badged with an emoji. Every equivalence is deliberately, cheerfully approximate. --}}
+  <section class="mx-auto max-w-[1200px] px-5 pt-16 sm:px-8 sm:pt-24">
+    @php
+        $comparisons = [
+            ['emoji' => '☕', 'eq' => '≈ 12.25×', 'thing' => '4 fancy oat-milk lattes', 'note' => 'Gone in an afternoon. Beaver is gone... never. It just stays and helps.'],
+            ['emoji' => '🥐', 'eq' => '≈ 3×', 'thing' => '16 chocolatines', 'note' => 'Roughly $3 each at the good bakery. Flakier than a subscription, at least.'],
+            ['emoji' => '🏋️', 'eq' => '≈ 0.7×', 'thing' => 'One month of that gym', 'note' => "You know the one. You've been twice. Beaver you'll actually use."],
+            ['emoji' => '🎮', 'eq' => '≈ 1×', 'thing' => 'A single video-game skin', 'note' => "For a character you'll retire next season. This organizes real treasure."],
+            ['emoji' => '🚕', 'eq' => '≈ 6.5×', 'thing' => '7 rideshare surge fares', 'note' => 'One rainy Friday night, basically. Beaver never surge-prices at 2am.'],
+            ['emoji' => '🔌', 'eq' => '≈ 0.25×', 'thing' => 'That impulse cable purchase', 'note' => 'The mystery HDMI drawer thanks you. So does a real catalog.'],
+            ['emoji' => '🍿', 'eq' => '≈ 2×', 'thing' => '2 movie tickets + popcorn', 'note' => 'Two hours of entertainment vs. a lifetime of tidy shelves. Bold trade.'],
+            ['emoji' => '🦫', 'eq' => '≈ ∞×', 'thing' => 'Zero monthly renewals', 'note' => 'The one comparison that matters: you pay it once and never again.'],
+        ];
+    @endphp
+
+    <div class="mb-12 text-center">
+      <p class="mb-3.5 text-[13px] font-semibold tracking-[0.6px] text-muted-soft uppercase">$49 in perspective</p>
+      <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">What else is forty-nine bucks?</h2>
+      <p class="mx-auto mt-4.5 max-w-[560px] text-[17px] text-muted">
+        To help you feel good about it, here's exactly what $49 buys elsewhere. Beaver is the only one that also organizes your entire life's collection. Just saying.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      @foreach ($comparisons as $comparison)
+        <div class="relative flex min-h-[170px] flex-col gap-2.5 rounded-[14px] bg-card p-6 transition-shadow hover:shadow-[0_8px_20px_rgba(17,17,17,0.07)]">
+          <span class="absolute top-4 right-4 flex h-[38px] w-[38px] items-center justify-center rounded-[10px] border border-hairline bg-page text-[19px] leading-none" aria-hidden="true">{{ $comparison['emoji'] }}</span>
+          <p class="font-mono text-[13px] font-medium text-muted-soft">{{ $comparison['eq'] }}</p>
+          <p class="text-[19px] leading-[1.2] font-semibold tracking-[-0.4px] text-ink">{{ $comparison['thing'] }}</p>
+          <div class="flex-1"></div>
+          <p class="text-[13px] leading-[1.5] text-muted">{{ $comparison['note'] }}</p>
+        </div>
+      @endforeach
+    </div>
+
+    <p class="mt-6 text-center text-[13px] text-muted-soft">Prices approximate, sourced from vibes and one very expensive coffee habit. Beaver, however, is exactly $49.</p>
+  </section>
+
   {{-- FAQ --}}
   <section id="faq" class="mx-auto max-w-[760px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <h2 class="text-center text-[28px] leading-[1.15] font-semibold tracking-[-1px] text-ink sm:text-4xl">Frequently Asked Quest-ions.</h2>
