@@ -25,41 +25,20 @@
     $textareaClasses = 'mt-1.5 w-full rounded-md border border-hairline bg-input px-3 py-2 text-sm text-ink placeholder-muted-soft';
 @endphp
 
-@if ($isEdit)
-  {{-- Deleting is its own form, hidden here and submitted by the Delete button in
-       the footer through its form attribute, so it shares the footer row without
-       nesting one form inside another. --}}
-  <x-form
-    method="delete"
-    :action="$deleteAction"
-    :id="$formId.'-delete'"
-    x-target="history-panel notifications"
-    class="hidden"
-  ></x-form>
-@endif
-
-<x-form
+<x-history.inline-form
+  :form-id="$formId"
   :method="$method"
   :action="$action"
-  :id="$formId"
+  :open-var="$openVar"
+  :submit-label="$submitLabel"
+  :title="$isEdit ? __('Editing provenance event') : __('New provenance event')"
+  :subtitle="$event?->title"
   :data-test="$dataTest"
-  x-target="history-panel notifications"
-  x-on:ajax:after="{{ $openVar }} = document.querySelector('#{{ $formId }}-fields .text-error') !== null"
-  class="overflow-hidden rounded-xl border border-brand/60"
+  :delete-action="$isEdit ? $deleteAction : null"
+  :delete-confirm="__('Delete this provenance event? This cannot be undone.')"
+  :delete-data-test="$isEdit ? 'delete-provenance-event-'.$event->id : null"
 >
-  <div class="flex items-center gap-2 border-b border-brand/15 bg-brand/8 px-5 py-3.5">
-    <span class="size-2 shrink-0 rounded-full bg-brand"></span>
-    <span class="text-sm font-semibold text-brand">{{ $isEdit ? __('Editing provenance event') : __('New provenance event') }}</span>
-    @if ($event?->title)
-      <span class="truncate text-sm text-muted-soft">· {{ $event->title }}</span>
-    @endif
-  </div>
-
-  <div
-    id="{{ $formId }}-fields"
-    class="p-5"
-    x-data="{ precision: @js($selectedPrecision), verified: @js((bool) $event?->is_verified), hints: @js($hints) }"
-  >
+  <div x-data="{ precision: @js($selectedPrecision), verified: @js((bool) $event?->is_verified), hints: @js($hints) }">
     <div class="mb-3.5 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
       <div>
         <label for="{{ $formId }}-type" class="{{ $labelClasses }}">{{ __('Type') }}</label>
@@ -180,23 +159,5 @@
         <x-error :messages="$errors->get('verification_note')" class="mt-2" />
       </div>
     </div>
-
-    <div class="flex items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2.5">
-        <x-button type="submit" class="text-[13px]" data-test="{{ $formId }}-submit">
-          {{ $submitLabel }}
-        </x-button>
-
-        <x-button.secondary type="button" x-on:click="{{ $openVar }} = false" class="text-[13px]">
-          {{ __('Cancel') }}
-        </x-button.secondary>
-      </div>
-
-      @if ($isEdit)
-        <button type="submit" form="{{ $formId }}-delete" x-on:click="if (! confirm('{{ __('Delete this provenance event? This cannot be undone.') }}')) { $event.preventDefault() }" class="text-[13px] font-semibold text-error hover:underline" data-test="delete-provenance-event-{{ $event->id }}">
-          {{ __('Delete') }}
-        </button>
-      @endif
-    </div>
   </div>
-</x-form>
+</x-history.inline-form>

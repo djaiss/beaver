@@ -36,9 +36,7 @@
   </div>
 
   @if ($canManage)
-    <div x-show="adding" x-cloak class="mb-5 rounded-xl border border-hairline bg-canvas p-5">
-      <p class="mb-4 text-base font-semibold text-ink">{{ __('New valuation') }}</p>
-
+    <div x-show="adding" x-cloak class="mb-5">
       @include('app.items.partials._valuationForm', [
           'formId' => 'add-valuation-'.$selectedCopy->id,
           'action' => route('valuations.create', [$collection, $item, $selectedCopy]),
@@ -93,17 +91,6 @@
                   <button type="button" x-on:click="editing = ! editing" class="flex size-7 items-center justify-center rounded-md text-muted-soft opacity-0 transition hover:bg-card hover:text-ink group-hover:opacity-100 focus:opacity-100" aria-label="{{ __('Edit valuation') }}" data-test="edit-valuation-{{ $valuation->id }}">
                     @svg('lucide-pencil', 'size-3.5')
                   </button>
-
-                  <x-form
-                    method="delete"
-                    :action="route('valuations.destroy', [$collection, $item, $selectedCopy, $valuation])"
-                    x-target="history-panel notifications"
-                    x-on:ajax:before="confirm('{{ __('Delete this valuation? This cannot be undone.') }}') || $event.preventDefault()"
-                  >
-                    <button type="submit" class="flex size-7 items-center justify-center rounded-md text-muted-soft opacity-0 transition hover:bg-card hover:text-error group-hover:opacity-100 focus:opacity-100" aria-label="{{ __('Delete valuation') }}" data-test="delete-valuation-{{ $valuation->id }}">
-                      @svg('lucide-x', 'size-3.5')
-                    </button>
-                  </x-form>
                 @endif
 
                 <span class="ml-1 shrink-0 text-[13px] text-muted-soft">{{ $valuation->valued_at->isoFormat('MMM YYYY') }}</span>
@@ -150,6 +137,7 @@
               @include('app.items.partials._valuationForm', [
                   'formId' => 'edit-valuation-'.$valuation->id,
                   'action' => route('valuations.update', [$collection, $item, $selectedCopy, $valuation]),
+                  'deleteAction' => route('valuations.destroy', [$collection, $item, $selectedCopy, $valuation]),
                   'method' => 'put',
                   'openVar' => 'editing',
                   'submitLabel' => __('Save'),
