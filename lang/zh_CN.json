@@ -1218,5 +1218,17 @@
     "Art": "艺术",
     "Collectibles": "收藏品",
     "Memorabilia": "纪念品",
-    "And more…": "更多…"
+    "And more…": "更多…",
+    "Access denied": "访问被拒绝",
+    "Browse collections": "浏览收藏",
+    "Error :code · :name": "错误 :code · :name",
+    "Not found": "未找到",
+    "Requested path": "请求的路径",
+    "This area is restricted to members with the right role. Your current permissions don’t include it. Ask an account owner to grant you access.": "此区域仅限具有相应角色的成员访问。您当前的权限不包含此项。请让账户所有者授予您访问权限。",
+    "This page went missing from the collection": "此页面已从收藏中丢失",
+    "We couldn’t find what you were looking for. It may have been moved, renamed, or deleted, or the link that brought you here is out of date.": "我们找不到您要查找的内容。它可能已被移动、重命名或删除，或者将您带到这里的链接已过时。",
+    "You don’t have access to this page": "您无权访问此页面",
+    "Your role": "您的角色",
+    "no such page": "无此页面",
+    "permission required": "需要权限"
 }

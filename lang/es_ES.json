@@ -1218,5 +1218,17 @@
     "Art": "Arte",
     "Collectibles": "Coleccionables",
     "Memorabilia": "Recuerdos",
-    "And more…": "Y más…"
+    "And more…": "Y más…",
+    "Access denied": "Acceso denegado",
+    "Browse collections": "Explorar colecciones",
+    "Error :code · :name": "Error :code · :name",
+    "Not found": "No encontrado",
+    "Requested path": "Ruta solicitada",
+    "This area is restricted to members with the right role. Your current permissions don’t include it. Ask an account owner to grant you access.": "Esta área está restringida a los miembros con el rol adecuado. Tus permisos actuales no lo incluyen. Pide a un propietario de la cuenta que te conceda acceso.",
+    "This page went missing from the collection": "Esta página desapareció de la colección",
+    "We couldn’t find what you were looking for. It may have been moved, renamed, or deleted, or the link that brought you here is out of date.": "No pudimos encontrar lo que buscabas. Es posible que se haya movido, renombrado o eliminado, o que el enlace que te trajo aquí esté desactualizado.",
+    "You don’t have access to this page": "No tienes acceso a esta página",
+    "Your role": "Tu rol",
+    "no such page": "página inexistente",
+    "permission required": "permiso necesario"
 }

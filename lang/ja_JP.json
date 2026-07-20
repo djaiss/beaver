@@ -1218,5 +1218,17 @@
     "Art": "アート",
     "Collectibles": "コレクター品",
     "Memorabilia": "記念品",
-    "And more…": "その他…"
+    "And more…": "その他…",
+    "Access denied": "アクセスが拒否されました",
+    "Browse collections": "コレクションを見る",
+    "Error :code · :name": "エラー :code · :name",
+    "Not found": "見つかりません",
+    "Requested path": "リクエストされたパス",
+    "This area is restricted to members with the right role. Your current permissions don’t include it. Ask an account owner to grant you access.": "このエリアは適切な役割を持つメンバーに限定されています。現在の権限では利用できません。アカウントの所有者にアクセス権の付与を依頼してください。",
+    "This page went missing from the collection": "このページはコレクションから見つからなくなりました",
+    "We couldn’t find what you were looking for. It may have been moved, renamed, or deleted, or the link that brought you here is out of date.": "お探しのものが見つかりませんでした。移動、名前変更、削除されたか、ここへのリンクが古くなっている可能性があります。",
+    "You don’t have access to this page": "このページにアクセスする権限がありません",
+    "Your role": "あなたの役割",
+    "no such page": "ページが存在しません",
+    "permission required": "権限が必要です"
 }
