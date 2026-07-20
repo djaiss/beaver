@@ -29,13 +29,26 @@
   };
 @endphp
 
-<div class="mb-5">
-  <p class="text-lg font-semibold text-ink">{{ __('Unified history') }}</p>
-  <p class="mt-1 text-[13px] leading-relaxed text-muted">{{ __('A combined chronological view built from every record below. Each entry keeps its own source of truth.') }}</p>
-</div>
+<div x-data="{ filtersOpen: true }">
+  <div class="mb-5 flex items-start justify-between gap-4">
+    <div>
+      <p class="text-lg font-semibold tracking-[-0.3px] text-ink">{{ __('Unified history') }}</p>
+      <p class="mt-1 max-w-xl text-[13.5px] leading-relaxed text-muted">{{ __('A combined chronological view built from every record below. Each entry keeps its own source of truth.') }}</p>
+    </div>
 
-@if (! empty($presentSources))
-  <div class="mb-6 flex flex-wrap items-center justify-between gap-3" data-test="timeline-filters">
+    @if (! empty($presentSources))
+      <button
+        type="button"
+        x-on:click="filtersOpen = ! filtersOpen"
+        :aria-expanded="filtersOpen.toString()"
+        class="inline-flex h-9 shrink-0 items-center rounded-lg border border-hairline bg-canvas px-3.5 text-[13px] font-semibold text-ink transition-colors hover:bg-card"
+        data-test="timeline-filter-toggle"
+      >{{ __('Filter') }}</button>
+    @endif
+  </div>
+
+  @if (! empty($presentSources))
+    <div x-show="filtersOpen" class="mb-6 flex flex-wrap items-center justify-between gap-3" data-test="timeline-filters">
     {{-- Filter by event type. "All" clears the filter; each chip toggles its own
          source in and out, so several can be combined. --}}
     <div class="flex flex-wrap items-center gap-1.5">
@@ -102,7 +115,8 @@
       >{{ __('Complete') }}</a>
     </div>
   </div>
-@endif
+  @endif
+</div>
 
 <div class="flex flex-col">
   @forelse ($timeline as $entry)
@@ -134,12 +148,12 @@
 
         <p class="text-[15px] font-semibold text-ink group-hover:underline">{{ $entry->title }}</p>
 
-        @if ($amount !== null || $entry->summary !== null)
-          <p class="mt-0.5 text-[13.5px] leading-relaxed text-muted">
-            @if ($amount !== null)<span class="font-medium text-ink">{{ $amount }}</span>@endif
-            @if ($amount !== null && $entry->summary !== null) · @endif
-            {{ $entry->summary }}
-          </p>
+        @php
+          $detail = collect([$amount, $entry->summary])->filter(fn ($part): bool => $part !== null && $part !== '')->join(' · ');
+        @endphp
+
+        @if ($detail !== '')
+          <p class="mt-0.5 text-[13.5px] leading-relaxed text-muted">{{ $detail }}</p>
         @endif
       </div>
     </a>

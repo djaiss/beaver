@@ -182,7 +182,7 @@ it('does not produce a return entry for an open loan', function () {
         ->and($entries[0]->qualifier)->toBeNull();
 });
 
-it('lists the present sources in enum order', function () {
+it('lists the present sources in the timeline order, newest first', function () {
     $copy = Copy::factory()->create();
 
     LocationHistory::factory()->create(['copy_id' => $copy->id, 'moved_at' => '2026-01-01']);
@@ -190,7 +190,7 @@ it('lists the present sources in enum order', function () {
 
     $present = new BuildCopyHistory($copy)->presentSources();
 
-    // Valuation comes before Location in the enum, and insurance is absent, so it
-    // is not offered.
-    expect($present)->toBe([TimelineSource::Valuation, TimelineSource::Location]);
+    // The move is the most recent event, so location leads the chips; insurance
+    // is absent, so it is not offered.
+    expect($present)->toBe([TimelineSource::Location, TimelineSource::Valuation]);
 });

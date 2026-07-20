@@ -70,26 +70,26 @@ class BuildCopyHistory
     }
 
     /**
-     * The sources that contribute at least one entry, in a stable order.
+     * The sources that contribute at least one entry, in the order they first
+     * appear on the timeline.
      *
      * The type filter only offers the sources a copy actually has, so a copy
      * that was never insured shows no insurance chip. This looks across every
      * entry, meaningful or not, so a source that only appears in the complete
-     * view is still offered.
+     * view is still offered. The chips follow the newest-first order of the
+     * timeline, so the source of the most recent event reads first.
      *
      * @return list<TimelineSource>
      */
     public function presentSources(): array
     {
-        $present = $this->allEntries()
-            ->map(fn (TimelineEntry $entry): TimelineSource => $entry->source)
-            ->unique()
-            ->all();
+        $present = [];
 
-        return array_values(array_filter(
-            TimelineSource::cases(),
-            fn (TimelineSource $source): bool => in_array($source, $present, true),
-        ));
+        foreach ($this->allEntries()->sort($this->newestFirst(...)) as $entry) {
+            $present[$entry->source->value] = $entry->source;
+        }
+
+        return array_values($present);
     }
 
     /**
