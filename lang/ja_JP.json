@@ -1173,5 +1173,10 @@
     "× :count": "× :count",
     "“What larger franchise does this item belong to?” Spans collections, groups related items. No completion tracking.": "「このアイテムはどの大きな作品群に属するのか」コレクションをまたぎ、関連するアイテムをまとめます。達成度の管理はありません。",
     "“Which finite collection is this part of?” Lives in one collection, tracks a target and what is missing.": "「これはどの有限のまとまりの一部か」一つのコレクション内にあり、目標と不足分を管理します。",
-    "…and anything else": "…その他なんでも"
+    "…and anything else": "…その他なんでも",
+    "Movies": "映画",
+    "Art": "アート",
+    "Collectibles": "コレクター品",
+    "Memorabilia": "記念品",
+    "And more…": "その他…"
 }

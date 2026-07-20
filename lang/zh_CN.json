@@ -1173,5 +1173,10 @@
     "× :count": "× :count",
     "“What larger franchise does this item belong to?” Spans collections, groups related items. No completion tracking.": "“这件物品属于哪个更大的作品体系？”跨越多个收藏，归集相关物品。不追踪完成度。",
     "“Which finite collection is this part of?” Lives in one collection, tracks a target and what is missing.": "“这属于哪个有限的组合？”位于单个收藏中，追踪目标与缺失项。",
-    "…and anything else": "…以及其他任何东西"
+    "…and anything else": "…以及其他任何东西",
+    "Movies": "电影",
+    "Art": "艺术",
+    "Collectibles": "收藏品",
+    "Memorabilia": "纪念品",
+    "And more…": "更多…"
 }
