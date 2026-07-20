@@ -5,6 +5,8 @@
   maintenance stays out of the default view and reads in the Activity tab.
 --}}
 
+@use('App\Enums\LoanDirection')
+
 @php
   $entries = collect()
       ->concat($selectedCopy->valuations->map(fn ($valuation): array => [
@@ -14,6 +16,26 @@
           'color' => '#3b82f6',
           'test' => 'history-valuation-'.$valuation->id,
       ]))
+      ->concat($selectedCopy->loans->map(fn ($loan): array => [
+          'date' => $loan->loaned_at,
+          'title' => $loan->direction === LoanDirection::Outgoing
+              ? __('Loaned to :party', ['party' => $loan->party])
+              : __('Borrowed from :party', ['party' => $loan->party]),
+          'sub' => $loan->status->label(),
+          'color' => '#ec4899',
+          'test' => 'history-loan-'.$loan->id,
+      ]))
+      ->concat($selectedCopy->loans
+          ->filter(fn ($loan): bool => $loan->returned_at !== null)
+          ->map(fn ($loan): array => [
+              'date' => $loan->returned_at,
+              'title' => $loan->direction === LoanDirection::Outgoing
+                  ? __('Returned from :party', ['party' => $loan->party])
+                  : __('Returned to :party', ['party' => $loan->party]),
+              'sub' => __('Loan closed'),
+              'color' => '#ec4899',
+              'test' => 'history-loan-return-'.$loan->id,
+          ]))
       ->concat($selectedCopy->maintenanceRecords
           ->where('include_in_provenance', true)
           ->map(fn ($record): array => [

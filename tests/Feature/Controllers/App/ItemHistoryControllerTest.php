@@ -3,6 +3,8 @@
 declare(strict_types=1);
 use App\Enums\CopyStatus;
 use App\Enums\DatePrecision;
+use App\Enums\LoanDirection;
+use App\Enums\LoanStatus;
 use App\Enums\PermissionEnum;
 use App\Enums\ProvenanceEventType;
 use App\Enums\TransactionType;
@@ -10,6 +12,7 @@ use App\Enums\ValuationType;
 use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\Loan;
 use App\Models\ProvenanceEvent;
 use App\Models\Transaction;
 use App\Models\Valuation;
@@ -137,10 +140,41 @@ it('shows a placeholder for a section that is not built yet', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'loans']))
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'documents']))
         ->assertOk()
         ->assertSee('data-test="history-section-soon"', false)
         ->assertSee('This part of the history is not built yet.');
+});
+
+it('renders the loans section with the copy loans', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    $loan = Loan::factory()->create(['copy_id' => $copy->id, 'party' => 'The Whitney Museum']);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'loans']))
+        ->assertOk()
+        ->assertSee('data-test="loan-'.$loan->id.'"', false)
+        ->assertSee('The Whitney Museum');
+});
+
+it('shows the active loan banner while an outgoing loan is out', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id, 'status' => CopyStatus::Loaned]);
+    Loan::factory()->create([
+        'copy_id' => $copy->id,
+        'direction' => LoanDirection::Outgoing,
+        'status' => LoanStatus::Active,
+        'party' => 'The Tate',
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'timeline']))
+        ->assertOk()
+        ->assertSee('data-test="loan-banner-'.$copy->id.'"', false)
+        ->assertSee('The Tate');
 });
 
 // A section the url invents is not trusted; it falls back to the timeline rather

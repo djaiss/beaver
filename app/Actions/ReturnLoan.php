@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Enums\ItemActionEnum;
+use App\Enums\LoanStatus;
+use App\Enums\UserActionEnum;
+use App\Jobs\LogItemAction;
+use App\Jobs\LogUserAction;
+use App\Models\Loan;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+/**
+ * Mark a loan as returned: close it with the date it came back and the condition
+ * it came back in, in one step. Only owners and editors of its account may do so.
+ *
+ * The object is back, so the copy leaves its loaned-out state and, when a
+ * condition on return is given, takes it as its current condition. A loan that is
+ * part of provenance also generates the matching return event.
+ */
+class ReturnLoan
+{
+    use GuardsLoanConditions;
+    use SyncsLoanState;
+
+    public function __construct(
+        private readonly User $user,
+        private readonly Loan $loan,
+        private readonly string $returnedAt,
+        private readonly ?int $conditionInId = null,
+    ) {}
+
+    public function execute(): Loan
+    {
+        $this->validate();
+        $this->close();
+        $this->syncCopyCondition();
+        $this->syncCopyStatus($this->loan->copy);
+        $this->handleProvenance();
+        $this->log();
+
+        return $this->loan;
+    }
+
+    private function validate(): void
+    {
+        $account = $this->loan->copy->item->collection->account;
+
+        if (! $account->allowsManagementBy($this->user)) {
+            throw new ModelNotFoundException('Account not found');
+        }
+
+        // A loan that is already closed has nothing to return. It looks not found
+        // rather than refused, the same way a cross tenant loan would.
+        if (! $this->loan->status->isOpen()) {
+            throw new ModelNotFoundException('Loan not found');
+        }
+
+        $this->guardConditionsBelongToAccount($account, null, $this->conditionInId);
+    }
+
+    private function close(): void
+    {
+        $this->loan->fill([
+            'status' => LoanStatus::Returned,
+            'returned_at' => $this->returnedAt,
+            'condition_in_id' => $this->conditionInId,
+        ]);
+        $this->loan->updated_by_id = $this->user->id;
+        $this->loan->updated_by_name = $this->user->getFullName();
+        $this->loan->save();
+    }
+
+    /**
+     * The object is back, so the condition it came back in becomes the copy's
+     * current condition. Without one, the copy is left as it was.
+     */
+    private function syncCopyCondition(): void
+    {
+        if ($this->conditionInId === null) {
+            return;
+        }
+
+        $copy = $this->loan->copy;
+        $copy->condition_id = $this->conditionInId;
+        $copy->save();
+    }
+
+    /**
+     * A loan that is part of provenance records its return in the story too.
+     */
+    private function handleProvenance(): void
+    {
+        if (! $this->loan->include_in_provenance) {
+            return;
+        }
+
+        if ($this->loan->return_provenance_event_id !== null) {
+            return;
+        }
+
+        $this->createReturnProvenanceEvent($this->loan);
+    }
+
+    private function log(): void
+    {
+        $item = $this->loan->copy->item;
+
+        LogUserAction::dispatch(
+            user: $this->user,
+            action: UserActionEnum::LoanReturn,
+            parameters: ['name' => $item->name],
+        )->onQueue('low');
+
+        LogItemAction::dispatch(
+            item: $item,
+            user: $this->user,
+            action: ItemActionEnum::LoanReturn,
+            parameters: ['label' => $this->loan->party],
+        )->onQueue('low');
+    }
+}

@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Enums\CopyStatus;
 use App\Enums\InsuranceStatus;
+use App\Enums\LoanDirection;
+use App\Enums\LoanStatus;
 use App\Enums\TransactionType;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDeleter;
@@ -304,5 +306,35 @@ class Copy extends Model
         return $this->hasOne(LocationHistory::class)
             ->whereNull('moved_out_at')
             ->latestOfMany();
+    }
+
+    /**
+     * Get every loan recorded against the copy, most recent first.
+     *
+     * @return HasMany<Loan, $this>
+     */
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class)->orderByDesc('loaned_at')->orderByDesc('id');
+    }
+
+    /**
+     * Get the outgoing loan that currently has the copy out of custody, if any.
+     *
+     * This is the loan that makes the copy read as loaned out: an outgoing one
+     * that is active or overdue. A copy should only have one at a time, but the
+     * latest by loan date wins so a data slip never picks arbitrarily. A planned
+     * or incoming loan is not one, since the object has not left.
+     *
+     * @return HasOne<Loan, $this>
+     */
+    public function activeLoan(): HasOne
+    {
+        return $this->hasOne(Loan::class)->ofMany(
+            ['loaned_at' => 'max', 'id' => 'max'],
+            fn (Builder $query) => $query
+                ->where('direction', LoanDirection::Outgoing->value)
+                ->whereIn('status', [LoanStatus::Active->value, LoanStatus::Overdue->value]),
+        );
     }
 }
