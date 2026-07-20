@@ -17,6 +17,24 @@ it('renders the marketing homepage', function () {
         ->assertSee('https://github.com/djaiss/kollek');
 });
 
+it('draws an animated icon for each supported collection', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/');
+
+    $response
+        ->assertOk()
+        // A named tile for a few of the supported collections, each with its own illustration.
+        ->assertSee('Vinyl Records')
+        ->assertSee('Trading Cards')
+        ->assertSee('And more…')
+        // The illustrations are inline SVGs that lift and grow on hover.
+        ->assertSee('<svg viewBox="0 0 96 96"', false)
+        ->assertSee('group-hover:scale-110', false)
+        // Discs turn as they lift.
+        ->assertSee('group-hover:rotate-[18deg]', false);
+});
+
 it('shows the privacy section above the pricing section', function () {
     config()->set('marketing.show', true);
 

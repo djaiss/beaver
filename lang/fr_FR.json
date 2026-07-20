@@ -1213,5 +1213,10 @@
     "× :count": "× :count",
     "“What larger franchise does this item belong to?” Spans collections, groups related items. No completion tracking.": "« À quelle franchise plus large cet objet appartient-il ? » Traverse les collections, regroupe les objets apparentés. Aucun suivi de progression.",
     "“Which finite collection is this part of?” Lives in one collection, tracks a target and what is missing.": "« De quel ensemble fini fait-il partie ? » Vit dans une seule collection, suit un objectif et ce qui manque.",
-    "…and anything else": "…et tout le reste"
+    "…and anything else": "…et tout le reste",
+    "Movies": "Films",
+    "Art": "Art",
+    "Collectibles": "Objets de collection",
+    "Memorabilia": "Souvenirs",
+    "And more…": "Et plus encore…"
 }
