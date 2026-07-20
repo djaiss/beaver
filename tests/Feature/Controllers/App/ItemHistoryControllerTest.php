@@ -5,6 +5,7 @@ use App\Enums\CopyStatus;
 use App\Enums\DatePrecision;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
+use App\Enums\MaintenanceType;
 use App\Enums\PermissionEnum;
 use App\Enums\ProvenanceEventType;
 use App\Enums\TransactionType;
@@ -12,8 +13,12 @@ use App\Enums\ValuationType;
 use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Document;
+use App\Models\InsuranceRecord;
 use App\Models\Item;
 use App\Models\Loan;
+use App\Models\Location;
+use App\Models\LocationHistory;
+use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
 use App\Models\Transaction;
 use App\Models\Valuation;
@@ -92,7 +97,7 @@ it('lists the sections the history is assembled from', function () {
         ]);
 });
 
-it('shows the valuations of a copy on its timeline, oldest first', function () {
+it('shows the valuations of a copy on its timeline, newest first', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
@@ -100,22 +105,265 @@ it('shows the valuations of a copy on its timeline, oldest first', function () {
     $newer = Valuation::factory()->create([
         'copy_id' => $copy->id,
         'amount' => 25000,
+        'currency_code' => 'USD',
         'valued_at' => '2026-03-01',
         'type' => ValuationType::ProfessionalAppraisal,
     ]);
     $older = Valuation::factory()->create([
         'copy_id' => $copy->id,
         'amount' => 10000,
+        'currency_code' => 'USD',
         'valued_at' => '2024-01-01',
         'type' => ValuationType::UserEstimate,
     ]);
 
+    // The amount renders in its own currency, and the newest entry reads first.
     $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
         ->assertOk()
         ->assertSee('data-test="history-valuation-'.$older->id.'"', false)
         ->assertSee('data-test="history-valuation-'.$newer->id.'"', false)
-        ->assertSeeInOrder(['Valued at $100', 'Own estimate', 'Valued at $250', 'Professional appraisal'])
-        ->assertSeeInOrder(['Jan 2024', 'Mar 2026']);
+        ->assertSeeInOrder(['Professional appraisal', '$250', 'Own estimate', '$100'])
+        ->assertSeeInOrder(['Mar 1, 2026', 'Jan 1, 2024']);
+});
+
+// The default view is the meaningful one: a purchase and a valuation belong to
+// the object's story, while a fee, a routine cleaning and an ordinary move are
+// operational and stay out until the complete view is asked for.
+it('shows only the meaningful entries by default', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-05-01']);
+    $fee = Transaction::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => TransactionType::Fee,
+        'occurred_at' => '2012-06-01',
+    ]);
+    $routineCleaning = MaintenanceRecord::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => MaintenanceType::Cleaning,
+        'include_in_provenance' => false,
+        'performed_at' => '2012-07-01',
+    ]);
+    $location = Location::factory()->create(['account_id' => $user->account_id]);
+    $move = LocationHistory::factory()->create([
+        'copy_id' => $copy->id,
+        'location_id' => $location->id,
+        'moved_at' => '2012-08-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false)
+        ->assertDontSee('data-test="history-transaction-'.$fee->id.'"', false)
+        ->assertDontSee('data-test="history-maintenance-'.$routineCleaning->id.'"', false)
+        ->assertDontSee('data-test="history-location-'.$move->id.'"', false);
+});
+
+// The complete view adds the routine records the meaningful view leaves out.
+it('shows the routine entries in the complete view', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Secure storage']);
+    $move = LocationHistory::factory()->create([
+        'copy_id' => $copy->id,
+        'location_id' => $location->id,
+        'moved_at' => '2026-01-01',
+    ]);
+    $routineCleaning = MaintenanceRecord::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => MaintenanceType::Cleaning,
+        'include_in_provenance' => false,
+        'performed_at' => '2025-01-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'timeline', 'view' => 'complete']))
+        ->assertOk()
+        ->assertSee('data-test="history-location-'.$move->id.'"', false)
+        ->assertSee('Moved to Secure storage')
+        ->assertSee('data-test="history-maintenance-'.$routineCleaning->id.'"', false)
+        ->assertSee('data-test="timeline-view-complete"', false);
+});
+
+// A conservation or a restoration is meaningful even when it is not flagged, so
+// it reads on the default timeline while a plain cleaning does not.
+it('treats a restoration as meaningful without the flag', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $restoration = MaintenanceRecord::factory()->create([
+        'copy_id' => $copy->id,
+        'type' => MaintenanceType::Restoration,
+        'include_in_provenance' => false,
+        'title' => 'Full restoration',
+        'performed_at' => '1998-01-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="history-maintenance-'.$restoration->id.'"', false);
+});
+
+// The type filter narrows the timeline to chosen sources, and offers a chip only
+// for the sources the copy actually has.
+it('filters the timeline by event type', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
+    $event = ProvenanceEvent::factory()->create([
+        'copy_id' => $copy->id,
+        'title' => 'Acquired at auction',
+        'occurred_at' => '1987-01-01',
+        'occurred_at_precision' => DatePrecision::Year,
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'timeline', 'type' => ['valuation']]))
+        ->assertOk()
+        ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false)
+        ->assertDontSee('data-test="history-provenance-'.$event->id.'"', false)
+        // Both sources are offered as chips, meaningful or filtered out or not.
+        ->assertSee('data-test="timeline-type-valuation"', false)
+        ->assertSee('data-test="timeline-type-provenance"', false);
+});
+
+// The merge runs across every source, newest first, so a recent valuation reads
+// above an older acquisition regardless of which model each came from.
+it('orders entries from every source newest first', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
+    $acquisition = ProvenanceEvent::factory()->create([
+        'copy_id' => $copy->id,
+        'title' => 'Acquired from the gallery',
+        'occurred_at' => '1987-01-01',
+        'occurred_at_precision' => DatePrecision::Year,
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSeeInOrder([
+            'data-test="history-valuation-'.$valuation->id.'"',
+            'data-test="history-provenance-'.$acquisition->id.'"',
+        ], false);
+});
+
+// An undated provenance event cannot claim a spot on the line, so it drops below
+// the dated entries rather than reading as though it happened at the epoch.
+it('sorts undated entries to the end', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $dated = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
+    $undated = ProvenanceEvent::factory()->create([
+        'copy_id' => $copy->id,
+        'title' => 'Origin unknown',
+        'occurred_at' => null,
+        'occurred_at_precision' => DatePrecision::Unknown,
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSeeInOrder([
+            'data-test="history-valuation-'.$dated->id.'"',
+            'data-test="history-provenance-'.$undated->id.'"',
+        ], false);
+});
+
+// A returned loan leaves the object twice: once going out, once coming back, so
+// it reads as two entries.
+it('shows a loan and its return as separate entries', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $loan = Loan::factory()->create([
+        'copy_id' => $copy->id,
+        'direction' => LoanDirection::Outgoing,
+        'status' => LoanStatus::Returned,
+        'party' => 'The Louvre',
+        'include_in_provenance' => true,
+        'loaned_at' => '2025-01-01',
+        'returned_at' => '2025-06-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="history-loan-'.$loan->id.'"', false)
+        ->assertSee('data-test="history-loan-'.$loan->id.'-return"', false)
+        ->assertSee('Loaned to The Louvre')
+        ->assertSee('Returned from The Louvre');
+});
+
+// Each entry links back into the section it came from, so a valuation on the
+// timeline opens the valuations panel for the full record.
+it('links each entry into its section', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee(route('items.history.show', [$collection, $item, $copy, 'valuations']), false);
+});
+
+// A copy that has records but none matching the filter reads a filter empty
+// state rather than the no-history one, so the reader knows there is more.
+it('shows the filter empty state when nothing matches the current view', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    // A single routine move: nothing meaningful, so the default view is empty
+    // while the copy still has history.
+    $location = Location::factory()->create(['account_id' => $user->account_id]);
+    LocationHistory::factory()->create(['copy_id' => $copy->id, 'location_id' => $location->id]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="no-history-matches"', false)
+        ->assertDontSee('data-test="no-history"', false);
+});
+
+// Insurance opening reads as a meaningful entry with the insured value in its own
+// currency.
+it('shows an insurance record on the timeline', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $insurance = InsuranceRecord::factory()->create([
+        'copy_id' => $copy->id,
+        'provider' => 'Hiscox',
+        'insured_value' => 450000,
+        'currency_code' => 'GBP',
+        'starts_at' => '2022-01-01',
+    ]);
+
+    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+        ->assertOk()
+        ->assertSee('data-test="history-insurance-'.$insurance->id.'"', false)
+        ->assertSee('Hiscox')
+        ->assertSee('£4,500');
 });
 
 // Each section is its own url, so the valuations section renders its own panel
@@ -191,7 +439,7 @@ it('falls back to the timeline for an unknown section', function () {
 
     $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'nonsense']))
         ->assertOk()
-        ->assertSee('Everything that has happened to this copy, oldest first. The sections listed alongside are what it is assembled from.');
+        ->assertSee('A combined chronological view built from every record below. Each entry keeps its own source of truth.');
 });
 
 it('shows the empty state when nothing has been recorded against a copy', function () {

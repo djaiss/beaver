@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DatePrecision;
+use App\Enums\TimelineSource;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDocuments;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\ValuationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -99,5 +102,27 @@ class Valuation extends Model
     public function copy(): BelongsTo
     {
         return $this->belongsTo(Copy::class);
+    }
+
+    /**
+     * Map the valuation to a unified-history entry.
+     *
+     * A valuation is always part of what an object is worth over time, so it
+     * reads on the default timeline, and the amount renders in the currency it
+     * was recorded in.
+     */
+    public function toTimelineEntry(): TimelineEntry
+    {
+        return new TimelineEntry(
+            source: TimelineSource::Valuation,
+            sourceId: $this->id,
+            date: $this->valued_at,
+            precision: DatePrecision::Exact,
+            title: $this->type->label(),
+            summary: $this->valuer,
+            amountCents: $this->amount,
+            currencyCode: $this->currency_code,
+            meaningful: true,
+        );
     }
 }

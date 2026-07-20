@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DatePrecision;
+use App\Enums\TimelineSource;
 use App\Enums\TransactionType;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDocuments;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -141,5 +144,32 @@ class Transaction extends Model
         }
 
         return array_sum($parts);
+    }
+
+    /**
+     * Map the exchange to a unified-history entry.
+     *
+     * A purchase, sale, trade, gift or inheritance is a real change of ownership
+     * and reads on the default timeline; a fee, tax, shipping charge or refund is
+     * the money around one and stays out of it until the complete view is asked
+     * for.
+     */
+    public function toTimelineEntry(): TimelineEntry
+    {
+        $title = $this->counterparty === null
+            ? $this->type->label()
+            : $this->type->label().' · '.$this->counterparty;
+
+        return new TimelineEntry(
+            source: TimelineSource::Transaction,
+            sourceId: $this->id,
+            date: $this->occurred_at,
+            precision: DatePrecision::Exact,
+            title: $title,
+            summary: $this->reference_number,
+            amountCents: $this->total(),
+            currencyCode: $this->currency_code,
+            meaningful: $this->type->qualifiesForProvenance(),
+        );
     }
 }
