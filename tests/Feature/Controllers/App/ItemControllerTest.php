@@ -542,6 +542,39 @@ it('does not let a viewer update an item', function () {
     ])->assertNotFound();
 });
 
+it('deletes an item', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->delete(route('items.destroy', [$collection, $item]));
+
+    $response->assertRedirect("/collections/{$collection->id}");
+    $response->assertSessionHas('status', 'Item deleted');
+    $this->assertSoftDeleted('items', ['id' => $item->id]);
+});
+
+it('does not let a viewer delete an item', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $this->actingAs($viewer)->delete(route('items.destroy', [$collection, $item]))->assertNotFound();
+    $this->assertDatabaseHas('items', ['id' => $item->id, 'deleted_at' => null]);
+});
+
+it('does not delete an item in another account', function () {
+    $user = $this->createUser();
+    $foreign = Collection::factory()->create();
+    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+
+    $this->actingAs($user)->delete(route('items.destroy', [$foreign, $item]))->assertNotFound();
+});
+
 // An unchecked box submits nothing on its own, so the form carries an empty
 // value alongside it. Without that, a yes could never be turned back into a no.
 it('clears a yes / no custom field when it is unchecked', function () {

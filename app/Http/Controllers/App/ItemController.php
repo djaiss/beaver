@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App;
 
 use App\Actions\CreateItem;
+use App\Actions\DestroyItem;
 use App\Actions\UpdateItem;
 use App\Enums\CopyStatus;
 use App\Http\Controllers\Concerns\FindsItems;
@@ -127,6 +128,21 @@ class ItemController extends Controller
         return to_route('items.show', [$collectionModel->id, $itemModel->id])
             ->with('status', __('Item updated'))
             ->with('status_description', __('Your changes to the item were saved.'));
+    }
+
+    public function destroy(Request $request, int $collection, int $item): RedirectResponse
+    {
+        $collectionModel = $this->findCollection($request, $collection);
+        $itemModel = $this->findItem($collectionModel, $item);
+
+        new DestroyItem(
+            user: $request->user(),
+            item: $itemModel,
+        )->execute();
+
+        return to_route('collections.show', $collectionModel->id)
+            ->with('status', __('Item deleted'))
+            ->with('status_description', __('The item was removed from the collection.'));
     }
 
     public function create(Request $request, int $collection): RedirectResponse
