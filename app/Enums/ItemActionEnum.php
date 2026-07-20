@@ -37,6 +37,9 @@ enum ItemActionEnum: string
     case InsuranceRecordCreation = 'insurance_record_created';
     case InsuranceRecordUpdate = 'insurance_record_updated';
     case InsuranceRecordDeletion = 'insurance_record_deleted';
+    case MaintenanceRecordCreation = 'maintenance_record_created';
+    case MaintenanceRecordUpdate = 'maintenance_record_updated';
+    case MaintenanceRecordDeletion = 'maintenance_record_deleted';
 
     public function translationKey(): string
     {
@@ -64,6 +67,9 @@ enum ItemActionEnum: string
             self::InsuranceRecordCreation => 'recorded an insurance record',
             self::InsuranceRecordUpdate => 'updated an insurance record',
             self::InsuranceRecordDeletion => 'deleted an insurance record',
+            self::MaintenanceRecordCreation => 'logged a maintenance record',
+            self::MaintenanceRecordUpdate => 'updated a maintenance record',
+            self::MaintenanceRecordDeletion => 'deleted a maintenance record',
         };
     }
 }

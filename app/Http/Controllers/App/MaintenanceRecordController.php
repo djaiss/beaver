@@ -1,0 +1,165 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\App;
+
+use App\Actions\CreateMaintenanceRecord;
+use App\Actions\DestroyMaintenanceRecord;
+use App\Actions\UpdateMaintenanceRecord;
+use App\Enums\MaintenanceType;
+use App\Http\Controllers\Concerns\FindsItems;
+use App\Http\Controllers\Controller;
+use App\Models\Copy;
+use App\Models\Item;
+use App\Models\MaintenanceRecord;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
+/**
+ * The maintenance records of a copy, logged from the history tab of its item.
+ *
+ * The cost is typed in currency units on the form and stored in cents, so the
+ * controller is the only place that knows about the conversion.
+ */
+class MaintenanceRecordController extends Controller
+{
+    use FindsItems;
+
+    public function create(Request $request, int $collection, int $item, int $copy): RedirectResponse
+    {
+        $collectionModel = $this->findCollection($request, $collection);
+        $itemModel = $this->findItem($collectionModel, $item, []);
+        $copyModel = $this->findCopy($itemModel, $copy);
+
+        $validated = $request->validate($this->rules());
+
+        new CreateMaintenanceRecord(
+            user: $request->user(),
+            copy: $copyModel,
+            type: MaintenanceType::from($validated['type']),
+            title: $validated['title'],
+            description: $validated['description'] ?? null,
+            performedBy: $validated['performed_by'] ?? null,
+            performedAt: $validated['performed_at'] ?? null,
+            costAmount: $this->toCents($validated['cost_amount'] ?? null),
+            costCurrencyCode: $validated['currency'] ?? null,
+            conditionBeforeId: $this->toId($validated['condition_before_id'] ?? null),
+            conditionAfterId: $this->toId($validated['condition_after_id'] ?? null),
+            nextDueAt: $validated['next_due_at'] ?? null,
+            includeInProvenance: $request->boolean('include_in_provenance'),
+        )->execute();
+
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'maintenance'])
+            ->with('status', __('Maintenance record added'))
+            ->with('status_description', __('The work was logged in the history of this copy.'));
+    }
+
+    public function update(Request $request, int $collection, int $item, int $copy, int $maintenanceRecord): RedirectResponse
+    {
+        $collectionModel = $this->findCollection($request, $collection);
+        $itemModel = $this->findItem($collectionModel, $item, []);
+        $copyModel = $this->findCopy($itemModel, $copy);
+        $recordModel = $this->findRecord($copyModel, $maintenanceRecord);
+
+        $validated = $request->validate($this->rules());
+
+        new UpdateMaintenanceRecord(
+            user: $request->user(),
+            record: $recordModel,
+            type: MaintenanceType::from($validated['type']),
+            title: $validated['title'],
+            description: $validated['description'] ?? null,
+            performedBy: $validated['performed_by'] ?? null,
+            performedAt: $validated['performed_at'] ?? null,
+            costAmount: $this->toCents($validated['cost_amount'] ?? null),
+            costCurrencyCode: $validated['currency'] ?? null,
+            conditionBeforeId: $this->toId($validated['condition_before_id'] ?? null),
+            conditionAfterId: $this->toId($validated['condition_after_id'] ?? null),
+            nextDueAt: $validated['next_due_at'] ?? null,
+            includeInProvenance: $request->boolean('include_in_provenance'),
+        )->execute();
+
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'maintenance'])
+            ->with('status', __('Maintenance record updated'))
+            ->with('status_description', __('Your changes to the work were saved.'));
+    }
+
+    public function destroy(Request $request, int $collection, int $item, int $copy, int $maintenanceRecord): RedirectResponse
+    {
+        $collectionModel = $this->findCollection($request, $collection);
+        $itemModel = $this->findItem($collectionModel, $item, []);
+        $copyModel = $this->findCopy($itemModel, $copy);
+        $recordModel = $this->findRecord($copyModel, $maintenanceRecord);
+
+        new DestroyMaintenanceRecord(
+            user: $request->user(),
+            record: $recordModel,
+        )->execute();
+
+        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'maintenance'])
+            ->with('status', __('Maintenance record deleted'))
+            ->with('status_description', __('The work was removed from the history of this copy.'));
+    }
+
+    private function findCopy(Item $item, int $copy): Copy
+    {
+        try {
+            return $item->copies()->findOrFail($copy);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+    }
+
+    private function findRecord(Copy $copy, int $maintenanceRecord): MaintenanceRecord
+    {
+        try {
+            return $copy->maintenanceRecords()->findOrFail($maintenanceRecord);
+        } catch (ModelNotFoundException) {
+            abort(404);
+        }
+    }
+
+    /**
+     * @return array<string, list<mixed>>
+     */
+    private function rules(): array
+    {
+        return [
+            'type' => ['required', Rule::enum(MaintenanceType::class)],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'performed_by' => ['nullable', 'string', 'max:255'],
+            'performed_at' => ['nullable', 'date'],
+            'cost_amount' => ['nullable', 'numeric', 'min:0'],
+            'currency' => ['nullable', 'string', Rule::in(array_keys(config('currencies')))],
+            'condition_before_id' => ['nullable', 'integer'],
+            'condition_after_id' => ['nullable', 'integer'],
+            'next_due_at' => ['nullable', 'date'],
+            'include_in_provenance' => ['nullable', 'boolean'],
+        ];
+    }
+
+    /**
+     * The form collects the cost in currency units, and it is stored in cents.
+     */
+    private function toCents(mixed $amount): ?int
+    {
+        if ($amount === null || $amount === '') {
+            return null;
+        }
+
+        return (int) round((float) $amount * 100);
+    }
+
+    private function toId(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (int) $value;
+    }
+}
