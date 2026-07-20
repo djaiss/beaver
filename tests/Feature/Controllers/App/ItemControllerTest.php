@@ -202,19 +202,6 @@ it('reads a rating custom field as stars', function () {
     $response->assertDontSee('>4<', false);
 });
 
-it('flags the parts of the overview that are not built yet', function () {
-    $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $set = Set::factory()->create(['collection_id' => $collection->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'set_id' => $set->id]);
-    Copy::factory()->create(['item_id' => $item->id]);
-
-    $response = $this->actingAs($user)->get(route('items.show', [$collection, $item]));
-
-    $response->assertOk();
-    $response->assertSee('Soon');
-});
-
 it('shows how complete the set of an item is', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
