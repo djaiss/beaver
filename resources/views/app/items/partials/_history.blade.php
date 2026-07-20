@@ -22,7 +22,7 @@
       ['key' => 'provenance', 'label' => __('Provenance'), 'color' => '#6366f1', 'round' => true, 'ready' => true],
       ['key' => 'insurance', 'label' => __('Insurance'), 'color' => '#8b5cf6', 'round' => true, 'ready' => true],
       ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => true],
-      ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => false],
+      ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => true],
       ['key' => 'locations', 'label' => __('Locations'), 'color' => '#14b8a6', 'round' => false, 'ready' => true],
       ['key' => 'documents', 'label' => __('Documents'), 'color' => '#64748b', 'round' => false, 'ready' => false],
   ];
@@ -50,6 +50,7 @@
     $provenanceCount = $selectedCopy->provenanceEvents->count();
     $insuranceCount = $selectedCopy->insuranceRecords->count();
     $maintenanceCount = $selectedCopy->maintenanceRecords->count();
+    $loanCount = $selectedCopy->loans->count();
     $locationCount = $selectedCopy->locationHistory->count();
     $counts = [
         'timeline' => $valuationCount,
@@ -58,8 +59,13 @@
         'provenance' => $provenanceCount,
         'insurance' => $insuranceCount,
         'maintenance' => $maintenanceCount,
+        'loans' => $loanCount,
         'locations' => $locationCount,
     ];
+
+    // The loan that currently has the copy out of custody, if any. It drives the
+    // banner that says where the copy is and when it is due back.
+    $activeLoan = $selectedCopy->activeLoan;
 
     // The acquisition date and price are read from the earliest transaction that
     // brought the copy in, not stored on the copy.
@@ -101,6 +107,57 @@
         </a>
       @endforeach
     </div>
+
+    {{-- While the copy is out on loan, say so plainly: where it is and when it
+         is due back. An overdue loan reads as an error rather than a note. --}}
+    @if ($activeLoan)
+      @php
+        $loanOverdue = $activeLoan->isOverdue();
+      @endphp
+
+      <a
+        href="{{ route('items.history.show', [$collection, $item, $selectedCopy, 'loans']) }}"
+        data-turbo="true"
+        @class([
+            'flex flex-wrap items-center gap-3 rounded-xl border px-5 py-4 transition-colors',
+            'border-error/40 bg-error/10 hover:border-error/60' => $loanOverdue,
+            'border-badge-pink/40 bg-badge-pink/10 hover:border-badge-pink/60' => ! $loanOverdue,
+        ])
+        data-test="loan-banner-{{ $selectedCopy->id }}"
+      >
+        <span @class([
+            'flex size-9 shrink-0 items-center justify-center rounded-full',
+            'bg-error/15 text-error' => $loanOverdue,
+            'bg-badge-pink/15 text-badge-pink' => ! $loanOverdue,
+        ])>
+          <x-lucide-arrow-up-right class="size-5" />
+        </span>
+
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold text-ink">
+            @if ($loanOverdue)
+              {{ __('Overdue: this copy is out with :party', ['party' => $activeLoan->party]) }}
+            @else
+              {{ __('On loan to :party', ['party' => $activeLoan->party]) }}
+            @endif
+          </p>
+          <p class="mt-0.5 text-xs text-muted-soft">
+            {{ __('Lent :date', ['date' => $activeLoan->loaned_at->isoFormat('MMM D, YYYY')]) }}
+            @if ($activeLoan->due_at)
+              · {{ $loanOverdue ? __('was due :date', ['date' => $activeLoan->due_at->isoFormat('MMM D, YYYY')]) : __('due back :date', ['date' => $activeLoan->due_at->isoFormat('MMM D, YYYY')]) }}
+            @else
+              · {{ __('no return date set') }}
+            @endif
+          </p>
+        </div>
+
+        <span @class([
+            'shrink-0 rounded-full px-2.5 py-1 text-[11.5px] font-semibold',
+            'bg-error/15 text-error' => $loanOverdue,
+            'bg-badge-pink/15 text-badge-pink' => ! $loanOverdue,
+        ])>{{ $activeLoan->status->label() }}</span>
+      </a>
+    @endif
 
     {{-- Summary strip: the current state of the chosen copy at a glance. --}}
     <div class="grid grid-cols-2 overflow-hidden rounded-xl border border-hairline lg:grid-cols-4" data-test="history-summary">
@@ -189,6 +246,8 @@
           @include('app.items.partials._historyInsurance')
         @elseif ($section === 'maintenance')
           @include('app.items.partials._historyMaintenance')
+        @elseif ($section === 'loans')
+          @include('app.items.partials._historyLoans')
         @elseif ($section === 'locations')
           @include('app.items.partials._historyLocations')
         @else

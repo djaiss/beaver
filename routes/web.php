@@ -31,6 +31,8 @@ use App\Http\Controllers\App\ItemHistoryController;
 use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
+use App\Http\Controllers\App\LoanController;
+use App\Http\Controllers\App\LoanReturnController;
 use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\LocationHistoryController;
 use App\Http\Controllers\App\MaintenanceRecordController;
@@ -144,6 +146,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items/{item}/copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('maintenanceRecords.create');
         Route::put('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.update');
         Route::delete('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.destroy');
+
+        // loans — owners and editors record custody moving out or in, mark a loan as returned, and correct or remove one
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/loans', [LoanController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('loans.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}', [LoanController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.update');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}/return', [LoanReturnController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.return.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}', [LoanController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.destroy');
 
         // location history — owners and editors move a copy between locations; creating a record is a move, update and destroy correct a past one
         Route::post('collections/{collection}/items/{item}/copies/{copy}/location-history', [LocationHistoryController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('locationHistory.create');

@@ -52,6 +52,10 @@ enum UserActionEnum: string
     case MaintenanceRecordCreation = 'maintenance_record_created';
     case MaintenanceRecordUpdate = 'maintenance_record_updated';
     case MaintenanceRecordDeletion = 'maintenance_record_deleted';
+    case LoanCreation = 'loan_created';
+    case LoanUpdate = 'loan_updated';
+    case LoanReturn = 'loan_returned';
+    case LoanDeletion = 'loan_deleted';
     case LocationCreation = 'location_created';
     case LocationUpdate = 'location_updated';
     case LocationDeletion = 'location_deleted';
@@ -138,6 +142,10 @@ enum UserActionEnum: string
             self::MaintenanceRecordCreation => 'Logged a maintenance record on the item called :name',
             self::MaintenanceRecordUpdate => 'Updated a maintenance record on the item called :name',
             self::MaintenanceRecordDeletion => 'Deleted a maintenance record on the item called :name',
+            self::LoanCreation => 'Recorded a loan on the item called :name',
+            self::LoanUpdate => 'Updated a loan on the item called :name',
+            self::LoanReturn => 'Marked a loan as returned on the item called :name',
+            self::LoanDeletion => 'Deleted a loan on the item called :name',
             self::LocationCreation => 'Created the location called :name',
             self::LocationUpdate => 'Updated the location called :name',
             self::LocationDeletion => 'Deleted the location called :name',

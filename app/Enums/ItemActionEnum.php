@@ -41,6 +41,10 @@ enum ItemActionEnum: string
     case MaintenanceRecordCreation = 'maintenance_record_created';
     case MaintenanceRecordUpdate = 'maintenance_record_updated';
     case MaintenanceRecordDeletion = 'maintenance_record_deleted';
+    case LoanCreation = 'loan_created';
+    case LoanUpdate = 'loan_updated';
+    case LoanReturn = 'loan_returned';
+    case LoanDeletion = 'loan_deleted';
 
     public function translationKey(): string
     {
@@ -72,6 +76,10 @@ enum ItemActionEnum: string
             self::MaintenanceRecordCreation => 'logged a maintenance record',
             self::MaintenanceRecordUpdate => 'updated a maintenance record',
             self::MaintenanceRecordDeletion => 'deleted a maintenance record',
+            self::LoanCreation => 'recorded a loan',
+            self::LoanUpdate => 'updated a loan',
+            self::LoanReturn => 'marked a loan as returned',
+            self::LoanDeletion => 'deleted a loan',
         };
     }
 }

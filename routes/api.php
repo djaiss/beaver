@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\ItemLogController;
 use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\ItemPhotoSelectionController;
 use App\Http\Controllers\Api\ItemTagController;
+use App\Http\Controllers\Api\LoanController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\LocationHistoryController;
 use App\Http\Controllers\Api\MaintenanceRecordController;
@@ -196,6 +197,14 @@ Route::name('api.')->group(function (): void {
         Route::post('copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.maintenanceRecords.create');
         Route::put('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.update');
         Route::delete('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.destroy');
+
+        // the loans recorded against a copy; custody moving out or in, without ownership
+        Route::get('copies/{copy}/loans', [LoanController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.loans');
+        Route::get('copies/{copy}/loans/{loan}', [LoanController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.show');
+        Route::post('copies/{copy}/loans', [LoanController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.loans.create');
+        Route::put('copies/{copy}/loans/{loan}', [LoanController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.update');
+        Route::post('copies/{copy}/loans/{loan}/return', [LoanController::class, 'return'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.return');
+        Route::delete('copies/{copy}/loans/{loan}', [LoanController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.destroy');
 
         // the location history of a copy; creating a record moves the copy
         Route::get('copies/{copy}/location-history', [LocationHistoryController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.locationHistory');
