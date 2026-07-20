@@ -13,6 +13,7 @@ use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\LocationHistory;
 use App\Models\Valuation;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -243,4 +244,26 @@ it('records no chips when nothing on the copy moved', function () {
         job: LogItemAction::class,
         callback: fn (LogItemAction $job): bool => $job->parameters === null,
     );
+});
+
+// Changing a copy's location goes through the move path, so the open record is
+// closed and a new one opened rather than the pointer being overwritten alone.
+it('moves the copy through its history when the location changes', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $shelf = Location::factory()->create(['account_id' => $user->account_id]);
+    $safe = Location::factory()->create(['account_id' => $user->account_id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id, 'current_location_id' => $shelf->id]);
+    LocationHistory::factory()->create(['copy_id' => $copy->id, 'location_id' => $shelf->id, 'moved_at' => '2024-01-01', 'moved_out_at' => null]);
+
+    new UpdateCopy(user: $user, copy: $copy, location: $safe)->execute();
+
+    $records = LocationHistory::query()->where('copy_id', $copy->id)->get();
+    expect($records)->toHaveCount(2);
+    expect($records->whereNull('moved_out_at'))->toHaveCount(1);
+    expect($copy->refresh()->current_location_id)->toBe($safe->id);
+    expect($copy->openLocationHistory->location_id)->toBe($safe->id);
 });

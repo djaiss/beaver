@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\ItemPhotoSelectionController;
 use App\Http\Controllers\Api\ItemTagController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\LocationHistoryController;
 use App\Http\Controllers\Api\MaintenanceRecordController;
 use App\Http\Controllers\Api\ProvenanceEventController;
 use App\Http\Controllers\Api\SeriesController;
@@ -195,6 +196,13 @@ Route::name('api.')->group(function (): void {
         Route::post('copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.maintenanceRecords.create');
         Route::put('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.update');
         Route::delete('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.destroy');
+
+        // the location history of a copy; creating a record moves the copy
+        Route::get('copies/{copy}/location-history', [LocationHistoryController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.locationHistory');
+        Route::get('copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('copies.locationHistory.show');
+        Route::post('copies/{copy}/location-history', [LocationHistoryController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.locationHistory.create');
+        Route::put('copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('copies.locationHistory.update');
+        Route::delete('copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('copies.locationHistory.destroy');
 
         // the photos of an item
         Route::get('items/{item}/photos', [ItemPhotoController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.photos');

@@ -52,7 +52,9 @@
 
           $facts = [
               ['test' => 'copy-condition', 'label' => __('Condition'), 'value' => $copy->condition?->name ?? '—'],
-              ['test' => 'copy-location', 'label' => __('Location'), 'value' => $copy->currentLocation?->name ?? '—'],
+              ['test' => 'copy-location', 'label' => __('Location'), 'value' => $copy->currentLocation === null
+                  ? '—'
+                  : ($copy->currentLocation->name . ($copy->openLocationHistory ? ' · ' . __('since :date', ['date' => $copy->openLocationHistory->moved_at->isoFormat('MMM YYYY')]) : ''))],
               ['test' => 'copy-quantity-fact', 'label' => __('Quantity'), 'value' => number_format($copy->quantity)],
               ['test' => 'copy-acquired-at', 'label' => __('Acquired'), 'value' => $copy->acquiredAt()?->isoFormat('MMM YYYY') ?? '—'],
               ['test' => 'copy-price-paid', 'label' => __('Price paid'), 'value' => $pricePaid === null ? '—' : Money::format($pricePaid, $copy->acquiringTransaction?->currency_code)],

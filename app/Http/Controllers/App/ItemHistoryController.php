@@ -48,6 +48,8 @@ class ItemHistoryController extends Controller
             'copies.insuranceRecords',
             'copies.maintenanceRecords.conditionBefore',
             'copies.maintenanceRecords.conditionAfter',
+            'copies.locationHistory.location',
+            'copies.openLocationHistory.location',
             'category',
             'collectionType',
         ]);
@@ -71,7 +73,22 @@ class ItemHistoryController extends Controller
             'section' => $this->section($section),
             'currencies' => $this->currencyOptions(),
             'conditions' => $this->conditionOptions($request),
+            'locations' => $this->locationOptions($request),
         ]);
+    }
+
+    /**
+     * The locations a copy can be moved to, drawn from the account's own.
+     *
+     * @return array<int, string>
+     */
+    private function locationOptions(Request $request): array
+    {
+        return $request->user()->account->locations()
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn ($location): array => [$location->id => $location->name])
+            ->all();
     }
 
     /**

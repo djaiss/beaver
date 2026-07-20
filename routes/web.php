@@ -32,6 +32,7 @@ use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LocationController;
+use App\Http\Controllers\App\LocationHistoryController;
 use App\Http\Controllers\App\MaintenanceRecordController;
 use App\Http\Controllers\App\ProvenanceEventController;
 use App\Http\Controllers\App\SeriesController;
@@ -143,6 +144,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items/{item}/copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('maintenanceRecords.create');
         Route::put('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.update');
         Route::delete('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.destroy');
+
+        // location history — owners and editors move a copy between locations; creating a record is a move, update and destroy correct a past one
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/location-history', [LocationHistoryController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('locationHistory.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('locationHistory.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('locationHistory.destroy');
 
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');

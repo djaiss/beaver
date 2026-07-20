@@ -23,7 +23,7 @@
       ['key' => 'insurance', 'label' => __('Insurance'), 'color' => '#8b5cf6', 'round' => true, 'ready' => true],
       ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => true],
       ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => false],
-      ['key' => 'locations', 'label' => __('Locations'), 'color' => '#14b8a6', 'round' => false, 'ready' => false],
+      ['key' => 'locations', 'label' => __('Locations'), 'color' => '#14b8a6', 'round' => false, 'ready' => true],
       ['key' => 'documents', 'label' => __('Documents'), 'color' => '#64748b', 'round' => false, 'ready' => false],
   ];
 @endphp
@@ -50,6 +50,7 @@
     $provenanceCount = $selectedCopy->provenanceEvents->count();
     $insuranceCount = $selectedCopy->insuranceRecords->count();
     $maintenanceCount = $selectedCopy->maintenanceRecords->count();
+    $locationCount = $selectedCopy->locationHistory->count();
     $counts = [
         'timeline' => $valuationCount,
         'transactions' => $transactionCount,
@@ -57,6 +58,7 @@
         'provenance' => $provenanceCount,
         'insurance' => $insuranceCount,
         'maintenance' => $maintenanceCount,
+        'locations' => $locationCount,
     ];
 
     // The acquisition date and price are read from the earliest transaction that
@@ -128,7 +130,9 @@
                 'label' => __('Location'),
                 'value' => $selectedCopy->currentLocation?->name ?? '—',
                 'valueClass' => 'text-ink',
-                'sub' => $selectedCopy->condition?->name ?? '—',
+                'sub' => $selectedCopy->openLocationHistory
+                    ? __('since :date', ['date' => $selectedCopy->openLocationHistory->moved_at->isoFormat('MMM YYYY')])
+                    : ($selectedCopy->currentLocation ? __('No move recorded') : __('Not stored anywhere')),
             ],
         ];
       @endphp
@@ -185,6 +189,8 @@
           @include('app.items.partials._historyInsurance')
         @elseif ($section === 'maintenance')
           @include('app.items.partials._historyMaintenance')
+        @elseif ($section === 'locations')
+          @include('app.items.partials._historyLocations')
         @else
           {{-- A section that has no screen yet. The nav still lists it, so the
                content says what it will hold rather than showing nothing. --}}

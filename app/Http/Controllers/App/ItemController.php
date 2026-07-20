@@ -232,23 +232,35 @@ class ItemController extends Controller
      * Turn the validated copy rows into the shape the action expects, converting
      * the estimated value from currency units into integer cents.
      *
+     * The location is only carried when the row actually submitted it. The edit
+     * form drops the field for an existing copy, whose location is changed through
+     * the move action instead, so an absent key leaves the copy where it is rather
+     * than reading as a move to nowhere.
+     *
      * @param  array<int, array<string, mixed>>  $copies
-     * @return list<array{id: int|null, identifier: string|null, condition_id: int|null, current_location_id: int|null, status: CopyStatus, quantity: int, disposed_at: string|null, note: string|null, estimated_value: int|null}>
+     * @return list<array{id: int|null, identifier: string|null, condition_id: int|null, current_location_id?: int|null, status: CopyStatus, quantity: int, disposed_at: string|null, note: string|null, estimated_value: int|null}>
      */
     private function copies(array $copies): array
     {
         return collect($copies)
-            ->map(fn (array $copy): array => [
-                'id' => $this->toId($copy['id'] ?? null),
-                'identifier' => $this->toText($copy['identifier'] ?? null),
-                'condition_id' => $this->toId($copy['condition_id'] ?? null),
-                'current_location_id' => $this->toId($copy['current_location_id'] ?? null),
-                'status' => CopyStatus::tryFrom((string) ($copy['status'] ?? '')) ?? CopyStatus::Owned,
-                'quantity' => max(1, (int) ($copy['quantity'] ?? 1)),
-                'disposed_at' => $this->toText($copy['disposed_at'] ?? null),
-                'note' => $this->toText($copy['note'] ?? null),
-                'estimated_value' => $this->toCents($copy['estimated_value'] ?? null),
-            ])
+            ->map(function (array $copy): array {
+                $shaped = [
+                    'id' => $this->toId($copy['id'] ?? null),
+                    'identifier' => $this->toText($copy['identifier'] ?? null),
+                    'condition_id' => $this->toId($copy['condition_id'] ?? null),
+                    'status' => CopyStatus::tryFrom((string) ($copy['status'] ?? '')) ?? CopyStatus::Owned,
+                    'quantity' => max(1, (int) ($copy['quantity'] ?? 1)),
+                    'disposed_at' => $this->toText($copy['disposed_at'] ?? null),
+                    'note' => $this->toText($copy['note'] ?? null),
+                    'estimated_value' => $this->toCents($copy['estimated_value'] ?? null),
+                ];
+
+                if (array_key_exists('current_location_id', $copy)) {
+                    $shaped['current_location_id'] = $this->toId($copy['current_location_id']);
+                }
+
+                return $shaped;
+            })
             ->all();
     }
 

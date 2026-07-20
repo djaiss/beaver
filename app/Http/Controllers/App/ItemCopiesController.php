@@ -23,6 +23,7 @@ class ItemCopiesController extends Controller
             'tags',
             'copies.condition',
             'copies.currentLocation',
+            'copies.openLocationHistory',
             'copies.latestValuation',
             'copies.acquiringTransaction',
             'category',
