@@ -203,3 +203,32 @@ it('shows the insurance records of a copy on the history tab', function () {
         ->assertSee('data-test="insurance-'.$record->id.'"', false)
         ->assertSee('data-test="new-insurance-'.$copy->id.'"', false);
 });
+
+// The add card carries the whole form: the segmented status control, the
+// scheduled toggle and the submit, so a regression in its shape shows up here.
+it('renders the add form with its status buttons and scheduled toggle', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'insurance']))
+        ->assertOk()
+        ->assertSee('data-test="add-insurance-'.$copy->id.'-status-active"', false)
+        ->assertSee('data-test="add-insurance-'.$copy->id.'-status-cancelled"', false)
+        ->assertSee('data-test="add-insurance-'.$copy->id.'-scheduled-toggle"', false)
+        ->assertSee('data-test="add-insurance-'.$copy->id.'-submit"', false);
+});
+
+it('does not render the insurance form for a viewer', function () {
+    $account = $this->createAccount();
+    $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+    InsuranceRecord::factory()->create(['copy_id' => $copy->id]);
+
+    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'insurance']))
+        ->assertOk()
+        ->assertDontSee('data-test="new-insurance-'.$copy->id.'"', false);
+});

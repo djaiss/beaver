@@ -31,9 +31,7 @@
   </div>
 
   @if ($canManage)
-    <div x-show="adding" x-cloak class="mb-5 rounded-xl border border-hairline bg-canvas p-5">
-      <p class="mb-4 text-base font-semibold text-ink">{{ __('New insurance record') }}</p>
-
+    <div x-show="adding" x-cloak class="mb-5">
       @include('app.items.partials._insuranceRecordForm', [
           'formId' => 'add-insurance-'.$selectedCopy->id,
           'action' => route('insuranceRecords.create', [$collection, $item, $selectedCopy]),
@@ -41,6 +39,8 @@
           'openVar' => 'adding',
           'submitLabel' => __('Add record'),
           'dataTest' => 'create-insurance-form-'.$selectedCopy->id,
+          'formTitle' => __('New insurance record'),
+          'hint' => __('Adds a new coverage record for this copy.'),
           'record' => null,
       ])
     </div>
@@ -119,7 +119,7 @@
         @endif
 
         @if ($canManage)
-          <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
+          <div x-show="editing" x-cloak class="border-t border-hairline p-4">
             @include('app.items.partials._insuranceRecordForm', [
                 'formId' => 'edit-insurance-'.$record->id,
                 'action' => route('insuranceRecords.update', [$collection, $item, $selectedCopy, $record]),
@@ -127,6 +127,8 @@
                 'openVar' => 'editing',
                 'submitLabel' => __('Save changes'),
                 'dataTest' => 'edit-insurance-form-'.$record->id,
+                'formTitle' => __('Edit insurance record'),
+                'hint' => null,
                 'record' => $record,
             ])
           </div>
