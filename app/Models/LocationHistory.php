@@ -112,7 +112,9 @@ class LocationHistory extends Model
      */
     public function toTimelineEntry(): TimelineEntry
     {
-        $location = $this->location?->name ?? __('an unknown location');
+        $location = $this->location
+            ? $this->location->name
+            : __('an unknown location');
 
         return new TimelineEntry(
             source: TimelineSource::Location,
