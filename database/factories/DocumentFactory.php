@@ -28,8 +28,13 @@ class DocumentFactory extends Factory
             // attaching the document to another record passes its own account_id.
             'documentable_type' => 'copy',
             'documentable_id' => Copy::factory(),
-            'account_id' => fn (array $attributes) => Copy::find($attributes['documentable_id'])?->item?->collection?->account_id
-                ?? Account::factory(),
+            'account_id' => function (array $attributes) {
+                $copy = Copy::find($attributes['documentable_id']);
+
+                return $copy instanceof Copy
+                    ? $copy->item->collection->account_id
+                    : Account::factory();
+            },
             'type' => DocumentType::Receipt,
             'name' => fake()->words(3, true),
             'path' => 'documents/1/'.fake()->uuid().'.pdf',
