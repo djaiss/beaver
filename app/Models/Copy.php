@@ -279,4 +279,30 @@ class Copy extends Model
     {
         return $this->hasMany(MaintenanceRecord::class)->orderByDesc('performed_at')->orderByDesc('id');
     }
+
+    /**
+     * Get every place the copy has been stored, most recent move first.
+     *
+     * @return HasMany<LocationHistory, $this>
+     */
+    public function locationHistory(): HasMany
+    {
+        return $this->hasMany(LocationHistory::class)->orderByDesc('moved_at')->orderByDesc('id');
+    }
+
+    /**
+     * Get the open location record: where the copy is stored now.
+     *
+     * A copy has at most one record with no moved_out_at, and its location is
+     * what current_location_id mirrors. The id breaks ties so a copy that arrived
+     * somewhere twice on the same day still reads the later record.
+     *
+     * @return HasOne<LocationHistory, $this>
+     */
+    public function openLocationHistory(): HasOne
+    {
+        return $this->hasOne(LocationHistory::class)
+            ->whereNull('moved_out_at')
+            ->latestOfMany();
+    }
 }

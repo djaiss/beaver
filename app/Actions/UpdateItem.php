@@ -41,6 +41,8 @@ use Illuminate\Support\Facades\DB;
  */
 class UpdateItem
 {
+    use RecordsCopyMoves;
+
     /**
      * The values that moved, captured before the item is written so the
      * activity tab can show what they moved from.
@@ -340,7 +342,6 @@ class UpdateItem
             $attributes = [
                 'identifier' => $copy['identifier'] ?? null,
                 'condition_id' => $copy['condition_id'] ?? null,
-                'current_location_id' => $copy['current_location_id'] ?? null,
                 'status' => $copy['status'] ?? CopyStatus::Owned,
                 'quantity' => $copy['quantity'] ?? 1,
                 'disposed_at' => $copy['disposed_at'] ?? null,
@@ -353,6 +354,14 @@ class UpdateItem
                 $existing = $this->item->copies()->findOrFail($id);
                 $existing->fill($attributes);
                 $this->stampAuthorOn($existing);
+
+                // The web form drops the location field for an existing copy, so a
+                // move only happens when the key is actually present (the api may
+                // still send it). Without the key the copy stays where it is.
+                if (array_key_exists('current_location_id', $copy)) {
+                    $this->recordCopyMove($existing, $copy['current_location_id'], $this->user);
+                }
+
                 $this->valueCopy($existing, $copy['estimated_value'] ?? null);
 
                 $keptIds[] = $id;
@@ -364,6 +373,10 @@ class UpdateItem
             $created->created_by_id = $this->user->id;
             $created->created_by_name = $this->user->getFullName();
             $this->stampAuthorOn($created);
+
+            // A new copy created somewhere opens its first location record.
+            $this->recordCopyMove($created, $copy['current_location_id'] ?? null, $this->user);
+
             $this->valueCopy($created, $copy['estimated_value'] ?? null);
 
             $keptIds[] = $created->id;

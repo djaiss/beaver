@@ -37,6 +37,8 @@ use Illuminate\Support\Facades\DB;
  */
 class CreateItem
 {
+    use RecordsCopyMoves;
+
     private Item $item;
 
     /**
@@ -249,13 +251,16 @@ class CreateItem
                 'item_id' => $this->item->id,
                 'identifier' => $copy['identifier'] ?? null,
                 'condition_id' => $copy['condition_id'] ?? null,
-                'current_location_id' => $copy['current_location_id'] ?? null,
                 'status' => $copy['status'] ?? CopyStatus::Owned,
                 'quantity' => $copy['quantity'] ?? 1,
                 'disposed_at' => $copy['disposed_at'] ?? null,
                 'note' => $copy['note'] ?? null,
             ]);
             $this->stampAuthorOn($created);
+
+            // The location goes through the move path so creating a copy somewhere
+            // opens its first location record rather than only setting the pointer.
+            $this->recordCopyMove($created, $copy['current_location_id'] ?? null, $this->user);
 
             $this->valueCopy($created, $copy['estimated_value'] ?? null);
         }

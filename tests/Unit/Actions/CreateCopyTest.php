@@ -13,6 +13,7 @@ use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\LocationHistory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -187,4 +188,23 @@ it('throws when the user does not belong to the account', function () {
         user: $stranger,
         item: $item,
     )->execute();
+});
+
+// Creating a copy somewhere goes through the move path, so it opens the copy's
+// first location record rather than only setting the pointer.
+it('opens the copy first location record when created somewhere', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $location = Location::factory()->create(['account_id' => $user->account_id]);
+
+    $copy = new CreateCopy(user: $user, item: $item, location: $location)->execute();
+
+    $open = $copy->openLocationHistory;
+    expect($open)->toBeInstanceOf(LocationHistory::class);
+    expect($open->location_id)->toBe($location->id);
+    expect($open->moved_out_at)->toBeNull();
+    expect($copy->current_location_id)->toBe($location->id);
 });

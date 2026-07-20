@@ -28,13 +28,14 @@
         'identifier' => $copy->identifier ?? '',
         'condition_id' => (string) $copy->condition_id,
         'current_location_id' => (string) $copy->current_location_id,
+        'location_name' => $copy->currentLocation?->name ?? '',
         'status' => $copy->status->value,
         'quantity' => $copy->quantity,
         'note' => $copy->note ?? '',
         'estimated_value' => $copy->estimatedValue() === null ? '' : number_format($copy->estimatedValue() / 100, 2, '.', ''),
     ])->values()->all() ?? [];
 
-    $blankCopy = ['id' => null, 'identifier' => '', 'condition_id' => '', 'current_location_id' => '', 'status' => CopyStatus::Owned->value, 'quantity' => 1, 'note' => '', 'estimated_value' => ''];
+    $blankCopy = ['id' => null, 'identifier' => '', 'condition_id' => '', 'current_location_id' => '', 'location_name' => '', 'status' => CopyStatus::Owned->value, 'quantity' => 1, 'note' => '', 'estimated_value' => ''];
 
     $selectedCategoryId = old('category_id', $item?->category_id);
     $selectedSetId = old('set_id', $item?->set_id);
@@ -458,12 +459,23 @@
             </div>
             <div>
               <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Location') }}</label>
-              <select :name="`copies[${index}][current_location_id]`" x-model="copy.current_location_id" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
-                <option value="">{{ __('Not set') }}</option>
-                @foreach ($locations as $location)
-                  <option value="{{ $location->id }}">{{ $location->name }}</option>
-                @endforeach
-              </select>
+              {{-- A new copy sets its starting location here, which opens its first
+                   location record. An existing copy is moved from its history tab
+                   instead, so its location reads here rather than being edited. --}}
+              <template x-if="!copy.id">
+                <select :name="`copies[${index}][current_location_id]`" x-model="copy.current_location_id" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
+                  <option value="">{{ __('Not set') }}</option>
+                  @foreach ($locations as $location)
+                    <option value="{{ $location->id }}">{{ $location->name }}</option>
+                  @endforeach
+                </select>
+              </template>
+              <template x-if="copy.id">
+                <div class="flex h-10 items-center rounded-md border border-dashed border-hairline bg-canvas px-3 text-sm text-muted">
+                  <span x-text="copy.location_name || '{{ __('Not set') }}'"></span>
+                  <span class="ml-auto text-[11px] text-muted-soft">{{ __('Move from history') }}</span>
+                </div>
+              </template>
             </div>
           </div>
 

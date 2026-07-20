@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  */
 class UpdateCopy
 {
+    use RecordsCopyMoves;
+
     /**
      * The values that moved, captured before the copy is written so the
      * activity tab can show what they moved from.
@@ -50,6 +52,7 @@ class UpdateCopy
         $this->validate();
         $this->captureChanges();
         $this->update();
+        $this->move();
         $this->value();
         $this->log();
 
@@ -114,7 +117,6 @@ class UpdateCopy
         $this->copy->fill([
             'identifier' => $this->identifier,
             'condition_id' => $this->condition?->id,
-            'current_location_id' => $this->location?->id,
             'status' => $this->status,
             'quantity' => $this->quantity,
             'disposed_at' => $this->disposedAt,
@@ -123,6 +125,15 @@ class UpdateCopy
         $this->copy->updated_by_id = $this->user->id;
         $this->copy->updated_by_name = $this->user->getFullName();
         $this->copy->save();
+    }
+
+    /**
+     * Route a location change through the move path, so it closes the open record
+     * and opens a new one rather than being written straight onto the copy.
+     */
+    private function move(): void
+    {
+        $this->recordCopyMove($this->copy, $this->location?->id, $this->user);
     }
 
     /**

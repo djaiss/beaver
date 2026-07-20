@@ -36,6 +36,7 @@ enum UserActionEnum: string
     case CopyCreation = 'copy_created';
     case CopyUpdate = 'copy_updated';
     case CopyDeletion = 'copy_deleted';
+    case CopyMoved = 'copy_moved';
     case TransactionCreation = 'transaction_created';
     case TransactionUpdate = 'transaction_updated';
     case TransactionDeletion = 'transaction_deleted';
@@ -121,6 +122,7 @@ enum UserActionEnum: string
             self::CopyCreation => 'Added a copy of the item called :name',
             self::CopyUpdate => 'Updated a copy of the item called :name',
             self::CopyDeletion => 'Deleted a copy of the item called :name',
+            self::CopyMoved => 'Moved a copy of the item called :name',
             self::TransactionCreation => 'Recorded a transaction on the item called :name',
             self::TransactionUpdate => 'Updated a transaction on the item called :name',
             self::TransactionDeletion => 'Deleted a transaction on the item called :name',

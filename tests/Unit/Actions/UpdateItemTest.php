@@ -17,6 +17,8 @@ use App\Models\CustomField;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
 use App\Models\ItemPhoto;
+use App\Models\Location;
+use App\Models\LocationHistory;
 use App\Models\Series;
 use App\Models\Set;
 use App\Models\Tag;
@@ -397,6 +399,32 @@ it('adds, updates and deletes copies', function () {
 
     $this->assertSoftDeleted('copies', ['id' => $removed->id]);
     expect($removed->fresh()->deleted_by_name)->toBe('Monica Geller');
+});
+
+// The edit form drops the location field for an existing copy, so the item update
+// leaves the copy where it is rather than reading the absent field as a move to
+// nowhere. A copy is moved through its own history action instead.
+it('leaves an existing copy location alone when the row omits it', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $shelf = Location::factory()->create(['account_id' => $user->account_id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id, 'current_location_id' => $shelf->id]);
+    LocationHistory::factory()->create(['copy_id' => $copy->id, 'location_id' => $shelf->id, 'moved_out_at' => null]);
+
+    new UpdateItem(
+        user: $user,
+        item: $item,
+        name: 'Amazing Spider-Man #1',
+        copies: [
+            ['id' => $copy->id, 'identifier' => 'CGC 1234567', 'status' => CopyStatus::Owned],
+        ],
+    )->execute();
+
+    expect($copy->refresh()->current_location_id)->toBe($shelf->id);
+    expect(LocationHistory::query()->where('copy_id', $copy->id)->count())->toBe(1);
 });
 
 // Valuations are append-only, so revaluing a copy keeps what it used to be worth
