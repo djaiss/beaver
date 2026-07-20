@@ -32,6 +32,7 @@ use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LocationController;
+use App\Http\Controllers\App\MaintenanceRecordController;
 use App\Http\Controllers\App\ProvenanceEventController;
 use App\Http\Controllers\App\SeriesController;
 use App\Http\Controllers\App\SetController;
@@ -137,6 +138,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('collections/{collection}/items/{item}/copies/{copy}/insurance-records', [InsuranceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('insuranceRecords.create');
         Route::put('collections/{collection}/items/{item}/copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('insuranceRecords.update');
         Route::delete('collections/{collection}/items/{item}/copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('insuranceRecords.destroy');
+
+        // maintenance records — owners and editors log the work done on a copy, its condition before and after, and when it is next due
+        Route::post('collections/{collection}/items/{item}/copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('maintenanceRecords.create');
+        Route::put('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.update');
+        Route::delete('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.destroy');
 
         // tags are put on and taken off an item from the item screen itself, one at a time
         Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');

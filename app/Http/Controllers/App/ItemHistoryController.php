@@ -46,6 +46,8 @@ class ItemHistoryController extends Controller
             'copies.transactions.provenanceEvent',
             'copies.provenanceEvents.transaction',
             'copies.insuranceRecords',
+            'copies.maintenanceRecords.conditionBefore',
+            'copies.maintenanceRecords.conditionAfter',
             'category',
             'collectionType',
         ]);
@@ -68,7 +70,23 @@ class ItemHistoryController extends Controller
             'selectedCopy' => $selectedCopy,
             'section' => $this->section($section),
             'currencies' => $this->currencyOptions(),
+            'conditions' => $this->conditionOptions($request),
         ]);
+    }
+
+    /**
+     * The conditions a maintenance record can name for the copy before and after
+     * the work, drawn from the account's own conditions.
+     *
+     * @return array<int, string>
+     */
+    private function conditionOptions(Request $request): array
+    {
+        return $request->user()->account->conditions()
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn ($condition): array => [$condition->id => $condition->name])
+            ->all();
     }
 
     /**

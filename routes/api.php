@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\ItemPhotoController;
 use App\Http\Controllers\Api\ItemPhotoSelectionController;
 use App\Http\Controllers\Api\ItemTagController;
 use App\Http\Controllers\Api\LocationController;
+use App\Http\Controllers\Api\MaintenanceRecordController;
 use App\Http\Controllers\Api\ProvenanceEventController;
 use App\Http\Controllers\Api\SeriesController;
 use App\Http\Controllers\Api\SetController;
@@ -187,6 +188,13 @@ Route::name('api.')->group(function (): void {
         Route::post('copies/{copy}/insurance-records', [InsuranceRecordController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.insuranceRecords.create');
         Route::put('copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('copies.insuranceRecords.update');
         Route::delete('copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('copies.insuranceRecords.destroy');
+
+        // the maintenance records logged against a copy
+        Route::get('copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.maintenanceRecords');
+        Route::get('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.show');
+        Route::post('copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where('copy', '[1-9][0-9]*')->name('copies.maintenanceRecords.create');
+        Route::put('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.update');
+        Route::delete('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.destroy');
 
         // the photos of an item
         Route::get('items/{item}/photos', [ItemPhotoController::class, 'index'])->where('item', '[1-9][0-9]*')->name('items.photos');

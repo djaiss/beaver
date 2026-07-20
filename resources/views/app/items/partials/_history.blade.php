@@ -21,7 +21,7 @@
       ['key' => 'valuations', 'label' => __('Valuations'), 'color' => '#3b82f6', 'round' => false, 'ready' => true],
       ['key' => 'provenance', 'label' => __('Provenance'), 'color' => '#6366f1', 'round' => true, 'ready' => true],
       ['key' => 'insurance', 'label' => __('Insurance'), 'color' => '#8b5cf6', 'round' => true, 'ready' => true],
-      ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => false],
+      ['key' => 'maintenance', 'label' => __('Maintenance'), 'color' => '#f59e0b', 'round' => false, 'ready' => true],
       ['key' => 'loans', 'label' => __('Loans'), 'color' => '#ec4899', 'round' => true, 'ready' => false],
       ['key' => 'locations', 'label' => __('Locations'), 'color' => '#14b8a6', 'round' => false, 'ready' => false],
       ['key' => 'documents', 'label' => __('Documents'), 'color' => '#64748b', 'round' => false, 'ready' => false],
@@ -49,12 +49,14 @@
     $transactionCount = $selectedCopy->transactions->count();
     $provenanceCount = $selectedCopy->provenanceEvents->count();
     $insuranceCount = $selectedCopy->insuranceRecords->count();
+    $maintenanceCount = $selectedCopy->maintenanceRecords->count();
     $counts = [
         'timeline' => $valuationCount,
         'transactions' => $transactionCount,
         'valuations' => $valuationCount,
         'provenance' => $provenanceCount,
         'insurance' => $insuranceCount,
+        'maintenance' => $maintenanceCount,
     ];
 
     // The acquisition date and price are read from the earliest transaction that
@@ -181,6 +183,8 @@
           @include('app.items.partials._historyValuations')
         @elseif ($section === 'insurance')
           @include('app.items.partials._historyInsurance')
+        @elseif ($section === 'maintenance')
+          @include('app.items.partials._historyMaintenance')
         @else
           {{-- A section that has no screen yet. The nav still lists it, so the
                content says what it will hold rather than showing nothing. --}}

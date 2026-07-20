@@ -266,4 +266,17 @@ class Copy extends Model
             fn ($query) => $query->where('status', InsuranceStatus::Active->value),
         );
     }
+
+    /**
+     * Get every maintenance record logged against the copy, most recent first.
+     *
+     * A record whose work has no date carries none, and sorts to the front rather
+     * than being dropped, the same way an undated provenance event does.
+     *
+     * @return HasMany<MaintenanceRecord, $this>
+     */
+    public function maintenanceRecords(): HasMany
+    {
+        return $this->hasMany(MaintenanceRecord::class)->orderByDesc('performed_at')->orderByDesc('id');
+    }
 }
