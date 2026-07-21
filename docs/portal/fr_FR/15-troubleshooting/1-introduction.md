@@ -1,8 +1,8 @@
 ---
 id: troubleshooting.index
 title: Dépannage et FAQ
-slug: troubleshooting
-section: troubleshooting
+slug: depannage
+section: depannage
 ---
 
 # Dépannage et FAQ

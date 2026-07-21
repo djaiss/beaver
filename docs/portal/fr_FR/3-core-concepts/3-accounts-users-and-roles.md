@@ -1,8 +1,8 @@
 ---
 id: accounts.usersAndRoles
 title: Comptes, utilisateurs et rôles
-slug: accounts-users-and-roles
-section: core-concepts
+slug: comptes-utilisateurs-et-roles
+section: concepts-fondamentaux
 ---
 
 # Comptes, utilisateurs et rôles

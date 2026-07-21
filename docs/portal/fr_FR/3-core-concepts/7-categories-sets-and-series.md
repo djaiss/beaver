@@ -1,8 +1,8 @@
 ---
 id: organizing.categoriesSetsAndSeries
 title: Catégories, sets et séries
-slug: categories-sets-and-series
-section: core-concepts
+slug: categories-sets-et-series
+section: concepts-fondamentaux
 ---
 
 # Catégories, sets et séries

@@ -1,8 +1,8 @@
 ---
 id: dataSafety.index
 title: Sécurité des données et entretien
-slug: data-safety
-section: data-safety
+slug: protection-des-donnees
+section: protection-des-donnees
 ---
 
 # Sécurité des données et entretien

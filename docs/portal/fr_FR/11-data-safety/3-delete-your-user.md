@@ -1,8 +1,8 @@
 ---
 id: users.deleteSelf
 title: Supprimer votre utilisateur
-slug: delete-your-user
-section: data-safety
+slug: supprimer-votre-utilisateur
+section: protection-des-donnees
 ---
 
 # Supprimer votre utilisateur

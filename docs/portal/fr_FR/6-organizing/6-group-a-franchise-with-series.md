@@ -1,8 +1,8 @@
 ---
 id: series.groupFranchise
 title: Regrouper une franchise avec les séries
-slug: group-a-franchise-with-series
-section: organizing
+slug: regrouper-avec-des-series
+section: organisation
 ---
 
 # Regrouper une franchise avec les séries

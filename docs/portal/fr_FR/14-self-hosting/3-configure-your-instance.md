@@ -1,8 +1,8 @@
 ---
 id: selfHosting.configure
 title: Configurer votre instance
-slug: configure-your-instance
-section: self-hosting
+slug: configurer-votre-instance
+section: auto-hebergement
 ---
 
 # Configurer votre instance

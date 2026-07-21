@@ -1,8 +1,8 @@
 ---
 id: activity.feedAndAuditTrail
 title: Le fil d'activité et la piste d'audit
-slug: activity-feed-and-audit-trail
-section: core-features
+slug: fil-dactivite-et-audit
+section: fonctionnalites
 ---
 
 # Le fil d'activité et la piste d'audit

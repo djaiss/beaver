@@ -36,16 +36,20 @@ return [
     | The locales offered in the language selector, each with the label and
     | flag shown in the picker. A locale only appears once its folder exists.
     |
+    | "url" is the short language prefix used at the root of the documentation
+    | URL (getkollek.com/{url}/...), kept distinct from the locale key itself
+    | (fr_FR) since the URL follows the two letter convention readers expect.
+    |
     */
 
     'locales' => [
-        'en' => ['code' => 'EN', 'label' => 'English', 'flag' => '🇬🇧'],
-        'fr_FR' => ['code' => 'FR', 'label' => 'Français', 'flag' => '🇫🇷'],
-        'es_ES' => ['code' => 'ES', 'label' => 'Español', 'flag' => '🇪🇸'],
-        'de_DE' => ['code' => 'DE', 'label' => 'Deutsch', 'flag' => '🇩🇪'],
-        'pt_BR' => ['code' => 'PT', 'label' => 'Português', 'flag' => '🇧🇷'],
-        'zh_CN' => ['code' => 'ZH', 'label' => '简体中文', 'flag' => '🇨🇳'],
-        'ja_JP' => ['code' => 'JA', 'label' => '日本語', 'flag' => '🇯🇵'],
+        'en' => ['url' => 'en', 'code' => 'EN', 'label' => 'English', 'flag' => '🇬🇧'],
+        'fr_FR' => ['url' => 'fr', 'code' => 'FR', 'label' => 'Français', 'flag' => '🇫🇷'],
+        'es_ES' => ['url' => 'es', 'code' => 'ES', 'label' => 'Español', 'flag' => '🇪🇸'],
+        'de_DE' => ['url' => 'de', 'code' => 'DE', 'label' => 'Deutsch', 'flag' => '🇩🇪'],
+        'pt_BR' => ['url' => 'pt', 'code' => 'PT', 'label' => 'Português', 'flag' => '🇧🇷'],
+        'zh_CN' => ['url' => 'zh', 'code' => 'ZH', 'label' => '简体中文', 'flag' => '🇨🇳'],
+        'ja_JP' => ['url' => 'ja', 'code' => 'JA', 'label' => '日本語', 'flag' => '🇯🇵'],
     ],
 
 ];

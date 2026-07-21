@@ -2,7 +2,7 @@
 id: collections.overview
 title: Collections
 slug: collections
-section: core-concepts
+section: concepts-fondamentaux
 ---
 
 # Collections

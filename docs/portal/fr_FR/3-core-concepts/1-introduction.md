@@ -1,8 +1,8 @@
 ---
 id: coreConcepts.index
 title: Concepts fondamentaux
-slug: core-concepts
-section: core-concepts
+slug: concepts-fondamentaux
+section: concepts-fondamentaux
 ---
 
 # Concepts fondamentaux

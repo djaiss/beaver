@@ -1,8 +1,8 @@
 ---
 id: selfHosting.setupEmailDelivery
 title: Configurer la livraison des e-mails
-slug: set-up-email-delivery
-section: self-hosting
+slug: livraison-des-emails
+section: auto-hebergement
 ---
 
 # Configurer la livraison des e-mails

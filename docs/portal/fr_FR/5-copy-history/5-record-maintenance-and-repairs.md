@@ -1,8 +1,8 @@
 ---
 id: copies.recordMaintenance
 title: Enregistrer l'entretien et les réparations
-slug: record-maintenance-and-repairs
-section: copy-history
+slug: entretien-et-reparations
+section: historique
 ---
 
 # Enregistrer l'entretien et les réparations

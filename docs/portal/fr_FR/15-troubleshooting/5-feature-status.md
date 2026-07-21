@@ -1,8 +1,8 @@
 ---
 id: troubleshooting.featureStatus
 title: État des fonctionnalités et feuille de route
-slug: feature-status
-section: troubleshooting
+slug: etat-des-fonctionnalites
+section: depannage
 ---
 
 # État des fonctionnalités et feuille de route

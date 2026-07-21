@@ -25,7 +25,7 @@ class DocsPortalHomeController extends Controller
      */
     public function show(string $locale): View
     {
-        $this->guardLocale($locale);
+        $locale = $this->resolveLocale($locale);
 
         $resolved = $this->portal->home($locale);
 

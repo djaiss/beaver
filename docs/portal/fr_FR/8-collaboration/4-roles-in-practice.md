@@ -1,7 +1,7 @@
 ---
 id: collaboration.rolesInPractice
 title: Les trois rôles en pratique
-slug: roles-in-practice
+slug: roles-en-pratique
 section: collaboration
 ---
 

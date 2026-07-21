@@ -1,8 +1,8 @@
 ---
 id: copies.move
 title: Déplacer un exemplaire et garder son historique de lieux
-slug: move-a-copy
-section: copy-history
+slug: deplacer-un-exemplaire
+section: historique
 ---
 
 # Déplacer un exemplaire et garder son historique de lieux

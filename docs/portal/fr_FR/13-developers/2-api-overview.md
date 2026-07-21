@@ -1,8 +1,8 @@
 ---
 id: api.overview
 title: Vue d'ensemble de l'API
-slug: api-overview
-section: developers
+slug: vue-densemble-de-lapi
+section: developpeurs
 ---
 
 # Vue d'ensemble de l'API

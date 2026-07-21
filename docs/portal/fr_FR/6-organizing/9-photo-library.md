@@ -1,8 +1,8 @@
 ---
 id: photos.library
 title: Parcourir et gérer votre bibliothèque photo
-slug: photo-library
-section: organizing
+slug: bibliotheque-photo
+section: organisation
 ---
 
 # Parcourir et gérer votre bibliothèque photo

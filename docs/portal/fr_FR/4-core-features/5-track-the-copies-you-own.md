@@ -1,8 +1,8 @@
 ---
 id: copies.track
 title: Suivre les exemplaires que vous possédez
-slug: track-the-copies-you-own
-section: core-features
+slug: suivre-vos-exemplaires
+section: fonctionnalites
 ---
 
 # Suivre les exemplaires que vous possédez

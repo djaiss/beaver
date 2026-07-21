@@ -28,6 +28,7 @@ trait RendersDocumentationPage
 
         return view('marketing.docs.portal.show', [
             'locale' => $locale,
+            'urlLocale' => $this->portal->urlLocaleFor($locale),
             'availableLocales' => $this->portal->availableLocales(),
             'navigation' => $this->portal->navigation($locale),
             'page' => $page,
@@ -53,16 +54,15 @@ trait RendersDocumentationPage
                 continue;
             }
 
-            $url = $page['is_home']
-                ? route('marketing.docs.portal.home.show', ['locale' => $locale])
-                : $this->portal->urlFor($locale, $page);
-
+            // Resolve by id, never by reusing the current page's section and
+            // slug: those are localized per locale, so the French URL is not
+            // a drop-in replacement for the English one.
             $links[] = [
                 'locale' => $locale,
                 'code' => $meta['code'],
                 'label' => $meta['label'],
                 'flag' => $meta['flag'],
-                'url' => $url,
+                'url' => $this->portal->urlForId($page['id'], $locale) ?? route('marketing.docs.portal.index'),
                 'translated' => $this->pageExistsIn($locale, $page),
                 'current' => $locale === $current,
             ];
@@ -73,19 +73,21 @@ trait RendersDocumentationPage
 
     private function pageExistsIn(string $locale, array $page): bool
     {
-        if ($page['is_home']) {
-            return $this->portal->home($locale) !== null && ! $this->portal->home($locale)['fallback'];
-        }
-
-        $found = $this->portal->find($locale, $page['section'], $page['slug']);
-
-        return $found !== null && ! $found['fallback'];
+        return collect($this->portal->pagesFor($locale))->contains('id', $page['id']);
     }
 
-    private function guardLocale(string $locale): void
+    /**
+     * Translate the URL language prefix (fr) into the internal locale key
+     * (fr_FR), 404ing when the prefix is unknown or not yet available.
+     */
+    private function resolveLocale(string $urlLocale): string
     {
-        if (! $this->portal->hasLocale($locale)) {
+        $locale = $this->portal->localeForUrl($urlLocale);
+
+        if ($locale === null || ! $this->portal->hasLocale($locale)) {
             throw new NotFoundHttpException;
         }
+
+        return $locale;
     }
 }

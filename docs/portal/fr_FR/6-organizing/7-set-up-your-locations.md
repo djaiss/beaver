@@ -1,8 +1,8 @@
 ---
 id: locations.setup
 title: Configurer vos emplacements
-slug: set-up-your-locations
-section: organizing
+slug: configurer-vos-emplacements
+section: organisation
 ---
 
 # Configurer vos emplacements

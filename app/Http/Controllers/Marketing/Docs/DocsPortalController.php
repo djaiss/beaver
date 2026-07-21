@@ -27,7 +27,7 @@ class DocsPortalController extends Controller
     public function index(): RedirectResponse
     {
         return redirect()->route('marketing.docs.portal.home.show', [
-            'locale' => $this->portal->defaultLocale(),
+            'locale' => $this->portal->urlLocaleFor($this->portal->defaultLocale()),
         ]);
     }
 
@@ -36,7 +36,7 @@ class DocsPortalController extends Controller
      */
     public function show(string $locale, string $section, string $slug): View
     {
-        $this->guardLocale($locale);
+        $locale = $this->resolveLocale($locale);
 
         $resolved = $this->portal->find($locale, $section, $slug);
 

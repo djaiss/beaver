@@ -1,8 +1,8 @@
 ---
 id: api.rateLimitsAndConventions
 title: Limites de débit et conventions
-slug: rate-limits-and-conventions
-section: developers
+slug: limites-et-conventions
+section: developpeurs
 ---
 
 # Limites de débit et conventions

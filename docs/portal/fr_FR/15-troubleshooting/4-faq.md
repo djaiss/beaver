@@ -1,8 +1,8 @@
 ---
 id: troubleshooting.faq
 title: Foire aux questions
-slug: faq
-section: troubleshooting
+slug: foire-aux-questions
+section: depannage
 ---
 
 # Foire aux questions

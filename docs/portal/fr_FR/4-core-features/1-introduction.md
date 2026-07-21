@@ -1,8 +1,8 @@
 ---
 id: coreFeatures.index
 title: Fonctionnalités principales
-slug: core-features
-section: core-features
+slug: fonctionnalites
+section: fonctionnalites
 ---
 
 # Fonctionnalités principales

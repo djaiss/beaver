@@ -1,8 +1,8 @@
 ---
 id: items.itemsVsCopies
 title: Objets et exemplaires
-slug: items-and-copies
-section: core-concepts
+slug: objets-et-exemplaires
+section: concepts-fondamentaux
 ---
 
 # Objets et exemplaires

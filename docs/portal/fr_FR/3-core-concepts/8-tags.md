@@ -1,8 +1,8 @@
 ---
 id: tags.overview
 title: Étiquettes
-slug: tags
-section: core-concepts
+slug: etiquettes
+section: concepts-fondamentaux
 ---
 
 # Étiquettes

@@ -1,8 +1,8 @@
 ---
 id: troubleshooting.emailDelivery
 title: Dépannage de la livraison des emails
-slug: troubleshoot-email-delivery
-section: troubleshooting
+slug: depannage-de-la-livraison-des-emails
+section: depannage
 ---
 
 # Dépannage de la livraison des emails

@@ -1,8 +1,8 @@
 ---
 id: profile.setAvatar
 title: Définir votre avatar
-slug: set-your-avatar
-section: account-and-profile
+slug: definir-votre-avatar
+section: compte-et-profil
 ---
 
 # Définir votre avatar

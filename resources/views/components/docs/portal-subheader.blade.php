@@ -1,4 +1,4 @@
-@props(['locale', 'languageUrls'])
+@props(['locale', 'urlLocale', 'languageUrls'])
 
 @php
     $current = collect($languageUrls)->firstWhere('current', true);
@@ -6,7 +6,7 @@
 
 <div class="sticky top-16 z-40 border-b border-gray-200 bg-white">
   <div class="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-5 sm:px-8">
-    <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $locale]) }}" class="flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-900">
+    <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $urlLocale]) }}" class="flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-900">
       <x-lucide-book-open class="h-4 w-4" />
       {{ __('Documentation') }}
     </a>

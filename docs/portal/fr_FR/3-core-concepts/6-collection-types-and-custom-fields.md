@@ -1,8 +1,8 @@
 ---
 id: collectionTypes.overview
 title: Types de collection et champs personnalisés
-slug: collection-types-and-custom-fields
-section: core-concepts
+slug: types-et-champs-personnalises
+section: concepts-fondamentaux
 ---
 
 # Types de collection et champs personnalisés

@@ -1,8 +1,8 @@
 ---
 id: items.tagAndFind
 title: Étiqueter et retrouver des objets
-slug: tag-and-find-items
-section: core-features
+slug: etiqueter-et-retrouver-des-objets
+section: fonctionnalites
 ---
 
 # Étiqueter et retrouver des objets

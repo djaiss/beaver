@@ -1,8 +1,8 @@
 ---
 id: accounts.settings
 title: Paramètres du compte
-slug: account-settings
-section: account-and-profile
+slug: parametres-du-compte
+section: compte-et-profil
 ---
 
 # Paramètres du compte

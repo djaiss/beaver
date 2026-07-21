@@ -1,8 +1,8 @@
 ---
 id: kollek.whatIs
 title: Qu'est ce que KolleK
-slug: what-is-kollek
-section: getting-started
+slug: quest-ce-que-kollek
+section: demarrage
 ---
 
 # Qu'est ce que KolleK

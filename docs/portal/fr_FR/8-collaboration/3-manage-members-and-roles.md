@@ -1,7 +1,7 @@
 ---
 id: collaboration.manageMembersAndRoles
 title: Gérer les membres et les rôles
-slug: manage-members-and-roles
+slug: gerer-membres-et-roles
 section: collaboration
 ---
 

@@ -1,8 +1,8 @@
 ---
 id: kollek.hostingOptions
 title: Version cloud ou auto hébergement
-slug: cloud-vs-self-hosting
-section: getting-started
+slug: cloud-ou-auto-hebergement
+section: demarrage
 ---
 
 # Version cloud ou auto hébergement

@@ -51,6 +51,30 @@ class DocumentationPortal
     }
 
     /**
+     * The short language prefix a locale is reached at, right after the
+     * domain (getkollek.com/fr/...).
+     */
+    public function urlLocaleFor(string $locale): string
+    {
+        return config('docs.locales.'.$locale.'.url', $locale);
+    }
+
+    /**
+     * The internal locale key for a URL language prefix, or null when the
+     * prefix does not match any configured locale.
+     */
+    public function localeForUrl(string $urlLocale): ?string
+    {
+        foreach (config('docs.locales') as $locale => $meta) {
+            if ($meta['url'] === $urlLocale) {
+                return $locale;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * The home page (the top level Markdown file) for a locale, falling back
      * to the default locale when the locale has no home of its own.
      *
@@ -128,7 +152,7 @@ class DocumentationPortal
     public function urlFor(string $locale, array $page): string
     {
         return route('marketing.docs.portal.show', [
-            'locale' => $locale,
+            'locale' => $this->urlLocaleFor($locale),
             'section' => $page['section'],
             'slug' => $page['slug'],
         ]);
@@ -148,7 +172,7 @@ class DocumentationPortal
         }
 
         if ($page['is_home']) {
-            return route('marketing.docs.portal.home.show', ['locale' => $page['locale']]);
+            return route('marketing.docs.portal.home.show', ['locale' => $this->urlLocaleFor($page['locale'])]);
         }
 
         return $this->urlFor($page['locale'], $page);

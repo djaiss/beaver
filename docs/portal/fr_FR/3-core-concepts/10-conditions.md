@@ -1,8 +1,8 @@
 ---
 id: conditions.overview
 title: États
-slug: conditions
-section: core-concepts
+slug: etats
+section: concepts-fondamentaux
 ---
 
 # États

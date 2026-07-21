@@ -2,7 +2,7 @@
 id: webhooks.overview
 title: Webhooks
 slug: webhooks
-section: developers
+section: developpeurs
 ---
 
 # Webhooks

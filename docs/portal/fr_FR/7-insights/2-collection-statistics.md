@@ -1,8 +1,8 @@
 ---
 id: insights.collectionStatistics
 title: Comprendre les statistiques de votre collection
-slug: collection-statistics
-section: insights
+slug: statistiques-de-collection
+section: statistiques
 ---
 
 # Comprendre les statistiques de votre collection

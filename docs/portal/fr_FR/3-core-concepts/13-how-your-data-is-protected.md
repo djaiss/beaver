@@ -1,8 +1,8 @@
 ---
 id: dataSafety.howProtected
 title: Comment vos données sont protégées
-slug: how-your-data-is-protected
-section: core-concepts
+slug: protection-de-vos-donnees
+section: concepts-fondamentaux
 ---
 
 # Comment vos données sont protégées

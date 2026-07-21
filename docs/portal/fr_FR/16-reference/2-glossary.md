@@ -1,7 +1,7 @@
 ---
 id: reference.glossary
 title: Glossaire
-slug: glossary
+slug: glossaire
 section: reference
 ---
 

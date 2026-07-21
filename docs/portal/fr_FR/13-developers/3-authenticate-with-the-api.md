@@ -1,8 +1,8 @@
 ---
 id: api.authenticate
 title: S'authentifier auprès de l'API
-slug: authenticate-with-the-api
-section: developers
+slug: authentification-a-lapi
+section: developpeurs
 ---
 
 # S'authentifier auprès de l'API

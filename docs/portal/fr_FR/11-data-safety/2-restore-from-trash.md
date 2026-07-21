@@ -1,8 +1,8 @@
 ---
 id: dataSafety.restoreFromTrash
 title: Restaurer un élément depuis la corbeille
-slug: restore-from-trash
-section: data-safety
+slug: restaurer-depuis-la-corbeille
+section: protection-des-donnees
 ---
 
 # Restaurer un élément depuis la corbeille

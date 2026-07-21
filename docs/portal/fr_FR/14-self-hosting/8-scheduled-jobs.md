@@ -1,8 +1,8 @@
 ---
 id: selfHosting.scheduledJobs
 title: Tâches de maintenance planifiées
-slug: scheduled-jobs
-section: self-hosting
+slug: taches-planifiees
+section: auto-hebergement
 ---
 
 # Tâches de maintenance planifiées

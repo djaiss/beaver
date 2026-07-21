@@ -1,8 +1,8 @@
 ---
 id: dataSafety.backupCollectionData
 title: Sauvegarder les données de votre collection
-slug: back-up-your-collection-data
-section: data-safety
+slug: sauvegarder-les-donnees-de-collection
+section: protection-des-donnees
 ---
 
 # Sauvegarder les données de votre collection

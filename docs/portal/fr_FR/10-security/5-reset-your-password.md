@@ -1,8 +1,8 @@
 ---
 id: auth.resetPassword
 title: Réinitialisez votre mot de passe
-slug: reset-your-password
-section: security
+slug: reinitialiser-votre-mot-de-passe
+section: securite
 ---
 
 # Réinitialisez votre mot de passe

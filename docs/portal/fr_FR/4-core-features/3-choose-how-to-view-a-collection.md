@@ -1,8 +1,8 @@
 ---
 id: collections.chooseView
 title: Choisir comment afficher une collection
-slug: choose-how-to-view-a-collection
-section: core-features
+slug: choisir-laffichage-dune-collection
+section: fonctionnalites
 ---
 
 # Choisir comment afficher une collection

@@ -1,8 +1,8 @@
 ---
 id: tutorials.trackValuableItem
 title: "Tutoriel : suivre la vie complète d'un objet de valeur"
-slug: track-a-valuable-item
-section: tutorials
+slug: suivre-un-objet-de-valeur
+section: tutoriels
 ---
 
 # Tutoriel : suivre la vie complète d'un objet de valeur

@@ -1,8 +1,8 @@
 ---
 id: tutorials.selfHostWithDocker
 title: "Tutoriel : auto-héberger KolleK avec Docker"
-slug: self-host-with-docker
-section: tutorials
+slug: auto-heberger-avec-docker
+section: tutoriels
 ---
 
 # Tutoriel : auto-héberger KolleK avec Docker

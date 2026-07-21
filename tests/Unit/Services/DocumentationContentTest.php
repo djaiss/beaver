@@ -73,6 +73,22 @@ it('keeps every section and slug pair unique within a locale', function () {
     }
 });
 
+it('keeps every section and slug a valid url segment', function () {
+    $invalid = [];
+
+    foreach ($this->portal->availableLocales() as $locale) {
+        foreach ($this->portal->pagesFor($locale) as $page) {
+            foreach (['section', 'slug'] as $key) {
+                if (! preg_match('/^[a-z0-9\-]+$/', $page[$key])) {
+                    $invalid[] = "{$locale}/{$page['id']} {$key}=\"{$page[$key]}\"";
+                }
+            }
+        }
+    }
+
+    expect($invalid)->toBe([]);
+});
+
 it('resolves every doc directive to a known page', function () {
     $broken = [];
 
@@ -105,16 +121,33 @@ it('keeps every translated locale in step with english', function () {
     foreach ($translated as $locale) {
         $pages = collect($this->portal->pagesFor($locale));
 
-        // Same id set, and a shared id keeps the same section and slug so the
-        // URL and the language switcher line up across locales.
+        // Same id set, so every English page has a counterpart and the language
+        // switcher always has somewhere to send you.
         expect($pages->pluck('id')->sort()->values()->all())
             ->toBe($english->pluck('id')->sort()->values()->all(), "Page set drift in {$locale}");
+    }
+});
 
-        foreach ($pages as $page) {
+it('localizes urls for translated locales instead of reusing english ones', function () {
+    $english = collect($this->portal->pagesFor('en'));
+    $translated = array_diff($this->portal->availableLocales(), ['en']);
+
+    foreach ($translated as $locale) {
+        $pages = collect($this->portal->pagesFor($locale));
+
+        $reused = $pages->filter(function (array $page) use ($english): bool {
             $reference = $english->firstWhere('id', $page['id']);
 
-            expect([$page['section'], $page['slug']])
-                ->toBe([$reference['section'], $reference['slug']], "URL drift for {$page['id']} in {$locale}");
-        }
+            return $reference !== null
+                && $reference['section'] === $page['section']
+                && $reference['slug'] === $page['slug'];
+        });
+
+        // A handful of section and page slugs are legitimate cognates (e.g.
+        // "reference", "webhooks"), but a translated locale mostly reusing
+        // English's paths means its URLs were never actually localized.
+        $threshold = (int) ceil($pages->count() * 0.2);
+
+        expect($reused->count())->toBeLessThan($threshold, "Too many English URLs reused in {$locale}: ".$reused->pluck('id')->implode(', '));
     }
 });
