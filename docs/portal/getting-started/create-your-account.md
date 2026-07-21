@@ -32,9 +32,9 @@ Creating an account sets up two things:
 
 **An account, which is your workspace.** You are its **[owner](../core-concepts/accounts-users-and-roles.md)**, which means you can do everything: catalogue items, invite other people, and change account settings. Roles are covered later, when you start inviting others.
 
-<Note>
+:::note
 A person belongs to exactly one account. You cannot use the same email to join a second account. If you are invited to someone else's account later, that invitation only works if your email does not already have an account of its own.
-</Note>
+:::
 
 ## Your account is not empty
 
@@ -44,9 +44,9 @@ To save you starting from a blank page, a new account arrives with a set of read
 
 After you register, KolleK sends a verification email. Verifying is good practice, because it confirms your address works.
 
-<Note>
+:::note
 You do not have to verify your email to use KolleK. Nothing is blocked while it is unverified.
-</Note>
+:::
 
 ## Where to next
 

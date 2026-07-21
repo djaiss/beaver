@@ -25,9 +25,9 @@ If you have turned on two factor authentication, signing in with your password t
 
 If you cannot reach your authenticator, you can enter one of your [recovery codes](../security/recovery-codes.md) instead. Each recovery code works once.
 
-<Warning>
+:::warning
 Signing in with a magic link does not ask for a two factor code, because access to your email inbox already acts as a second factor. If you rely on two factor authentication, keep this in mind when you choose how to sign in, and protect your email account accordingly.
-</Warning>
+:::
 
 Setting up two factor authentication and saving recovery codes are covered in the **Security** section of this documentation.
 

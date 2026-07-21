@@ -56,9 +56,9 @@ That is the whole loop: collection, item, photo, copy. Everything else in KolleK
 
 ## A common mix up to avoid
 
-<Note>
+:::note
 Two of the same thing are two copies of one item, not two items. If you are about to create a second item for something you already catalogued, add a copy to the existing item instead.
-</Note>
+:::
 
 Keeping it to one item with multiple copies is what lets KolleK track each physical piece separately while keeping your catalogue tidy.
 

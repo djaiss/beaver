@@ -18,9 +18,9 @@ You do not have to do them in this order, and you do not have to do all of them.
 
 There is no "mark as done" button. Each step completes on its own once you have actually done the thing. Add a location, and the locations step is checked. Create a collection, and that step is checked.
 
-<Note>
+:::note
 The ready made types and locations that came with your account do not count towards the checklist. A step is marked done only once you create or change something yourself, so the checklist reflects your setup rather than the defaults you started with.
-</Note>
+:::
 
 ## It belongs to the whole account
 

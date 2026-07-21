@@ -19,9 +19,9 @@ You only need one idea to get started. Everything in KolleK nests in four levels
 
 The distinction between an item and a copy is what makes KolleK different from a plain list. If you own three copies of the same comic, that is one item with three copies, and each copy has its own condition, storage location, value, and history. You will meet this idea properly once you start cataloguing, so do not worry about it yet.
 
-<Note>
+:::note
 The difference between an item and a copy is the one idea worth carrying forward, and you will use it constantly.
-</Note>
+:::
 
 ## Who it is for
 
