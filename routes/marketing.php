@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Marketing\Docs\ApiDocsController;
 use App\Http\Controllers\Marketing\Docs\ApiDocsMarkdownController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalController;
+use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
 use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\PricingController;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::middleware(['marketing'])->group(function () use ($docsLocales): void {
     Route::get('docs/api/{section}.md', [ApiDocsMarkdownController::class, 'show'])->where('section', '[a-z0-9\-]+')->name('marketing.docs.api.markdown.show');
 
     Route::get('docs', [DocsPortalController::class, 'index'])->name('marketing.docs.portal.index');
-    Route::get('docs/{locale}', [DocsPortalController::class, 'home'])->where('locale', $docsLocales)->name('marketing.docs.portal.home');
+    Route::get('docs/{locale}', [DocsPortalHomeController::class, 'show'])->where('locale', $docsLocales)->name('marketing.docs.portal.home.show');
     Route::get('docs/{locale}/{section}/{slug}', [DocsPortalController::class, 'show'])
         ->where('locale', $docsLocales)
         ->where('section', '[a-z0-9\-]+')

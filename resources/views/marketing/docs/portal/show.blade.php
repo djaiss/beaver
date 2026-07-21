@@ -39,7 +39,7 @@
           <div class="mx-auto max-w-[720px]">
             {{-- Breadcrumb --}}
             <nav class="mb-5 flex items-center gap-2.5 text-sm text-gray-500">
-              <a href="{{ route('marketing.docs.portal.home', ['locale' => $locale]) }}" class="hover:text-gray-900">{{ __('Home') }}</a>
+              <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $locale]) }}" class="hover:text-gray-900">{{ __('Home') }}</a>
               @if ($sectionTitle)
                 <span class="text-gray-300">/</span>
                 <span>{{ $sectionTitle }}</span>

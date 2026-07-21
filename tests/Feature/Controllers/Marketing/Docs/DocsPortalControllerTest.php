@@ -10,7 +10,7 @@ beforeEach(function (): void {
 
 it('redirects the bare docs url to the default locale home', function () {
     $this->get('/docs')
-        ->assertRedirect(route('marketing.docs.portal.home', ['locale' => 'en']));
+        ->assertRedirect(route('marketing.docs.portal.home.show', ['locale' => 'en']));
 });
 
 it('renders the english home page', function () {
@@ -45,7 +45,7 @@ it('renders every english page without error', function () {
 
     foreach ($pages as $page) {
         $url = $page['is_home']
-            ? route('marketing.docs.portal.home', ['locale' => 'en'])
+            ? route('marketing.docs.portal.home.show', ['locale' => 'en'])
             : route('marketing.docs.portal.show', ['locale' => 'en', 'section' => $page['section'], 'slug' => $page['slug']]);
 
         $this->get($url)->assertOk();

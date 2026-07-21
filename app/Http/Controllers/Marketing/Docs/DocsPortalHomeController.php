@@ -8,11 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Marketing\Docs\Concerns\RendersDocumentationPage;
 use App\Services\DocumentationParser;
 use App\Services\DocumentationPortal;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DocsPortalController extends Controller
+class DocsPortalHomeController extends Controller
 {
     use RendersDocumentationPage;
 
@@ -22,23 +21,13 @@ class DocsPortalController extends Controller
     ) {}
 
     /**
-     * Send the bare /docs URL to the default locale home page.
+     * The locale home page, rendered from the top level Markdown file.
      */
-    public function index(): RedirectResponse
-    {
-        return redirect()->route('marketing.docs.portal.home.show', [
-            'locale' => $this->portal->defaultLocale(),
-        ]);
-    }
-
-    /**
-     * A single documentation page.
-     */
-    public function show(string $locale, string $section, string $slug): View
+    public function show(string $locale): View
     {
         $this->guardLocale($locale);
 
-        $resolved = $this->portal->find($locale, $section, $slug);
+        $resolved = $this->portal->home($locale);
 
         if ($resolved === null) {
             throw new NotFoundHttpException;

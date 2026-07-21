@@ -148,7 +148,7 @@ class DocumentationPortal
         }
 
         if ($page['is_home']) {
-            return route('marketing.docs.portal.home', ['locale' => $page['locale']]);
+            return route('marketing.docs.portal.home.show', ['locale' => $page['locale']]);
         }
 
         return $this->urlFor($page['locale'], $page);
