@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DatePrecision;
+use App\Enums\TimelineSource;
 use App\Models\Concerns\HasAuthor;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\LocationHistoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -98,5 +101,31 @@ class LocationHistory extends Model
     public function isOpen(): bool
     {
         return $this->moved_out_at === null;
+    }
+
+    /**
+     * Map the move to a unified-history entry.
+     *
+     * An ordinary move between the account's own storage is operational rather
+     * than part of the object's story, so it never reads on the default timeline
+     * and surfaces only in the complete view.
+     */
+    public function toTimelineEntry(): TimelineEntry
+    {
+        $location = $this->location
+            ? $this->location->name
+            : __('an unknown location');
+
+        return new TimelineEntry(
+            source: TimelineSource::Location,
+            sourceId: $this->id,
+            date: $this->moved_at,
+            precision: DatePrecision::Exact,
+            title: __('Moved to :location', ['location' => $location]),
+            summary: $this->reason,
+            amountCents: null,
+            currencyCode: null,
+            meaningful: false,
+        );
     }
 }

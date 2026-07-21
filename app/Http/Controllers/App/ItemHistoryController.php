@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App;
 
+use App\Enums\TimelineSource;
 use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
 use App\Models\Copy;
+use App\Services\BuildCopyHistory;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -73,6 +75,22 @@ class ItemHistoryController extends Controller
             abort(404);
         }
 
+        // The timeline is the copy's whole history merged from every record on
+        // it. It reads the meaningful entries by default, and the complete view
+        // adds the routine ones. Both the view choice and the type filter live in
+        // the url, so a link into the tab keeps the reader's chosen view.
+        $meaningfulOnly = $request->query('view') !== 'complete';
+        $selectedTypes = $this->selectedTypes($request);
+
+        $timeline = [];
+        $presentSources = [];
+
+        if ($selectedCopy instanceof Copy) {
+            $history = new BuildCopyHistory($selectedCopy);
+            $timeline = $history->entries($meaningfulOnly, $selectedTypes);
+            $presentSources = $history->presentSources();
+        }
+
         return view('app.items.history', [
             'collection' => $collectionModel,
             'item' => $itemModel,
@@ -82,7 +100,29 @@ class ItemHistoryController extends Controller
             'currencies' => $this->currencyOptions(),
             'conditions' => $this->conditionOptions($request),
             'locations' => $this->locationOptions($request),
+            'timeline' => $timeline,
+            'timelineView' => $meaningfulOnly ? 'meaningful' : 'complete',
+            'selectedTypes' => $selectedTypes,
+            'presentSources' => $presentSources,
         ]);
+    }
+
+    /**
+     * The event types the timeline is filtered to, kept to the real sources.
+     *
+     * The filter lives in the url as repeated type parameters, so anything that
+     * is not a known source is dropped rather than trusted.
+     *
+     * @return list<string>
+     */
+    private function selectedTypes(Request $request): array
+    {
+        $valid = array_map(fn (TimelineSource $source): string => $source->value, TimelineSource::cases());
+
+        return array_values(array_filter(
+            (array) $request->query('type', []),
+            fn (mixed $type): bool => in_array($type, $valid, true),
+        ));
     }
 
     /**

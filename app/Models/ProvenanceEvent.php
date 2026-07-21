@@ -6,9 +6,11 @@ namespace App\Models;
 
 use App\Enums\DatePrecision;
 use App\Enums\ProvenanceEventType;
+use App\Enums\TimelineSource;
 use App\Helpers\ImpreciseDate;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDocuments;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\ProvenanceEventFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -142,5 +144,27 @@ class ProvenanceEvent extends Model
     public function shortDate(): string
     {
         return ImpreciseDate::short($this->occurred_at, $this->occurred_at_precision);
+    }
+
+    /**
+     * Map the event to a unified-history entry.
+     *
+     * Everything in provenance is the object's story by definition, so it always
+     * reads on the default timeline. The date carries its own precision, so an
+     * event known only to the year renders as the year.
+     */
+    public function toTimelineEntry(): TimelineEntry
+    {
+        return new TimelineEntry(
+            source: TimelineSource::Provenance,
+            sourceId: $this->id,
+            date: $this->occurred_at,
+            precision: $this->occurred_at_precision,
+            title: $this->title,
+            summary: $this->description,
+            amountCents: null,
+            currencyCode: null,
+            meaningful: true,
+        );
     }
 }

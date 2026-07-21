@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\DatePrecision;
 use App\Enums\InsuranceStatus;
+use App\Enums\TimelineSource;
 use App\Models\Concerns\HasAuthor;
 use App\Models\Concerns\HasDocuments;
+use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\InsuranceRecordFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -110,5 +113,31 @@ class InsuranceRecord extends Model
     public function copy(): BelongsTo
     {
         return $this->belongsTo(Copy::class);
+    }
+
+    /**
+     * Map the coverage to a unified-history entry.
+     *
+     * Coverage opening is a meaningful moment in a copy's care, so it reads on
+     * the default timeline at the date the policy started, with the insured value
+     * in its own currency.
+     */
+    public function toTimelineEntry(): TimelineEntry
+    {
+        $title = $this->policy_number === null
+            ? $this->provider
+            : $this->provider.' · '.$this->policy_number;
+
+        return new TimelineEntry(
+            source: TimelineSource::Insurance,
+            sourceId: $this->id,
+            date: $this->starts_at,
+            precision: DatePrecision::Exact,
+            title: $title,
+            summary: $this->coverage_type,
+            amountCents: $this->insured_value,
+            currencyCode: $this->currency_code,
+            meaningful: true,
+        );
     }
 }

@@ -1,88 +1,183 @@
 {{--
-  The timeline: everything that has happened to the copy, oldest first, drawn
-  from the sections that carry real records. Valuations read here, and the
-  maintenance marked as part of the object's story does too. The rest of the
-  maintenance stays out of the default view and reads in the Activity tab.
+  The unified history: everything that has happened to the copy, newest first,
+  merged from every record below by the BuildCopyHistory service. Nothing is
+  stored here; each entry keeps its own source of truth and links back into the
+  section it came from.
+
+  The meaningful view is the default: routine maintenance, ordinary moves and
+  informal loans stay out until the complete view is asked for. The type filter
+  narrows to chosen sources. Both choices live in the url, so the panel reloads
+  in place and a shared link keeps the same view.
 --}}
 
-@use('App\Enums\LoanDirection')
-
 @php
-  $entries = collect()
-      ->concat($selectedCopy->valuations->map(fn ($valuation): array => [
-          'date' => $valuation->valued_at,
-          'title' => __('Valued at :amount', ['amount' => $money($valuation->amount)]),
-          'sub' => $valuation->type->label(),
-          'color' => '#3b82f6',
-          'test' => 'history-valuation-'.$valuation->id,
-          'documents' => $valuation->documents->count(),
-      ]))
-      ->concat($selectedCopy->loans->map(fn ($loan): array => [
-          'date' => $loan->loaned_at,
-          'title' => $loan->direction === LoanDirection::Outgoing
-              ? __('Loaned to :party', ['party' => $loan->party])
-              : __('Borrowed from :party', ['party' => $loan->party]),
-          'sub' => $loan->status->label(),
-          'color' => '#ec4899',
-          'test' => 'history-loan-'.$loan->id,
-          'documents' => $loan->documents->count(),
-      ]))
-      ->concat($selectedCopy->loans
-          ->filter(fn ($loan): bool => $loan->returned_at !== null)
-          ->map(fn ($loan): array => [
-              'date' => $loan->returned_at,
-              'title' => $loan->direction === LoanDirection::Outgoing
-                  ? __('Returned from :party', ['party' => $loan->party])
-                  : __('Returned to :party', ['party' => $loan->party]),
-              'sub' => __('Loan closed'),
-              'color' => '#ec4899',
-              'test' => 'history-loan-return-'.$loan->id,
-          ]))
-      ->concat($selectedCopy->maintenanceRecords
-          ->where('include_in_provenance', true)
-          ->map(fn ($record): array => [
-              'date' => $record->performed_at,
-              'title' => $record->title,
-              'sub' => $record->type->label(),
-              'color' => '#f59e0b',
-              'test' => 'history-maintenance-'.$record->id,
-              'documents' => $record->documents->count(),
-          ]))
-      ->sortBy(fn (array $entry) => $entry['date']?->timestamp ?? 0)
-      ->values();
+  // Every filter control is a link that reloads the panel, matching how the copy
+  // pills and sections navigate. This builds the timeline url for a given view
+  // and set of types, keeping the url clean when they are at their defaults.
+  $timelineUrl = function (string $view, array $types) use ($collection, $item, $selectedCopy): string {
+      $params = [$collection, $item, $selectedCopy, 'timeline'];
+
+      if ($view === 'complete') {
+          $params['view'] = 'complete';
+      }
+
+      if ($types !== []) {
+          $params['type'] = array_values($types);
+      }
+
+      return route('items.history.show', $params);
+  };
 @endphp
 
-<div class="mb-4">
-  <p class="text-lg font-semibold text-ink">{{ __('Timeline') }}</p>
-  <p class="mt-1 text-[13px] leading-relaxed text-muted">{{ __('Everything that has happened to this copy, oldest first. The sections listed alongside are what it is assembled from.') }}</p>
-</div>
-
-@forelse ($entries as $entry)
-  <div class="flex items-start gap-3 border-b border-hairline-soft py-3.5 last:border-b-0" data-test="{{ $entry['test'] }}">
-    <span class="mt-1.5 size-2 shrink-0 rounded-sm" style="background-color: {{ $entry['color'] }}"></span>
-
-    <div class="min-w-0 flex-1">
-      <p class="text-sm font-semibold text-ink">{{ $entry['title'] }}</p>
-      <p class="text-xs text-muted-soft">{{ $entry['sub'] }}</p>
+<div x-data="{ filtersOpen: true }">
+  <div class="mb-5 flex items-start justify-between gap-4">
+    <div>
+      <p class="text-lg font-semibold tracking-[-0.3px] text-ink">{{ __('Unified history') }}</p>
+      <p class="mt-1 max-w-xl text-[13.5px] leading-relaxed text-muted">{{ __('A combined chronological view built from every record below. Each entry keeps its own source of truth.') }}</p>
     </div>
 
-    @if (($entry['documents'] ?? 0) > 0)
-      <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-card px-2 py-0.5 text-[11px] font-semibold text-muted-soft" data-test="{{ $entry['test'] }}-documents" title="{{ trans_choice(':count document|:count documents', $entry['documents'], ['count' => $entry['documents']]) }}">
-        <x-lucide-paperclip class="size-3" />
-        {{ $entry['documents'] }}
-      </span>
+    @if (! empty($presentSources))
+      <button
+        type="button"
+        x-on:click="filtersOpen = ! filtersOpen"
+        :aria-expanded="filtersOpen.toString()"
+        class="inline-flex h-9 shrink-0 items-center rounded-lg border border-hairline bg-canvas px-3.5 text-[13px] font-semibold text-ink transition-colors hover:bg-card"
+        data-test="timeline-filter-toggle"
+      >{{ __('Filter') }}</button>
     @endif
-
-    <span class="shrink-0 font-mono text-xs text-muted-soft">{{ $entry['date'] ? $entry['date']->isoFormat('MMM YYYY') : '—' }}</span>
   </div>
-@empty
-  <div class="rounded-xl border border-hairline">
-    <x-empty-state data-test="no-history">
-      <x-slot:icon>
-        <x-lucide-clock class="size-6 text-muted" />
-      </x-slot>
 
-      {{ __('Nothing has been recorded against this copy yet.') }}
-    </x-empty-state>
+  @if (! empty($presentSources))
+    <div x-show="filtersOpen" class="mb-6 flex flex-wrap items-center justify-between gap-3" data-test="timeline-filters">
+    {{-- Filter by event type. "All" clears the filter; each chip toggles its own
+         source in and out, so several can be combined. --}}
+    <div class="flex flex-wrap items-center gap-1.5">
+      <a
+        href="{{ $timelineUrl($timelineView, []) }}"
+        data-turbo="true"
+        @class([
+            'inline-flex items-center rounded-full border px-2.5 py-1 text-[12.5px] font-semibold transition-colors',
+            'border-ink bg-ink text-white' => $selectedTypes === [],
+            'border-hairline text-muted hover:text-ink' => $selectedTypes !== [],
+        ])
+        @if ($selectedTypes === []) aria-current="true" @endif
+        data-test="timeline-type-all"
+      >{{ __('All') }}</a>
+
+      @foreach ($presentSources as $source)
+        @php
+          $isActive = in_array($source->value, $selectedTypes, true);
+          $toggled = $isActive
+              ? array_values(array_diff($selectedTypes, [$source->value]))
+              : array_values(array_merge($selectedTypes, [$source->value]));
+        @endphp
+
+        <a
+          href="{{ $timelineUrl($timelineView, $toggled) }}"
+          data-turbo="true"
+          @class([
+              'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12.5px] font-semibold transition-colors',
+              'border-hairline text-muted hover:text-ink' => ! $isActive,
+          ])
+          @if ($isActive) style="border-color: {{ $source->color() }}80; background-color: {{ $source->color() }}22; color: {{ $source->color() }};" aria-current="true" @endif
+          data-test="timeline-type-{{ $source->value }}"
+        >
+          <span class="size-[7px] shrink-0 rounded-full" style="background-color: {{ $source->color() }}" aria-hidden="true"></span>
+          {{ $source->label() }}
+        </a>
+      @endforeach
+    </div>
+
+    {{-- The default meaningful view against the complete activity view. Complete
+         adds the routine records the meaningful view leaves out. --}}
+    <div class="flex items-center gap-0.5 rounded-lg bg-card p-1" data-test="timeline-view-toggle" role="group" aria-label="{{ __('History detail') }}">
+      <a
+        href="{{ $timelineUrl('meaningful', $selectedTypes) }}"
+        data-turbo="true"
+        @class([
+            'rounded-md px-3 py-1 text-[12.5px] font-semibold transition-colors',
+            'bg-canvas text-ink shadow-sm' => $timelineView === 'meaningful',
+            'text-muted hover:text-ink' => $timelineView !== 'meaningful',
+        ])
+        @if ($timelineView === 'meaningful') aria-current="true" @endif
+        data-test="timeline-view-meaningful"
+      >{{ __('Meaningful') }}</a>
+      <a
+        href="{{ $timelineUrl('complete', $selectedTypes) }}"
+        data-turbo="true"
+        @class([
+            'rounded-md px-3 py-1 text-[12.5px] font-semibold transition-colors',
+            'bg-canvas text-ink shadow-sm' => $timelineView === 'complete',
+            'text-muted hover:text-ink' => $timelineView !== 'complete',
+        ])
+        @if ($timelineView === 'complete') aria-current="true" @endif
+        data-test="timeline-view-complete"
+      >{{ __('Complete') }}</a>
+    </div>
   </div>
-@endforelse
+  @endif
+</div>
+
+<div class="flex flex-col">
+  @forelse ($timeline as $entry)
+    @php
+      $color = $entry->source->color();
+      $tint = $color.'26';
+      $amount = $entry->formattedAmount();
+    @endphp
+
+    <a
+      href="{{ route('items.history.show', [$collection, $item, $selectedCopy, $entry->source->section()]) }}"
+      data-turbo="true"
+      class="group flex gap-4"
+      data-test="history-{{ $entry->key() }}"
+    >
+      {{-- The rail: a colour-ringed dot, then a line down to the next entry. --}}
+      <div class="flex shrink-0 flex-col items-center pt-[3px]">
+        <span class="size-[13px] rounded-full" style="background-color: {{ $tint }}; border: 2.5px solid {{ $color }};" aria-hidden="true"></span>
+        @unless ($loop->last)
+          <span class="w-0.5 flex-1 bg-hairline" aria-hidden="true"></span>
+        @endunless
+      </div>
+
+      <div class="min-w-0 flex-1 pb-6">
+        <div class="mb-1 flex flex-wrap items-center gap-2.5">
+          <span class="rounded-full px-2 py-0.5 text-[10.5px] font-semibold tracking-wide uppercase" style="background-color: {{ $tint }}; color: {{ $color }};">{{ $entry->source->label() }}</span>
+          <span class="text-xs text-muted-soft">{{ $entry->formattedDate() }}</span>
+        </div>
+
+        <p class="text-[15px] font-semibold text-ink group-hover:underline">{{ $entry->title }}</p>
+
+        @php
+          $detail = collect([$amount, $entry->summary])->filter(fn ($part): bool => $part !== null && $part !== '')->join(' · ');
+        @endphp
+
+        @if ($detail !== '')
+          <p class="mt-0.5 text-[13.5px] leading-relaxed text-muted">{{ $detail }}</p>
+        @endif
+      </div>
+    </a>
+  @empty
+    @if (empty($presentSources))
+      <div class="rounded-xl border border-hairline">
+        <x-empty-state data-test="no-history">
+          <x-slot:icon>
+            <x-lucide-clock class="size-6 text-muted" />
+          </x-slot>
+
+          {{ __('Nothing has been recorded against this copy yet. Record a transaction, valuation or provenance event, and it starts to build a history here.') }}
+        </x-empty-state>
+      </div>
+    @else
+      <div class="rounded-xl border border-hairline">
+        <x-empty-state data-test="no-history-matches">
+          <x-slot:icon>
+            <x-lucide-list-filter class="size-6 text-muted" />
+          </x-slot>
+
+          {{ __('Nothing matches this filter. Switch to the complete view or clear the filter to see more.') }}
+        </x-empty-state>
+      </div>
+    @endif
+  @endforelse
+</div>
