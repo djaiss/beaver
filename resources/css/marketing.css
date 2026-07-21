@@ -1,1 +1,81 @@
 /* Styles specific to the marketing site. */
+
+/*
+ * The documentation portal renders note, warning and step blocks as `not-prose`
+ * islands so the Tailwind typography plugin does not fight their custom layout.
+ * These rules give the Markdown inside them (code, lists, links) a polished look
+ * on their own.
+ */
+.doc-admonition > :first-child,
+.doc-step > :first-child {
+  margin-top: 0;
+}
+
+.doc-admonition > :last-child,
+.doc-step > :last-child {
+  margin-bottom: 0;
+}
+
+.doc-admonition p,
+.doc-step p {
+  margin: 0.5rem 0;
+}
+
+.doc-admonition ul,
+.doc-admonition ol,
+.doc-step ul,
+.doc-step ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.doc-admonition ol,
+.doc-step ol {
+  list-style: decimal;
+}
+
+.doc-admonition li,
+.doc-step li {
+  margin: 0.25rem 0;
+}
+
+.doc-admonition a,
+.doc-step a {
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.doc-admonition a:hover,
+.doc-step a:hover {
+  text-decoration: underline;
+}
+
+.doc-admonition :not(pre) > code,
+.doc-step :not(pre) > code {
+  border-radius: 4px;
+  background: rgba(17, 17, 17, 0.06);
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.doc-admonition pre,
+.doc-step pre {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  border-radius: 0.625rem;
+  border: 1px solid #e5e7eb;
+  background: #f8f9fa;
+  padding: 0.875rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.doc-admonition pre code,
+.doc-step pre code {
+  font-family: inherit;
+}

@@ -93,6 +93,7 @@ fi
 as_www php artisan config:cache
 as_www php artisan event:cache
 as_www php artisan view:cache
+as_www php artisan docs:cache
 
 echo "Starting role '${ROLE}': $*"
 exec "$@"

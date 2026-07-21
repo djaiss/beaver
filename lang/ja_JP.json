@@ -1384,5 +1384,21 @@
     "Correspondence": "書簡",
     "Ownership record": "所有権記録",
     "Authenticity record": "真正性記録",
-    "Other": "その他"
+    "Other": "その他",
+    "Docs": "ドキュメント",
+    "Documentation": "ドキュメント",
+    "documentation": "ドキュメント",
+    "Search documentation": "ドキュメントを検索",
+    "no version": "バージョンなし",
+    "On this page": "このページの内容",
+    "Back to :name": ":name に戻る",
+    "Home": "ホーム",
+    "Copy for LLM": "LLM 用にコピー",
+    "View as Markdown": "Markdown で表示",
+    "Documentation for :name": ":name のドキュメント",
+    "Edit this page on GitHub": "このページを GitHub で編集",
+    "Was this page useful?": "このページは役に立ちましたか？",
+    "Warning": "警告",
+    "No :language version yet.": ":language 版はまだありません。",
+    "This page has not been translated into :language, so the English version is shown instead.": "このページはまだ :language に翻訳されていないため、英語版を表示しています。"
 }

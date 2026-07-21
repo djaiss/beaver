@@ -1384,5 +1384,21 @@
     "Correspondence": "Correspondance",
     "Ownership record": "Titre de propriété",
     "Authenticity record": "Certificat d'authenticité",
-    "Other": "Autre"
+    "Other": "Autre",
+    "Docs": "Docs",
+    "Documentation": "Documentation",
+    "documentation": "documentation",
+    "Search documentation": "Rechercher dans la documentation",
+    "no version": "pas de version",
+    "On this page": "Sur cette page",
+    "Back to :name": "Retour vers :name",
+    "Home": "Accueil",
+    "Copy for LLM": "Copier pour un LLM",
+    "View as Markdown": "Voir en Markdown",
+    "Documentation for :name": "Documentation de :name",
+    "Edit this page on GitHub": "Modifier cette page sur GitHub",
+    "Was this page useful?": "Cette page vous a-t-elle été utile ?",
+    "Warning": "Avertissement",
+    "No :language version yet.": "Pas encore de version en :language.",
+    "This page has not been translated into :language, so the English version is shown instead.": "Cette page n'a pas encore été traduite en :language, la version anglaise est donc affichée à la place."
 }
