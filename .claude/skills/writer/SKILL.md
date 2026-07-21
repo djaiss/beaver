@@ -156,6 +156,41 @@ Use code blocks only for commands, code, or configuration.
 
 Avoid large walls of text.
 
+## Frontmatter
+
+Every page in `docs/portal` starts with a YAML frontmatter block, before the `# ` heading:
+
+```
+---
+id: collections.create
+title: Create your first collection
+slug: create-your-first-collection
+section: getting-started
+---
+```
+
+- `id`: a dot namespaced identifier (`domain.action`), for example `collections.create` or `copies.move`. The domain names the concept the page is about, not the folder it lives in, so the id survives the page being moved or retitled. It must be unique across the whole portal, and once assigned it never changes.
+- `title`: the page title. Matches the `# ` heading.
+- `slug`: the kebab-case URL segment: the page's meaningful name, without the ordering prefix described below and without `.md`. A section's index page uses the folder's own clean name as its slug (for example `getting-started`), since it is that section's landing URL.
+- `section`: the folder the page lives in, by its clean name without the ordering prefix (`getting-started`, `core-concepts`, and so on). The portal's root index page uses `portal`.
+
+`slug` and `section` never carry the numeric ordering prefix that the filename and folder on disk use. That prefix is a display order hint, not part of the identity of a page, so it stays out of frontmatter entirely.
+
+When a page is translated, only `id` stays identical across every locale. `title`, `slug`, and `section` are translated along with the rest of the page, since they are locale specific text, not identifiers.
+
+Quote a frontmatter value in the rare case it contains a colon (`title: "Tutorial: Catalogue your first collection end to end"`); plain values need no quoting.
+
+When adding a new page, pick an `id` that does not collide with an existing one and follows the same domain grouping as related pages (check other pages about the same concept before inventing a new domain name).
+
+## File and folder order
+
+Folders and files under `docs/portal` are prefixed with `N-` to say in what order they should be shown; number, dash, then the name. This is a filesystem convention only: it never appears in `id`, `title`, `slug`, or `section`.
+
+- Folders are numbered in reading order: `2-getting-started`, `3-core-concepts`, `4-core-features`, and so on. The portal's root index page, `1-introduction.md`, takes the first slot, so the first section folder starts at `2`.
+- Files inside a folder are numbered the same way, in the order a reader should go through them.
+- Every folder's first file is its section index or overview page, named `1-introduction.md` regardless of what the page is actually about (its `title` still says what it is, for example "Security overview"). This replaces the old convention of using `README.md` to mark the first page, since the number now states the order explicitly.
+- When inserting a new page in the middle of a section, renumber the files after it so the sequence stays contiguous, and update the relative links that point at any renamed file.
+
 ## Callout components
 
 Use callout components to lift a short, important point out of the surrounding text. They render as a highlighted box that the reader cannot skim past.
