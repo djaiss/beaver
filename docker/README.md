@@ -74,6 +74,10 @@ On boot the `app` container runs `php artisan migrate --force`, which applies
 set `RUN_MIGRATIONS=false` and run `docker compose exec app php artisan migrate
 --force` when you choose.
 
+Every container also runs `php artisan docs:cache` on boot, which builds the
+documentation portal index (served at `/docs`) from the Markdown files so pages
+render without scanning the disk on each request.
+
 ### One-off step after upgrading to the photos screen
 
 The photos screen searches encrypted file names through an index the app keeps

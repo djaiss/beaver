@@ -1384,5 +1384,21 @@
     "Correspondence": "往来函件",
     "Ownership record": "所有权记录",
     "Authenticity record": "真伪记录",
-    "Other": "其他"
+    "Other": "其他",
+    "Docs": "文档",
+    "Documentation": "文档",
+    "documentation": "文档",
+    "Search documentation": "搜索文档",
+    "no version": "无版本",
+    "On this page": "本页内容",
+    "Back to :name": "返回 :name",
+    "Home": "首页",
+    "Copy for LLM": "复制给 LLM",
+    "View as Markdown": "以 Markdown 查看",
+    "Documentation for :name": ":name 文档",
+    "Edit this page on GitHub": "在 GitHub 上编辑此页",
+    "Was this page useful?": "此页面有帮助吗？",
+    "Warning": "警告",
+    "No :language version yet.": "尚无 :language 版本。",
+    "This page has not been translated into :language, so the English version is shown instead.": "此页面尚未翻译成 :language，因此显示英文版本。"
 }

@@ -1384,5 +1384,21 @@
     "Correspondence": "Correspondence",
     "Ownership record": "Ownership record",
     "Authenticity record": "Authenticity record",
-    "Other": "Other"
+    "Other": "Other",
+    "Docs": "Docs",
+    "Documentation": "Documentation",
+    "documentation": "documentation",
+    "Search documentation": "Search documentation",
+    "no version": "no version",
+    "On this page": "On this page",
+    "Back to :name": "Back to :name",
+    "Home": "Home",
+    "Copy for LLM": "Copy for LLM",
+    "View as Markdown": "View as Markdown",
+    "Documentation for :name": "Documentation for :name",
+    "Edit this page on GitHub": "Edit this page on GitHub",
+    "Was this page useful?": "Was this page useful?",
+    "Warning": "Warning",
+    "No :language version yet.": "No :language version yet.",
+    "This page has not been translated into :language, so the English version is shown instead.": "This page has not been translated into :language, so the English version is shown instead."
 }
