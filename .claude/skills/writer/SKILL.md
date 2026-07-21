@@ -162,24 +162,52 @@ Use callout components to lift a short, important point out of the surrounding t
 
 Two are available:
 
-- `<Note>` for information the reader should not miss: a consequence, a limit, a useful clarification, or a helpful tip.
-- `<Warning>` for something that can cause data loss, lock the reader out, or otherwise cause real harm if ignored.
+- `:::note` for information the reader should not miss: a consequence, a limit, a useful clarification, or a helpful tip.
+- `:::warning` for something that can cause data loss, lock the reader out, or otherwise cause real harm if ignored.
 
-Write them as block components with the tags on their own lines:
+Write them as fenced blocks, with the fence on its own line:
 
 ```
-<Note>
+:::note
 Magic links are valid for five minutes. If yours expires, request another.
-</Note>
+:::
 
-<Warning>
+:::warning
 Deleting a collection also deletes every item inside it. This cannot be undone.
-</Warning>
+:::
 ```
 
-Use them sparingly. A page full of callouts trains the reader to ignore them. Reserve `<Warning>` for genuine danger, above all destructive actions, and prefer a plain sentence for ordinary emphasis. Keep the text inside a callout to a sentence or two, and leave the fuller explanation in the surrounding prose.
+Use them sparingly. A page full of callouts trains the reader to ignore them. Reserve `:::warning` for genuine danger, above all destructive actions, and prefer a plain sentence for ordinary emphasis. Keep the text inside a callout to a sentence or two, and leave the fuller explanation in the surrounding prose.
 
-Always warn before a destructive action. When a step deletes data, removes a member, or makes something public, state the consequence in a `<Warning>` right where the reader is about to act.
+Always warn before a destructive action. When a step deletes data, removes a member, or makes something public, state the consequence in a `:::warning` right where the reader is about to act.
+
+## Step components
+
+When a task walks the reader through an ordered sequence of actions in the UI, present it with the `steps` container. It renders as a numbered rail, with each step showing its number, a title, the instruction, and optionally a framed screenshot placeholder.
+
+Because `steps` contains `step` blocks, the outer fence uses **four** colons and the inner ones use **three** — this is what lets the parser tell the outer block from the inner ones, the same way a code fence needs more backticks to contain another code fence. The screenshot placeholder has no body text, so it's a single-line leaf directive with **two** colons.
+
+```
+::::steps
+:::step title="Open the collection"
+Select the collection from the sidebar, then choose **New item**. The form opens with the correct item type already applied.
+
+::screenshot{label="Collection view, New item button"}
+:::
+
+:::step title="Enter the core details"
+Fill in the **name** field and any type-specific fields.
+:::
+::::
+```
+
+Guidelines:
+
+- Use `::::steps` for genuine ordered walkthroughs of three or more actions. A single action, an option list, or a conceptual explanation is plain prose, not steps.
+- Give each step a short, verb first title, then one or two sentences of instruction. Explain the why in the prose around the block, not inside every step.
+- The `::screenshot` placeholder is optional per step. Add it where a picture of the UI genuinely helps, with a short label describing what the screenshot should show.
+- Do not nest `:::note` or `:::warning` inside a step; the three colon fences collide. Place the callout before or after the `::::steps` block, or fold the point into the step's prose.
+- Long tutorials can keep `## Step N` headings for their narrative phases and use a `::::steps` block inside a phase for the concrete UI actions.
 
 ## Linking
 
