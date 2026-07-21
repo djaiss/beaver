@@ -156,30 +156,93 @@ Use code blocks only for commands, code, or configuration.
 
 Avoid large walls of text.
 
+## Frontmatter
+
+Every page in `docs/portal` starts with a YAML frontmatter block, before the `# ` heading:
+
+```
+---
+id: collections.create
+title: Create your first collection
+slug: create-your-first-collection
+section: getting-started
+---
+```
+
+- `id`: a dot namespaced identifier (`domain.action`), for example `collections.create` or `copies.move`. The domain names the concept the page is about, not the folder it lives in, so the id survives the page being moved or retitled. It must be unique across the whole portal, and once assigned it never changes.
+- `title`: the page title. Matches the `# ` heading.
+- `slug`: the kebab-case URL segment: the page's meaningful name, without the ordering prefix described below and without `.md`. A section's index page uses the folder's own clean name as its slug (for example `getting-started`), since it is that section's landing URL.
+- `section`: the folder the page lives in, by its clean name without the ordering prefix (`getting-started`, `core-concepts`, and so on). The portal's root index page uses `portal`.
+
+`slug` and `section` never carry the numeric ordering prefix that the filename and folder on disk use. That prefix is a display order hint, not part of the identity of a page, so it stays out of frontmatter entirely.
+
+When a page is translated, only `id` stays identical across every locale. `title`, `slug`, and `section` are translated along with the rest of the page, since they are locale specific text, not identifiers.
+
+Quote a frontmatter value in the rare case it contains a colon (`title: "Tutorial: Catalogue your first collection end to end"`); plain values need no quoting.
+
+When adding a new page, pick an `id` that does not collide with an existing one and follows the same domain grouping as related pages (check other pages about the same concept before inventing a new domain name).
+
+## File and folder order
+
+Folders and files under `docs/portal` are prefixed with `N-` to say in what order they should be shown; number, dash, then the name. This is a filesystem convention only: it never appears in `id`, `title`, `slug`, or `section`.
+
+- Folders are numbered in reading order: `2-getting-started`, `3-core-concepts`, `4-core-features`, and so on. The portal's root index page, `1-introduction.md`, takes the first slot, so the first section folder starts at `2`.
+- Files inside a folder are numbered the same way, in the order a reader should go through them.
+- Every folder's first file is its section index or overview page, named `1-introduction.md` regardless of what the page is actually about (its `title` still says what it is, for example "Security overview"). This replaces the old convention of using `README.md` to mark the first page, since the number now states the order explicitly.
+- When inserting a new page in the middle of a section, renumber the files after it so the sequence stays contiguous, and update the relative links that point at any renamed file.
+
 ## Callout components
 
 Use callout components to lift a short, important point out of the surrounding text. They render as a highlighted box that the reader cannot skim past.
 
 Two are available:
 
-- `<Note>` for information the reader should not miss: a consequence, a limit, a useful clarification, or a helpful tip.
-- `<Warning>` for something that can cause data loss, lock the reader out, or otherwise cause real harm if ignored.
+- `:::note` for information the reader should not miss: a consequence, a limit, a useful clarification, or a helpful tip.
+- `:::warning` for something that can cause data loss, lock the reader out, or otherwise cause real harm if ignored.
 
-Write them as block components with the tags on their own lines:
+Write them as fenced blocks, with the fence on its own line:
 
 ```
-<Note>
+:::note
 Magic links are valid for five minutes. If yours expires, request another.
-</Note>
+:::
 
-<Warning>
+:::warning
 Deleting a collection also deletes every item inside it. This cannot be undone.
-</Warning>
+:::
 ```
 
-Use them sparingly. A page full of callouts trains the reader to ignore them. Reserve `<Warning>` for genuine danger, above all destructive actions, and prefer a plain sentence for ordinary emphasis. Keep the text inside a callout to a sentence or two, and leave the fuller explanation in the surrounding prose.
+Use them sparingly. A page full of callouts trains the reader to ignore them. Reserve `:::warning` for genuine danger, above all destructive actions, and prefer a plain sentence for ordinary emphasis. Keep the text inside a callout to a sentence or two, and leave the fuller explanation in the surrounding prose.
 
-Always warn before a destructive action. When a step deletes data, removes a member, or makes something public, state the consequence in a `<Warning>` right where the reader is about to act.
+Always warn before a destructive action. When a step deletes data, removes a member, or makes something public, state the consequence in a `:::warning` right where the reader is about to act.
+
+## Step components
+
+When a task walks the reader through an ordered sequence of actions in the UI, present it with the `steps` container. It renders as a numbered rail, with each step showing its number, a title, the instruction, and optionally a framed screenshot placeholder.
+
+Because `steps` contains `step` blocks, the outer fence uses **four** colons and the inner ones use **three** — this is what lets the parser tell the outer block from the inner ones, the same way a code fence needs more backticks to contain another code fence. The screenshot placeholder has no body text, so it's a single-line leaf directive with **two** colons.
+
+```
+::::steps
+:::step title="Open the collection"
+Select the collection from the sidebar, then choose **New item**. The form opens with the correct item type already applied.
+
+::screenshot{label="Collection view, New item button"}
+:::
+
+:::step title="Enter the core details"
+Fill in the **name** field and any type-specific fields.
+:::
+::::
+```
+
+Guidelines:
+
+- Use `::::steps` for genuine ordered walkthroughs of three or more actions. A single action, an option list, or a conceptual explanation is plain prose, not steps.
+- Give each step a short, verb first title, then one or two sentences of instruction. Explain the why in the prose around the block, not inside every step.
+- The `::screenshot` placeholder is optional per step. Add it where a picture of the UI genuinely helps, with a short label describing what the screenshot should show.
+- Do not nest `:::note` or `:::warning` inside a step; the three colon fences collide. Place the callout before or after the `::::steps` block, or fold the point into the step's prose.
+- Long tutorials can keep `## Step N` headings for their narrative phases and use a `::::steps` block inside a phase for the concrete UI actions.
 
 ## Linking
 
@@ -189,9 +252,44 @@ Documentation is a web of pages, not a stack of isolated ones. Link generously s
 - Link the first meaningful mention on a page, not every occurrence. Repeated links to the same place become noise.
 - Link to other sections when that is the reader's natural next step: from a concept to the how to that uses it, from a task to the concept behind it, from a page to the tutorial that ties things together.
 - Use the concept or task name as the link text. Never write "click here".
-- Use relative links between documentation files.
 
 This turns the portal into a guided journey rather than a set of dead ends. See also "Keep readers moving" for closing a page with next steps.
+
+### Never link by filename or path
+
+Never create a link by referencing another page's filename or relative path.
+
+Do not write:
+
+```md
+[Create your first collection](../getting-started/create-your-first-collection.md)
+```
+
+Use the `@doc(...)` directive instead, referencing the target page's stable `id` from its frontmatter. The parser resolves that id to the correct, localized URL at render time.
+
+```md
+@doc(collections.create)
+```
+
+With no second argument, the rendered link text is the target page's `title`. If `collections.create` titles "Create your first collection", this renders as:
+
+```md
+[Create your first collection](/docs/en/getting-started/create-your-first-collection)
+```
+
+Pass a quoted second argument to control the link text, whenever that reads better in the sentence:
+
+```md
+Every item belongs to @doc(collections.create, "a collection").
+
+To learn more, see @doc(collections.create).
+```
+
+Rules:
+
+- Always reference the target's `id`, never its filename, title, or URL. This is what lets pages be renamed, reorganized, or moved without breaking a single internal link.
+- Omit the label when the surrounding sentence naturally wants the page's exact title. Add a quoted label whenever the title would not read naturally in place (case, phrasing, or only part of the title fits the sentence).
+- Never write a raw `[text](path.md)` markdown link between two pages in `docs/portal`. `@doc(...)` is the only way to link one documentation page to another.
 
 ## Tutorials
 

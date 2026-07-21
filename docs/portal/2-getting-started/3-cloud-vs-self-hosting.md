@@ -1,3 +1,10 @@
+---
+id: kollek.hostingOptions
+title: Cloud version versus self hosting
+slug: cloud-vs-self-hosting
+section: getting-started
+---
+
 # Cloud version versus self hosting
 
 Before you invest time in KolleK, it helps to know how you will run it. This page explains your options and, just as important, what you will not be asked to pay for.
@@ -6,9 +13,9 @@ Before you invest time in KolleK, it helps to know how you will run it. This pag
 
 KolleK has no plans, no tiers, and no paywalled features. There is no billing inside the app at all. Whichever way you run it, you get the same complete application. Nothing is locked behind an upgrade.
 
-<Note>
+:::note
 There is nothing to buy inside KolleK. Self hosting is free, and every feature is included no matter how you run it.
-</Note>
+:::
 
 So the choice below is only about where the software runs, not about what you can do with it.
 
@@ -34,5 +41,5 @@ Choose self hosting if you want full control of your data and are happy to run a
 
 ## Where to next
 
-- Whichever path you took, the next step is the same. [Create your account](create-your-account.md).
-- Curious what you will be working with first? Read [What is KolleK](what-is-kollek.md).
+- Whichever path you took, the next step is the same. @doc(accounts.create).
+- Curious what you will be working with first? Read @doc(kollek.whatIs).

@@ -1,3 +1,10 @@
+---
+id: gettingStarted.quickStart
+title: A five minute quick start
+slug: quick-start
+section: getting-started
+---
+
 # A five minute quick start
 
 This is the fastest path from an empty account to a real, catalogued item. You will create a collection, add one item with a photo, record one physical copy you own, and view the result. Along the way you will meet the one idea that makes KolleK click: the difference between an item and a copy.
@@ -6,14 +13,14 @@ By the end you will know the core loop you will use for everything else.
 
 ## What you will need
 
-- A KolleK account you can sign into. If you do not have one yet, [create your account](create-your-account.md) first.
+- A KolleK account you can sign into. If you do not have one yet, @doc(accounts.create, "create your account") first.
 - One thing you own that you would like to catalogue, ideally with a photo of it on hand.
 
 Throughout, we will follow Emma, who collects comics and wants to catalogue her copy of Amazing Spider-Man #1. Follow along with something of your own.
 
 ## Step 1: Create a collection
 
-A [collection](../core-concepts/collections.md) is a named group that holds related [items](../core-concepts/items-and-copies.md). Emma makes one called "My Comics".
+A @doc(collections.overview, "collection") is a named group that holds related @doc(items.itemsVsCopies, "items"). Emma makes one called "My Comics".
 
 From your dashboard, choose to create a **New collection**. Give it a **name**, and optionally pick an emoji and add a short description. You can leave the other choices at their defaults for now. Save it.
 
@@ -37,12 +44,12 @@ Why this matters: photos make a large catalogue far easier to scan, and the cove
 
 ## Step 4: Add the copy you own
 
-Here is the important step. An item on its own does not record anything you physically own. A **[copy](../core-concepts/items-and-copies.md)** does.
+Here is the important step. An item on its own does not record anything you physically own. A **@doc(items.itemsVsCopies, "copy")** does.
 
 On the item, add a **copy** and set at least:
 
-- **[Condition](../core-concepts/conditions.md)**, such as Very Good or Mint. Choose from the ready made list.
-- **[Location](../core-concepts/locations.md)**, where the copy is stored, for example a shelf or a box.
+- **@doc(conditions.overview, "Condition")**, such as Very Good or Mint. Choose from the ready made list.
+- **@doc(locations.overview, "Location")**, where the copy is stored, for example a shelf or a box.
 
 Emma adds one copy, marks it **Very Good**, and sets its location to "Long box 1".
 
@@ -56,9 +63,9 @@ That is the whole loop: collection, item, photo, copy. Everything else in KolleK
 
 ## A common mix up to avoid
 
-<Note>
+:::note
 Two of the same thing are two copies of one item, not two items. If you are about to create a second item for something you already catalogued, add a copy to the existing item instead.
-</Note>
+:::
 
 Keeping it to one item with multiple copies is what lets KolleK track each physical piece separately while keeping your catalogue tidy.
 

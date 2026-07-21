@@ -1,3 +1,10 @@
+---
+id: accounts.create
+title: Create your account
+slug: create-your-account
+section: getting-started
+---
+
 # Create your account
 
 Signing up gives you two things at once: a personal user to log in with, and a fresh account to hold your collections. This page walks you through it and explains a few things that might otherwise surprise you.
@@ -30,26 +37,26 @@ Creating an account sets up two things:
 
 **A user, which is you.** Your personal login, tied to your email.
 
-**An account, which is your workspace.** You are its **[owner](../core-concepts/accounts-users-and-roles.md)**, which means you can do everything: catalogue items, invite other people, and change account settings. Roles are covered later, when you start inviting others.
+**An account, which is your workspace.** You are its **@doc(accounts.usersAndRoles, "owner")**, which means you can do everything: catalogue items, invite other people, and change account settings. Roles are covered later, when you start inviting others.
 
-<Note>
+:::note
 A person belongs to exactly one account. You cannot use the same email to join a second account. If you are invited to someone else's account later, that invitation only works if your email does not already have an account of its own.
-</Note>
+:::
 
 ## Your account is not empty
 
-To save you starting from a blank page, a new account arrives with a set of ready made **[collection types](../core-concepts/collection-types-and-custom-fields.md)** already in place, such as Comics, Vinyl Records, Coins, and Books, along with a few default storage **[locations](../core-concepts/locations.md)**. You can use them as they are, rename them, or ignore them. They are only a starting point.
+To save you starting from a blank page, a new account arrives with a set of ready made **@doc(collectionTypes.overview, "collection types")** already in place, such as Comics, Vinyl Records, Coins, and Books, along with a few default storage **@doc(locations.overview, "locations")**. You can use them as they are, rename them, or ignore them. They are only a starting point.
 
 ## About email verification
 
 After you register, KolleK sends a verification email. Verifying is good practice, because it confirms your address works.
 
-<Note>
+:::note
 You do not have to verify your email to use KolleK. Nothing is blocked while it is unverified.
-</Note>
+:::
 
 ## Where to next
 
-- Take the guided first steps in [The getting started checklist](getting-started-checklist.md).
-- Or jump straight in with the [five minute quick start](quick-start.md).
-- Learn how to get back in next time in [Signing in](signing-in.md).
+- Take the guided first steps in @doc(gettingStarted.checklist).
+- Or jump straight in with the @doc(gettingStarted.quickStart, "five minute quick start").
+- Learn how to get back in next time in @doc(auth.signIn).

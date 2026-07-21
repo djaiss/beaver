@@ -1,3 +1,10 @@
+---
+id: kollek.whatIs
+title: What is KolleK
+slug: what-is-kollek
+section: getting-started
+---
+
 # What is KolleK
 
 KolleK is a home for everything you collect. Comics, vinyl records, coins, watches, wine, books, trading cards, video games, or the oddly specific thing only you love. If you can own it, you can catalogue it here.
@@ -12,16 +19,16 @@ KolleK replaces all of that with one focused tool built for collections.
 
 You only need one idea to get started. Everything in KolleK nests in four levels:
 
-- An **[account](../core-concepts/accounts-users-and-roles.md)** is your workspace. Everything you create lives inside it.
-- A **[collection](../core-concepts/collections.md)** is a named group, such as "My Comics" or "Wine Cellar".
-- An **[item](../core-concepts/items-and-copies.md)** is a kind of thing, such as "Amazing Spider-Man #1".
-- A **[copy](../core-concepts/items-and-copies.md)** is one physical thing you actually own.
+- An **@doc(accounts.usersAndRoles, "account")** is your workspace. Everything you create lives inside it.
+- A **@doc(collections.overview, "collection")** is a named group, such as "My Comics" or "Wine Cellar".
+- An **@doc(items.itemsVsCopies, "item")** is a kind of thing, such as "Amazing Spider-Man #1".
+- A **@doc(items.itemsVsCopies, "copy")** is one physical thing you actually own.
 
 The distinction between an item and a copy is what makes KolleK different from a plain list. If you own three copies of the same comic, that is one item with three copies, and each copy has its own condition, storage location, value, and history. You will meet this idea properly once you start cataloguing, so do not worry about it yet.
 
-<Note>
+:::note
 The difference between an item and a copy is the one idea worth carrying forward, and you will use it constantly.
-</Note>
+:::
 
 ## Who it is for
 
@@ -37,5 +44,5 @@ KolleK works for a single collector keeping a private catalogue, and for a group
 
 ## Where to next
 
-- Decide how you will run KolleK in [Cloud version versus self hosting](cloud-vs-self-hosting.md).
-- Ready to begin? [Create your account](create-your-account.md).
+- Decide how you will run KolleK in @doc(kollek.hostingOptions).
+- Ready to begin? @doc(accounts.create).
