@@ -15,8 +15,8 @@ This is the longest tutorial. Do it with a real item of your own, or just read i
 
 ## Before you start
 
-- Finish [Catalogue your first collection end to end](2-catalogue-your-first-collection.md) first. This tutorial assumes the core loop is second nature.
-- Read [A copy's history explained](../3-core-concepts/11-copy-history.md). It is the map for everything below.
+- Finish @doc(tutorials.catalogueFirstCollection, "Catalogue your first collection end to end") first. This tutorial assumes the core loop is second nature.
+- Read @doc(copyHistory.concept, "A copy's history explained"). It is the map for everything below.
 - Remember the two rules that keep the model coherent: money only ever lives in transactions, and revaluing or re insuring writes a new record instead of overwriting the old one.
 
 ## Step 1: Catalogue the item and its copy
@@ -40,7 +40,7 @@ In the copy's history, add a **transaction** of type **Purchase**. Priya enters 
 :::
 ::::
 
-Why this matters: this single record gives the copy its price paid and its acquisition date, anchors the statistics, and will later anchor the provenance narrative. Get it right and everything else hangs off it. The details are in [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
+Why this matters: this single record gives the copy its price paid and its acquisition date, anchors the statistics, and will later anchor the provenance narrative. Get it right and everything else hangs off it. The details are in @doc(copies.recordPaymentsAndValue).
 
 ## Step 3: Add a professional valuation
 
@@ -52,13 +52,13 @@ Next year she will have it appraised again and add a new valuation. The old one 
 
 ## Step 4: Insure it
 
-With a professional appraisal in hand, insurance is the obvious next step. Priya adds an [insurance record](../5-copy-history/3-insure-a-copy.md): the **provider**, the **insured value**, the **policy number**, the **coverage type**, the **deductible**, the **start and end dates**, whether it is a **scheduled item** on the policy, and the insurer's contact details. She leaves the status **Active**.
+With a professional appraisal in hand, insurance is the obvious next step. Priya adds an @doc(copies.insure, "insurance record"): the **provider**, the **insured value**, the **policy number**, the **coverage type**, the **deductible**, the **start and end dates**, whether it is a **scheduled item** on the policy, and the insurer's contact details. She leaves the status **Active**.
 
 When the policy renews, she will add a new record and mark this one **Expired**. Expired and cancelled records stay visible as dimmed history behind the current one, which is exactly what you want when a claim asks what cover existed in a given year.
 
 ## Step 5: Attach the paperwork
 
-Records are claims. Documents are proof. Priya scans two pieces of paper and [attaches them](../5-copy-history/8-attach-documents.md) where they belong:
+Records are claims. Documents are proof. Priya scans two pieces of paper and @doc(copies.attachDocuments, "attaches them") where they belong:
 
 ::::steps
 :::step title="Attach the receipt to the transaction"
@@ -74,7 +74,7 @@ A document can be an uploaded file (PDF, images, Word, Excel, CSV, or plain text
 
 ## Step 6: Lend it to an exhibition, and get it back
 
-A local horology society asks to display the watch for a month. Custody is exactly what [loans](../5-copy-history/4-lend-and-borrow-copies.md) track.
+A local horology society asks to display the watch for a month. Custody is exactly what @doc(loans.lendAndBorrow, "loans") track.
 
 ::::steps
 :::step title="Record the outgoing loan"
@@ -92,11 +92,11 @@ When the watch comes back, she records the **return**, which captures the return
 
 ## Step 7: Log the servicing
 
-Before the watch went on display, Priya had it serviced. She adds a [maintenance record](../5-copy-history/5-record-maintenance-and-repairs.md) of type **Servicing**: a title, the watchmaker who performed it, the date, the cost, the condition before and after, and a **next due date** five years out so the app can surface the next service when it approaches. Since a full service on a vintage movement is significant, she chooses to include it in the copy's provenance.
+Before the watch went on display, Priya had it serviced. She adds a @doc(copies.recordMaintenance, "maintenance record") of type **Servicing**: a title, the watchmaker who performed it, the date, the cost, the condition before and after, and a **next due date** five years out so the app can surface the next service when it approaches. Since a full service on a vintage movement is significant, she chooses to include it in the copy's provenance.
 
 ## Step 8: Build the provenance narrative
 
-Finally, the ownership story. Priya knows the watch's past from the auction catalogue, and she records it as [provenance events](../5-copy-history/6-trace-provenance.md), oldest first:
+Finally, the ownership story. Priya knows the watch's past from the auction catalogue, and she records it as @doc(copies.traceProvenance, "provenance events"), oldest first:
 
 - An **Origin** event for its manufacture, dated to the year 1968.
 - An **Ownership transfer** to the original owner's family, with the date precision set to **Approximate**, because the catalogue only says "circa 1975".
@@ -107,7 +107,7 @@ Two things to notice. Date precision exists because provenance is often uncertai
 
 ## Step 9: Read the whole story
 
-Open the copy's **timeline**. Everything you just recorded, the purchase, the valuation, the insurance, the documents, the loan out and back, the servicing, and the provenance events, reads as one chronological story. The default view keeps to the meaningful entries, and the complete view adds the routine ones. [Read the copy timeline](../5-copy-history/9-read-the-copy-timeline.md) explains the view in full.
+Open the copy's **timeline**. Everything you just recorded, the purchase, the valuation, the insurance, the documents, the loan out and back, the servicing, and the provenance events, reads as one chronological story. The default view keeps to the meaningful entries, and the complete view adds the routine ones. @doc(copyHistory.readTimeline) explains the view in full.
 
 This is the payoff: one screen that answers what the watch cost, what it is worth, who has held it, what has been done to it, and what proves all of the above.
 
@@ -119,6 +119,6 @@ This is the payoff: one screen that answers what the watch cost, what it is wort
 
 ## Where to next
 
-- Every record type used here has its own detailed guide in the [copy history section](../5-copy-history/1-introduction.md).
-- See how these records feed the numbers in [Understand your collection statistics](../7-insights/2-collection-statistics.md).
-- Sharing the collection with others? [Invite your household or club](5-invite-your-household.md).
+- Every record type used here has its own detailed guide in the @doc(copyHistory.index, "copy history section").
+- See how these records feed the numbers in @doc(insights.collectionStatistics).
+- Sharing the collection with others? @doc(tutorials.inviteHousehold, "Invite your household or club").

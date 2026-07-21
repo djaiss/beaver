@@ -41,6 +41,6 @@ Beside the timeline, each record type keeps its own section: **Transactions**, *
 
 ## Where to next
 
-- Start a copy's story with its money and value in [Record what you paid and what it is worth](2-record-payments-and-value.md).
-- See a complete worked example, from purchase to provenance, in the tutorial [Track the full life of a valuable item](../12-tutorials/4-track-a-valuable-item.md).
-- Wondering why history is append only? Revisit [A copy's history explained](../3-core-concepts/11-copy-history.md).
+- Start a copy's story with its money and value in @doc(copies.recordPaymentsAndValue).
+- See a complete worked example, from purchase to provenance, in the tutorial @doc(tutorials.trackValuableItem, "Track the full life of a valuable item").
+- Wondering why history is append only? Revisit @doc(copyHistory.concept, "A copy's history explained").

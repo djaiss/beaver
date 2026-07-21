@@ -7,7 +7,7 @@ section: data-safety
 
 # Delete an account
 
-Deleting an account is the most destructive action in KolleK. It removes the entire workspace: every collection, every item, every copy with its full history, every photo and document, and every member's access. Only an [owner](../3-core-concepts/3-accounts-users-and-roles.md) can do it.
+Deleting an account is the most destructive action in KolleK. It removes the entire workspace: every collection, every item, every copy with its full history, every photo and document, and every member's access. Only an @doc(accounts.usersAndRoles, "owner") can do it.
 
 :::warning
 Deleting an account cannot be undone. Nothing goes to the trash, nothing can be restored, and no one, including whoever runs the instance, can bring it back. Every member loses everything at once.
@@ -17,9 +17,9 @@ Deleting an account cannot be undone. Nothing goes to the trash, nothing can be 
 
 Slow down and check three things:
 
-- **Is this really what you want, rather than [deleting your own user](3-delete-your-user.md)?** Leaving a shared account only requires removing yourself. The account and the catalogue survive without you.
+- **Is this really what you want, rather than @doc(users.deleteSelf, "deleting your own user")?** Leaving a shared account only requires removing yourself. The account and the catalogue survive without you.
 - **Does anyone else depend on it?** Every member of the account loses access and data the moment you confirm. Tell them first.
-- **Do you have what you need out of it?** Export any [collection type definitions](../6-organizing/3-import-and-export-a-collection-type.md) you want to keep. If the instance is self hosted, take a full backup first, as described in [Back up and restore your instance](../14-self-hosting/7-back-up-and-restore.md). After deletion there is nothing left to back up.
+- **Do you have what you need out of it?** Export any @doc(collectionTypes.importExport, "collection type definitions") you want to keep. If the instance is self hosted, take a full backup first, as described in @doc(selfHosting.backupAndRestore). After deletion there is nothing left to back up.
 
 ## Delete the account
 
@@ -31,5 +31,5 @@ Everything. Collections, items, copies, categories, sets, series, tags, location
 
 ## Where to next
 
-- Removing just yourself is covered in [Delete your user](3-delete-your-user.md).
-- For recoverable deletions, see [Restore something from the trash](2-restore-from-trash.md).
+- Removing just yourself is covered in @doc(users.deleteSelf).
+- For recoverable deletions, see @doc(dataSafety.restoreFromTrash).

@@ -9,17 +9,17 @@ section: collaboration
 
 Cataloguing is more fun, and more accurate, when the people who share the collection share the catalogue. This page shows you how to invite someone into your account, what they will experience, and the limits to know about before you send the invitation.
 
-Only an **[owner](../3-core-concepts/3-accounts-users-and-roles.md)** can invite people. If you do not see the option, ask an owner of your account.
+Only an **@doc(accounts.usersAndRoles, "owner")** can invite people. If you do not see the option, ask an owner of your account.
 
 ## Decide the role first
 
-Every invitation carries a [role](4-roles-in-practice.md), chosen at the moment you invite:
+Every invitation carries a @doc(collaboration.rolesInPractice, "role"), chosen at the moment you invite:
 
 - **Viewer** can browse everything but change nothing. This is the default.
 - **Editor** can create and change catalogue content.
 - **Owner** can do everything, including managing members and account settings.
 
-Start people at the lowest role that fits. You can always [raise it later](3-manage-members-and-roles.md), which is easier than walking back access someone should not have had.
+Start people at the lowest role that fits. You can always @doc(collaboration.manageMembersAndRoles, "raise it later"), which is easier than walking back access someone should not have had.
 
 Emma, for example, invites her partner Sam as an **editor** so Sam can add comics too, and her friend Leo as a **viewer** so Leo can browse the collection without being able to change it.
 
@@ -57,13 +57,13 @@ Invitations expire after seven days. If someone misses the window, just invite t
 
 One limit deserves special attention, because it is the most common reason an invitation fails:
 
-- **A person belongs to exactly one account.** If the email you invite already has its own KolleK account, that person cannot accept your invitation. They would need to use a different email address, or [delete their existing user](../11-data-safety/3-delete-your-user.md) first.
+- **A person belongs to exactly one account.** If the email you invite already has its own KolleK account, that person cannot accept your invitation. They would need to use a different email address, or @doc(users.deleteSelf, "delete their existing user") first.
 - **Only owners can invite.** Editors and viewers cannot bring new people in.
 
-If an invitation email never arrives, the instance's mail delivery may not be set up yet. See [troubleshooting email delivery](../15-troubleshooting/3-troubleshoot-email-delivery.md).
+If an invitation email never arrives, the instance's mail delivery may not be set up yet. See @doc(troubleshooting.emailDelivery, "troubleshooting email delivery").
 
 ## Where to next
 
-- Adjust access or remove someone in [Manage members and roles](3-manage-members-and-roles.md).
-- Check exactly what each role allows in [The three roles in practice](4-roles-in-practice.md).
-- Walk through a full setup in the tutorial [Invite your household or club](../12-tutorials/5-invite-your-household.md).
+- Adjust access or remove someone in @doc(collaboration.manageMembersAndRoles).
+- Check exactly what each role allows in @doc(collaboration.rolesInPractice).
+- Walk through a full setup in the tutorial @doc(tutorials.inviteHousehold, "Invite your household or club").

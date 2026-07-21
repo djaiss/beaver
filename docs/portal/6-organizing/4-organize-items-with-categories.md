@@ -7,7 +7,7 @@ section: organizing
 
 # Organize items with categories
 
-A [category](../3-core-concepts/7-categories-sets-and-series.md) files items inside one collection, and categories can nest to any depth. They answer the question "where does this belong" once a collection grows past the point of scrolling.
+A @doc(organizing.categoriesSetsAndSeries, "category") files items inside one collection, and categories can nest to any depth. They answer the question "where does this belong" once a collection grows past the point of scrolling.
 
 You need the editor or owner role to create or change categories. Everyone in the account can browse them.
 
@@ -15,7 +15,7 @@ You need the editor or owner role to create or change categories. Everyone in th
 
 Noah's "Vinyl" collection passed three hundred records, and scrolling stopped working. He creates categories for "Rock" and "Jazz", then nests "Bebop" and "Fusion" under "Jazz". Each record is filed in exactly one place, and each category page shows only its own slice of the collection.
 
-Categories suit one collection's internal structure. If you want a label that cuts across collections instead, use [tags](../3-core-concepts/8-tags.md). If you are tracking a finite list to complete, use a [set](5-track-a-set-to-completion.md).
+Categories suit one collection's internal structure. If you want a label that cuts across collections instead, use @doc(tags.overview, "tags"). If you are tracking a finite list to complete, use a @doc(sets.trackCompletion, "set").
 
 ## Create and nest categories
 
@@ -43,7 +43,7 @@ Opening a category shows the collection filtered to just that category, with its
 
 You can rename a category or move it under a different parent at any time. Items stay filed where they are.
 
-Deleting is a soft delete: the category goes to the [trash](../11-data-safety/2-restore-from-trash.md) and can be restored for a while.
+Deleting is a soft delete: the category goes to the @doc(dataSafety.restoreFromTrash, "trash") and can be restored for a while.
 
 :::warning
 Deleting a category also deletes every category nested underneath it. The items themselves are never deleted, they simply become uncategorized, but the whole branch of the filing tree goes to the trash together.
@@ -51,6 +51,6 @@ Deleting a category also deletes every category nested underneath it. The items 
 
 ## Where to next
 
-- Compare the three grouping tools in [Categories, sets, and series](../3-core-concepts/7-categories-sets-and-series.md).
-- Track what you still need with [Track a set to completion](5-track-a-set-to-completion.md).
-- Recover a deleted category in [Restore something from the trash](../11-data-safety/2-restore-from-trash.md).
+- Compare the three grouping tools in @doc(organizing.categoriesSetsAndSeries).
+- Track what you still need with @doc(sets.trackCompletion).
+- Recover a deleted category in @doc(dataSafety.restoreFromTrash).

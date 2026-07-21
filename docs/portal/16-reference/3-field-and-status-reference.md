@@ -7,11 +7,11 @@ section: reference
 
 # Field and status reference
 
-Every option set you meet in a KolleK form, in one scannable place. Each group links to the guide that uses it. For definitions of the terms themselves, see the [glossary](2-glossary.md).
+Every option set you meet in a KolleK form, in one scannable place. Each group links to the guide that uses it. For definitions of the terms themselves, see the @doc(reference.glossary, "glossary").
 
 ## Copy statuses
 
-Set on each copy you record. Used in [Track the copies you own](../4-core-features/5-track-the-copies-you-own.md).
+Set on each copy you record. Used in @doc(copies.track).
 
 | Status | Meaning |
 | --- | --- |
@@ -31,7 +31,7 @@ Owned, Ordered, and Loaned out count as still held. A loaned copy is still yours
 
 ## Transaction types
 
-Set on each transaction. Used in [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md). Types marked acquiring bring a copy into your hands, and the earliest acquiring transaction provides the copy's acquisition date.
+Set on each transaction. Used in @doc(copies.recordPaymentsAndValue). Types marked acquiring bring a copy into your hands, and the earliest acquiring transaction provides the copy's acquisition date.
 
 | Type | Meaning |
 | --- | --- |
@@ -49,7 +49,7 @@ Set on each transaction. Used in [Record what you paid and what it is worth](../
 
 ## Valuation types and confidence
 
-Set on each valuation. Used in [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
+Set on each valuation. Used in @doc(copies.recordPaymentsAndValue).
 
 | Valuation type | Meaning |
 | --- | --- |
@@ -70,7 +70,7 @@ Set on each valuation. Used in [Record what you paid and what it is worth](../5-
 
 ## Insurance statuses
 
-Set on each insurance record. Used in [Insure a copy](../5-copy-history/3-insure-a-copy.md). The coverage type on an insurance record is free text, so it has no fixed option list.
+Set on each insurance record. Used in @doc(copies.insure). The coverage type on an insurance record is free text, so it has no fixed option list.
 
 | Status | Meaning |
 | --- | --- |
@@ -81,7 +81,7 @@ Set on each insurance record. Used in [Insure a copy](../5-copy-history/3-insure
 
 ## Loan directions and statuses
 
-Set on each loan. Used in [Lend and borrow copies](../5-copy-history/4-lend-and-borrow-copies.md).
+Set on each loan. Used in @doc(loans.lendAndBorrow).
 
 | Direction | Meaning |
 | --- | --- |
@@ -99,7 +99,7 @@ Set on each loan. Used in [Lend and borrow copies](../5-copy-history/4-lend-and-
 
 ## Maintenance types
 
-Set on each maintenance record. Used in [Record maintenance and repairs](../5-copy-history/5-record-maintenance-and-repairs.md).
+Set on each maintenance record. Used in @doc(copies.recordMaintenance).
 
 | Type | Meaning |
 | --- | --- |
@@ -113,7 +113,7 @@ Set on each maintenance record. Used in [Record maintenance and repairs](../5-co
 
 ## Provenance event types and date precision
 
-Set on each provenance event. Used in [Trace a copy's provenance](../5-copy-history/6-trace-provenance.md).
+Set on each provenance event. Used in @doc(copies.traceProvenance).
 
 | Event type | Meaning |
 | --- | --- |
@@ -145,7 +145,7 @@ Provenance dates are often uncertain, so each event carries a precision:
 
 ## Document types
 
-Set on each document. Used in [Attach documents to a copy](../5-copy-history/8-attach-documents.md).
+Set on each document. Used in @doc(copies.attachDocuments).
 
 | Type | Meaning |
 | --- | --- |
@@ -165,7 +165,7 @@ Set on each document. Used in [Attach documents to a copy](../5-copy-history/8-a
 
 ## Custom field types
 
-Chosen when defining a custom field on a collection type. Used in [Set up collection types and custom fields](../6-organizing/2-set-up-collection-types-and-custom-fields.md).
+Chosen when defining a custom field on a collection type. Used in @doc(collectionTypes.setup).
 
 | Field type | Meaning |
 | --- | --- |
@@ -178,7 +178,7 @@ Chosen when defining a custom field on a collection type. Used in [Set up collec
 
 ## Collection visibility
 
-Set on each collection. Used in [Share a collection](../8-collaboration/5-share-a-collection.md). The setting is recorded today and enforced once sharing arrives; see [Feature status and roadmap](../15-troubleshooting/5-feature-status.md).
+Set on each collection. Used in @doc(collections.share). The setting is recorded today and enforced once sharing arrives; see @doc(troubleshooting.featureStatus).
 
 | Visibility | Meaning |
 | --- | --- |
@@ -188,5 +188,5 @@ Set on each collection. Used in [Share a collection](../8-collaboration/5-share-
 
 ## Where to next
 
-- What the terms mean: [Glossary](2-glossary.md).
-- The records these options live on: [A copy's history explained](../3-core-concepts/11-copy-history.md).
+- What the terms mean: @doc(reference.glossary).
+- The records these options live on: @doc(copyHistory.concept, "A copy's history explained").

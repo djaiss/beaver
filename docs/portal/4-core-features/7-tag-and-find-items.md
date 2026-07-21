@@ -7,7 +7,7 @@ section: core-features
 
 # Tag and find items
 
-[Tags](../3-core-concepts/8-tags.md) are the lightest way to mark items with something they have in common, across every collection in your account. This page covers applying them, removing them, and habits that keep them useful.
+@doc(tags.overview) are the lightest way to mark items with something they have in common, across every collection in your account. This page covers applying them, removing them, and habits that keep them useful.
 
 ## Add tags to an item
 
@@ -24,7 +24,7 @@ Edit the item and remove the tag from the tags field. The tag itself survives in
 
 ## Curate the shared list
 
-Because tags are shared account wide, the list itself is managed in one place, from account settings. Renaming and deleting tags there is covered in [Manage account tags](../6-organizing/8-manage-account-tags.md).
+Because tags are shared account wide, the list itself is managed in one place, from account settings. Renaming and deleting tags there is covered in @doc(tags.manageAccount).
 
 :::note
 Deleting a tag from the account removes that label from every item that carried it. The items themselves are not affected in any other way.
@@ -32,12 +32,12 @@ Deleting a tag from the account removes that label from every item that carried 
 
 ## Habits that keep tags useful
 
-- **Tag qualities, not categories.** "Signed", "First printing", "Needs repair", "To sell" are good tags. "Comics" is a collection, and "Marvel" is probably a [category](../6-organizing/4-organize-items-with-categories.md).
+- **Tag qualities, not categories.** "Signed", "First printing", "Needs repair", "To sell" are good tags. "Comics" is a collection, and "Marvel" is probably a @doc(categories.organizeItems, "category").
 - **Reuse before you invent.** Two spellings of the same idea ("Signed" and "Autographed") split your catalogue in half. Pick existing tags when they fit.
 - **Keep the list short.** A handful of tags you actually filter by beats fifty you have to remember.
 
 ## Where to next
 
-- Rename or prune the shared list: [Manage account tags](../6-organizing/8-manage-account-tags.md).
-- Understand which grouping tool fits what: [Categories, sets, and series](../3-core-concepts/7-categories-sets-and-series.md).
-- Keep cataloguing: [Add and edit items](4-add-and-edit-items.md).
+- Rename or prune the shared list: @doc(tags.manageAccount).
+- Understand which grouping tool fits what: @doc(organizing.categoriesSetsAndSeries).
+- Keep cataloguing: @doc(items.addAndEdit).

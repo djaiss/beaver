@@ -9,11 +9,11 @@ section: core-features
 
 This is the page for the thing you will do most: putting entries into your catalogue. It walks through the item form field by field, explains which parts are optional (almost all of them), and covers editing and deleting.
 
-If the difference between an item and a copy is still fuzzy, read [Items versus copies](../3-core-concepts/5-items-and-copies.md) first. In short: the item describes the kind of thing, the copies record what you physically own.
+If the difference between an item and a copy is still fuzzy, read @doc(items.itemsVsCopies) first. In short: the item describes the kind of thing, the copies record what you physically own.
 
 ## Who can do this
 
-Adding and editing items requires the **editor** or **owner** [role](../3-core-concepts/3-accounts-users-and-roles.md).
+Adding and editing items requires the **editor** or **owner** @doc(accounts.usersAndRoles, "role").
 
 ## Add an item
 
@@ -47,14 +47,14 @@ Save the item. It appears in the collection immediately.
 
 - **Name.** Required, and the only thing that is.
 - **Description.** Free text for anything that does not fit elsewhere.
-- **Type.** Which [collection type](../3-core-concepts/6-collection-types-and-custom-fields.md) this item is. Only types enabled on the collection are offered. The type decides which custom fields appear below.
-- **Category.** Where the item files within this collection. See [Organize items with categories](../6-organizing/4-organize-items-with-categories.md).
-- **Set.** A finite list you are completing. See [Track a set to completion](../6-organizing/5-track-a-set-to-completion.md).
-- **Series.** A franchise that can span collections. See [Group a franchise with series](../6-organizing/6-group-a-franchise-with-series.md).
-- **Tags.** Pick existing [tags](../3-core-concepts/8-tags.md) or type a new one and it is created on the spot.
+- **Type.** Which @doc(collectionTypes.overview, "collection type") this item is. Only types enabled on the collection are offered. The type decides which custom fields appear below.
+- **Category.** Where the item files within this collection. See @doc(categories.organizeItems).
+- **Set.** A finite list you are completing. See @doc(sets.trackCompletion).
+- **Series.** A franchise that can span collections. See @doc(series.groupFranchise).
+- **Tags.** Pick existing @doc(tags.overview, "tags") or type a new one and it is created on the spot.
 - **Custom fields.** Whatever the chosen type defines: text, numbers, dates, yes or no switches, select lists, and ratings up to five stars. Fields appear grouped the way the type organizes them.
-- **Photos.** Covered fully in [Add photos to an item](6-add-photos-to-an-item.md).
-- **Copies.** One or more physical copies, added inline. Covered fully in [Track the copies you own](5-track-the-copies-you-own.md).
+- **Photos.** Covered fully in @doc(items.addPhotos).
+- **Copies.** One or more physical copies, added inline. Covered fully in @doc(copies.track).
 
 Do not feel obliged to fill everything in one sitting. A name now and details later is a perfectly good workflow, and the same form serves both.
 
@@ -70,10 +70,10 @@ Open the item, choose to delete it, and confirm.
 Deleting an item sends it and its copies to the trash. It is removed permanently after the retention period (30 days by default).
 :::
 
-Until then you can bring it back. See [Restore something from the trash](../11-data-safety/2-restore-from-trash.md).
+Until then you can bring it back. See @doc(dataSafety.restoreFromTrash).
 
 ## Where to next
 
-- Record what you physically own: [Track the copies you own](5-track-the-copies-you-own.md).
-- Make the catalogue visual: [Add photos to an item](6-add-photos-to-an-item.md).
-- Start recording money and history: [A copy's history explained](../3-core-concepts/11-copy-history.md).
+- Record what you physically own: @doc(copies.track).
+- Make the catalogue visual: @doc(items.addPhotos).
+- Start recording money and history: @doc(copyHistory.concept, "A copy's history explained").

@@ -7,7 +7,7 @@ section: collaboration
 
 # The three roles in practice
 
-This page is a quick reference of what each role can actually do. For the ideas behind the model, read [accounts, users, and roles](../3-core-concepts/3-accounts-users-and-roles.md) first.
+This page is a quick reference of what each role can actually do. For the ideas behind the model, read @doc(accounts.usersAndRoles, "accounts, users, and roles") first.
 
 The short version: every member can read, editors and owners can write, and only owners can administer the account.
 
@@ -36,10 +36,10 @@ The short version: every member can read, editors and owners can write, and only
 **Owners are also administrators.** On top of everything an editor can do, owners manage the people and the account itself. Every account needs at least one, and KolleK will not let the last owner be demoted or removed.
 
 :::note
-These roles apply to your whole account, not to individual collections. A collection's own visibility setting records who it is meant for, and once sharing is enforced it will decide who can see it, while roles keep deciding who can change it. See [visibility and sharing](../3-core-concepts/12-visibility-and-sharing.md).
+These roles apply to your whole account, not to individual collections. A collection's own visibility setting records who it is meant for, and once sharing is enforced it will decide who can see it, while roles keep deciding who can change it. See @doc(sharing.overview, "visibility and sharing").
 :::
 
 ## Where to next
 
-- Change someone's role in [Manage members and roles](3-manage-members-and-roles.md).
-- Decide who sees which collection in [Share a collection](5-share-a-collection.md).
+- Change someone's role in @doc(collaboration.manageMembersAndRoles).
+- Decide who sees which collection in @doc(collections.share).

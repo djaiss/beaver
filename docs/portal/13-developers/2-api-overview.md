@@ -16,25 +16,25 @@ This page gives you the mental model. The complete, always current endpoint refe
 - `/docs/api/{section}.md` for a single section as Markdown, handy for feeding one topic to a tool.
 
 :::note
-On a self hosted instance, the reference is part of the public marketing site, which is off by default. An operator turns it on with the `SHOW_MARKETING_SITE` setting. See [Configure your instance](../14-self-hosting/3-configure-your-instance.md).
+On a self hosted instance, the reference is part of the public marketing site, which is off by default. An operator turns it on with the `SHOW_MARKETING_SITE` setting. See @doc(selfHosting.configure).
 :::
 
 ## Scoped to your account
 
-The API is tenant scoped. A token belongs to a user, and a user belongs to exactly one [account](../3-core-concepts/3-accounts-users-and-roles.md), so every request resolves through that account. You cannot reach another account's data, and you do not pass an account identifier anywhere. There is nothing to configure: authenticate, and you are inside your own workspace.
+The API is tenant scoped. A token belongs to a user, and a user belongs to exactly one @doc(accounts.usersAndRoles, "account"), so every request resolves through that account. You cannot reach another account's data, and you do not pass an account identifier anywhere. There is nothing to configure: authenticate, and you are inside your own workspace.
 
-The same [roles](../3-core-concepts/3-accounts-users-and-roles.md) apply as in the app. A viewer's token can read but not write. An editor's token can manage catalogue content. Owner only actions (members, account settings) need an owner's token.
+The same @doc(accounts.usersAndRoles, "roles") apply as in the app. A viewer's token can read but not write. An editor's token can manage catalogue content. Owner only actions (members, account settings) need an owner's token.
 
 ## How the resources are shaped
 
-Resources nest the way [KolleK is organized](../3-core-concepts/2-how-kollek-is-organized.md):
+Resources nest the way @doc(kollek.howOrganized, "KolleK is organized"):
 
 - Your **account** holds account wide resources: members, collection types, custom fields, tags, locations, conditions.
 - **Collections** hold **items**, along with categories and sets.
 - **Items** hold **photos** and **copies**.
 - **Copies** carry the history resources: transactions, valuations, insurance records, loans, maintenance records, provenance events, location history, documents, and the combined timeline.
 
-Responses loosely follow the JSON:API shape: each resource comes back as `type`, `id`, `attributes`, and `links`. Lists are paginated with a standard envelope, covered in [Rate limits and conventions](4-rate-limits-and-conventions.md).
+Responses loosely follow the JSON:API shape: each resource comes back as `type`, `id`, `attributes`, and `links`. Lists are paginated with a standard envelope, covered in @doc(api.rateLimitsAndConventions).
 
 ## What this section covers
 
@@ -46,6 +46,6 @@ There is no test mode. Every API request runs against your real account, so be c
 
 ## Where to next
 
-- Make your first request in [Authenticate with the API](3-authenticate-with-the-api.md).
-- Skim [Rate limits and conventions](4-rate-limits-and-conventions.md) before writing a client.
+- Make your first request in @doc(api.authenticate).
+- Skim @doc(api.rateLimitsAndConventions) before writing a client.
 - Browse the generated reference at `/docs/api` on your instance.

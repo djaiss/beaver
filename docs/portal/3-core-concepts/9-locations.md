@@ -11,7 +11,7 @@ A location answers the question every growing collection eventually asks: "where
 
 ## What a location is
 
-A location is a place where a [copy](5-items-and-copies.md) physically lives: a room, a shelf, a box, a safe. Each location can carry an emoji so it reads at a glance in lists.
+A location is a place where a @doc(items.itemsVsCopies, "copy") physically lives: a room, a shelf, a box, a safe. Each location can carry an emoji so it reads at a glance in lists.
 
 Locations nest as deeply as you need, so they can mirror your real space. Noah models his: Living Room, then Shelf A inside it, then Crate 3 inside that. When he wonders where a record is, the answer is as precise as his map.
 
@@ -25,10 +25,10 @@ A fresh account comes with a few starter locations (Living Room, Storage, Displa
 
 ## Moves are remembered
 
-When you move a copy, KolleK does not just overwrite the old location. It records the move, so the copy keeps a trail of everywhere it has been and when. The current location is simply the latest entry in that trail. This is part of [a copy's history](11-copy-history.md), and the how to lives in [Move a copy and keep its location history](../5-copy-history/7-move-a-copy.md).
+When you move a copy, KolleK does not just overwrite the old location. It records the move, so the copy keeps a trail of everywhere it has been and when. The current location is simply the latest entry in that trail. This is part of @doc(copyHistory.concept, "a copy's history"), and the how to lives in @doc(copies.move).
 
 ## Where to next
 
-- Build your storage map in [Set up your locations](../6-organizing/7-set-up-your-locations.md).
-- Move things properly in [Move a copy and keep its location history](../5-copy-history/7-move-a-copy.md).
-- See where locations appear on the copy form in [Track the copies you own](../4-core-features/5-track-the-copies-you-own.md).
+- Build your storage map in @doc(locations.setup).
+- Move things properly in @doc(copies.move).
+- See where locations appear on the copy form in @doc(copies.track).

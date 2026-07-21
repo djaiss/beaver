@@ -37,7 +37,7 @@ The event displays according to its precision, so "circa 1970" and "March 1970" 
 Provenance events carry no amounts. Money always lives in transactions. An event tied to a purchase or sale links to its transaction instead, so the narrative and the accounting never drift apart.
 :::
 
-This is the same rule you met in [Record what you paid and what it is worth](2-record-payments-and-value.md), applied from the other side.
+This is the same rule you met in @doc(copies.recordPaymentsAndValue), applied from the other side.
 
 ## Build a provenance narrative
 
@@ -71,10 +71,10 @@ Each event carries a **verified** flag with a note for how it was verified. Use 
 
 ## Events that arrive on their own
 
-Some provenance builds itself. A [loan](4-lend-and-borrow-copies.md) marked as part of provenance adds matching loan and return events, and a [maintenance record](5-record-maintenance-and-repairs.md) flagged as significant appears as a restoration event. You assemble the deep past; the present documents itself as it happens.
+Some provenance builds itself. A @doc(loans.lendAndBorrow, "loan") marked as part of provenance adds matching loan and return events, and a @doc(copies.recordMaintenance, "maintenance record") flagged as significant appears as a restoration event. You assemble the deep past; the present documents itself as it happens.
 
 ## Where to next
 
-- Attach the archive extract or certificate to its event in [Attach documents to a copy](8-attach-documents.md).
-- Record the purchase the acquisition event links to in [Record what you paid and what it is worth](2-record-payments-and-value.md).
-- Read the finished story in [Read the copy timeline](9-read-the-copy-timeline.md).
+- Attach the archive extract or certificate to its event in @doc(copies.attachDocuments).
+- Record the purchase the acquisition event links to in @doc(copies.recordPaymentsAndValue).
+- Read the finished story in @doc(copyHistory.readTimeline).

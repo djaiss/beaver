@@ -7,7 +7,7 @@ section: organizing
 
 # Set up collection types and custom fields
 
-A [collection type](../3-core-concepts/6-collection-types-and-custom-fields.md) decides which details an item can record. A comic wants an issue number and a publisher. A vinyl record wants an artist and a pressing. This page shows you how to create a type, add custom fields to it, and keep long forms readable with field groups.
+A @doc(collectionTypes.overview, "collection type") decides which details an item can record. A comic wants an issue number and a publisher. A vinyl record wants an artist and a pressing. This page shows you how to create a type, add custom fields to it, and keep long forms readable with field groups.
 
 You need the editor or owner role to manage types. Types are account wide, so a type you set up carefully once can be reused by any number of collections.
 
@@ -64,10 +64,10 @@ Groups only affect how the item form is presented. They change nothing about the
 
 ## Attach the type to collections
 
-A type does nothing until a [collection](../3-core-concepts/4-collections.md) enables it. When you create or edit a collection, choose which types apply. A collection can enable several, and the same type can serve many collections. Once enabled, items in that collection can pick the type and fill in its fields.
+A type does nothing until a @doc(collections.overview, "collection") enables it. When you create or edit a collection, choose which types apply. A collection can enable several, and the same type can serve many collections. Once enabled, items in that collection can pick the type and fill in its fields.
 
 ## Where to next
 
-- Share a setup you are proud of, or borrow one, with [Import and export a collection type](3-import-and-export-a-collection-type.md).
-- Put the fields to work in [Add and edit items](../4-core-features/4-add-and-edit-items.md).
-- Round out your setup with [Set up your locations](7-set-up-your-locations.md).
+- Share a setup you are proud of, or borrow one, with @doc(collectionTypes.importExport).
+- Put the fields to work in @doc(items.addAndEdit).
+- Round out your setup with @doc(locations.setup).

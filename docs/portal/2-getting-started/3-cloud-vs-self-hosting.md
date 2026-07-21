@@ -41,5 +41,5 @@ Choose self hosting if you want full control of your data and are happy to run a
 
 ## Where to next
 
-- Whichever path you took, the next step is the same. [Create your account](4-create-your-account.md).
-- Curious what you will be working with first? Read [What is KolleK](2-what-is-kollek.md).
+- Whichever path you took, the next step is the same. @doc(accounts.create).
+- Curious what you will be working with first? Read @doc(kollek.whatIs).

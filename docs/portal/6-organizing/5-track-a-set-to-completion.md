@@ -7,7 +7,7 @@ section: organizing
 
 # Track a set to completion
 
-A [set](../3-core-concepts/7-categories-sets-and-series.md) is a finite list you are working to complete inside one collection: a twelve issue limited run, a full team of rookie cards, a discography. Give a set a target count and KolleK shows you owned versus target, so "how close am I" always has an answer.
+A @doc(organizing.categoriesSetsAndSeries, "set") is a finite list you are working to complete inside one collection: a twelve issue limited run, a full team of rookie cards, a discography. Give a set a target count and KolleK shows you owned versus target, so "how close am I" always has an answer.
 
 You need the editor or owner role to create or change sets.
 
@@ -31,7 +31,7 @@ When adding or editing an item, pick the set on the item form. Each item you fil
 
 ## How completion is counted
 
-The set page rolls up what you own against the target. Owning 37 of a 100 record series reads as 37 of 100. Completion also feeds the [collection statistics](../7-insights/2-collection-statistics.md), where all your sets combine into an overall completion figure.
+The set page rolls up what you own against the target. Owning 37 of a 100 record series reads as 37 of 100. Completion also feeds the @doc(insights.collectionStatistics, "collection statistics"), where all your sets combine into an overall completion figure.
 
 Two details worth knowing:
 
@@ -40,11 +40,11 @@ Two details worth knowing:
 
 ## Sets versus series
 
-A set lives inside one collection and tracks completion. A [series](6-group-a-franchise-with-series.md) spans collections and tracks nothing; it only groups a franchise. If you are asking "which ones am I missing", you want a set.
+A set lives inside one collection and tracks completion. A @doc(series.groupFranchise, "series") spans collections and tracks nothing; it only groups a franchise. If you are asking "which ones am I missing", you want a set.
 
 ## Delete a set
 
-Deleting a set sends it to the [trash](../11-data-safety/2-restore-from-trash.md), and it can be restored from there.
+Deleting a set sends it to the @doc(dataSafety.restoreFromTrash, "trash"), and it can be restored from there.
 
 :::warning
 Deleting a set removes the grouping, and its completion tracking with it. The items in the set are not deleted and keep all their data.
@@ -52,5 +52,5 @@ Deleting a set removes the grouping, and its completion tracking with it. The it
 
 ## Where to next
 
-- Group a franchise across collections with [series](6-group-a-franchise-with-series.md).
-- See completion roll up in [Understand your collection statistics](../7-insights/2-collection-statistics.md).
+- Group a franchise across collections with @doc(series.groupFranchise, "series").
+- See completion roll up in @doc(insights.collectionStatistics).

@@ -11,7 +11,7 @@ An instance administrator is the person who looks after the server itself, with 
 
 ## What the flag is, and is not
 
-The instance administrator flag is server wide and completely separate from [account roles](../3-core-concepts/3-accounts-users-and-roles.md). It grants exactly one thing: access to the [instance administration panel](10-instance-administration-panel.md).
+The instance administrator flag is server wide and completely separate from @doc(accounts.usersAndRoles, "account roles"). It grants exactly one thing: access to the @doc(instanceAdmin.panel, "instance administration panel").
 
 - It gives no extra powers inside the administrator's own account. An instance administrator who is a viewer in their account still cannot edit items there.
 - It is per user, not per account. Grant it to the specific person operating the server, typically yourself.
@@ -49,5 +49,5 @@ So the panel can never be used to lock everyone out of the panel. And even if ev
 
 ## Where to next
 
-- See what the panel can do in [The instance administration panel](10-instance-administration-panel.md).
-- Browse the other operator commands in [Administer with the command line](11-cli-commands.md).
+- See what the panel can do in @doc(instanceAdmin.panel).
+- Browse the other operator commands in @doc(selfHosting.cliCommands).

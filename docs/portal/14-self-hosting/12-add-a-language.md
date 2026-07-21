@@ -9,7 +9,7 @@ section: self-hosting
 
 KolleK ships in seven languages: English, French, Spanish, German, Brazilian Portuguese, Simplified Chinese, and Japanese. Each user picks their own language from their profile, and can even switch it from the sign in page. This page explains how translations work under the hood, and how an operator or contributor adds a new locale or completes an existing one.
 
-If you only want to change the language you see, you do not need any of this. See [Change your language](../9-account-and-profile/4-change-your-language.md).
+If you only want to change the language you see, you do not need any of this. See @doc(profile.changeLanguage).
 
 ## How translations are stored
 
@@ -33,9 +33,9 @@ An empty translation falls back to English rather than breaking the interface, s
 
 ## What is not translated yet
 
-The logged in application is fully translatable. The public marketing site and the generated API reference are not translated yet and always render in English, whatever locale a visitor uses. See [Feature status and roadmap](../15-troubleshooting/5-feature-status.md).
+The logged in application is fully translatable. The public marketing site and the generated API reference are not translated yet and always render in English, whatever locale a visitor uses. See @doc(troubleshooting.featureStatus).
 
 ## Where to next
 
-- Run the command on your instance with [Administer with the command line](11-cli-commands.md).
-- See the reader's side of this in [Change your language](../9-account-and-profile/4-change-your-language.md).
+- Run the command on your instance with @doc(selfHosting.cliCommands).
+- See the reader's side of this in @doc(profile.changeLanguage).

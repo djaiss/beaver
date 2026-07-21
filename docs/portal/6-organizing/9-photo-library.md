@@ -7,7 +7,7 @@ section: organizing
 
 # Browse and manage your photo library
 
-Every photo you attach to an item also appears in the photo library, one screen holding every image in the account. It is where you search across photos, find the ones taking up space, fix covers, and clean up in bulk. Adding photos happens on items, covered in [Add photos to an item](../4-core-features/6-add-photos-to-an-item.md); this page is about managing them afterwards.
+Every photo you attach to an item also appears in the photo library, one screen holding every image in the account. It is where you search across photos, find the ones taking up space, fix covers, and clean up in bulk. Adding photos happens on items, covered in @doc(items.addPhotos); this page is about managing them afterwards.
 
 You need the editor or owner role to change or delete photos.
 
@@ -46,5 +46,5 @@ The item a photo belonged to is unaffected beyond losing that image. If you dele
 
 ## Where to next
 
-- Add and order photos on an item in [Add photos to an item](../4-core-features/6-add-photos-to-an-item.md).
-- Understand what is and is not recoverable in [Restore something from the trash](../11-data-safety/2-restore-from-trash.md).
+- Add and order photos on an item in @doc(items.addPhotos).
+- Understand what is and is not recoverable in @doc(dataSafety.restoreFromTrash).

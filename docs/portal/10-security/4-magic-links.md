@@ -23,7 +23,7 @@ For your privacy, the page shows the same confirmation whether or not an account
 
 ## The trade off with two factor authentication
 
-Signing in with a magic link does not ask for a [two factor](2-two-factor-authentication.md) code.
+Signing in with a magic link does not ask for a @doc(security.twoFactorAuth, "two factor") code.
 
 This is by design, not an oversight. A magic link already proves two things at once: that the person signing in knows your email address, and that they control the inbox behind it. The inbox is acting as the second factor.
 
@@ -36,13 +36,13 @@ If you use two factor authentication, remember that anyone who controls your ema
 Magic links suit you when:
 
 - You are on a device where you do not want to type your password.
-- You have forgotten your password and just need to get in. Once in, you can [set a new password](5-reset-your-password.md) from your profile.
+- You have forgotten your password and just need to get in. Once in, you can @doc(auth.resetPassword, "set a new password") from your profile.
 - You prefer not to use a password day to day and your email account is well protected.
 
 Prefer your password and authenticator code when you are on a shared or untrusted machine where you would rather not open your inbox at all.
 
 ## Where to next
 
-- Every sign in path in one place: [Signing in](../2-getting-started/5-signing-in.md).
-- Strengthen the front door: [Protect your account with two factor authentication](2-two-factor-authentication.md).
-- Link never arrived? See [Troubleshooting email delivery](../15-troubleshooting/3-troubleshoot-email-delivery.md).
+- Every sign in path in one place: @doc(auth.signIn).
+- Strengthen the front door: @doc(security.twoFactorAuth).
+- Link never arrived? See @doc(troubleshooting.emailDelivery).

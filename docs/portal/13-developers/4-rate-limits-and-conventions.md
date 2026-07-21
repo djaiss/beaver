@@ -28,11 +28,11 @@ Pages hold **10 resources by default**. Ask for more with the `per_page` query p
 
 ## Money is in the smallest currency unit
 
-Every amount in the API (estimated values, transaction amounts, deposits, insured values) is an integer in the smallest unit of its currency. For dollars and euros that means cents: a purchase of $49.99 travels as `4999`. This avoids floating point rounding entirely. Convert for display in your own code, and remember each [collection](../3-core-concepts/4-collections.md) carries its own currency.
+Every amount in the API (estimated values, transaction amounts, deposits, insured values) is an integer in the smallest unit of its currency. For dollars and euros that means cents: a purchase of $49.99 travels as `4999`. This avoids floating point rounding entirely. Convert for display in your own code, and remember each @doc(collections.overview, "collection") carries its own currency.
 
 ## Forbidden reads as not found
 
-The API enforces the same [roles](../3-core-concepts/3-accounts-users-and-roles.md) as the web app, with one deliberate twist: an action you are not allowed to perform, or a resource in another account, answers **404 Not Found**, not 403 Forbidden. A caller cannot tell "this does not exist" apart from "this is not yours", so the API never confirms what exists outside your account.
+The API enforces the same @doc(accounts.usersAndRoles, "roles") as the web app, with one deliberate twist: an action you are not allowed to perform, or a resource in another account, answers **404 Not Found**, not 403 Forbidden. A caller cannot tell "this does not exist" apart from "this is not yours", so the API never confirms what exists outside your account.
 
 :::note
 If an endpoint unexpectedly returns 404 on an object you can see in the app, check the role of the user whose token you are using. A viewer's token gets 404 on every write.
@@ -45,4 +45,4 @@ Failed validation answers HTTP 422 with a `message` and an `errors` object keyed
 ## Where to next
 
 - See these conventions applied on real endpoints in the generated reference at `/docs/api`.
-- Ready for event delivery someday? Read where [Webhooks](5-webhooks.md) stand today.
+- Ready for event delivery someday? Read where @doc(webhooks.overview) stand today.

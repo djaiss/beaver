@@ -7,7 +7,7 @@ section: security
 
 # Manage API keys
 
-An API key is a personal token that lets a script or application act as you through the KolleK API. This page covers the lifecycle: creating a key, keeping track of it, and revoking it. What you can actually do with a key lives in the [developers section](../13-developers/3-authenticate-with-the-api.md).
+An API key is a personal token that lets a script or application act as you through the KolleK API. This page covers the lifecycle: creating a key, keeping track of it, and revoking it. What you can actually do with a key lives in the @doc(api.authenticate, "developers section").
 
 If you never plan to use the API, you can skip this page entirely. No keys exist until you create one.
 
@@ -49,7 +49,7 @@ Revoke a key when:
 
 - You no longer use the script or app it belonged to.
 - The token may have leaked, for example it was committed to a repository or shared in a chat.
-- You received a [key created or deleted alert](6-security-alert-emails.md) you do not recognize. In that case, change your password too.
+- You received a @doc(security.alertEmails, "key created or deleted alert") you do not recognize. In that case, change your password too.
 
 :::note
 Signing in through the API also creates a token behind the scenes. Those sign in tokens do not trigger the key created email, so the alerts you receive stay meaningful.
@@ -57,5 +57,5 @@ Signing in through the API also creates a token behind the scenes. Those sign in
 
 ## Where to next
 
-- Put a key to use with your first request: [Authenticate with the API](../13-developers/3-authenticate-with-the-api.md).
-- Understand the emails around keys: [Login and security alert emails](6-security-alert-emails.md).
+- Put a key to use with your first request: @doc(api.authenticate).
+- Understand the emails around keys: @doc(security.alertEmails).

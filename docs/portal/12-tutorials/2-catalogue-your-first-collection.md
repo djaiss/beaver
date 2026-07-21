@@ -9,19 +9,19 @@ section: tutorials
 
 In this tutorial you will take a brand new account all the way to a real, populated collection. You will create a collection, look at the custom fields it records, add an item with a cover photo, record the physical copy you own, capture what you paid for it, add a first valuation, and read the statistics that result.
 
-We will follow Emma, who collects comics. She catalogued one item quickly in the [five minute quick start](../2-getting-started/7-quick-start.md). This time she does it properly, and by the end her catalogue knows what her comic cost, what it is worth, and where it lives.
+We will follow Emma, who collects comics. She catalogued one item quickly in the @doc(gettingStarted.quickStart, "five minute quick start"). This time she does it properly, and by the end her catalogue knows what her comic cost, what it is worth, and where it lives.
 
 Expect this to take twenty to thirty minutes.
 
 ## Before you start
 
-- You need an account you can sign into. If you do not have one, [create your account](../2-getting-started/4-create-your-account.md) first.
-- You should know the difference between an item and a copy. If you are not sure, read [Items and copies](../3-core-concepts/5-items-and-copies.md) now. The tutorial leans on it constantly.
+- You need an account you can sign into. If you do not have one, @doc(accounts.create, "create your account") first.
+- You should know the difference between an item and a copy. If you are not sure, read @doc(items.itemsVsCopies, "Items and copies") now. The tutorial leans on it constantly.
 - Have one real thing you own ready to catalogue, ideally with a photo and a rough memory of what you paid for it.
 
 ## Step 1: Create the collection
 
-Every item lives inside a [collection](../3-core-concepts/4-collections.md), so that is where everything begins.
+Every item lives inside a @doc(collections.overview, "collection"), so that is where everything begins.
 
 ::::steps
 :::step title="Start a new collection"
@@ -47,7 +47,7 @@ Why this matters: the choices on this form shape everything downstream. The type
 
 ## Step 2: Look at what the Comics type records
 
-Your account arrived with a dozen ready made [collection types](../3-core-concepts/6-collection-types-and-custom-fields.md). Before adding items, it is worth seeing what the Comics type will ask you for, so nothing on the item form surprises you.
+Your account arrived with a dozen ready made @doc(collectionTypes.overview, "collection types"). Before adding items, it is worth seeing what the Comics type will ask you for, so nothing on the item form surprises you.
 
 Open the collection types settings and select **Comics**. You will find:
 
@@ -55,7 +55,7 @@ Open the collection types settings and select **Comics**. You will find:
 - A **Publishing info** group: Issue # (a number), Publisher (a choice of Marvel, DC, Image, Dark Horse, or Independent), Writer, Artist, and Cover Date.
 - A **Condition & grading** group: Variant and Signed, both yes or no questions.
 
-You do not have to change anything. If you want to add or reorder fields, the [type setup guide](../6-organizing/2-set-up-collection-types-and-custom-fields.md) covers it. For this tutorial the defaults are exactly what Emma needs.
+You do not have to change anything. If you want to add or reorder fields, the @doc(collectionTypes.setup, "type setup guide") covers it. For this tutorial the defaults are exactly what Emma needs.
 
 ## Step 3: Add the item with its details and photo
 
@@ -81,7 +81,7 @@ Why this matters: descriptive details like issue number and publisher belong on 
 
 ## Step 4: Record the copy you own
 
-An item without a [copy](../3-core-concepts/5-items-and-copies.md) is just an entry in an encyclopedia. The copy is the physical thing you own.
+An item without a @doc(items.itemsVsCopies, "copy") is just an entry in an encyclopedia. The copy is the physical thing you own.
 
 ::::steps
 :::step title="Add a copy to the item"
@@ -89,7 +89,7 @@ On the item, add a **copy**.
 :::
 
 :::step title="Grade it and shelve it"
-Set its **condition**. Emma picks **Used** from the ready made list (New, Like New, Used, Worn, and Damaged come with every account). Then set its **location**. Emma keeps hers in **Storage**, one of the default locations, though you can [build your own location map](../6-organizing/7-set-up-your-locations.md) any time.
+Set its **condition**. Emma picks **Used** from the ready made list (New, Like New, Used, Worn, and Damaged come with every account). Then set its **location**. Emma keeps hers in **Storage**, one of the default locations, though you can @doc(locations.setup, "build your own location map") any time.
 :::
 
 :::step title="Check the status"
@@ -103,7 +103,7 @@ If you own two of the same comic, do not create a second item. Add a second copy
 
 ## Step 5: Record what you paid
 
-Here is where KolleK goes beyond a list. Money never lives on the item or in a note. It lives in a **transaction** on the copy, so your records stay precise as they grow. The full explanation is in [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
+Here is where KolleK goes beyond a list. Money never lives on the item or in a note. It lives in a **transaction** on the copy, so your records stay precise as they grow. The full explanation is in @doc(copies.recordPaymentsAndValue).
 
 ::::steps
 :::step title="Open the copy's history"
@@ -136,7 +136,7 @@ Open the collection. You should see:
 - Your item with its cover photo, in the grid view.
 - An item count of one, and a total value matching your valuation.
 
-Now open the collection's **statistics**. Even with one item there is something to read: the total estimated value, the value by location, and the acquisition falling in the month you bought it. The [statistics guide](../7-insights/2-collection-statistics.md) explains where every number comes from.
+Now open the collection's **statistics**. Even with one item there is something to read: the total estimated value, the value by location, and the acquisition falling in the month you bought it. The @doc(insights.collectionStatistics, "statistics guide") explains where every number comes from.
 
 ## What you accomplished
 
@@ -150,6 +150,6 @@ You exercised the entire core loop of KolleK: a collection with a type, an item 
 
 ## Where to next
 
-- Tailor the account to your actual hobby in [Set up your account for a specific hobby](3-set-up-for-your-hobby.md).
-- Go deep on one prized piece in [Track the full life of a valuable item](4-track-a-valuable-item.md).
-- Cataloguing with family or friends? See [Invite your household or club](5-invite-your-household.md).
+- Tailor the account to your actual hobby in @doc(tutorials.setupForHobby, "Set up your account for a specific hobby").
+- Go deep on one prized piece in @doc(tutorials.trackValuableItem, "Track the full life of a valuable item").
+- Cataloguing with family or friends? See @doc(tutorials.inviteHousehold, "Invite your household or club").

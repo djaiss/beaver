@@ -11,7 +11,7 @@ section: data-safety
 
 ## What you can export today
 
-**Collection type definitions.** A [collection type](../3-core-concepts/6-collection-types-and-custom-fields.md) can be exported as a JSON file (its name, color, field groups, fields, and options) and imported into any KolleK account. See [Import and export a collection type](../6-organizing/3-import-and-export-a-collection-type.md).
+**Collection type definitions.** A @doc(collectionTypes.overview, "collection type") can be exported as a JSON file (its name, color, field groups, fields, and options) and imported into any KolleK account. See @doc(collectionTypes.importExport).
 
 That is the honest, complete list.
 
@@ -20,19 +20,19 @@ That is the honest, complete list.
 There is currently no built in export of items, copies, photos, or whole collections, and no corresponding import. Your catalogue data cannot yet be pulled out of the app as a file from the interface.
 
 :::note
-Item and collection import and export are on the list of planned capabilities. The [feature status page](../15-troubleshooting/5-feature-status.md) is the maintained record of where this stands, so check there rather than assuming.
+Item and collection import and export are on the list of planned capabilities. The @doc(troubleshooting.featureStatus, "feature status page") is the maintained record of where this stands, so check there rather than assuming.
 :::
 
-If you need structured access to your data today, the [JSON API](../13-developers/2-api-overview.md) can read everything in your account, which is a workable path for the technically inclined.
+If you need structured access to your data today, the @doc(api.overview, "JSON API") can read everything in your account, which is a workable path for the technically inclined.
 
 ## The real backup path today
 
-If your instance is self hosted, the dependable backup is taken at the instance level: a database dump plus an archive of the storage volume that holds photos and documents. That captures absolutely everything, including what the in app export cannot reach. The walkthrough lives in [Back up and restore your instance](../14-self-hosting/7-back-up-and-restore.md).
+If your instance is self hosted, the dependable backup is taken at the instance level: a database dump plus an archive of the storage volume that holds photos and documents. That captures absolutely everything, including what the in app export cannot reach. The walkthrough lives in @doc(selfHosting.backupAndRestore).
 
 If someone else hosts KolleK for you, they hold that backup ability. Ask them what their backup arrangements are; it is a fair and important question.
 
 ## Where to next
 
-- Self hosting? Set up real backups in [Back up and restore your instance](../14-self-hosting/7-back-up-and-restore.md).
-- Moving a type setup between accounts is covered in [Import and export a collection type](../6-organizing/3-import-and-export-a-collection-type.md).
-- See what else is planned on the [feature status page](../15-troubleshooting/5-feature-status.md).
+- Self hosting? Set up real backups in @doc(selfHosting.backupAndRestore).
+- Moving a type setup between accounts is covered in @doc(collectionTypes.importExport).
+- See what else is planned on the @doc(troubleshooting.featureStatus, "feature status page").

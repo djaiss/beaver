@@ -7,7 +7,7 @@ section: organizing
 
 # Import and export a collection type
 
-A carefully built [collection type](../3-core-concepts/6-collection-types-and-custom-fields.md) is worth sharing. KolleK can export a type definition as a JSON file and import one back in, so you can copy a setup between accounts, share it with another collector, or keep a snapshot before reworking it.
+A carefully built @doc(collectionTypes.overview, "collection type") is worth sharing. KolleK can export a type definition as a JSON file and import one back in, so you can copy a setup between accounts, share it with another collector, or keep a snapshot before reworking it.
 
 You need the editor or owner role.
 
@@ -16,7 +16,7 @@ You need the editor or owner role.
 The export contains the type definition only: its name, its color, its field groups, its custom fields, and the options of any select fields.
 
 :::note
-Exporting a type does not export items or their data. There is currently no item or whole collection import or export. See the [feature status page](../15-troubleshooting/5-feature-status.md) for where that stands, and [Back up your collection data](../11-data-safety/6-back-up-your-collection-data.md) for what portability exists today.
+Exporting a type does not export items or their data. There is currently no item or whole collection import or export. See the @doc(troubleshooting.featureStatus, "feature status page") for where that stands, and @doc(dataSafety.backupCollectionData) for what portability exists today.
 :::
 
 ## Export a type
@@ -63,5 +63,5 @@ If you want to see the exact format the importer expects, export any existing ty
 
 ## Where to next
 
-- Refine the imported type in [Set up collection types and custom fields](2-set-up-collection-types-and-custom-fields.md).
-- Understand what else can and cannot be exported in [Back up your collection data](../11-data-safety/6-back-up-your-collection-data.md).
+- Refine the imported type in @doc(collectionTypes.setup).
+- Understand what else can and cannot be exported in @doc(dataSafety.backupCollectionData).

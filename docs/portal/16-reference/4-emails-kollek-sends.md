@@ -9,7 +9,7 @@ section: reference
 
 Every email the system can send, what triggers it, and who receives it. Use this page to recognize a legitimate message, or to verify delivery when you run an instance.
 
-KolleK keeps a record of every email it sends you, including delivery and bounce status, on your [sent emails page](../9-account-and-profile/5-activity-log-and-sent-emails.md). Operators who have not configured a mailer yet should read [Set up email delivery](../14-self-hosting/4-set-up-email-delivery.md), because a fresh instance only logs email and sends nothing.
+KolleK keeps a record of every email it sends you, including delivery and bounce status, on your @doc(activity.logAndSentEmails, "sent emails page"). Operators who have not configured a mailer yet should read @doc(selfHosting.setupEmailDelivery), because a fresh instance only logs email and sends nothing.
 
 ## Getting in and staying in
 
@@ -22,7 +22,7 @@ KolleK keeps a record of every email it sends you, including delivery and bounce
 
 ## Security alerts
 
-These arrive unprompted when something notable happens on your account. See [Login and security alert emails](../10-security/6-security-alert-emails.md) for what to do when one surprises you.
+These arrive unprompted when something notable happens on your account. See @doc(security.alertEmails) for what to do when one surprises you.
 
 | Email | Triggered when | Sent to |
 | --- | --- | --- |
@@ -43,6 +43,6 @@ These go to the operator address configured on the instance, not to collectors. 
 
 ## Where to next
 
-- Recognize and react to the alerts: [Login and security alert emails](../10-security/6-security-alert-emails.md).
-- Make email actually send on your instance: [Set up email delivery](../14-self-hosting/4-set-up-email-delivery.md).
-- Check what was sent to you: [Your personal activity log and sent emails](../9-account-and-profile/5-activity-log-and-sent-emails.md).
+- Recognize and react to the alerts: @doc(security.alertEmails).
+- Make email actually send on your instance: @doc(selfHosting.setupEmailDelivery).
+- Check what was sent to you: @doc(activity.logAndSentEmails, "Your personal activity log and sent emails").

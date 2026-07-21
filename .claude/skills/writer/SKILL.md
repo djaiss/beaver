@@ -252,9 +252,44 @@ Documentation is a web of pages, not a stack of isolated ones. Link generously s
 - Link the first meaningful mention on a page, not every occurrence. Repeated links to the same place become noise.
 - Link to other sections when that is the reader's natural next step: from a concept to the how to that uses it, from a task to the concept behind it, from a page to the tutorial that ties things together.
 - Use the concept or task name as the link text. Never write "click here".
-- Use relative links between documentation files.
 
 This turns the portal into a guided journey rather than a set of dead ends. See also "Keep readers moving" for closing a page with next steps.
+
+### Never link by filename or path
+
+Never create a link by referencing another page's filename or relative path.
+
+Do not write:
+
+```md
+[Create your first collection](../getting-started/create-your-first-collection.md)
+```
+
+Use the `@doc(...)` directive instead, referencing the target page's stable `id` from its frontmatter. The parser resolves that id to the correct, localized URL at render time.
+
+```md
+@doc(collections.create)
+```
+
+With no second argument, the rendered link text is the target page's `title`. If `collections.create` titles "Create your first collection", this renders as:
+
+```md
+[Create your first collection](/docs/en/getting-started/create-your-first-collection)
+```
+
+Pass a quoted second argument to control the link text, whenever that reads better in the sentence:
+
+```md
+Every item belongs to @doc(collections.create, "a collection").
+
+To learn more, see @doc(collections.create).
+```
+
+Rules:
+
+- Always reference the target's `id`, never its filename, title, or URL. This is what lets pages be renamed, reorganized, or moved without breaking a single internal link.
+- Omit the label when the surrounding sentence naturally wants the page's exact title. Add a quoted label whenever the title would not read naturally in place (case, phrasing, or only part of the title fits the sentence).
+- Never write a raw `[text](path.md)` markdown link between two pages in `docs/portal`. `@doc(...)` is the only way to link one documentation page to another.
 
 ## Tutorials
 

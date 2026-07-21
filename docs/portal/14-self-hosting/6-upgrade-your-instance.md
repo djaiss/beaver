@@ -20,7 +20,7 @@ Two properties make the upgrade path safe:
 
 ::::steps
 :::step title="Back up first"
-Take a database dump and a storage archive as described in [Back up and restore your instance](7-back-up-and-restore.md). Upgrades are safe by design, but a backup turns "safe by design" into "safe, full stop".
+Take a database dump and a storage archive as described in @doc(selfHosting.backupAndRestore). Upgrades are safe by design, but a backup turns "safe by design" into "safe, full stop".
 :::
 
 :::step title="Get the new version"
@@ -40,7 +40,7 @@ Compose rebuilds the image and recreates the containers. On boot, the web contai
 :::
 ::::
 
-If you prefer migrations under manual control, set `RUN_MIGRATIONS=false` and run `docker compose exec app php artisan migrate --force` yourself as part of the procedure, as covered in [Install with Docker](2-install-with-docker.md).
+If you prefer migrations under manual control, set `RUN_MIGRATIONS=false` and run `docker compose exec app php artisan migrate --force` yourself as part of the procedure, as covered in @doc(selfHosting.installDocker).
 
 ## The photo search index step
 
@@ -53,10 +53,10 @@ docker compose exec app php artisan photos:rebuild-search-index
 The command is idempotent and safe to run on any instance, so when in doubt, run it. It also backfills image dimensions for photos uploaded before dimensions were recorded.
 
 :::note
-Do not change `APP_KEY` as part of an upgrade. The key outlives every version. If an upgrade guide ever seems to ask for a new key, you are misreading it. See [The application key and encryption](5-application-key-and-encryption.md).
+Do not change `APP_KEY` as part of an upgrade. The key outlives every version. If an upgrade guide ever seems to ask for a new key, you are misreading it. See @doc(selfHosting.applicationKeyAndEncryption).
 :::
 
 ## Where to next
 
-- Keep [backups](7-back-up-and-restore.md) current so every upgrade starts from one.
-- Review [Scheduled maintenance jobs](8-scheduled-jobs.md), which resume automatically once the scheduler container is back up.
+- Keep @doc(selfHosting.backupAndRestore, "backups") current so every upgrade starts from one.
+- Review @doc(selfHosting.scheduledJobs), which resume automatically once the scheduler container is back up.

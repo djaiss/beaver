@@ -11,10 +11,10 @@ Every collection has a statistics screen that turns your data entry into answers
 
 ## Where the numbers come from
 
-Two rules drive almost everything on this screen. They come from [how a copy's history works](../3-core-concepts/11-copy-history.md):
+Two rules drive almost everything on this screen. They come from @doc(copyHistory.concept, "how a copy's history works"):
 
-- **A copy's current value is its most recent [valuation](../5-copy-history/2-record-payments-and-value.md).** A copy that has never been valued counts as unvalued, not as zero worth guessing about.
-- **A copy's acquisition date comes from its earliest acquiring [transaction](../5-copy-history/2-record-payments-and-value.md)**, such as a purchase, trade, gift received, or inheritance. A copy with no such transaction has no acquisition date, so it cannot appear on the time based charts. The screen tells you how many copies are undated so you know what the charts are missing.
+- **A copy's current value is its most recent @doc(copies.recordPaymentsAndValue, "valuation").** A copy that has never been valued counts as unvalued, not as zero worth guessing about.
+- **A copy's acquisition date comes from its earliest acquiring @doc(copies.recordPaymentsAndValue, "transaction")**, such as a purchase, trade, gift received, or inheritance. A copy with no such transaction has no acquisition date, so it cannot appear on the time based charts. The screen tells you how many copies are undated so you know what the charts are missing.
 
 If a chart looks emptier than your collection feels, that is the statistics inviting more data entry, not a bug.
 
@@ -24,7 +24,7 @@ At the top: the **item count**, the **copy count**, the **total estimated value*
 
 ## Set completion
 
-If the collection has [sets with a target count](../6-organizing/5-track-a-set-to-completion.md), the screen rolls them up: how many pieces you own against the combined target, and the completion percentage. Only sets with a target above zero take part. A set holding more than its target counts as complete, not over complete.
+If the collection has @doc(sets.trackCompletion, "sets with a target count"), the screen rolls them up: how many pieces you own against the combined target, and the completion percentage. Only sets with a target above zero take part. A set holding more than its target counts as complete, not over complete.
 
 ## Value over time
 
@@ -36,9 +36,9 @@ How many copies you acquired in each of the last twelve months, driven by the sa
 
 ## Breakdowns
 
-- **By category.** How items spread across your [categories](../6-organizing/4-organize-items-with-categories.md). The six largest categories are named, the rest fold into "Other", and uncategorised items are shown as their own slice.
-- **By condition.** How your copies grade, as counts and percentages per [condition](../3-core-concepts/10-conditions.md).
-- **Value by location.** The summed value of copies at each [location](../3-core-concepts/9-locations.md), so you know what is sitting where. Priya uses this to see how much value lives in her display case versus her safe. Only locations holding value appear.
+- **By category.** How items spread across your @doc(categories.organizeItems, "categories"). The six largest categories are named, the rest fold into "Other", and uncategorised items are shown as their own slice.
+- **By condition.** How your copies grade, as counts and percentages per @doc(conditions.overview, "condition").
+- **Value by location.** The summed value of copies at each @doc(locations.overview, "location"), so you know what is sitting where. Priya uses this to see how much value lives in her display case versus her safe. Only locations holding value appear.
 
 ## Top items
 
@@ -46,6 +46,6 @@ The five most valuable items in the collection, ranked by the combined current v
 
 ## Where to next
 
-- Feed the charts: [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
-- Track completion properly: [Track a set to completion](../6-organizing/5-track-a-set-to-completion.md).
-- See the account wide view: [The dashboard](3-the-dashboard.md).
+- Feed the charts: @doc(copies.recordPaymentsAndValue).
+- Track completion properly: @doc(sets.trackCompletion).
+- See the account wide view: @doc(insights.dashboard).

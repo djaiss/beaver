@@ -17,13 +17,13 @@ KolleK gives you three ways to group items, and they look similar until you know
 
 ## Categories: filing within one collection
 
-A category files items inside one [collection](4-collections.md), and categories can nest. Emma's "My Comics" collection has a Marvel category, with Spider-Man and X-Men nested inside it. Browsing a category shows just its items, with their own counts and statistics.
+A category files items inside one @doc(collections.overview, "collection"), and categories can nest. Emma's "My Comics" collection has a Marvel category, with Spider-Man and X-Men nested inside it. Browsing a category shows just its items, with their own counts and statistics.
 
 A category belongs to its collection and cannot reach outside it. Deleting a category never deletes the items in it; they simply become uncategorised.
 
 ## Sets: a finite list to complete
 
-A set is a checklist with an end. Emma wants the first ten issues of a run, so she creates a set with a **target count** of ten. As she adds items to the set, KolleK shows owned versus target, and the completion rolls up into her [collection statistics](../7-insights/2-collection-statistics.md).
+A set is a checklist with an end. Emma wants the first ten issues of a run, so she creates a set with a **target count** of ten. As she adds items to the set, KolleK shows owned versus target, and the completion rolls up into her @doc(insights.collectionStatistics, "collection statistics").
 
 Like categories, a set belongs to one collection. Only a set with a target above zero counts towards completion statistics; a set without one is just a named grouping.
 
@@ -44,10 +44,10 @@ A series does not track completion. It answers "show me everything Harry Potter"
 
 An item can use all three at once: filed under Marvel, part of the "First ten issues" set, and linked to the Spider-Man series.
 
-If you want something even lighter than these, cross cutting labels with no structure at all, that is what [tags](8-tags.md) are for.
+If you want something even lighter than these, cross cutting labels with no structure at all, that is what @doc(tags.overview, "tags") are for.
 
 ## Where to next
 
-- Build a filing tree in [Organize items with categories](../6-organizing/4-organize-items-with-categories.md).
-- Chase a complete run in [Track a set to completion](../6-organizing/5-track-a-set-to-completion.md).
-- Tie a franchise together in [Group a franchise with series](../6-organizing/6-group-a-franchise-with-series.md).
+- Build a filing tree in @doc(categories.organizeItems).
+- Chase a complete run in @doc(sets.trackCompletion).
+- Tie a franchise together in @doc(series.groupFranchise).

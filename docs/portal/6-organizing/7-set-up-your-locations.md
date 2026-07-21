@@ -7,7 +7,7 @@ section: organizing
 
 # Set up your locations
 
-A [location](../3-core-concepts/9-locations.md) is where a copy physically lives. Locations nest as deeply as your real storage does, so "second crate on the left, under the window" becomes something you can actually record. A good location map is what lets you find a specific record in a room full of them.
+A @doc(locations.overview, "location") is where a copy physically lives. Locations nest as deeply as your real storage does, so "second crate on the left, under the window" becomes something you can actually record. A good location map is what lets you find a specific record in a room full of them.
 
 Locations are account wide: build the map once and every collection uses it. You need the editor or owner role to manage locations.
 
@@ -47,9 +47,9 @@ Do not over build. If everything is in one closet, one location named "Closet" i
 
 ## How locations are used
 
-Every [copy](../3-core-concepts/5-items-and-copies.md) points at its current location, chosen when you create the copy or whenever you [move it](../5-copy-history/7-move-a-copy.md). Moves are recorded over time, so a copy remembers not just where it is but where it has been. Locations also power the value by location breakdown in [collection statistics](../7-insights/2-collection-statistics.md), which is how you learn that one display case holds half your collection's value.
+Every @doc(items.itemsVsCopies, "copy") points at its current location, chosen when you create the copy or whenever you @doc(copies.move, "move it"). Moves are recorded over time, so a copy remembers not just where it is but where it has been. Locations also power the value by location breakdown in @doc(insights.collectionStatistics, "collection statistics"), which is how you learn that one display case holds half your collection's value.
 
 ## Where to next
 
-- Put the map to use in [Track the copies you own](../4-core-features/5-track-the-copies-you-own.md).
-- Record a move properly in [Move a copy and keep its location history](../5-copy-history/7-move-a-copy.md).
+- Put the map to use in @doc(copies.track).
+- Record a move properly in @doc(copies.move).

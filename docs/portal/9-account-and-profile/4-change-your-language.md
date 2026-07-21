@@ -21,7 +21,7 @@ KolleK speaks seven languages. Your choice is personal: it changes the interface
 
 ## Switch from your profile
 
-Open [your profile](2-edit-your-profile.md), pick your language from the **Language** selector, and save. The interface switches immediately.
+Open @doc(profile.edit, "your profile"), pick your language from the **Language** selector, and save. The interface switches immediately.
 
 ## Switch before signing in
 
@@ -33,5 +33,5 @@ Your language preference travels with your user, not with the browser. Sign in o
 
 ## Where to next
 
-- Adjust your other preferences in [Edit your profile](2-edit-your-profile.md).
-- Running your own instance and missing a language? See [Add a language](../14-self-hosting/12-add-a-language.md).
+- Adjust your other preferences in @doc(profile.edit).
+- Running your own instance and missing a language? See @doc(selfHosting.addLanguage).

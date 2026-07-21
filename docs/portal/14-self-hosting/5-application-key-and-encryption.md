@@ -13,7 +13,7 @@ This page explains the single most important operational rule of running KolleK.
 
 KolleK encrypts sensitive fields at rest with the instance's application key, the `APP_KEY` value in your `.env`. Names, item details, custom field values, file names, email records, webhook secrets: roughly thirty models carry encrypted columns. What lands in the database for those fields is ciphertext, unreadable without the key. The same key also protects user sessions.
 
-This is what [How your data is protected](../3-core-concepts/13-how-your-data-is-protected.md) describes from the user's point of view. Operationally it means the key is not a configuration detail. It is half of your data.
+This is what @doc(dataSafety.howProtected) describes from the user's point of view. Operationally it means the key is not a configuration detail. It is half of your data.
 
 ## The rule
 
@@ -46,5 +46,5 @@ If rotation is not required of you, the simplest safe policy is: one key, set on
 
 ## Where to next
 
-- Make sure the key is part of your [backup and restore plan](7-back-up-and-restore.md).
-- Read the user facing view of encryption in [How your data is protected](../3-core-concepts/13-how-your-data-is-protected.md).
+- Make sure the key is part of your @doc(selfHosting.backupAndRestore, "backup and restore plan").
+- Read the user facing view of encryption in @doc(dataSafety.howProtected).

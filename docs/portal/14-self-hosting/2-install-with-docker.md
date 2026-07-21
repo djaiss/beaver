@@ -41,7 +41,7 @@ Generate a key and copy the output:
 docker compose run --rm app php artisan key:generate --show
 ```
 
-Paste the printed value into `.env` as `APP_KEY`. This key encrypts your data at rest. **Set it now and never change it later.** A changed key makes every encrypted field and every session permanently unreadable. Read [The application key and encryption](5-application-key-and-encryption.md) before going further if you have not yet.
+Paste the printed value into `.env` as `APP_KEY`. This key encrypts your data at rest. **Set it now and never change it later.** A changed key makes every encrypted field and every session permanently unreadable. Read @doc(selfHosting.applicationKeyAndEncryption) before going further if you have not yet.
 :::
 
 :::step title="Review passwords and the URL"
@@ -59,7 +59,7 @@ The first build takes a few minutes. When it finishes, the web container applies
 :::
 
 :::step title="Create your first account"
-Open the URL in a browser and use the registration page to sign up. This creates your personal user and your first account, exactly as described in [Create your account](../2-getting-started/4-create-your-account.md).
+Open the URL in a browser and use the registration page to sign up. This creates your personal user and your first account, exactly as described in @doc(accounts.create).
 
 ::screenshot{label="Registration page of a freshly installed instance"}
 :::
@@ -71,7 +71,7 @@ If you want the server wide administration panel, grant your user the flag:
 docker compose exec app php artisan beaver:make-instance-administrator you@example.com
 ```
 
-See [Grant instance administrator access](9-grant-instance-administrator-access.md) for what this does and does not give you.
+See @doc(instanceAdmin.grantAccess) for what this does and does not give you.
 :::
 ::::
 
@@ -81,7 +81,7 @@ The Compose stack starts four containers. Three of them run the same KolleK imag
 
 - **app** serves the web application through nginx and PHP. It is the only container that runs database migrations, and it does so on boot.
 - **queue** processes background jobs (email, deliveries, logging) from the `high`, `default`, and `low` queues.
-- **scheduler** triggers the daily maintenance jobs described in [Scheduled maintenance jobs](8-scheduled-jobs.md).
+- **scheduler** triggers the daily maintenance jobs described in @doc(selfHosting.scheduledJobs).
 
 The fourth container is **mysql**, running MySQL 8.4.
 
@@ -101,6 +101,6 @@ docker compose exec app php artisan migrate --force
 
 ## Where to next
 
-- Walk through [Configure your instance](3-configure-your-instance.md) to understand what else `.env` controls.
-- Make email work in [Set up email delivery](4-set-up-email-delivery.md). Until you do, invitations and sign in links go to a log file instead of an inbox.
-- Set up [backups](7-back-up-and-restore.md) before you put real data in.
+- Walk through @doc(selfHosting.configure) to understand what else `.env` controls.
+- Make email work in @doc(selfHosting.setupEmailDelivery). Until you do, invitations and sign in links go to a log file instead of an inbox.
+- Set up @doc(selfHosting.backupAndRestore, "backups") before you put real data in.

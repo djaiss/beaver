@@ -10,7 +10,7 @@ section: developers
 Webhooks let an external system receive an HTTP call from KolleK when something happens in your account. You can set them up today, and this page shows how. But read the next paragraph first, because it frames everything else.
 
 :::note
-No application event currently triggers a webhook. The registration, signing, and delivery machinery is in place and tested, but events will only start firing as the collection domain grows. Set up your receiver now if you like; just do not wait on it for anything yet. The [feature status page](../15-troubleshooting/5-feature-status.md) tracks when this changes.
+No application event currently triggers a webhook. The registration, signing, and delivery machinery is in place and tested, but events will only start firing as the collection domain grows. Set up your receiver now if you like; just do not wait on it for anything yet. The @doc(troubleshooting.featureStatus, "feature status page") tracks when this changes.
 :::
 
 ## What exists today
@@ -63,9 +63,9 @@ if (! hash_equals($computed, $request->header('Signature'))) {
 
 Deliveries are queued and sent in the background. A delivery that fails is retried up to 3 times with exponential backoff. Your receiver should respond quickly with a 2xx status and do its real work asynchronously.
 
-On a self hosted instance, deliveries run on the queue worker, so the queue role must be running. See [Install with Docker](../14-self-hosting/2-install-with-docker.md).
+On a self hosted instance, deliveries run on the queue worker, so the queue role must be running. See @doc(selfHosting.installDocker).
 
 ## Where to next
 
-- Check what is live and what is pending on the [feature status page](../15-troubleshooting/5-feature-status.md).
-- Build against the API in the meantime, starting with [Authenticate with the API](3-authenticate-with-the-api.md).
+- Check what is live and what is pending on the @doc(troubleshooting.featureStatus, "feature status page").
+- Build against the API in the meantime, starting with @doc(api.authenticate).

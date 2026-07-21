@@ -7,7 +7,7 @@ section: self-hosting
 
 # Configure your instance
 
-Everything about your instance is configured through the `.env` file you created during [installation](2-install-with-docker.md). This page walks through the settings an operator actually touches, grouped by what they do, rather than listing every variable the template contains.
+Everything about your instance is configured through the `.env` file you created during @doc(selfHosting.installDocker, "installation"). This page walks through the settings an operator actually touches, grouped by what they do, rather than listing every variable the template contains.
 
 After changing `.env`, apply it by recreating the containers:
 
@@ -23,7 +23,7 @@ docker compose up -d
 
 ## The application key
 
-`APP_KEY` encrypts sensitive data at rest. You set it once during installation and never change it casually. It is important enough to have [its own page](5-application-key-and-encryption.md), which also covers the `APP_PREVIOUS_KEYS` rotation mechanism.
+`APP_KEY` encrypts sensitive data at rest. You set it once during installation and never change it casually. It is important enough to have @doc(selfHosting.applicationKeyAndEncryption, "its own page"), which also covers the `APP_PREVIOUS_KEYS` rotation mechanism.
 
 ## Database
 
@@ -34,7 +34,7 @@ docker compose up -d
 `MAIL_MAILER` decides how email leaves your instance, and it defaults to `log`.
 
 :::note
-With the default `log` mailer, no email is ever sent. Invitations, magic links, password resets, and security alerts are written to the application log instead. Configuring a real mailer is the one piece of setup nearly every instance needs. See [Set up email delivery](4-set-up-email-delivery.md).
+With the default `log` mailer, no email is ever sent. Invitations, magic links, password resets, and security alerts are written to the application log instead. Configuring a real mailer is the one piece of setup nearly every instance needs. See @doc(selfHosting.setupEmailDelivery).
 :::
 
 ## File storage
@@ -43,8 +43,8 @@ With the default `log` mailer, no email is ever sent. Invitations, magic links, 
 
 ## Housekeeping
 
-- `TRASH_RETENTION_DAYS` is how long soft deleted objects stay in the [trash](../11-data-safety/2-restore-from-trash.md) before the nightly purge removes them for good. The default is 30 days.
-- `ACCOUNT_DELETION_NOTIFICATION_EMAIL` is the address notified when a user deletes their own user or is removed by the [inactivity cleanup](../11-data-safety/4-inactive-user-deletion.md). Point it at yourself so departures do not go unnoticed.
+- `TRASH_RETENTION_DAYS` is how long soft deleted objects stay in the @doc(dataSafety.restoreFromTrash, "trash") before the nightly purge removes them for good. The default is 30 days.
+- `ACCOUNT_DELETION_NOTIFICATION_EMAIL` is the address notified when a user deletes their own user or is removed by the @doc(users.inactiveDeletion, "inactivity cleanup"). Point it at yourself so departures do not go unnoticed.
 
 ## The public marketing site
 
@@ -56,6 +56,6 @@ Sessions (`SESSION_DRIVER`), cache (`CACHE_STORE`), and the queue (`QUEUE_CONNEC
 
 ## Where to next
 
-- Get real email flowing in [Set up email delivery](4-set-up-email-delivery.md).
-- Understand the key you must protect in [The application key and encryption](5-application-key-and-encryption.md).
-- Put [backups](7-back-up-and-restore.md) in place.
+- Get real email flowing in @doc(selfHosting.setupEmailDelivery).
+- Understand the key you must protect in @doc(selfHosting.applicationKeyAndEncryption).
+- Put @doc(selfHosting.backupAndRestore, "backups") in place.

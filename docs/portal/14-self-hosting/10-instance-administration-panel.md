@@ -7,7 +7,7 @@ section: self-hosting
 
 # The instance administration panel
 
-The instance administration panel at `/instance-admin` is where an [instance administrator](9-grant-instance-administrator-access.md) looks across every account on the server: how many there are, who is in them, and the handful of destructive actions only an operator should hold. This page describes what the panel can do, and just as important, what it deliberately cannot.
+The instance administration panel at `/instance-admin` is where an @doc(instanceAdmin.grantAccess, "instance administrator") looks across every account on the server: how many there are, who is in them, and the handful of destructive actions only an operator should hold. This page describes what the panel can do, and just as important, what it deliberately cannot.
 
 If you run a personal instance with one account, you may never need this panel. It earns its keep on shared instances, such as a club or family server with several accounts.
 
@@ -51,10 +51,10 @@ Two safeguards protect the instance itself: an administrator cannot revoke their
 
 The panel is web only by design. The JSON API is scoped to a single account, and an instance wide surface has no place in it, so none of these capabilities exist as API endpoints.
 
-The **Support** and **Reviews** areas visible in the panel are placeholders and are not built yet. See [Feature status and roadmap](../15-troubleshooting/5-feature-status.md).
+The **Support** and **Reviews** areas visible in the panel are placeholders and are not built yet. See @doc(troubleshooting.featureStatus).
 
 ## Where to next
 
-- Grant or revoke the flag itself in [Grant instance administrator access](9-grant-instance-administrator-access.md).
-- Understand what account owners can already do without you in [Manage members and roles](../8-collaboration/3-manage-members-and-roles.md).
-- Review the other operator tools in [Administer with the command line](11-cli-commands.md).
+- Grant or revoke the flag itself in @doc(instanceAdmin.grantAccess).
+- Understand what account owners can already do without you in @doc(collaboration.manageMembersAndRoles).
+- Review the other operator tools in @doc(selfHosting.cliCommands).

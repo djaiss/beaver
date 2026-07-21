@@ -19,7 +19,7 @@ This is deliberate, so an unconfigured instance never silently fails or accident
 If nobody has configured mail on your instance yet, no email will arrive, for anyone, ever. This is the first thing to check.
 :::
 
-**If you operate the instance**, set up SMTP or Resend by following [Set up email delivery](../14-self-hosting/4-set-up-email-delivery.md).
+**If you operate the instance**, set up SMTP or Resend by following @doc(selfHosting.setupEmailDelivery).
 
 **If someone else operates it**, point them at that page. There is nothing you can change from inside the app.
 
@@ -34,7 +34,7 @@ How to read what you find:
 - **The email is listed with no delivery information.** On instances that send through plain SMTP, delivery tracking is not available, so this is normal. Absence of a bounce is a good sign.
 - **The email is not listed at all.** It was never composed, which usually means the action did not complete. Try the action again.
 
-Full details on this screen in [Your personal activity log and sent emails](../9-account-and-profile/5-activity-log-and-sent-emails.md).
+Full details on this screen in @doc(activity.logAndSentEmails, "Your personal activity log and sent emails").
 
 ## An invitation never reached the invitee
 
@@ -42,10 +42,10 @@ The invitation email goes to the invitee, so it never appears in your own sent h
 
 ## Verification, resets, and magic links land in spam
 
-Transactional email from a small self hosted instance is exactly what spam filters are suspicious of. Marking one message as "not spam" usually teaches your provider. Operators can improve deliverability with proper sender configuration, covered in [Set up email delivery](../14-self-hosting/4-set-up-email-delivery.md).
+Transactional email from a small self hosted instance is exactly what spam filters are suspicious of. Marking one message as "not spam" usually teaches your provider. Operators can improve deliverability with proper sender configuration, covered in @doc(selfHosting.setupEmailDelivery).
 
 ## Where to next
 
-- Operator setup for real delivery: [Set up email delivery](../14-self-hosting/4-set-up-email-delivery.md).
-- Your personal email history: [Your personal activity log and sent emails](../9-account-and-profile/5-activity-log-and-sent-emails.md).
-- What each email is and when it fires: [Emails KolleK sends](../16-reference/4-emails-kollek-sends.md).
+- Operator setup for real delivery: @doc(selfHosting.setupEmailDelivery).
+- Your personal email history: @doc(activity.logAndSentEmails, "Your personal activity log and sent emails").
+- What each email is and when it fires: @doc(reference.emailsSent).

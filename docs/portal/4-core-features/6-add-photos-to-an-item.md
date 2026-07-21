@@ -9,7 +9,7 @@ section: core-features
 
 Photos are what make a catalogue recognizable at a glance. This page covers uploading photos to an item, ordering them, and choosing the cover.
 
-Photos attach to the **item**, not to a single copy. They describe what the thing looks like, which is the same for every copy. Paperwork about one specific copy (a receipt, a certificate, a condition photo tied to one copy) belongs in that copy's [documents](../5-copy-history/8-attach-documents.md) instead.
+Photos attach to the **item**, not to a single copy. They describe what the thing looks like, which is the same for every copy. Paperwork about one specific copy (a receipt, a certificate, a condition photo tied to one copy) belongs in that copy's @doc(copies.attachDocuments, "documents") instead.
 
 ## Upload photos
 
@@ -34,10 +34,10 @@ Deleting a photo removes it and its file immediately. Photos do not go to the tr
 
 ## Managing photos in bulk
 
-Every photo across your whole account can be searched, filtered, and managed from one screen, the photo library. That is also the only place with bulk actions. See [Browse and manage your photo library](../6-organizing/9-photo-library.md).
+Every photo across your whole account can be searched, filtered, and managed from one screen, the photo library. That is also the only place with bulk actions. See @doc(photos.library).
 
 ## Where to next
 
-- Record the copies behind the pictures: [Track the copies you own](5-track-the-copies-you-own.md).
-- Work with all your images at once: [Browse and manage your photo library](../6-organizing/9-photo-library.md).
-- Keep copy specific paperwork where it belongs: [Attach documents to a copy](../5-copy-history/8-attach-documents.md).
+- Record the copies behind the pictures: @doc(copies.track).
+- Work with all your images at once: @doc(photos.library).
+- Keep copy specific paperwork where it belongs: @doc(copies.attachDocuments).

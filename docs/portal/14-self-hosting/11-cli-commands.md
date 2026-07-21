@@ -24,7 +24,7 @@ php artisan beaver:make-instance-administrator you@example.com
 php artisan beaver:make-instance-administrator you@example.com --revoke
 ```
 
-Grants (or takes back) the server wide administrator flag for the user with that email. This is how the first administrator is bootstrapped after installation. See [Grant instance administrator access](9-grant-instance-administrator-access.md).
+Grants (or takes back) the server wide administrator flag for the user with that email. This is how the first administrator is bootstrapped after installation. See @doc(instanceAdmin.grantAccess).
 
 ### Create a webhook endpoint
 
@@ -32,7 +32,7 @@ Grants (or takes back) the server wide administrator flag for the user with that
 php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
-Registers a webhook endpoint for a user and prints its ID and signing secret. Users can also do this themselves from their profile settings. Note that no application event fires webhooks yet; see [Webhooks](../13-developers/5-webhooks.md).
+Registers a webhook endpoint for a user and prints its ID and signing secret. Users can also do this themselves from their profile settings. Note that no application event fires webhooks yet; see @doc(webhooks.overview).
 
 ### Rebuild the photo search index
 
@@ -40,7 +40,7 @@ Registers a webhook endpoint for a user and prints its ID and signing secret. Us
 php artisan photos:rebuild-search-index
 ```
 
-Rebuilds the search index behind the photo library and backfills missing image dimensions. Run it once after upgrading to a version that introduces the photo screen. It is safe to run again at any time; it skips photos whose files are missing and changes nothing else. See [Upgrade your instance](6-upgrade-your-instance.md).
+Rebuilds the search index behind the photo library and backfills missing image dimensions. Run it once after upgrading to a version that introduces the photo screen. It is safe to run again at any time; it skips photos whose files are missing and changes nothing else. See @doc(selfHosting.upgrade).
 
 ### Scaffold a locale for translation
 
@@ -48,7 +48,7 @@ Rebuilds the search index behind the photo library and backfills missing image d
 php artisan beaver:localize fr_FR
 ```
 
-Extracts every translatable string in the application and syncs it into the locale's JSON file under `lang/`. See [Add a language](12-add-a-language.md).
+Extracts every translatable string in the application and syncs it into the locale's JSON file under `lang/`. See @doc(selfHosting.addLanguage).
 
 ## Development only
 
@@ -60,6 +60,6 @@ Never run `beaver:bruno` on a real instance. It wipes the database and reseeds i
 
 ## Where to next
 
-- Bootstrap your administrator in [Grant instance administrator access](9-grant-instance-administrator-access.md).
-- Keep the instance current with [Upgrade your instance](6-upgrade-your-instance.md).
-- Translate the interface in [Add a language](12-add-a-language.md).
+- Bootstrap your administrator in @doc(instanceAdmin.grantAccess).
+- Keep the instance current with @doc(selfHosting.upgrade).
+- Translate the interface in @doc(selfHosting.addLanguage).

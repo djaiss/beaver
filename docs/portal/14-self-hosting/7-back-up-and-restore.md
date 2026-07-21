@@ -7,7 +7,7 @@ section: self-hosting
 
 # Back up and restore your instance
 
-There is no automated backup inside KolleK. Protecting the data is the operator's job, and this page is the procedure. It is also, today, the real answer to "how do I export everything", as [Back up your collection data](../11-data-safety/6-back-up-your-collection-data.md) explains from the collector's side.
+There is no automated backup inside KolleK. Protecting the data is the operator's job, and this page is the procedure. It is also, today, the real answer to "how do I export everything", as @doc(dataSafety.backupCollectionData) explains from the collector's side.
 
 ## What a complete backup is
 
@@ -18,7 +18,7 @@ Three things, and all three matter:
 3. **The application key**, `APP_KEY` from your `.env` (plus `APP_PREVIOUS_KEYS` if set).
 
 :::warning
-A backup without its matching application key is not a backup. Encrypted fields restore as unreadable ciphertext without the key that wrote them. Store the key with, or alongside, every backup you take. See [The application key and encryption](5-application-key-and-encryption.md).
+A backup without its matching application key is not a backup. Encrypted fields restore as unreadable ciphertext without the key that wrote them. Store the key with, or alongside, every backup you take. See @doc(selfHosting.applicationKeyAndEncryption).
 :::
 
 ## Back up
@@ -41,7 +41,7 @@ Copy both files, and a copy of your `.env`, somewhere off the server. Automate t
 
 On a fresh machine, restore in this order:
 
-1. Install the same KolleK version following [Install with Docker](2-install-with-docker.md), but set `APP_KEY` (and `APP_PREVIOUS_KEYS`) from your backup instead of generating a new key.
+1. Install the same KolleK version following @doc(selfHosting.installDocker), but set `APP_KEY` (and `APP_PREVIOUS_KEYS`) from your backup instead of generating a new key.
 2. Start the stack once so the volumes exist, then load the database dump:
 
 ```bash
@@ -64,5 +64,5 @@ docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar xzf /b
 
 ## Where to next
 
-- Understand what the key protects in [The application key and encryption](5-application-key-and-encryption.md).
-- See what collectors can export from inside the app in [Back up your collection data](../11-data-safety/6-back-up-your-collection-data.md).
+- Understand what the key protects in @doc(selfHosting.applicationKeyAndEncryption).
+- See what collectors can export from inside the app in @doc(dataSafety.backupCollectionData).

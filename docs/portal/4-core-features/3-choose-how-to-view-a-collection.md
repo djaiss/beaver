@@ -21,7 +21,7 @@ Your choice is remembered **per user, per collection**. Emma can browse her comi
 
 ## What the header shows
 
-At the top of the collection you will see its **item count** and its **total value**. The total value is the sum of the current value of every copy inside, where each copy's current value comes from its most recent [valuation](../5-copy-history/2-record-payments-and-value.md). Copies that have never been valued contribute nothing, so a low total usually means missing valuations, not worthless items.
+At the top of the collection you will see its **item count** and its **total value**. The total value is the sum of the current value of every copy inside, where each copy's current value comes from its most recent @doc(copies.recordPaymentsAndValue, "valuation"). Copies that have never been valued contribute nothing, so a low total usually means missing valuations, not worthless items.
 
 ## Searching inside a collection
 
@@ -33,10 +33,10 @@ It narrows the items **currently loaded on the page** as you type. A collection 
 This is an in view filter, not a global search. It looks at the collection you have open, not across your whole account.
 :::
 
-A global search across every collection is planned but not available yet. See the [feature status page](../15-troubleshooting/5-feature-status.md) for where that stands.
+A global search across every collection is planned but not available yet. See the @doc(troubleshooting.featureStatus, "feature status page") for where that stands.
 
 ## Where to next
 
-- Add more to look at: [Add and edit items](4-add-and-edit-items.md).
-- Give the numbers meaning: [Understand your collection statistics](../7-insights/2-collection-statistics.md).
-- Slice across collections with [tags](7-tag-and-find-items.md).
+- Add more to look at: @doc(items.addAndEdit).
+- Give the numbers meaning: @doc(insights.collectionStatistics).
+- Slice across collections with @doc(items.tagAndFind, "tags").

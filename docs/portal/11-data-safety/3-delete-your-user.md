@@ -7,16 +7,16 @@ section: data-safety
 
 # Delete your user
 
-Deleting your user removes you, the person, from KolleK. It is not the same thing as deleting the account: the account is the shared workspace, and [deleting it](5-delete-an-account.md) destroys everything for everyone. This page covers removing just yourself.
+Deleting your user removes you, the person, from KolleK. It is not the same thing as deleting the account: the account is the shared workspace, and @doc(accounts.delete, "deleting it") destroys everything for everyone. This page covers removing just yourself.
 
 ## Before you decide
 
 Two situations look like "delete my user" but are not:
 
-- **You want everything gone.** If you are the owner and want the whole catalogue and workspace removed, that is [Delete an account](5-delete-an-account.md).
+- **You want everything gone.** If you are the owner and want the whole catalogue and workspace removed, that is @doc(accounts.delete).
 - **You want out of a shared account.** Deleting your user removes you and leaves the account and its catalogue with the other members.
 
-If you are the account's only owner and other members remain, promote someone else to owner first from [member management](../8-collaboration/3-manage-members-and-roles.md), so the account is not left without one.
+If you are the account's only owner and other members remain, promote someone else to owner first from @doc(collaboration.manageMembersAndRoles, "member management"), so the account is not left without one.
 
 ## Delete yourself
 
@@ -46,5 +46,5 @@ The activity history of the account keeps its integrity: entries you created rec
 
 ## Where to next
 
-- Prefer an automatic cleanup instead? See [Automatically delete an inactive user](4-inactive-user-deletion.md).
-- Removing someone else from a shared account is done in [Manage members and roles](../8-collaboration/3-manage-members-and-roles.md).
+- Prefer an automatic cleanup instead? See @doc(users.inactiveDeletion).
+- Removing someone else from a shared account is done in @doc(collaboration.manageMembersAndRoles).

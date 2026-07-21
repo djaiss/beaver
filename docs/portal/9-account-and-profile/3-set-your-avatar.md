@@ -11,7 +11,7 @@ An avatar is the small picture that represents you across KolleK: in the member 
 
 ## Upload an avatar
 
-From [your profile](2-edit-your-profile.md), choose to change your avatar and pick an image file.
+From @doc(profile.edit, "your profile"), choose to change your avatar and pick an image file.
 
 A few practical rules:
 
@@ -27,5 +27,5 @@ From the same place, choose to remove the avatar. KolleK goes back to showing th
 
 ## Where to next
 
-- Update your name or nickname in [Edit your profile](2-edit-your-profile.md).
-- See where your name and picture show up in [the activity feed](../4-core-features/8-activity-feed-and-audit-trail.md).
+- Update your name or nickname in @doc(profile.edit).
+- See where your name and picture show up in @doc(activity.feedAndAuditTrail, "the activity feed").

@@ -63,11 +63,11 @@ Pick a **document type**, give it a **name** ("Auction receipt, Fine Time Auctio
 The type makes a pile of paperwork scannable: **Receipt**, **Invoice**, **Certificate**, **Appraisal**, **Insurance**, **Photograph**, **Condition report**, **Restoration report**, **Catalogue**, **Correspondence**, **Ownership record**, **Authenticity record**, and **Other**.
 
 :::note
-Documents are not photos of the item. Pictures that show what an item looks like belong in its photo gallery (see [Add photos to an item](../4-core-features/6-add-photos-to-an-item.md)). A photograph attached as a document is evidence, such as a dated condition photo tied to a loan.
+Documents are not photos of the item. Pictures that show what an item looks like belong in its photo gallery (see @doc(items.addPhotos)). A photograph attached as a document is evidence, such as a dated condition photo tied to a loan.
 :::
 
 ## Where to next
 
-- See documents interleaved with everything else in [Read the copy timeline](9-read-the-copy-timeline.md).
-- Attach receipts where money is recorded, in [Record what you paid and what it is worth](2-record-payments-and-value.md).
-- Keep certificates with the events they prove, in [Trace a copy's provenance](6-trace-provenance.md).
+- See documents interleaved with everything else in @doc(copyHistory.readTimeline).
+- Attach receipts where money is recorded, in @doc(copies.recordPaymentsAndValue).
+- Keep certificates with the events they prove, in @doc(copies.traceProvenance).

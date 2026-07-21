@@ -15,8 +15,8 @@ Expect this to take about half an hour, and to save you many hours later.
 
 ## Before you start
 
-- Finish [Catalogue your first collection end to end](2-catalogue-your-first-collection.md) or at least the [quick start](../2-getting-started/7-quick-start.md), so the core loop is familiar.
-- Know the concepts behind [collection types and custom fields](../3-core-concepts/6-collection-types-and-custom-fields.md), [locations](../3-core-concepts/9-locations.md), and [tags](../3-core-concepts/8-tags.md). Skim those pages if not.
+- Finish @doc(tutorials.catalogueFirstCollection, "Catalogue your first collection end to end") or at least the @doc(gettingStarted.quickStart, "quick start"), so the core loop is familiar.
+- Know the concepts behind @doc(collectionTypes.overview, "collection types and custom fields"), @doc(locations.overview, "locations"), and @doc(tags.overview, "tags"). Skim those pages if not.
 - Have a think about what you actually want to record for each item. Ten minutes with a notepad beats reworking fields after fifty entries.
 
 ## Step 1: Shape the collection type
@@ -53,7 +53,7 @@ Noah keeps records in two places: a listening room with three shelves, and crate
 
 ::::steps
 :::step title="Create the top level places"
-In [location settings](../6-organizing/7-set-up-your-locations.md), create **Music Room** 🛋️ and **Storage** 📦. These are the rooms.
+In @doc(locations.setup, "location settings"), create **Music Room** 🛋️ and **Storage** 📦. These are the rooms.
 :::
 
 :::step title="Nest the real subdivisions"
@@ -61,11 +61,11 @@ Under Music Room, create **Shelf A**, **Shelf B**, and **Shelf C**. Under Storag
 :::
 ::::
 
-Why this matters: every copy points at one location, and later moves are recorded as [location history](../5-copy-history/7-move-a-copy.md). A good map now means "where is that record" always has an exact answer.
+Why this matters: every copy points at one location, and later moves are recorded as @doc(copies.move, "location history"). A good map now means "where is that record" always has an exact answer.
 
 ## Step 3: Seed your tag vocabulary
 
-Tags cut across collections and hierarchies, which makes them ideal for the labels that do not fit anywhere else. Noah creates his starting set from [tag settings](../6-organizing/8-manage-account-tags.md): **Signed**, **First Pressing**, **Japanese Pressing**, **To Sell**, and **Needs Cleaning**.
+Tags cut across collections and hierarchies, which makes them ideal for the labels that do not fit anywhere else. Noah creates his starting set from @doc(tags.manageAccount, "tag settings"): **Signed**, **First Pressing**, **Japanese Pressing**, **To Sell**, and **Needs Cleaning**.
 
 Two habits make tags stay useful:
 
@@ -76,10 +76,10 @@ You can always create a tag on the spot while editing an item, so this list only
 
 ## Step 4: Import a type instead of building one
 
-There is a shortcut worth knowing. A collection type can be [exported and imported as JSON](../6-organizing/3-import-and-export-a-collection-type.md). If a friend has already built a great Vinyl type, they can export it, and you can import it by pasting the JSON, bringing over the name, color, groups, fields, and select options in one step.
+There is a shortcut worth knowing. A collection type can be @doc(collectionTypes.importExport, "exported and imported as JSON"). If a friend has already built a great Vinyl type, they can export it, and you can import it by pasting the JSON, bringing over the name, color, groups, fields, and select options in one step.
 
 :::note
-Importing a type brings the type definition only. It does not import items or their data. There is currently no item or whole collection import, and the honest state of that is tracked on the [feature status page](../15-troubleshooting/5-feature-status.md).
+Importing a type brings the type definition only. It does not import items or their data. There is currently no item or whole collection import, and the honest state of that is tracked on the @doc(troubleshooting.featureStatus, "feature status page").
 :::
 
 Noah imports a "45 RPM Singles" type a club friend shared, and it appears next to his own types, ready to attach to a collection.
@@ -114,6 +114,6 @@ Add one record now and feel the difference: the form asks exactly the right ques
 
 ## Where to next
 
-- Start entering items with [Add and edit items](../4-core-features/4-add-and-edit-items.md).
-- Track your most valuable piece properly in [Track the full life of a valuable item](4-track-a-valuable-item.md).
-- Working with others? [Invite your household or club](5-invite-your-household.md).
+- Start entering items with @doc(items.addAndEdit).
+- Track your most valuable piece properly in @doc(tutorials.trackValuableItem, "Track the full life of a valuable item").
+- Working with others? @doc(tutorials.inviteHousehold, "Invite your household or club").

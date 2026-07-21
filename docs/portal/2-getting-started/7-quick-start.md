@@ -13,14 +13,14 @@ By the end you will know the core loop you will use for everything else.
 
 ## What you will need
 
-- A KolleK account you can sign into. If you do not have one yet, [create your account](4-create-your-account.md) first.
+- A KolleK account you can sign into. If you do not have one yet, @doc(accounts.create, "create your account") first.
 - One thing you own that you would like to catalogue, ideally with a photo of it on hand.
 
 Throughout, we will follow Emma, who collects comics and wants to catalogue her copy of Amazing Spider-Man #1. Follow along with something of your own.
 
 ## Step 1: Create a collection
 
-A [collection](../3-core-concepts/4-collections.md) is a named group that holds related [items](../3-core-concepts/5-items-and-copies.md). Emma makes one called "My Comics".
+A @doc(collections.overview, "collection") is a named group that holds related @doc(items.itemsVsCopies, "items"). Emma makes one called "My Comics".
 
 From your dashboard, choose to create a **New collection**. Give it a **name**, and optionally pick an emoji and add a short description. You can leave the other choices at their defaults for now. Save it.
 
@@ -44,12 +44,12 @@ Why this matters: photos make a large catalogue far easier to scan, and the cove
 
 ## Step 4: Add the copy you own
 
-Here is the important step. An item on its own does not record anything you physically own. A **[copy](../3-core-concepts/5-items-and-copies.md)** does.
+Here is the important step. An item on its own does not record anything you physically own. A **@doc(items.itemsVsCopies, "copy")** does.
 
 On the item, add a **copy** and set at least:
 
-- **[Condition](../3-core-concepts/10-conditions.md)**, such as Very Good or Mint. Choose from the ready made list.
-- **[Location](../3-core-concepts/9-locations.md)**, where the copy is stored, for example a shelf or a box.
+- **@doc(conditions.overview, "Condition")**, such as Very Good or Mint. Choose from the ready made list.
+- **@doc(locations.overview, "Location")**, where the copy is stored, for example a shelf or a box.
 
 Emma adds one copy, marks it **Very Good**, and sets its location to "Long box 1".
 

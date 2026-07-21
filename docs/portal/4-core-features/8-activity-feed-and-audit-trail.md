@@ -13,7 +13,7 @@ Knowing this exists matters most in a shared account. When Sam edits an item in 
 
 ## The dashboard activity feed
 
-The [dashboard](../7-insights/3-the-dashboard.md) shows the most recent actions across the whole account, from every member. It answers "what happened lately," in plain sentences with relative times, and it is the quickest way to catch up after being away.
+The @doc(insights.dashboard, "dashboard") shows the most recent actions across the whole account, from every member. It answers "what happened lately," in plain sentences with relative times, and it is the quickest way to catch up after being away.
 
 ## An item's own activity log
 
@@ -31,10 +31,10 @@ The audit trail is written automatically for every change. There is no way to ed
 
 ## Your own history
 
-Each user also has a personal activity log, a record of just their own actions, on their profile. That view is covered in [Your personal activity log and sent emails](../9-account-and-profile/5-activity-log-and-sent-emails.md).
+Each user also has a personal activity log, a record of just their own actions, on their profile. That view is covered in @doc(activity.logAndSentEmails, "Your personal activity log and sent emails").
 
 ## Where to next
 
-- See where the feed lives: [The dashboard](../7-insights/3-the-dashboard.md).
-- Understand the broader protections around your data: [How your data is protected](../3-core-concepts/13-how-your-data-is-protected.md).
-- Review your own actions: [Your personal activity log and sent emails](../9-account-and-profile/5-activity-log-and-sent-emails.md).
+- See where the feed lives: @doc(insights.dashboard).
+- Understand the broader protections around your data: @doc(dataSafety.howProtected).
+- Review your own actions: @doc(activity.logAndSentEmails, "Your personal activity log and sent emails").

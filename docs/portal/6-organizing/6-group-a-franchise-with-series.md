@@ -7,7 +7,7 @@ section: organizing
 
 # Group a franchise with series
 
-A [series](../3-core-concepts/7-categories-sets-and-series.md) ties together items that belong to one franchise, even when they live in different collections. Harry Potter can span your books, your films, and your LEGO. A series answers "show me everything from this universe" without caring where each piece is filed.
+A @doc(organizing.categoriesSetsAndSeries, "series") ties together items that belong to one franchise, even when they live in different collections. Harry Potter can span your books, your films, and your LEGO. A series answers "show me everything from this universe" without caring where each piece is filed.
 
 You need the editor or owner role to create or change series.
 
@@ -35,7 +35,7 @@ Open the series page. Its items appear grouped by the collection they live in, w
 
 The contrast matters, because the two look similar at first:
 
-- A [set](5-track-a-set-to-completion.md) lives inside one collection, has a target count, and tracks completion.
+- A @doc(sets.trackCompletion, "set") lives inside one collection, has a target count, and tracks completion.
 - A series spans collections and tracks no completion. It is a franchise umbrella, nothing more.
 
 Noah keeps a "Miles Davis" series linking records in his Vinyl collection and discs in his CD collection. It tells him the franchise reaches two collections and fifteen items. It never claims he is 60 percent done, because "done" is not a question a franchise can answer.
@@ -46,6 +46,6 @@ Deleting a series removes the umbrella only. The items that were part of it keep
 
 ## Where to next
 
-- Track a finite list instead with [Track a set to completion](5-track-a-set-to-completion.md).
-- File items inside one collection with [Organize items with categories](4-organize-items-with-categories.md).
-- Link items to a series while editing them in [Add and edit items](../4-core-features/4-add-and-edit-items.md).
+- Track a finite list instead with @doc(sets.trackCompletion).
+- File items inside one collection with @doc(categories.organizeItems).
+- Link items to a series while editing them in @doc(items.addAndEdit).

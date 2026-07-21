@@ -15,11 +15,11 @@ You need the editor or owner role to restore or permanently delete.
 
 Five kinds of objects soft delete to the trash:
 
-- [Collections](../4-core-features/2-create-and-manage-collections.md), together with what they contain
-- [Items](../4-core-features/4-add-and-edit-items.md)
-- [Copies](../4-core-features/5-track-the-copies-you-own.md)
-- [Categories](../6-organizing/4-organize-items-with-categories.md)
-- [Sets](../6-organizing/5-track-a-set-to-completion.md)
+- @doc(collections.manage, "Collections"), together with what they contain
+- @doc(items.addAndEdit, "Items")
+- @doc(copies.track, "Copies")
+- @doc(categories.organizeItems, "Categories")
+- @doc(sets.trackCompletion, "Sets")
 
 :::note
 Photos, documents, and the history records on a copy (transactions, valuations, loans, and the rest) do not go to the trash. Deleting one of those removes it immediately and permanently.
@@ -59,5 +59,5 @@ Emptying the trash is permanent. Everything in it is removed for good, and nothi
 
 ## Where to next
 
-- Deleting yourself rather than your data? See [Delete your user](3-delete-your-user.md).
-- Self hosting and want real safety nets? See [Back up and restore your instance](../14-self-hosting/7-back-up-and-restore.md).
+- Deleting yourself rather than your data? See @doc(users.deleteSelf).
+- Self hosting and want real safety nets? See @doc(selfHosting.backupAndRestore).

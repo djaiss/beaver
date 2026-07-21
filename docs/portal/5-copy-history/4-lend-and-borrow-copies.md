@@ -31,7 +31,7 @@ Fill in the **party** (the person or institution), the **purpose** ("Horology ex
 :::
 
 :::step title="Capture the condition it left in"
-Set the **condition out**, the [condition](../3-core-concepts/10-conditions.md) of the copy at the moment it leaves. This is your baseline for spotting damage later. Optionally record a **deposit** amount if one was taken, and choose whether the loan should be **included in the provenance** narrative. Save the loan.
+Set the **condition out**, the @doc(conditions.overview, "condition") of the copy at the moment it leaves. This is your baseline for spotting damage later. Optionally record a **deposit** amount if one was taken, and choose whether the loan should be **included in the provenance** narrative. Save the loan.
 :::
 ::::
 
@@ -82,6 +82,6 @@ The **Borrowed in** direction works the same way in reverse: you record whose co
 
 ## Where to next
 
-- Understand the condition scale used at loan out and return in [Conditions](../3-core-concepts/10-conditions.md).
-- A loan marked as part of provenance appears in the ownership story. See [Trace a copy's provenance](6-trace-provenance.md).
-- See loans alongside every other record in [Read the copy timeline](9-read-the-copy-timeline.md).
+- Understand the condition scale used at loan out and return in @doc(conditions.overview).
+- A loan marked as part of provenance appears in the ownership story. See @doc(copies.traceProvenance).
+- See loans alongside every other record in @doc(copyHistory.readTimeline).

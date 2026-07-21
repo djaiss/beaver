@@ -11,9 +11,9 @@ KolleK ships a complete JSON API that mirrors the web application: everything yo
 
 Read the pages in this order:
 
-1. [API overview](2-api-overview.md). What the API covers, how it is shaped, and where the generated reference lives.
-2. [Authenticate with the API](3-authenticate-with-the-api.md). Get a token and make your first request.
-3. [Rate limits and conventions](4-rate-limits-and-conventions.md). Pagination, money, throttling, and error behavior.
-4. [Webhooks](5-webhooks.md). Register endpoints today, and understand exactly what fires (and does not fire) yet.
+1. @doc(api.overview). What the API covers, how it is shaped, and where the generated reference lives.
+2. @doc(api.authenticate). Get a token and make your first request.
+3. @doc(api.rateLimitsAndConventions). Pagination, money, throttling, and error behavior.
+4. @doc(webhooks.overview). Register endpoints today, and understand exactly what fires (and does not fire) yet.
 
 For endpoint by endpoint detail (parameters, response shapes, examples), use the generated reference at `/docs/api` on your instance.

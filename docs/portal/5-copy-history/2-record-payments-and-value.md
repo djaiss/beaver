@@ -9,7 +9,7 @@ section: copy-history
 
 Money and worth are the two questions collectors ask most, and KolleK keeps them deliberately separate. A **transaction** records money actually changing hands. A **valuation** records what a copy is worth at a point in time, whether or not any money moved. This page shows you how to record both, and explains the rule that keeps them straight.
 
-If you have not read [A copy's history explained](../3-core-concepts/11-copy-history.md), read it first. It introduces the idea that these records are append only history, not fields you overwrite.
+If you have not read @doc(copyHistory.concept, "A copy's history explained"), read it first. It introduces the idea that these records are append only history, not fields you overwrite.
 
 ## The rule that keeps everything straight
 
@@ -82,10 +82,10 @@ Revaluing always writes a new valuation. You never edit the old one to a new num
 
 ## Where these numbers surface
 
-The figures you record here feed the rest of KolleK: the total value shown on each collection, the value over time and acquisitions charts in [collection statistics](../7-insights/2-collection-statistics.md), and the top items by value. Thorough transactions and valuations are what make those screens trustworthy.
+The figures you record here feed the rest of KolleK: the total value shown on each collection, the value over time and acquisitions charts in @doc(insights.collectionStatistics, "collection statistics"), and the top items by value. Thorough transactions and valuations are what make those screens trustworthy.
 
 ## Where to next
 
-- Keep the paperwork with the record. [Attach documents to a copy](8-attach-documents.md), such as the receipt on a transaction or the appraisal on a valuation.
-- Insuring the copy for that value? [Insure a copy](3-insure-a-copy.md).
-- Building the full ownership story? [Trace a copy's provenance](6-trace-provenance.md).
+- Keep the paperwork with the record. @doc(copies.attachDocuments), such as the receipt on a transaction or the appraisal on a valuation.
+- Insuring the copy for that value? @doc(copies.insure).
+- Building the full ownership story? @doc(copies.traceProvenance).

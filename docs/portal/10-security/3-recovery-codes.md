@@ -7,7 +7,7 @@ section: security
 
 # Save and use your recovery codes
 
-Recovery codes are your way back in if you lose your authenticator. When you turn on [two factor authentication](2-two-factor-authentication.md), KolleK generates eight of them. Each code works exactly once, in place of a code from your app.
+Recovery codes are your way back in if you lose your authenticator. When you turn on @doc(security.twoFactorAuth, "two factor authentication"), KolleK generates eight of them. Each code works exactly once, in place of a code from your app.
 
 Phones get lost, broken, and replaced. Recovery codes are what stand between that ordinary bad day and being locked out of your catalogue.
 
@@ -50,5 +50,5 @@ If you used a recovery code because you lost your authenticator for good, take t
 
 ## Where to next
 
-- Set up or reset the code step itself: [Protect your account with two factor authentication](2-two-factor-authentication.md).
-- Locked out in some other way? See [Troubleshooting sign in](../15-troubleshooting/2-troubleshoot-sign-in.md).
+- Set up or reset the code step itself: @doc(security.twoFactorAuth).
+- Locked out in some other way? See @doc(troubleshooting.signIn).

@@ -16,7 +16,7 @@ An **item** is the *kind of thing*. A **copy** is *one physical instance you act
 "Amazing Spider-Man #1" is an item. The slightly worn one in Emma's long box is a copy. The near mint one she bought at auction is another copy. Same item, two copies.
 
 - Own three of the same comic? That is **one item with three copies**.
-- Each copy has its own [condition](10-conditions.md), its own storage [location](9-locations.md), its own value, and its own [history](11-copy-history.md).
+- Each copy has its own @doc(conditions.overview, "condition"), its own storage @doc(locations.overview, "location"), its own value, and its own @doc(copyHistory.concept, "history").
 - The item holds everything the copies have in common: the name, the description, the photos, the custom field values, the tags.
 
 ## The rule to remember
@@ -37,9 +37,9 @@ One watch as a concept, two very different physical watches, each fully tracked.
 
 ## What a copy records
 
-Beyond condition and location, a copy carries an optional identifier (a serial or slab number), a status, a quantity, a note, and an estimated value. The status covers the whole life of a copy: Owned, Ordered, Loaned out, Sold, Gifted, Lost, Stolen, Disposed, or Other. The details are in [Track the copies you own](../4-core-features/5-track-the-copies-you-own.md).
+Beyond condition and location, a copy carries an optional identifier (a serial or slab number), a status, a quantity, a note, and an estimated value. The status covers the whole life of a copy: Owned, Ordered, Loaned out, Sold, Gifted, Lost, Stolen, Disposed, or Other. The details are in @doc(copies.track).
 
-What you paid and what a copy is worth are not typed onto the copy directly. They come from its transactions and valuations, part of [a copy's history](11-copy-history.md).
+What you paid and what a copy is worth are not typed onto the copy directly. They come from its transactions and valuations, part of @doc(copyHistory.concept, "a copy's history").
 
 ## The mistake to avoid
 
@@ -51,6 +51,6 @@ Duplicated items split your history and your statistics. One item with many copi
 
 ## Where to next
 
-- Record your copies in [Track the copies you own](../4-core-features/5-track-the-copies-you-own.md).
-- See what a copy can remember in [A copy's history](11-copy-history.md).
-- Capture money correctly in [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
+- Record your copies in @doc(copies.track).
+- See what a copy can remember in @doc(copyHistory.concept).
+- Capture money correctly in @doc(copies.recordPaymentsAndValue).

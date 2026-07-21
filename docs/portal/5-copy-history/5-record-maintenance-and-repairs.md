@@ -31,7 +31,7 @@ Fill in **who performed it** (the watchmaker, the studio, or you), the **date**,
 :::
 
 :::step title="Capture the condition change"
-Set the [condition](../3-core-concepts/10-conditions.md) **before** and **after** the work. A repair that takes a copy from Worn to Like New is now documented, with a date and a professional attached. Save the record.
+Set the @doc(conditions.overview, "condition") **before** and **after** the work. A repair that takes a copy from Worn to Like New is now documented, with a date and a professional attached. Save the record.
 :::
 ::::
 
@@ -53,7 +53,7 @@ If the work recurs, set the optional **next due date**. A movement service due a
 
 ## Significant work belongs in the story
 
-Some work is routine, and some changes what the copy *is*. A full restoration of a rare piece is part of its history in the same way a change of owner is. When the work is significant, turn on **include in provenance** on the record, and it will appear in the copy's [provenance narrative](6-trace-provenance.md) as a restoration event.
+Some work is routine, and some changes what the copy *is*. A full restoration of a rare piece is part of its history in the same way a change of owner is. When the work is significant, turn on **include in provenance** on the record, and it will appear in the copy's @doc(copies.traceProvenance, "provenance narrative") as a restoration event.
 
 :::note
 Leave routine care out of provenance. A cleaning does not belong in an ownership narrative, and the timeline's complete view still shows it when you want the full picture.
@@ -61,6 +61,6 @@ Leave routine care out of provenance. A cleaning does not belong in an ownership
 
 ## Where to next
 
-- Attach the service invoice or the before and after photos in [Attach documents to a copy](8-attach-documents.md).
-- Significant restoration recorded? See how it reads in [Trace a copy's provenance](6-trace-provenance.md).
-- See maintenance alongside every other record in [Read the copy timeline](9-read-the-copy-timeline.md).
+- Attach the service invoice or the before and after photos in @doc(copies.attachDocuments).
+- Significant restoration recorded? See how it reads in @doc(copies.traceProvenance).
+- See maintenance alongside every other record in @doc(copyHistory.readTimeline).

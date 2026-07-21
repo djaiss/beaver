@@ -13,9 +13,9 @@ Every night, your instance tidies up after itself. This page tells you what runs
 
 Three jobs run daily, each queued on the low priority queue:
 
-- **00:30, inactive user deletion.** Deletes users who have personally opted into [automatic deletion after inactivity](../11-data-safety/4-inactive-user-deletion.md) and have been inactive for six months or more. Each deletion is reported to the address in `ACCOUNT_DELETION_NOTIFICATION_EMAIL`. Users who never opted in are never touched.
-- **01:00, trash purge.** Permanently deletes anything in the [trash](../11-data-safety/2-restore-from-trash.md) older than the retention period (`TRASH_RETENTION_DAYS`, 30 days by default). Inside the window, trashed objects remain restorable.
-- **02:00, overdue loan flagging.** Marks active [loans](../5-copy-history/4-lend-and-borrow-copies.md) whose due date has passed as overdue, so collectors see at a glance what has not come back.
+- **00:30, inactive user deletion.** Deletes users who have personally opted into @doc(users.inactiveDeletion, "automatic deletion after inactivity") and have been inactive for six months or more. Each deletion is reported to the address in `ACCOUNT_DELETION_NOTIFICATION_EMAIL`. Users who never opted in are never touched.
+- **01:00, trash purge.** Permanently deletes anything in the @doc(dataSafety.restoreFromTrash, "trash") older than the retention period (`TRASH_RETENTION_DAYS`, 30 days by default). Inside the window, trashed objects remain restorable.
+- **02:00, overdue loan flagging.** Marks active @doc(loans.lendAndBorrow, "loans") whose due date has passed as overdue, so collectors see at a glance what has not come back.
 
 All three are safe and expected. They only ever act on things users have explicitly deleted, opted into, or dated.
 
@@ -34,5 +34,5 @@ Everything catches up on the next successful run; a missed night is not a proble
 
 ## Where to next
 
-- Adjust the retention window in [Configure your instance](3-configure-your-instance.md).
-- See what users experience on the other side in [Restore something from the trash](../11-data-safety/2-restore-from-trash.md).
+- Adjust the retention window in @doc(selfHosting.configure).
+- See what users experience on the other side in @doc(dataSafety.restoreFromTrash).

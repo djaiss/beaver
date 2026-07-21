@@ -11,7 +11,7 @@ Once you have catalogued enough, KolleK starts paying you back: what your collec
 
 Read the pages in this order:
 
-1. [Understand your collection statistics](2-collection-statistics.md). Every number and chart on a collection's statistics screen, and where each figure comes from.
-2. [The dashboard](3-the-dashboard.md). The landing screen after you sign in.
+1. @doc(insights.collectionStatistics). Every number and chart on a collection's statistics screen, and where each figure comes from.
+2. @doc(insights.dashboard). The landing screen after you sign in.
 
-The statistics are only as good as the data behind them. If the numbers look thin, the fix is usually to record [valuations and transactions](../5-copy-history/2-record-payments-and-value.md) for your copies.
+The statistics are only as good as the data behind them. If the numbers look thin, the fix is usually to record @doc(copies.recordPaymentsAndValue, "valuations and transactions") for your copies.

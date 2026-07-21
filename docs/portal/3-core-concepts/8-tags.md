@@ -13,7 +13,7 @@ Tags are the lightest way to label items. No hierarchy, no structure, just words
 
 A tag is a short, free form label, such as "Signed", "First Issue", or "To insure". Tags are shared across every collection in the account: create "Signed" once, and it is available on Emma's comics and Noah's vinyl alike. An item can carry as many tags as you want.
 
-Tags shine for qualities that cut across your whole catalogue. "Signed" applies to comics, books, and records. A [category](7-categories-sets-and-series.md) could never express that, because categories live inside one collection.
+Tags shine for qualities that cut across your whole catalogue. "Signed" applies to comics, books, and records. A @doc(organizing.categoriesSetsAndSeries, "category") could never express that, because categories live inside one collection.
 
 ## Tags versus the other groupings
 
@@ -25,7 +25,7 @@ A good rule: if the label answers "where does this file", use a category. If it 
 
 ## Where tags come from
 
-Anyone with editor or owner access can create a tag on the spot while editing an item, or pick from the existing list. Owners and editors can also curate the shared list from account settings, covered in [Manage account tags](../6-organizing/8-manage-account-tags.md).
+Anyone with editor or owner access can create a tag on the spot while editing an item, or pick from the existing list. Owners and editors can also curate the shared list from account settings, covered in @doc(tags.manageAccount).
 
 ## Deleting a tag
 
@@ -37,6 +37,6 @@ Tag deletion is account wide. Remove "Signed" and it disappears from every item 
 
 ## Where to next
 
-- Apply and filter by tags in [Tag and find items](../4-core-features/7-tag-and-find-items.md).
-- Keep the shared list tidy in [Manage account tags](../6-organizing/8-manage-account-tags.md).
-- Compare with the structured groupings in [Categories, sets, and series](7-categories-sets-and-series.md).
+- Apply and filter by tags in @doc(items.tagAndFind).
+- Keep the shared list tidy in @doc(tags.manageAccount).
+- Compare with the structured groupings in @doc(organizing.categoriesSetsAndSeries).

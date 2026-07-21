@@ -37,7 +37,7 @@ curl https://kollek.example.com/api/me \
 :::
 ::::
 
-If you get back a JSON document describing your user, you are authenticated. Creating and revoking keys, and seeing when each was last used, is covered in [Manage API keys](../10-security/7-manage-api-keys.md).
+If you get back a JSON document describing your user, you are authenticated. Creating and revoking keys, and seeing when each was last used, is covered in @doc(apiKeys.manage).
 
 :::note
 Tokens do not expire on their own. They work until you revoke them, so treat a token like a password.
@@ -64,7 +64,7 @@ The response contains your token under `data.token`. The optional `device_name` 
 
 Two things to know:
 
-- If [two factor authentication](../10-security/2-two-factor-authentication.md) is enabled on your user, the login endpoint also requires a `code` field containing a current TOTP code from your authenticator app, or one of your [recovery codes](../10-security/3-recovery-codes.md).
+- If @doc(security.twoFactorAuth, "two factor authentication") is enabled on your user, the login endpoint also requires a `code` field containing a current TOTP code from your authenticator app, or one of your @doc(security.recoveryCodes, "recovery codes").
 - Registering through the API works too: `POST /api/register` creates a user with its own account and returns a token, exactly like signing up in the browser.
 
 Both endpoints are limited to 6 requests per minute, which is plenty for real sign ins and stops brute force attempts.
@@ -76,10 +76,10 @@ You have two options:
 - `DELETE /api/logout` revokes the token that made the request. Use this when a script finishes with a temporary token.
 - The **API keys** page in your profile lists every token and can revoke any of them. The API keys endpoints in the generated reference do the same over HTTP.
 
-KolleK emails you when a key is created or deleted from the app, so unexpected key activity does not go unnoticed. See [Login and security alert emails](../10-security/6-security-alert-emails.md).
+KolleK emails you when a key is created or deleted from the app, so unexpected key activity does not go unnoticed. See @doc(security.alertEmails).
 
 ## Where to next
 
-- Learn the request conventions in [Rate limits and conventions](4-rate-limits-and-conventions.md).
-- Manage your tokens in [Manage API keys](../10-security/7-manage-api-keys.md).
+- Learn the request conventions in @doc(api.rateLimitsAndConventions).
+- Manage your tokens in @doc(apiKeys.manage).
 - Explore every endpoint in the generated reference at `/docs/api`.

@@ -22,7 +22,7 @@ Two behaviors here are worth knowing so they do not confuse you:
 - **The reset link expires after 60 minutes.** If you open it too late, just request another.
 
 :::note
-If you would rather skip the reset entirely, a [magic link](4-magic-links.md) can sign you in without a password. Once you are in, you can set a new password from your profile.
+If you would rather skip the reset entirely, a @doc(auth.magicLinks, "magic link") can sign you in without a password. Once you are in, you can set a new password from your profile.
 :::
 
 ## If you just want to change it
@@ -40,6 +40,6 @@ A password manager sidesteps both rules effortlessly by generating something lon
 
 ## Where to next
 
-- Add a second step so a stolen password is not enough: [Protect your account with two factor authentication](2-two-factor-authentication.md).
-- Still cannot get in? Work through [Troubleshooting sign in](../15-troubleshooting/2-troubleshoot-sign-in.md).
-- Reset email never arrived? See [Troubleshooting email delivery](../15-troubleshooting/3-troubleshoot-email-delivery.md).
+- Add a second step so a stolen password is not enough: @doc(security.twoFactorAuth).
+- Still cannot get in? Work through @doc(troubleshooting.signIn).
+- Reset email never arrived? See @doc(troubleshooting.emailDelivery).

@@ -7,7 +7,7 @@ section: organizing
 
 # Manage account tags
 
-[Tags](../3-core-concepts/8-tags.md) are the shared labels of your account, and like any shared vocabulary they benefit from a little curation. This page covers managing the tag list itself from account settings, as opposed to tagging items one by one, which is covered in [Tag and find items](../4-core-features/7-tag-and-find-items.md).
+@doc(tags.overview) are the shared labels of your account, and like any shared vocabulary they benefit from a little curation. This page covers managing the tag list itself from account settings, as opposed to tagging items one by one, which is covered in @doc(items.tagAndFind).
 
 You need the editor or owner role.
 
@@ -34,11 +34,11 @@ A tag list turns messy quietly: "signed", "Signed", and "autographed" all meanin
 - **Agree on wording early** if several people catalogue. Pick "Signed" once and stick to it.
 - **Prefer a handful of meaningful tags** over dozens of one offs. A tag used on a single item is usually a note, not a tag.
 - **Sweep occasionally.** Rename near duplicates into one, and delete tags that no longer earn their place.
-- **Do not duplicate structure that exists elsewhere.** "Jazz" is probably a [category](4-organize-items-with-categories.md); "Signed" cuts across everything and is a perfect tag.
+- **Do not duplicate structure that exists elsewhere.** "Jazz" is probably a @doc(categories.organizeItems, "category"); "Signed" cuts across everything and is a perfect tag.
 
 Noah keeps exactly six tags for his vinyl: Signed, First Pressing, Sealed, To Sell, Wishlist Upgrade, and Gift. Every one of them answers a question he actually asks.
 
 ## Where to next
 
-- Apply tags while cataloguing in [Tag and find items](../4-core-features/7-tag-and-find-items.md).
-- Decide between tags and the other grouping tools in [Categories, sets, and series](../3-core-concepts/7-categories-sets-and-series.md).
+- Apply tags while cataloguing in @doc(items.tagAndFind).
+- Decide between tags and the other grouping tools in @doc(organizing.categoriesSetsAndSeries).

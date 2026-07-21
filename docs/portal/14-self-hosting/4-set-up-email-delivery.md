@@ -7,14 +7,14 @@ section: self-hosting
 
 # Set up email delivery
 
-Email is how KolleK reaches people outside a browser session: [invitations](../8-collaboration/2-invite-people.md), [magic links](../10-security/4-magic-links.md), password resets, email verification, and [security alerts](../10-security/6-security-alert-emails.md) all arrive by email. Until you configure delivery, none of them go anywhere.
+Email is how KolleK reaches people outside a browser session: @doc(collaboration.invitePeople, "invitations"), @doc(auth.magicLinks, "magic links"), password resets, email verification, and @doc(security.alertEmails, "security alerts") all arrive by email. Until you configure delivery, none of them go anywhere.
 
 ## The default sends nothing
 
 A fresh instance ships with `MAIL_MAILER=log`. Every email is written to the application log file instead of being sent. This is deliberate: it means a half configured instance never silently sends mail from a wrong address, and you can read exactly what would have been sent while testing.
 
 :::note
-If someone says "I never got the invitation" on a new instance, this default is almost always why. The email exists, in the log file. See [Troubleshooting email delivery](../15-troubleshooting/3-troubleshoot-email-delivery.md).
+If someone says "I never got the invitation" on a new instance, this default is almost always why. The email exists, in the log file. See @doc(troubleshooting.emailDelivery).
 :::
 
 You have two supported ways to send real email: any SMTP server, or the Resend service.
@@ -72,7 +72,7 @@ Emails are then sent through Resend's API rather than SMTP, and each send record
 KolleK records every email it sends, per user, with its subject, body, and delivery status. After your test, check two places:
 
 - Your inbox, for the obvious reason.
-- The recipient's **sent emails** page in their profile, which lists what the instance sent them. See [Your personal activity log and sent emails](../9-account-and-profile/5-activity-log-and-sent-emails.md).
+- The recipient's **sent emails** page in their profile, which lists what the instance sent them. See @doc(activity.logAndSentEmails, "Your personal activity log and sent emails").
 
 Common failure signs:
 
@@ -84,5 +84,5 @@ Emails are sent by the background queue, so the **queue** container must be runn
 
 ## Where to next
 
-- Recognize the emails your instance sends in [Emails KolleK sends](../16-reference/4-emails-kollek-sends.md).
-- Diagnose delivery problems in [Troubleshooting email delivery](../15-troubleshooting/3-troubleshoot-email-delivery.md).
+- Recognize the emails your instance sends in @doc(reference.emailsSent).
+- Diagnose delivery problems in @doc(troubleshooting.emailDelivery).

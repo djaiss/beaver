@@ -9,21 +9,21 @@ section: collaboration
 
 Every collection carries a visibility setting that records who it is meant for. This page shows you how to set it, and is honest about what the setting does today, because sharing is a capability KolleK is still growing into.
 
-The three levels, explained fully in [visibility and sharing](../3-core-concepts/12-visibility-and-sharing.md):
+The three levels, explained fully in @doc(sharing.overview, "visibility and sharing"):
 
 - **Private.** Meant for you alone.
 - **Shared.** Meant for everyone in your account.
 - **Public.** Meant for anyone with the link, read only, without signing in.
 
 :::note
-Today the setting records your intent but is not yet enforced. Every member of your account can still browse every collection, and there is no public link to hand out yet, so nothing is reachable from outside your account at all. The current status lives in [Feature status and roadmap](../15-troubleshooting/5-feature-status.md).
+Today the setting records your intent but is not yet enforced. Every member of your account can still browse every collection, and there is no public link to hand out yet, so nothing is reachable from outside your account at all. The current status lives in @doc(troubleshooting.featureStatus).
 :::
 
 ## Change a collection's visibility
 
 ::::steps
 :::step title="Open the collection settings"
-Open the [collection](../3-core-concepts/4-collections.md) and choose to edit it. Visibility lives on the collection itself, alongside its name and emoji.
+Open the @doc(collections.overview, "collection") and choose to edit it. Visibility lives on the collection itself, alongside its name and emoji.
 :::
 
 :::step title="Pick the visibility"
@@ -52,10 +52,10 @@ When public links arrive, a public collection will be viewable by anyone who has
 Edit the collection and set its visibility back to **Private** (or **Shared**) at any time. The setting applies to the collection from that moment on.
 
 :::note
-Sharing controls who can see a collection. What members can do with it is decided by their role, not by visibility. A viewer cannot edit anything, and an editor can. See [the three roles in practice](4-roles-in-practice.md).
+Sharing controls who can see a collection. What members can do with it is decided by their role, not by visibility. A viewer cannot edit anything, and an editor can. See @doc(collaboration.rolesInPractice, "the three roles in practice").
 :::
 
 ## Where to next
 
-- Understand the model behind these settings in [Visibility and sharing](../3-core-concepts/12-visibility-and-sharing.md).
-- Manage who is in your account at all in [Invite people to your account](2-invite-people.md).
+- Understand the model behind these settings in @doc(sharing.overview).
+- Manage who is in your account at all in @doc(collaboration.invitePeople).

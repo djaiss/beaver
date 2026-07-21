@@ -47,10 +47,10 @@ If you lose your authenticator and have no recovery codes, you cannot complete t
 
 From now on, signing in with your email and password takes one extra step. After your password is accepted, KolleK asks for the current code from your authenticator app. Enter it and you are in.
 
-If you cannot reach your app, enter one of your [recovery codes](3-recovery-codes.md) instead.
+If you cannot reach your app, enter one of your @doc(security.recoveryCodes, "recovery codes") instead.
 
 :::note
-Signing in with a [magic link](4-magic-links.md) does not ask for a two factor code. Access to your email inbox already acts as the second factor, so protect that inbox accordingly.
+Signing in with a @doc(auth.magicLinks, "magic link") does not ask for a two factor code. Access to your email inbox already acts as the second factor, so protect that inbox accordingly.
 :::
 
 ## Turn it off
@@ -59,6 +59,6 @@ You can disable two factor authentication from the same security area. Doing so 
 
 ## Where to next
 
-- Make sure your fallback works: [Save and use your recovery codes](3-recovery-codes.md).
-- Understand the passwordless path and its trade off: [Magic links explained](4-magic-links.md).
-- See every way to get into the app: [Signing in](../2-getting-started/5-signing-in.md).
+- Make sure your fallback works: @doc(security.recoveryCodes).
+- Understand the passwordless path and its trade off: @doc(auth.magicLinks).
+- See every way to get into the app: @doc(auth.signIn).

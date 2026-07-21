@@ -13,29 +13,29 @@ Open your profile from the user menu, then edit your details.
 
 ## Your name and nickname
 
-- **First name** and **last name** are required. They appear in the member list and in the [activity trail](../4-core-features/8-activity-feed-and-audit-trail.md), so others can tell who did what.
+- **First name** and **last name** are required. They appear in the member list and in the @doc(activity.feedAndAuditTrail, "activity trail"), so others can tell who did what.
 - **Nickname** is optional. If you set one, KolleK shows it to other members instead of your real name. Useful if you are known in your club as "VinylNoah" rather than by your full name.
 
 ## Your email address
 
-Your email is how you sign in and where KolleK sends everything: magic links, password resets, and [security alerts](../10-security/6-security-alert-emails.md). Two things to know when changing it:
+Your email is how you sign in and where KolleK sends everything: magic links, password resets, and @doc(security.alertEmails, "security alerts"). Two things to know when changing it:
 
 - **Disposable email addresses are rejected**, the same rule as at registration. Use an address you will keep.
 - **Changing your email resets verification.** Your new address starts unverified, and KolleK sends a fresh verification email to it. Nothing is blocked while it is unverified, but verifying confirms the address works, which matters since account recovery depends on it.
 
 ## Your preferences
 
-- **Language.** Choose the interface language, one of seven. Details in [Change your language](4-change-your-language.md).
+- **Language.** Choose the interface language, one of seven. Details in @doc(profile.changeLanguage).
 - **Time format.** Choose between a 24 hour clock (14:00) and a 12 hour clock (2:00 PM). This only changes how times are displayed to you.
 
 Both preferences are personal. They affect what you see, not what other members see.
 
 ## Also on your profile
 
-Your profile area is also where you will find your recent activity and the emails KolleK has sent you, covered in [Your activity log and sent emails](5-activity-log-and-sent-emails.md), and your [avatar](3-set-your-avatar.md).
+Your profile area is also where you will find your recent activity and the emails KolleK has sent you, covered in @doc(activity.logAndSentEmails), and your @doc(profile.setAvatar, "avatar").
 
 ## Where to next
 
-- Put a face on your entries in [Set your avatar](3-set-your-avatar.md).
-- Strengthen your sign in with [two factor authentication](../10-security/2-two-factor-authentication.md).
-- Review what KolleK has sent you in [Your activity log and sent emails](5-activity-log-and-sent-emails.md).
+- Put a face on your entries in @doc(profile.setAvatar).
+- Strengthen your sign in with @doc(security.twoFactorAuth, "two factor authentication").
+- Review what KolleK has sent you in @doc(activity.logAndSentEmails).

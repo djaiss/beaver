@@ -21,7 +21,7 @@ You need:
 - **Git**, to clone the project.
 - A terminal and basic comfort running commands on it.
 
-It also helps to skim the [self hosting overview](../14-self-hosting/1-introduction.md) first, because it introduces the one rule this tutorial will insist on: the application key is set once and never changed.
+It also helps to skim the @doc(selfHosting.index, "self hosting overview") first, because it introduces the one rule this tutorial will insist on: the application key is set once and never changed.
 
 ## Step 1: Clone the project and create your configuration
 
@@ -31,7 +31,7 @@ cd beaver
 cp .env.docker.example .env
 ```
 
-The `.env` file is your instance's configuration. Everything an operator routinely touches lives in it, and the [configuration guide](../14-self-hosting/3-configure-your-instance.md) walks through it group by group. For a first boot, only the next two steps are mandatory.
+The `.env` file is your instance's configuration. Everything an operator routinely touches lives in it, and the @doc(selfHosting.configure, "configuration guide") walks through it group by group. For a first boot, only the next two steps are mandatory.
 
 ## Step 2: Generate the application key
 
@@ -47,7 +47,7 @@ Copy the output (it starts with `base64:`) and paste it into `.env` as the value
 Set the application key once and never change it on a running instance. Everything encrypted, which includes names, items, and sessions, becomes permanently unreadable under a different key. Store a copy of the key somewhere safe, because a database backup is only restorable with the key that encrypted it.
 :::
 
-The full story, including how deliberate key rotation is supported, is in [The application key and encryption](../14-self-hosting/5-application-key-and-encryption.md).
+The full story, including how deliberate key rotation is supported, is in @doc(selfHosting.applicationKeyAndEncryption).
 
 ## Step 3: Review passwords and the URL
 
@@ -74,7 +74,7 @@ Check that everything is up with `docker compose ps`. When the app container rep
 
 ## Step 5: Create the first account
 
-Go to the registration page and sign up. This works exactly as it does for any user, the walkthrough is in [Create your account](../2-getting-started/4-create-your-account.md), and it makes you the owner of the instance's first account.
+Go to the registration page and sign up. This works exactly as it does for any user, the walkthrough is in @doc(accounts.create), and it makes you the owner of the instance's first account.
 
 Alex registers, lands on the getting started checklist, and resists cataloguing anything until the operator work is finished.
 
@@ -86,15 +86,15 @@ An instance administrator can see across every account on the instance, from the
 docker compose exec app php artisan beaver:make-instance-administrator you@example.com
 ```
 
-Use the email you just registered with. The same command with `--revoke` takes the flag back. What the flag does, and deliberately does not do, is covered in [Grant instance administrator access](../14-self-hosting/9-grant-instance-administrator-access.md).
+Use the email you just registered with. The same command with `--revoke` takes the flag back. What the flag does, and deliberately does not do, is covered in @doc(instanceAdmin.grantAccess).
 
 ## The result
 
-You have a working instance: the web app answering on your URL, a queue worker and scheduler running beside it, data in a named database volume, and yourself as both an account owner and the instance administrator. Club members can now register their own accounts, or you can [invite people into yours](5-invite-your-household.md).
+You have a working instance: the web app answering on your URL, a queue worker and scheduler running beside it, data in a named database volume, and yourself as both an account owner and the instance administrator. Club members can now register their own accounts, or you can @doc(tutorials.inviteHousehold, "invite people into yours").
 
 ## One thing to do before you relax
 
-Out of the box, the instance only writes outgoing email to a log file instead of sending it. Invitations, magic links, and password resets will silently go nowhere until you configure a real mailer. That is deliberate, and fixing it is a short job: [Set up email delivery](../14-self-hosting/4-set-up-email-delivery.md).
+Out of the box, the instance only writes outgoing email to a log file instead of sending it. Invitations, magic links, and password resets will silently go nowhere until you configure a real mailer. That is deliberate, and fixing it is a short job: @doc(selfHosting.setupEmailDelivery).
 
 ## Common mistakes to avoid
 
@@ -104,6 +104,6 @@ Out of the box, the instance only writes outgoing email to a log file instead of
 
 ## Where to next
 
-- Walk through every setting you skipped in [Configure your instance](../14-self-hosting/3-configure-your-instance.md).
-- Set up [backups](../14-self-hosting/7-back-up-and-restore.md) before the catalogue grows precious.
-- When a new version ships, follow [Upgrade your instance](../14-self-hosting/6-upgrade-your-instance.md).
+- Walk through every setting you skipped in @doc(selfHosting.configure).
+- Set up @doc(selfHosting.backupAndRestore, "backups") before the catalogue grows precious.
+- When a new version ships, follow @doc(selfHosting.upgrade).

@@ -11,7 +11,7 @@ This page explains the conceptual heart of KolleK: a copy shows its current stat
 
 ## Current state versus history
 
-Look at one of Priya's watches. The copy tells you its current state at a glance: its [condition](10-conditions.md) is Used, its current [location](9-locations.md) is the display case, its estimated value is what the last appraisal said.
+Look at one of Priya's watches. The copy tells you its current state at a glance: its @doc(conditions.overview, "condition") is Used, its current @doc(locations.overview, "location") is the display case, its estimated value is what the last appraisal said.
 
 None of that is typed in as a plain fact that overwrites the previous one. Each is the visible tip of a record underneath:
 
@@ -25,15 +25,15 @@ The copy is a summary. The records are the truth.
 
 Seven kinds of dated records can hang off a copy, each with its own purpose and its own how to page:
 
-- **Transactions** record money and ownership changes: what you paid, what you sold for, fees, shipping. See [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
+- **Transactions** record money and ownership changes: what you paid, what you sold for, fees, shipping. See @doc(copies.recordPaymentsAndValue).
 - **Valuations** record what the copy was worth at a point in time, and who said so. Same page as transactions, because the two are easy to confuse.
-- **Insurance records** capture coverage: provider, insured value, policy dates. See [Insure a copy](../5-copy-history/3-insure-a-copy.md).
-- **Loans** track custody when a copy leaves your hands or arrives from someone else. See [Lend and borrow copies](../5-copy-history/4-lend-and-borrow-copies.md).
-- **Maintenance records** log cleaning, repair, and conservation work. See [Record maintenance and repairs](../5-copy-history/5-record-maintenance-and-repairs.md).
-- **Provenance events** build the ownership and authenticity story. See [Trace a copy's provenance](../5-copy-history/6-trace-provenance.md).
-- **Location history** remembers every place the copy has lived. See [Move a copy](../5-copy-history/7-move-a-copy.md).
+- **Insurance records** capture coverage: provider, insured value, policy dates. See @doc(copies.insure).
+- **Loans** track custody when a copy leaves your hands or arrives from someone else. See @doc(loans.lendAndBorrow).
+- **Maintenance records** log cleaning, repair, and conservation work. See @doc(copies.recordMaintenance).
+- **Provenance events** build the ownership and authenticity story. See @doc(copies.traceProvenance).
+- **Location history** remembers every place the copy has lived. See @doc(copies.move, "Move a copy").
 
-You can also [attach documents](../5-copy-history/8-attach-documents.md) (receipts, appraisals, certificates) to the copy or to any individual record, and read everything merged together on [the copy timeline](../5-copy-history/9-read-the-copy-timeline.md).
+You can also @doc(copies.attachDocuments, "attach documents") (receipts, appraisals, certificates) to the copy or to any individual record, and read everything merged together on @doc(copyHistory.readTimeline, "the copy timeline").
 
 ## The two rules that keep it coherent
 
@@ -51,6 +51,6 @@ No. Emma catalogues most comics with just a copy, a condition, and a location. T
 
 ## Where to next
 
-- Start with the money in [Record what you paid and what it is worth](../5-copy-history/2-record-payments-and-value.md).
-- See the whole story in one view in [Read the copy timeline](../5-copy-history/9-read-the-copy-timeline.md).
-- Follow one prized piece end to end in the tutorial [Track the full life of a valuable item](../12-tutorials/4-track-a-valuable-item.md).
+- Start with the money in @doc(copies.recordPaymentsAndValue).
+- See the whole story in one view in @doc(copyHistory.readTimeline).
+- Follow one prized piece end to end in the tutorial @doc(tutorials.trackValuableItem, "Track the full life of a valuable item").

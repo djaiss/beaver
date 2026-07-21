@@ -9,7 +9,7 @@ section: copy-history
 
 When a copy is valuable enough to insure, the policy details deserve to live next to the thing they cover, not in a drawer. An insurance record keeps the provider, the insured value, and the policy dates on the copy itself, so you always know what is covered and until when.
 
-This is one of the record types introduced in [A copy's history explained](../3-core-concepts/11-copy-history.md). Like the others, it is history: a copy can carry many insurance records over time, and taking out a new policy writes a new record rather than overwriting the old one.
+This is one of the record types introduced in @doc(copyHistory.concept, "A copy's history explained"). Like the others, it is history: a copy can carry many insurance records over time, and taking out a new policy writes a new record rather than overwriting the old one.
 
 ## When to use it
 
@@ -56,12 +56,12 @@ When a policy renews at a new value, add a new insurance record rather than edit
 
 ## Keep the paperwork attached
 
-An insurance record becomes far more useful with the policy document attached to it. You can [attach documents](8-attach-documents.md) directly to an insurance record, so the schedule or certificate is one click away when you need it.
+An insurance record becomes far more useful with the policy document attached to it. You can @doc(copies.attachDocuments, "attach documents") directly to an insurance record, so the schedule or certificate is one click away when you need it.
 
-If you insured the copy for a professionally appraised value, record that appraisal as a valuation of type **Insurance value** too. See [Record what you paid and what it is worth](2-record-payments-and-value.md).
+If you insured the copy for a professionally appraised value, record that appraisal as a valuation of type **Insurance value** too. See @doc(copies.recordPaymentsAndValue).
 
 ## Where to next
 
-- Attach the policy schedule to the record in [Attach documents to a copy](8-attach-documents.md).
-- Record the valuation the coverage is based on in [Record what you paid and what it is worth](2-record-payments-and-value.md).
-- See how insurance shows up alongside everything else in [Read the copy timeline](9-read-the-copy-timeline.md).
+- Attach the policy schedule to the record in @doc(copies.attachDocuments).
+- Record the valuation the coverage is based on in @doc(copies.recordPaymentsAndValue).
+- See how insurance shows up alongside everything else in @doc(copyHistory.readTimeline).

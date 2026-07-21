@@ -16,7 +16,7 @@ Expect this to take about fifteen minutes, plus however long your invitees take 
 ## Before you start
 
 - You must be an **owner** of the account. Only owners can invite people and change roles.
-- Read [Accounts, users, and roles](../3-core-concepts/3-accounts-users-and-roles.md) if you have not. The one line version: viewers read, editors change catalogue content, owners also manage the account.
+- Read @doc(accounts.usersAndRoles) if you have not. The one line version: viewers read, editors change catalogue content, owners also manage the account.
 - Know your invitees' email addresses, and one thing about them: an invitation only works for an email that does not already have a KolleK account of its own, because a person belongs to exactly one account.
 
 ## Step 1: Invite Sam as an editor
@@ -45,11 +45,11 @@ Choosing the smaller role is not unfriendly. It protects Leo too: he cannot acci
 
 Each of them receives an email and opens the link. Since neither has a KolleK account yet, the page asks them to set their **first name**, **last name**, and a **password** (at least eight characters, and checked against known breaches). Then they land in Emma's account, already verified and signed in, with the role she chose.
 
-If the link says an account already exists for that email, that person cannot join through this invitation. That situation and other invitation hiccups are covered in [Troubleshooting sign in](../15-troubleshooting/2-troubleshoot-sign-in.md).
+If the link says an account already exists for that email, that person cannot join through this invitation. That situation and other invitation hiccups are covered in @doc(troubleshooting.signIn).
 
 ## Step 4: Set each collection's visibility
 
-Roles control the people inside the account. [Visibility](../3-core-concepts/12-visibility-and-sharing.md) records who each collection is meant for, from just you to anyone with a link.
+Roles control the people inside the account. @doc(sharing.overview, "Visibility") records who each collection is meant for, from just you to anyone with a link.
 
 Emma has two collections: "My Comics", which she wants to show the world one day, and "Wishlist Research", which is nobody's business but hers.
 
@@ -64,14 +64,14 @@ On "My Comics", she sets the visibility to **Public**, marking it as the one she
 ::::
 
 :::note
-Visibility is not enforced yet. Today Sam and Leo can still browse every collection in the account, including private ones, and there is no public link to send around, so nothing is visible outside the account at all. Setting visibility now means each collection behaves correctly the moment sharing arrives. See [Feature status and roadmap](../15-troubleshooting/5-feature-status.md).
+Visibility is not enforced yet. Today Sam and Leo can still browse every collection in the account, including private ones, and there is no public link to send around, so nothing is visible outside the account at all. Setting visibility now means each collection behaves correctly the moment sharing arrives. See @doc(troubleshooting.featureStatus).
 :::
 
 :::warning
 When public links arrive, a public collection will be viewable by anyone who has the link, without signing in. Only mark a collection public if you are comfortable with every item in it being seen.
 :::
 
-The full walkthrough, including reverting, is in [Share a collection](../8-collaboration/5-share-a-collection.md).
+The full walkthrough, including reverting, is in @doc(collections.share).
 
 ## Step 5: Adjust a role later
 
@@ -95,6 +95,6 @@ Emma's account now has three people with three levels of trust: Emma owns and ma
 
 ## Where to next
 
-- The full reference of who can do what is in [Understanding the three roles in practice](../8-collaboration/4-roles-in-practice.md).
-- Manage the account itself, name, currency, and more, in [Account settings](../9-account-and-profile/6-account-settings.md).
-- Running the instance for your club yourself? See [Self host KolleK with Docker](6-self-host-with-docker.md).
+- The full reference of who can do what is in @doc(collaboration.rolesInPractice, "Understanding the three roles in practice").
+- Manage the account itself, name, currency, and more, in @doc(accounts.settings).
+- Running the instance for your club yourself? See @doc(tutorials.selfHostWithDocker, "Self host KolleK with Docker").
