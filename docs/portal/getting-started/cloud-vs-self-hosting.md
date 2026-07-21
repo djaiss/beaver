@@ -6,6 +6,10 @@ Before you invest time in KolleK, it helps to know how you will run it. This pag
 
 KolleK has no plans, no tiers, and no paywalled features. There is no billing inside the app at all. Whichever way you run it, you get the same complete application. Nothing is locked behind an upgrade.
 
+<Note>
+There is nothing to buy inside KolleK. Self hosting is free, and every feature is included no matter how you run it.
+</Note>
+
 So the choice below is only about where the software runs, not about what you can do with it.
 
 ## Option 1: host it yourself

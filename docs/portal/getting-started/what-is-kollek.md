@@ -12,12 +12,16 @@ KolleK replaces all of that with one focused tool built for collections.
 
 You only need one idea to get started. Everything in KolleK nests in four levels:
 
-- An **account** is your workspace. Everything you create lives inside it.
-- A **collection** is a named group, such as "My Comics" or "Wine Cellar".
-- An **item** is a kind of thing, such as "Amazing Spider-Man #1".
-- A **copy** is one physical thing you actually own.
+- An **[account](../core-concepts/accounts-users-and-roles.md)** is your workspace. Everything you create lives inside it.
+- A **[collection](../core-concepts/collections.md)** is a named group, such as "My Comics" or "Wine Cellar".
+- An **[item](../core-concepts/items-and-copies.md)** is a kind of thing, such as "Amazing Spider-Man #1".
+- A **[copy](../core-concepts/items-and-copies.md)** is one physical thing you actually own.
 
 The distinction between an item and a copy is what makes KolleK different from a plain list. If you own three copies of the same comic, that is one item with three copies, and each copy has its own condition, storage location, value, and history. You will meet this idea properly once you start cataloguing, so do not worry about it yet.
+
+<Note>
+The difference between an item and a copy is the one idea worth carrying forward, and you will use it constantly.
+</Note>
 
 ## Who it is for
 

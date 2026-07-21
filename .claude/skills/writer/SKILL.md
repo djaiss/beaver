@@ -156,6 +156,43 @@ Use code blocks only for commands, code, or configuration.
 
 Avoid large walls of text.
 
+## Callout components
+
+Use callout components to lift a short, important point out of the surrounding text. They render as a highlighted box that the reader cannot skim past.
+
+Two are available:
+
+- `<Note>` for information the reader should not miss: a consequence, a limit, a useful clarification, or a helpful tip.
+- `<Warning>` for something that can cause data loss, lock the reader out, or otherwise cause real harm if ignored.
+
+Write them as block components with the tags on their own lines:
+
+```
+<Note>
+Magic links are valid for five minutes. If yours expires, request another.
+</Note>
+
+<Warning>
+Deleting a collection also deletes every item inside it. This cannot be undone.
+</Warning>
+```
+
+Use them sparingly. A page full of callouts trains the reader to ignore them. Reserve `<Warning>` for genuine danger, above all destructive actions, and prefer a plain sentence for ordinary emphasis. Keep the text inside a callout to a sentence or two, and leave the fuller explanation in the surrounding prose.
+
+Always warn before a destructive action. When a step deletes data, removes a member, or makes something public, state the consequence in a `<Warning>` right where the reader is about to act.
+
+## Linking
+
+Documentation is a web of pages, not a stack of isolated ones. Link generously so a reader can always reach the explanation they need.
+
+- When you mention a product concept (a collection, an item, a copy, a tag, a location, a condition, a role), link it to the page that explains it. A reader who does not yet know what a collection is should be one click away from finding out.
+- Link the first meaningful mention on a page, not every occurrence. Repeated links to the same place become noise.
+- Link to other sections when that is the reader's natural next step: from a concept to the how to that uses it, from a task to the concept behind it, from a page to the tutorial that ties things together.
+- Use the concept or task name as the link text. Never write "click here".
+- Use relative links between documentation files.
+
+This turns the portal into a guided journey rather than a set of dead ends. See also "Keep readers moving" for closing a page with next steps.
+
 ## Tutorials
 
 Tutorials teach someone how to achieve a goal.

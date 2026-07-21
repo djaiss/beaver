@@ -30,17 +30,23 @@ Creating an account sets up two things:
 
 **A user, which is you.** Your personal login, tied to your email.
 
-**An account, which is your workspace.** You are its **owner**, which means you can do everything: catalogue items, invite other people, and change account settings. Roles are covered later, when you start inviting others.
+**An account, which is your workspace.** You are its **[owner](../core-concepts/accounts-users-and-roles.md)**, which means you can do everything: catalogue items, invite other people, and change account settings. Roles are covered later, when you start inviting others.
 
-One thing worth knowing early: a person belongs to exactly one account. You cannot use the same email to join a second account. If you are invited to someone else's account later, that invitation only works if your email does not already have an account of its own.
+<Note>
+A person belongs to exactly one account. You cannot use the same email to join a second account. If you are invited to someone else's account later, that invitation only works if your email does not already have an account of its own.
+</Note>
 
 ## Your account is not empty
 
-To save you starting from a blank page, a new account arrives with a set of ready made **collection types** already in place, such as Comics, Vinyl Records, Coins, and Books, along with a few default storage **locations**. You can use them as they are, rename them, or ignore them. They are only a starting point.
+To save you starting from a blank page, a new account arrives with a set of ready made **[collection types](../core-concepts/collection-types-and-custom-fields.md)** already in place, such as Comics, Vinyl Records, Coins, and Books, along with a few default storage **[locations](../core-concepts/locations.md)**. You can use them as they are, rename them, or ignore them. They are only a starting point.
 
 ## About email verification
 
-After you register, KolleK sends a verification email. You do not have to act on it to use the app. Verifying is good practice, because it confirms your address works, but nothing is blocked while your email is unverified.
+After you register, KolleK sends a verification email. Verifying is good practice, because it confirms your address works.
+
+<Note>
+You do not have to verify your email to use KolleK. Nothing is blocked while it is unverified.
+</Note>
 
 ## Where to next
 

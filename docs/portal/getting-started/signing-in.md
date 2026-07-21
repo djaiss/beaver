@@ -6,7 +6,7 @@ KolleK gives you a few ways to sign in. This page covers each one so you can pic
 
 The usual way. Go to the sign in page, enter the **email** and **password** you registered with, and submit. You land on your dashboard.
 
-If two factor authentication is turned on for your account, you will be asked for a code straight after your password. See below.
+If [two factor authentication](../security/two-factor-authentication.md) is turned on for your account, you will be asked for a code straight after your password. See below.
 
 ## Sign in with a magic link
 
@@ -23,9 +23,11 @@ Two things to know:
 
 If you have turned on two factor authentication, signing in with your password takes one extra step. After your password is accepted, KolleK asks for the current code from your authenticator app. Enter it to finish signing in.
 
-If you cannot reach your authenticator, you can enter one of your recovery codes instead. Each recovery code works once.
+If you cannot reach your authenticator, you can enter one of your [recovery codes](../security/recovery-codes.md) instead. Each recovery code works once.
 
-One deliberate difference: signing in with a **magic link does not ask for a two factor code**, because access to your email inbox is already acting as a second factor. If you rely on two factor authentication, keep this in mind when you choose how to sign in.
+<Warning>
+Signing in with a magic link does not ask for a two factor code, because access to your email inbox already acts as a second factor. If you rely on two factor authentication, keep this in mind when you choose how to sign in, and protect your email account accordingly.
+</Warning>
 
 Setting up two factor authentication and saving recovery codes are covered in the **Security** section of this documentation.
 

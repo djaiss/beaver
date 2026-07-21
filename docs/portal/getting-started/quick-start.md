@@ -13,7 +13,7 @@ Throughout, we will follow Emma, who collects comics and wants to catalogue her 
 
 ## Step 1: Create a collection
 
-A collection is a named group that holds related items. Emma makes one called "My Comics".
+A [collection](../core-concepts/collections.md) is a named group that holds related [items](../core-concepts/items-and-copies.md). Emma makes one called "My Comics".
 
 From your dashboard, choose to create a **New collection**. Give it a **name**, and optionally pick an emoji and add a short description. You can leave the other choices at their defaults for now. Save it.
 
@@ -37,12 +37,12 @@ Why this matters: photos make a large catalogue far easier to scan, and the cove
 
 ## Step 4: Add the copy you own
 
-Here is the important step. An item on its own does not record anything you physically own. A **copy** does.
+Here is the important step. An item on its own does not record anything you physically own. A **[copy](../core-concepts/items-and-copies.md)** does.
 
 On the item, add a **copy** and set at least:
 
-- **Condition**, such as Very Good or Mint. Choose from the ready made list.
-- **Location**, where the copy is stored, for example a shelf or a box.
+- **[Condition](../core-concepts/conditions.md)**, such as Very Good or Mint. Choose from the ready made list.
+- **[Location](../core-concepts/locations.md)**, where the copy is stored, for example a shelf or a box.
 
 Emma adds one copy, marks it **Very Good**, and sets its location to "Long box 1".
 
@@ -56,7 +56,11 @@ That is the whole loop: collection, item, photo, copy. Everything else in KolleK
 
 ## A common mix up to avoid
 
-If you find yourself about to create a second item for something you already catalogued, pause. Two of the same thing are two **copies** of one item, not two items. Keeping it to one item with multiple copies is what lets KolleK track each physical piece separately while keeping your catalogue tidy.
+<Note>
+Two of the same thing are two copies of one item, not two items. If you are about to create a second item for something you already catalogued, add a copy to the existing item instead.
+</Note>
+
+Keeping it to one item with multiple copies is what lets KolleK track each physical piece separately while keeping your catalogue tidy.
 
 ## Where to next
 
