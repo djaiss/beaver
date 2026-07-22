@@ -43,7 +43,7 @@ Les champs sensibles sont chiffrés au repos dans la base de données avec la cl
 
 ## Puis-je ajouter mes propres états ?
 
-Pas encore depuis l'application web. Les états préremplis (New, Like New, Used, Worn, Damaged) apparaissent sous forme de listes déroulantes partout, et ajouter ou renommer des états n'est actuellement possible que via l'API. Voir @doc(conditions.overview) et @doc(troubleshooting.featureStatus).
+Oui. Ouvrez **États des éléments** dans les paramètres du compte pour ajouter, renommer ou supprimer des états, y compris ceux préremplis (New, Like New, Used, Worn, Damaged). Voir @doc(conditions.manage).
 
 ## Un élément a été supprimé. Puis-je le récupérer ?
 

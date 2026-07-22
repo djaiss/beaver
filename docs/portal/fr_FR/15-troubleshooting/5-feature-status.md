@@ -35,10 +35,6 @@ Chaque collection possède un paramètre de visibilité (privée, partagée ou p
 
 Vous pouvez enregistrer des points de terminaison de webhook, et chacun reçoit un secret de signature, mais aucun événement de l'application ne déclenche encore de webhook. Le mécanisme de signature et de livraison est en place, en attente que les événements soient connectés. Configurez-les dès maintenant si vous le souhaitez ; les livraisons arriveront à mesure que le domaine se développe. Voir @doc(webhooks.overview).
 
-### Gestion des états depuis le web
-
-Les états apparaissent comme des choix prêts à l'emploi dans des listes déroulantes partout où c'est nécessaire, mais il n'existe aucun écran web pour en créer ou en renommer. Cela n'est actuellement possible que via l'API. Voir @doc(conditions.overview).
-
 ### Import et export des objets et des collections
 
 L'import et l'export n'existent que pour les définitions de types de collection. Il n'existe pas encore d'import ou d'export au niveau des objets ou d'une collection entière. Pour tout récupérer, les instances auto hébergées disposent de sauvegardes complètes ; voir @doc(dataSafety.backupCollectionData).

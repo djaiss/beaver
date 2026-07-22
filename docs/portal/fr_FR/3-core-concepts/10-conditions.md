@@ -7,11 +7,11 @@ section: concepts-fondamentaux
 
 # États
 
-Un état évalue l'état physique d'un exemplaire. Cette page explique d'où viennent les états, où vous les rencontrerez, et une limite honnête de la version actuelle.
+Un état évalue l'état physique d'un exemplaire. Cette page explique d'où viennent les états et où vous les rencontrerez.
 
 ## Ce qu'est un état
 
-Un état est un grade nommé que vous attribuez à un @doc(items.itemsVsCopies, "exemplaire") : Neuf, Comme neuf, Usé, Abîmé, Endommagé. Chaque compte démarre avec cette liste prête à l'emploi, qui couvre bien la plupart des collections.
+Un état est un grade nommé que vous attribuez à un @doc(items.itemsVsCopies, "exemplaire") : Neuf, Comme neuf, Usé, Abîmé, Endommagé. Chaque compte démarre avec cette liste prête à l'emploi, qui couvre bien la plupart des collections. La liste est propre au compte et vous pouvez la modifier ; voir @doc(conditions.manage).
 
 Les états appartiennent aux exemplaires, jamais aux objets. Les deux exemplaires d'Emma du même comics sont une pièce Presque neuve sous coque et une autre bien lue, et cette différence est exactement ce que les états capturent.
 
@@ -27,16 +27,8 @@ Vous rencontrerez la liste déroulante d'état à trois endroits.
 
 Les grades sont les vôtres à interpréter, mais ils n'aident que si vous les appliquez toujours de la même façon. Décidez une fois pour toutes ce que « Usé » signifie pour votre passion et tenez-vous-en à cette définition. Si votre communauté a une échelle formelle (les collectionneurs de pièces et leurs grades MS, par exemple), un @doc(collectionTypes.overview, "champ personnalisé") de type Sélection sur le type peut porter le grade formel pendant que l'état porte le vôtre, plus pratique.
 
-## Des états personnalisés, en toute honnêteté
-
-Un compte peut en principe porter sa propre liste d'états au-delà de ceux par défaut.
-
-:::note
-Il n'existe actuellement aucun écran dans l'application web pour créer ou renommer des états. Les grades prêts à l'emploi apparaissent comme choix de liste déroulante partout, et en ajouter des vôtres n'est aujourd'hui possible que par l'API. Voir @doc(troubleshooting.featureStatus, "État des fonctionnalités").
-:::
-
 ## Et ensuite
 
+- Personnalisez la liste des états dans @doc(conditions.manage).
 - Définissez un état sur un exemplaire réel dans @doc(copies.track).
 - Voyez les états à l'œuvre dans @doc(copies.recordMaintenance).
-- Vérifiez ce qui est prévu dans @doc(troubleshooting.featureStatus, "État des fonctionnalités").
