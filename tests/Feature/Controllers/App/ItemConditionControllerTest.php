@@ -18,6 +18,15 @@ it('lists the account conditions', function () {
     $response->assertSee('New');
 });
 
+it('renders the item conditions title help popover', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/settings/item-conditions');
+
+    $response->assertOk();
+    $response->assertSee('grading scale copies use');
+});
+
 it('does not list another accounts conditions', function () {
     $user = $this->createUser();
     ItemCondition::factory()->create(['name' => 'Foreign Condition']);

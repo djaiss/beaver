@@ -49,6 +49,15 @@ it('lists the photos of the account', function () {
         ->assertSee('The Coffee House');
 });
 
+it('renders the photos title help popover', function () {
+    Storage::fake(config('filesystems.default'));
+    $user = $this->createUser();
+
+    $this->actingAs($user)->get('/settings/photos')
+        ->assertOk()
+        ->assertSee('Every photo uploaded across the account in one place');
+});
+
 it('does not list the photos of another account', function () {
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
