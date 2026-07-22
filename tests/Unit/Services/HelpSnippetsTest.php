@@ -30,14 +30,14 @@ it('resolves the account name snippet, which declares no note', function () {
 
 it('leaves the note null when a snippet declares none', function () {
     $path = storage_path('framework/testing/help/en');
-    Illuminate\Support\Facades\File::ensureDirectoryExists($path);
-    Illuminate\Support\Facades\File::put($path.'/no.note.md', "---\nid: no.note\ntitle: No note here\n---\nA blurb with no callout.");
+    File::ensureDirectoryExists($path);
+    File::put($path.'/no.note.md', "---\nid: no.note\ntitle: No note here\n---\nA blurb with no callout.");
 
     config(['docs.help_path' => storage_path('framework/testing/help')]);
 
     $snippet = (new HelpSnippets(app(DocumentationPortal::class)))->find('no.note', 'en');
 
-    Illuminate\Support\Facades\File::deleteDirectory(storage_path('framework/testing/help'));
+    File::deleteDirectory(storage_path('framework/testing/help'));
 
     expect($snippet)->not->toBeNull();
     expect($snippet['note'])->toBeNull();
@@ -91,14 +91,14 @@ it('serves the account name help in every supported language', function (string 
 
 it('falls back to the default locale when a snippet is not translated', function () {
     $path = storage_path('framework/testing/help/en');
-    Illuminate\Support\Facades\File::ensureDirectoryExists($path);
-    Illuminate\Support\Facades\File::put($path.'/only.en.md', "---\nid: only.en\ntitle: English only\n---\nBody.");
+    File::ensureDirectoryExists($path);
+    File::put($path.'/only.en.md', "---\nid: only.en\ntitle: English only\n---\nBody.");
 
     config(['docs.help_path' => storage_path('framework/testing/help')]);
 
     $snippet = (new HelpSnippets(app(DocumentationPortal::class)))->find('only.en', 'fr_FR');
 
-    Illuminate\Support\Facades\File::deleteDirectory(storage_path('framework/testing/help'));
+    File::deleteDirectory(storage_path('framework/testing/help'));
 
     expect($snippet)->not->toBeNull();
     expect($snippet['title'])->toBe('English only');
