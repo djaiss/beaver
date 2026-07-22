@@ -11,6 +11,7 @@ use App\Http\Controllers\App\CollectionItemViewController;
 use App\Http\Controllers\App\CollectionTypeController;
 use App\Http\Controllers\App\CollectionTypeExportController;
 use App\Http\Controllers\App\CollectionTypeImportController;
+use App\Http\Controllers\App\ConditionController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldGroupController;
 use App\Http\Controllers\App\CustomFieldGroupFieldController;
@@ -295,6 +296,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('settings/tags', [TagController::class, 'create'])->name('settings.tags.create');
         Route::put('settings/tags/{tag}', [TagController::class, 'update'])->where('tag', '[1-9][0-9]*')->name('settings.tags.update');
         Route::delete('settings/tags/{tag}', [TagController::class, 'destroy'])->where('tag', '[1-9][0-9]*')->name('settings.tags.destroy');
+    });
+
+    // account settings: conditions — owners and editors define the condition levels items can carry
+    Route::middleware(['editor'])->group(function (): void {
+        Route::get('settings/conditions', [ConditionController::class, 'index'])->name('settings.conditions.index');
+        Route::post('settings/conditions', [ConditionController::class, 'create'])->name('settings.conditions.create');
+        Route::put('settings/conditions/{condition}', [ConditionController::class, 'update'])->where('condition', '[1-9][0-9]*')->name('settings.conditions.update');
+        Route::delete('settings/conditions/{condition}', [ConditionController::class, 'destroy'])->where('condition', '[1-9][0-9]*')->name('settings.conditions.destroy');
     });
 
     // account settings: photos — owners and editors manage every image in the account
