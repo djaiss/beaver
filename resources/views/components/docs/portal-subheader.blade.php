@@ -18,7 +18,9 @@
       <span class="rounded bg-gray-200 px-1.5 py-0.5 font-mono text-[11px] text-gray-500">&#8984;K</span>
     </div>
 
-    <div class="flex-1 sm:hidden"></div>
+    {{-- Growing spacer so the language selector is pushed to the right edge of the
+         subheader, both on mobile (search hidden) and on desktop (search capped). --}}
+    <div class="flex-1"></div>
 
     {{-- Language selector: mirrors the site language choice, keyed on the page id. --}}
     <div x-data="{ open: false }" class="relative shrink-0" @click.outside="open = false">

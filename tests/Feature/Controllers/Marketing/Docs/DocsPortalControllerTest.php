@@ -8,9 +8,10 @@ beforeEach(function (): void {
     config()->set('marketing.show', true);
 });
 
-it('redirects the bare docs url to the default locale docs home', function () {
-    $this->get('/docs')
-        ->assertRedirect(route('marketing.docs.portal.home.show', ['locale' => 'en']));
+it('does not expose an unprefixed docs entry point', function () {
+    // The documentation lives under a locale prefix (/en/docs); there is no
+    // bare /docs shortcut, so it is simply not found.
+    $this->get('/docs')->assertNotFound();
 });
 
 it('renders the english docs home under the locale prefix', function () {

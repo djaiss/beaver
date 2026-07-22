@@ -8,7 +8,7 @@
         type="button"
         @click="open = !open"
         :aria-expanded="open"
-        class="mb-1.5 flex w-full items-center gap-1 rounded px-2 py-1 text-left"
+        class="mb-1.5 flex w-full items-center gap-1 rounded px-2 py-1 text-left cursor-pointer"
       >
         <x-lucide-chevron-right class="h-2.5 w-2.5 shrink-0 text-gray-400 transition-transform duration-150" x-bind:class="{ 'rotate-90': open }" />
         <span class="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">{{ $section['title'] }}</span>

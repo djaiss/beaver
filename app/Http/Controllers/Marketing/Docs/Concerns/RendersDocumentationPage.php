@@ -57,7 +57,7 @@ trait RendersDocumentationPage
                 'code' => $meta['code'],
                 'label' => $meta['label'],
                 'flag' => $meta['flag'],
-                'url' => $this->portal->urlForId($page['id'], $locale) ?? route('marketing.docs.portal.index'),
+                'url' => $this->portal->urlForId($page['id'], $locale) ?? route('marketing.docs.portal.home.show', ['locale' => $meta['url']]),
                 'translated' => $this->pageExistsIn($locale, $page),
                 'current' => $locale === $current,
             ];

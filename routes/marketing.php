@@ -21,10 +21,7 @@ $urlLocales = collect(config('docs.locales'))
     ->implode('|');
 
 Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
-    // Stable, unprefixed entry points that redirect into the default locale, so
-    // getkollek.com and getkollek.com/docs keep working as canonical shortcuts.
     Route::get('/', fn () => redirect()->route('marketing.index'))->name('marketing.root');
-    Route::get('docs', [DocsPortalController::class, 'index'])->name('marketing.docs.portal.index');
 
     Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware('marketing.locale')->group(function (): void {
         Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
