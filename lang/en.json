@@ -1,4 +1,7 @@
 {
+    "Help": "Help",
+    "Read more": "Read more",
+    "From the documentation": "From the documentation",
     "Transaction": "Transaction",
     "Condition in: :condition": "Condition in: :condition",
     "Moved to :location": "Moved to :location",

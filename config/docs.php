@@ -18,6 +18,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Help snippets source
+    |--------------------------------------------------------------------------
+    |
+    | The directory that holds the short Markdown snippets shown in the "?"
+    | help popovers across the app. Each direct subdirectory is a locale, and
+    | each file is one snippet, keyed by the id in its frontmatter.
+    |
+    */
+
+    'help_path' => base_path('docs/help'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Default locale
     |--------------------------------------------------------------------------
     |
