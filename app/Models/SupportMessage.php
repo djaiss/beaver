@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Class SupportMessage
  *
- * A single message within a support conversation. For now every message is
- * written by the user who owns the ticket: there is no staff side yet.
+ * A single message within a support conversation. A message is written either by
+ * the user who owns the ticket or, when `is_from_team` is true, by the instance
+ * team replying from the administration panel.
  *
  * @property int $id
  * @property int $support_ticket_id
  * @property int $user_id
+ * @property bool $is_from_team
  * @property string $body
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
@@ -38,6 +40,7 @@ class SupportMessage extends Model
     protected $fillable = [
         'support_ticket_id',
         'user_id',
+        'is_from_team',
         'body',
     ];
 
@@ -49,6 +52,7 @@ class SupportMessage extends Model
     protected function casts(): array
     {
         return [
+            'is_from_team' => 'boolean',
             'body' => 'encrypted',
         ];
     }

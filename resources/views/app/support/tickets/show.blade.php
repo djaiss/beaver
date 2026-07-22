@@ -27,21 +27,32 @@
       <div class="space-y-6">
         @foreach ($ticket->messages->sortBy('created_at') as $message)
           <div class="flex gap-4">
-            <x-avatar :user="$message->user" :size="32" class="size-10 shrink-0 text-sm" />
+            {{-- A team reply is shown as "Support" rather than the administrator who
+                 wrote it: the user is talking to the instance, not to a person, and
+                 the avatar route would refuse a user outside their own account. --}}
+            @if ($message->is_from_team)
+              <x-avatar :name="__('Support')" :size="32" class="size-10 shrink-0 text-sm" />
+            @else
+              <x-avatar :user="$message->user" :size="32" class="size-10 shrink-0 text-sm" />
+            @endif
 
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="text-sm font-semibold text-ink">{{ $message->user->getFullName() }}</span>
+                <span class="text-sm font-semibold text-ink">{{ $message->is_from_team ? __('Support') : $message->user->getFullName() }}</span>
                 <span class="text-xs text-muted-soft">{{ $message->created_at->diffForHumans() }}</span>
               </div>
-              <div class="mt-2 rounded-xl border border-hairline bg-canvas p-4 text-sm leading-relaxed whitespace-pre-line text-body">{{ $message->body }}</div>
+              <div @class([
+                'mt-2 rounded-xl border p-4 text-sm leading-relaxed whitespace-pre-line',
+                'border-hairline bg-canvas text-body' => ! $message->is_from_team,
+                'border-transparent bg-accent/10 text-ink' => $message->is_from_team,
+              ])>{{ $message->body }}</div>
             </div>
           </div>
         @endforeach
       </div>
 
       {{-- Reply or closed notice --}}
-      @if ($ticket->status === \App\Enums\SupportTicketStatus::Open)
+      @if ($ticket->status !== \App\Enums\SupportTicketStatus::Closed)
         <x-form method="post" action="{{ route('support.tickets.messages.create', $ticket) }}" class="ml-14 space-y-3 rounded-xl border border-hairline p-4">
           <textarea
             id="body"
@@ -83,7 +94,7 @@
 
       {{-- Conversation actions --}}
       <div class="flex flex-wrap items-center gap-3 border-t border-hairline pt-6">
-        @if ($ticket->status === \App\Enums\SupportTicketStatus::Open)
+        @if ($ticket->status !== \App\Enums\SupportTicketStatus::Closed)
           <x-form method="put" action="{{ route('support.tickets.update', $ticket) }}">
             <x-button.secondary type="submit" data-test="close-conversation-button">{{ __('Close conversation') }}</x-button.secondary>
           </x-form>

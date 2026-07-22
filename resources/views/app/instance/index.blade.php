@@ -1,24 +1,24 @@
 <x-app-layout>
   <x-slot:title>
-    {{ __('Instance overview') }}
+    Instance overview
   </x-slot>
 
   @php
     $peak = collect($signups)->max('count') ?: 1;
 
     $tiles = [
-      ['label' => __('Accounts'), 'value' => $accountCount, 'hint' => __(':count created this month', ['count' => $accountsThisMonth])],
-      ['label' => __('Users'), 'value' => $userCount, 'hint' => __(':count active this month', ['count' => $activeThisMonth])],
-      ['label' => __('Collections'), 'value' => $collectionCount, 'hint' => null],
-      ['label' => __('Items tracked'), 'value' => $itemCount, 'hint' => null],
+      ['label' => 'Accounts', 'value' => $accountCount, 'hint' => $accountsThisMonth.' created this month'],
+      ['label' => 'Users', 'value' => $userCount, 'hint' => $activeThisMonth.' active this month'],
+      ['label' => 'Collections', 'value' => $collectionCount, 'hint' => null],
+      ['label' => 'Items tracked', 'value' => $itemCount, 'hint' => null],
     ];
   @endphp
 
   <div class="px-6 py-8 lg:px-12 lg:py-10">
     <div class="mx-auto w-full max-w-5xl space-y-8">
       <div>
-        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Instance overview') }}</h1>
-        <p class="mt-1 text-sm text-muted">{{ __('Activity across every account on this Beaver instance.') }}</p>
+        <h1 class="text-[22px] font-semibold tracking-tight text-ink">Instance overview</h1>
+        <p class="mt-1 text-sm text-muted">Activity across every account on this Beaver instance.</p>
       </div>
 
       {{-- Counts --}}
@@ -35,9 +35,9 @@
       </div>
 
       {{-- Signups --}}
-      <x-box title="{{ __('New accounts') }}">
+      <x-box title="New accounts">
         <x-slot:description>
-          {{ __('Accounts created per month over the last year.') }}
+          Accounts created per month over the last year.
         </x-slot>
 
         <div class="flex h-40 items-end gap-1.5">
@@ -57,13 +57,13 @@
 
       {{-- Everything the mockup showed that Beaver cannot answer yet. Better to
            name them than to invent numbers. --}}
-      <x-box title="{{ __('Not tracked yet') }}">
+      <x-box title="Not tracked yet">
         <x-slot:description>
-          {{ __('Beaver does not have the data behind these yet.') }}
+          Beaver does not have the data behind these yet.
         </x-slot>
 
         <ul class="space-y-2.5">
-          @foreach ([__('Billing plans'), __('Storage and API quotas'), __('Support tickets'), __('User reviews')] as $item)
+          @foreach (['Billing plans', 'Storage and API quotas', 'User reviews'] as $item)
             <li class="flex items-center justify-between text-sm text-muted">
               {{ $item }}
               <x-soon />

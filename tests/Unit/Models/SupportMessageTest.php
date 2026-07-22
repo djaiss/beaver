@@ -23,6 +23,14 @@ it('belongs to a user', function () {
     expect($message->user)->toBeInstanceOf(User::class);
 });
 
+it('casts the from team flag to a boolean', function () {
+    $fromUser = SupportMessage::factory()->create();
+    $fromTeam = SupportMessage::factory()->fromTeam()->create();
+
+    expect($fromUser->is_from_team)->toBeFalse();
+    expect($fromTeam->is_from_team)->toBeTrue();
+});
+
 it('encrypts the body at rest', function () {
     $message = SupportMessage::factory()->create([
         'body' => 'The import keeps timing out on my 4,300 records.',

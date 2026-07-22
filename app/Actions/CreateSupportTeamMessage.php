@@ -4,21 +4,24 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\EmailType;
 use App\Enums\SupportTicketStatus;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
+use App\Jobs\SendEmail;
+use App\Mail\SupportTeamReply;
 use App\Models\SupportMessage;
 use App\Models\SupportTicket;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
- * Add a reply to a support conversation as the user who owns it. Replying always
- * moves the conversation back to open, whether it was answered by the team or
- * already closed, so a follow up never needs a fresh conversation.
+ * Reply to a support conversation as the instance team. Only an instance
+ * administrator may do this: the reply is flagged as coming from the team, moves
+ * the conversation to answered, and emails the person who opened it.
  */
-class CreateSupportMessage
+class CreateSupportTeamMessage
 {
     private SupportMessage $message;
 
@@ -33,7 +36,8 @@ class CreateSupportMessage
         $this->validate();
         $this->sanitize();
         $this->create();
-        $this->reopen();
+        $this->markAnswered();
+        $this->notify();
         $this->log();
 
         return $this->message;
@@ -41,7 +45,7 @@ class CreateSupportMessage
 
     private function validate(): void
     {
-        if ($this->ticket->user_id !== $this->user->id) {
+        if (! $this->user->isInstanceAdministrator()) {
             throw new ModelNotFoundException('Support conversation not found');
         }
     }
@@ -57,19 +61,32 @@ class CreateSupportMessage
             'support_ticket_id' => $this->ticket->id,
             'user_id' => $this->user->id,
             'body' => $this->body,
+            'is_from_team' => true,
         ]);
     }
 
-    private function reopen(): void
+    /**
+     * A team reply moves the conversation to answered and wipes any closure, so
+     * replying to a closed conversation brings it back to life.
+     */
+    private function markAnswered(): void
     {
-        if ($this->ticket->status === SupportTicketStatus::Open) {
-            return;
-        }
-
-        $this->ticket->status = SupportTicketStatus::Open;
+        $this->ticket->status = SupportTicketStatus::Answered;
         $this->ticket->closed_by = null;
         $this->ticket->closed_at = null;
         $this->ticket->save();
+    }
+
+    private function notify(): void
+    {
+        SendEmail::dispatch(
+            mailable: new SupportTeamReply(
+                ticket: $this->ticket,
+                reply: $this->body,
+            ),
+            user: $this->ticket->user,
+            emailType: EmailType::SupportTeamReply,
+        )->onQueue('high');
     }
 
     private function log(): void

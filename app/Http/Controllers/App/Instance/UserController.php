@@ -26,8 +26,8 @@ class UserController extends Controller
         )->execute();
 
         return to_route('instanceAdmin.accounts.show', $user->account_id)
-            ->with('status', __('User updated successfully'))
-            ->with('status_description', __('Their access to the instance administration has changed.'));
+            ->with('status', 'User updated successfully')
+            ->with('status_description', 'Their access to the instance administration has changed.');
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
@@ -40,7 +40,7 @@ class UserController extends Controller
         )->execute();
 
         return to_route('instanceAdmin.accounts.show', $accountId)
-            ->with('status', __('User deleted successfully'))
-            ->with('status_description', __('The user no longer has access to this instance.'));
+            ->with('status', 'User deleted successfully')
+            ->with('status_description', 'The user no longer has access to this instance.');
     }
 }

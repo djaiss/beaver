@@ -1,13 +1,15 @@
+@use('Illuminate\Support\Str')
+
 <x-app-layout>
   <x-slot:title>
-    {{ __('Accounts & users') }}
+    Accounts & users
   </x-slot>
 
   <div class="px-6 py-8 lg:px-12 lg:py-10">
     <div class="mx-auto w-full max-w-5xl space-y-6">
       <div>
-        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Accounts & users') }}</h1>
-        <p class="mt-1 text-sm text-muted">{{ __(':filtered of :total accounts', ['filtered' => $accounts->total(), 'total' => $totalCount]) }}</p>
+        <h1 class="text-[22px] font-semibold tracking-tight text-ink">Accounts & users</h1>
+        <p class="mt-1 text-sm text-muted">{{ $accounts->total() }} of {{ $totalCount }} accounts</p>
       </div>
 
       {{-- Filters. Account and people names are encrypted, so the search can only
@@ -23,7 +25,7 @@
           type="search"
           name="search"
           value="{{ $search }}"
-          placeholder="{{ __('Search by email…') }}"
+          placeholder="Search by email…"
           class="h-9 w-full rounded-md border border-hairline bg-canvas px-3 text-sm text-ink placeholder:text-muted-soft sm:max-w-xs"
         />
 
@@ -31,17 +33,17 @@
           <a
             href="{{ route('instanceAdmin.accounts.index', ['search' => $search]) }}"
             class="rounded-full border border-hairline px-3 py-1 text-xs font-medium {{ $role === null ? 'bg-card text-ink' : 'text-muted' }}"
-          >{{ __('All') }}</a>
+          >All</a>
 
           @foreach ($roles as $option)
             <a
               href="{{ route('instanceAdmin.accounts.index', ['search' => $search, 'role' => $option->value]) }}"
               class="rounded-full border border-hairline px-3 py-1 text-xs font-medium capitalize {{ $role === $option->value ? 'bg-card text-ink' : 'text-muted' }}"
-            >{{ __(ucfirst($option->value)) }}</a>
+            >{{ ucfirst($option->value) }}</a>
           @endforeach
         </div>
 
-        <x-button type="submit">{{ __('Search') }}</x-button>
+        <x-button type="submit">Search</x-button>
       </form>
 
       <x-box padding="p-0">
@@ -54,9 +56,9 @@
             <div class="min-w-0">
               <p class="truncate text-sm font-semibold text-ink">{{ $account->name }}</p>
               <p class="truncate text-xs text-muted">
-                {{ trans_choice(':count member|:count members', $account->users_count, ['count' => $account->users_count]) }}
+                {{ $account->users_count }} {{ Str::plural('member', $account->users_count) }}
                 ·
-                {{ trans_choice(':count collection|:count collections', $account->collections_count, ['count' => $account->collections_count]) }}
+                {{ $account->collections_count }} {{ Str::plural('collection', $account->collections_count) }}
               </p>
             </div>
 
@@ -70,7 +72,7 @@
             <x-slot:icon>
               @svg('lucide-users', 'size-5 text-muted')
             </x-slot>
-            {{ __('No accounts match your search.') }}
+            No accounts match your search.
           </x-empty-state>
         @endforelse
       </x-box>

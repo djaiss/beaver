@@ -32,6 +32,7 @@
           <span @class([
             'mt-1.5 size-2.5 shrink-0 rounded-full',
             'bg-success' => $ticket->status === \App\Enums\SupportTicketStatus::Open,
+            'bg-badge-violet' => $ticket->status === \App\Enums\SupportTicketStatus::Answered,
             'bg-muted-soft' => $ticket->status === \App\Enums\SupportTicketStatus::Closed,
           ])></span>
 

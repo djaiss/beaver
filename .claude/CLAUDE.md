@@ -78,6 +78,17 @@ Grant the flag with `php artisan beaver:make-instance-administrator {email}`
 revoke their own flag or delete their own user from the panel, so an instance
 cannot be locked out of it.
 
+The instance administration panel is English only and is never translated. It is
+operated by whoever runs the instance, not by end users, so translating it buys
+nothing. Write its own copy as plain strings rather than through `__()`, `trans()`
+or `trans_choice()`, and keep its keys out of the `lang` files, so nothing here
+feeds the translation workflow. This covers `/instance-admin` (the views under
+`resources/views/app/instance`, the `App\Http\Controllers\App\Instance`
+controllers, and the panel's block of the sidebar). Data it merely displays that
+is already translated elsewhere, such as activity log descriptions, may stay as
+it is: the rule is about the panel's own chrome, not about re-deriving shared
+values.
+
 ## Models
 
 An `Account` is the tenant. Everything in the collection domain belongs to exactly one account and is role gated (owners and editors write, viewers read).

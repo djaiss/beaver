@@ -44,4 +44,14 @@ class SupportTicketFactory extends Factory
             'closed_at' => now(),
         ]);
     }
+
+    /**
+     * Indicate that the team has answered and the conversation awaits the user.
+     */
+    public function answered(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => SupportTicketStatus::Answered,
+        ]);
+    }
 }
