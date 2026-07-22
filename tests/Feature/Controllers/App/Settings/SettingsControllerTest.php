@@ -60,6 +60,18 @@ it('shows the settings page', function () {
     );
 });
 
+it('renders the section title help popovers on the profile page', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/profile');
+
+    $response->assertOk();
+    $response->assertSee('picture that represents you across the app');
+    $response->assertSee('Your name, nickname, email');
+    $response->assertSee('personal history of everything you have done');
+    $response->assertSee('Every email KolleK has sent you');
+});
+
 it('updates the profile information', function () {
     $user = $this->createUser();
 

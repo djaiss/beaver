@@ -1,4 +1,4 @@
-<x-box>
+<x-box helpId="profile.details">
   <x-slot:title>{{ __('Details') }}</x-slot>
 
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">

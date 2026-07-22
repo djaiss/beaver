@@ -1,4 +1,4 @@
-<x-box padding="p-0">
+<x-box padding="p-0" helpId="profile.password">
   <x-slot:title>{{ __('Change password') }}</x-slot>
 
   <x-form id="password-form" x-target="password-form" x-merge="replace" method="put" action="{{ route('profile.security.password.update') }}">
