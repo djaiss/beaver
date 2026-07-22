@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\ResponseCache\Facades\ResponseCache;
+
+uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     config()->set('marketing.show', true);
