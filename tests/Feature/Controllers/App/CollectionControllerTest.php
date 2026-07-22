@@ -69,6 +69,17 @@ it('shows the new collection form', function () {
     $response->assertSee('Comics');
 });
 
+it('renders the types, visibility and currency help popovers on the new collection form', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/collections/new');
+
+    $response->assertOk();
+    $response->assertSee('Enabling a type lets items in this collection use its custom fields');
+    $response->assertSee('who this collection is meant for');
+    $response->assertSee('overriding the account default');
+});
+
 it('forbids viewers from viewing the new collection form', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
@@ -142,6 +153,18 @@ it('shows the edit collection form', function () {
     $response->assertSee('Edit collection');
     $response->assertSee('Marvel Comics 1990s');
     $response->assertSee('Comics');
+});
+
+it('renders the types, visibility and currency help popovers on the edit collection form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/edit');
+
+    $response->assertOk();
+    $response->assertSee('Enabling a type lets items in this collection use its custom fields');
+    $response->assertSee('who this collection is meant for');
+    $response->assertSee('overriding the account default');
 });
 
 it('cannot edit another accounts collection', function () {

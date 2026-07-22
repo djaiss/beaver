@@ -49,7 +49,10 @@
 
           {{-- Types --}}
           <div>
-            <x-label>{{ __('Types') }}</x-label>
+            <div class="flex items-center gap-2">
+              <x-label>{{ __('Types') }}</x-label>
+              <x-help id="collections.types" />
+            </div>
             <p class="mt-0.5 mb-2.5 text-[13px] text-muted-soft">{{ __('Types drive which custom fields apply to items in this collection.') }}</p>
             <div class="flex flex-wrap gap-2">
               @foreach ($types as $type)
@@ -71,7 +74,10 @@
 
           {{-- Visibility --}}
           <div>
-            <x-label>{{ __('Visibility') }}</x-label>
+            <div class="flex items-center gap-2">
+              <x-label>{{ __('Visibility') }}</x-label>
+              <x-help id="collections.visibility" />
+            </div>
             <div class="mt-2.5 flex flex-col gap-2.5">
               @foreach ($visibilityOptions as $option)
                 <label class="flex cursor-pointer items-start gap-3 rounded-lg border px-4 py-3.5 transition-colors" :class="visibility === '{{ $option['key'] }}' ? 'border-ink bg-card' : 'border-hairline'">
@@ -91,7 +97,7 @@
 
           {{-- Currency --}}
           <div class="max-w-60">
-            <x-select id="currency" :label="__('Valuation currency')" :options="$currencies" :selected="old('currency', $collection->currency)" :error="$errors->get('currency')" />
+            <x-select id="currency" :label="__('Valuation currency')" helpId="collections.currency" :options="$currencies" :selected="old('currency', $collection->currency)" :error="$errors->get('currency')" />
           </div>
 
           <div class="flex items-center justify-end gap-3 pt-2">
