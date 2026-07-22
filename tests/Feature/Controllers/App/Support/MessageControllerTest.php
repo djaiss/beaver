@@ -25,8 +25,25 @@ it('adds a reply to the conversation', function () {
         ]);
 
     $response->assertRedirect('/support/'.$ticket->id);
+    $response->assertSessionHas('reply_sent', true);
     expect($ticket->messages()->count())->toBe(1);
     expect($ticket->messages()->first()->body)->toBe('Following up on this.');
+});
+
+it('shows the thanks confirmation after a reply', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $ticket = SupportTicket::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)
+        ->followingRedirects()
+        ->post('/support/'.$ticket->id.'/messages', [
+            'body' => 'Following up on this.',
+        ]);
+
+    $response->assertOk();
+    $response->assertSee('Thanks for your message!');
 });
 
 it('reopens a closed conversation on reply', function () {
