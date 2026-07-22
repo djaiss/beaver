@@ -46,6 +46,18 @@ it('renders the type and copies help popovers on the add item form', function ()
         ->assertSee('Add a second copy to this same item, never a second item');
 });
 
+it('renders the category, set, series and tags help popovers on the add item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/new")
+        ->assertOk()
+        ->assertSee('an item belongs to at most one')
+        ->assertSee('Filing an item into a set moves its owned count up against the set\'s target')
+        ->assertSee('Ties this item to a franchise that can span multiple collections')
+        ->assertSee('Pick an existing one or type a new one to create it on the spot');
+});
+
 it('offers the categories of the collection on the add item form, nested under their parent', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
@@ -400,6 +412,20 @@ it('renders the type and copies help popovers on the edit item form', function (
     $response->assertOk();
     $response->assertSee('reveals that type\'s custom fields further down the form');
     $response->assertSee('Add a second copy to this same item, never a second item');
+});
+
+it('renders the category, set, series and tags help popovers on the edit item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->get(route('items.edit', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('an item belongs to at most one');
+    $response->assertSee('Filing an item into a set moves its owned count up against the set\'s target');
+    $response->assertSee('Ties this item to a franchise that can span multiple collections');
+    $response->assertSee('Pick an existing one or type a new one to create it on the spot');
 });
 
 // The estimated value lives in the valuations now, so the form has to read the

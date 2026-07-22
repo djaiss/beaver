@@ -338,7 +338,10 @@
     {{-- Category, set & series --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
-        <x-label for="category_id">{{ __('Category') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+        <div class="flex items-center gap-1.5">
+          <x-label for="category_id">{{ __('Category') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+          <x-help id="items.category" />
+        </div>
         <select id="category_id" name="category_id" class="mt-2 h-11 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
           <option value="">{{ __('No category') }}</option>
           {{-- Nested categories are indented so the structure survives the flattening a select forces. --}}
@@ -355,7 +358,10 @@
         @endif
       </div>
       <div>
-        <x-label for="set_id">{{ __('Set') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+        <div class="flex items-center gap-1.5">
+          <x-label for="set_id">{{ __('Set') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+          <x-help id="items.set" />
+        </div>
         <select id="set_id" name="set_id" class="mt-2 h-11 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
           <option value="">{{ __('No set') }}</option>
           @foreach ($sets as $set)
@@ -374,7 +380,10 @@
     {{-- Series. Account-wide, so unlike the set above this lists every series of the account,
          not just the ones already used in this collection. --}}
     <div>
-      <x-label for="series_id">{{ __('Series') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+      <div class="flex items-center gap-1.5">
+        <x-label for="series_id">{{ __('Series') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+        <x-help id="items.series" />
+      </div>
       <select id="series_id" name="series_id" class="mt-2 h-11 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
         <option value="">{{ __('No series') }}</option>
         @foreach ($series as $one)
@@ -391,7 +400,10 @@
 
     {{-- Tags --}}
     <div>
-      <x-label>{{ __('Tags') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+      <div class="flex items-center gap-1.5">
+        <x-label>{{ __('Tags') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+        <x-help id="items.tags" />
+      </div>
       <div class="mt-2.5 flex flex-wrap items-center gap-2">
         @foreach ($tags as $tag)
           <div
