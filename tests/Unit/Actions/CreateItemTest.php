@@ -182,7 +182,10 @@ it('creates the copies along with the item', function () {
 
     expect($item->copies)->toHaveCount(2);
 
-    $first = $item->copies->first();
+    // Row order is not guaranteed without an explicit orderBy, so sort by id
+    // (creation order) rather than trust the collection's natural order.
+    $copies = $item->copies->sortBy('id')->values();
+    $first = $copies->first();
 
     expect($first->item_condition_id)->toBe($condition->id);
     expect($first->current_location_id)->toBe($location->id);
@@ -193,8 +196,8 @@ it('creates the copies along with the item', function () {
     expect($first->created_by_id)->toBe($owner->id);
 
     // A copy row that says nothing falls back to one owned copy.
-    expect($item->copies->last()->status)->toBe(CopyStatus::Owned);
-    expect($item->copies->last()->quantity)->toBe(1);
+    expect($copies->last()->status)->toBe(CopyStatus::Owned);
+    expect($copies->last()->quantity)->toBe(1);
 });
 
 // The estimated value is no longer a column, so a figure given with a copy row
