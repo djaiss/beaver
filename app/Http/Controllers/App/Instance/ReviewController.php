@@ -10,7 +10,7 @@ use Illuminate\View\View;
 class ReviewController extends Controller
 {
     /**
-     * Beaver has no user reviews yet. The page exists so the section is
+     * KolleK has no user reviews yet. The page exists so the section is
      * discoverable, and says as much.
      */
     public function index(): View

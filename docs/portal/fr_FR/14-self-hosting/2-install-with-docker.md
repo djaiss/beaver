@@ -68,7 +68,7 @@ Ouvrez l'URL dans un navigateur et utilisez la page d'inscription pour vous insc
 Si vous souhaitez accéder au panneau d'administration à l'échelle du serveur, accordez le drapeau à votre utilisateur :
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Voyez @doc(instanceAdmin.grantAccess) pour savoir ce que cela vous donne, et ce que cela ne vous donne pas.

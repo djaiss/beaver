@@ -17,10 +17,10 @@ Cada localidade é um arquivo JSON em `lang/`, nomeado a partir do código da lo
 
 ## Preparar ou atualizar uma localidade
 
-O comando `beaver:localize` varre toda a aplicação em busca de strings traduzíveis e as sincroniza com o arquivo de uma localidade:
+O comando `kollek:localize` varre toda a aplicação em busca de strings traduzíveis e as sincroniza com o arquivo de uma localidade:
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Strings novas desde a última execução são adicionadas, e strings que não existem mais são removidas. No arquivo em inglês, cada string é sua própria tradução, então o inglês está sempre completo por definição. Em qualquer outra localidade, strings novas chegam vazias, prontas para um tradutor preencher.

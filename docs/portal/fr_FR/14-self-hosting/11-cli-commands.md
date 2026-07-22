@@ -20,8 +20,8 @@ docker compose exec app php artisan <command>
 ### Accorder ou révoquer l'administration de l'instance
 
 ```
-php artisan beaver:make-instance-administrator you@example.com
-php artisan beaver:make-instance-administrator you@example.com --revoke
+php artisan kollek:make-instance-administrator you@example.com
+php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 Accorde (ou retire) le drapeau d'administrateur à l'échelle du serveur pour l'utilisateur ayant cette adresse e-mail. C'est ainsi que le premier administrateur est amorcé après l'installation. Voyez @doc(instanceAdmin.grantAccess).
@@ -29,7 +29,7 @@ Accorde (ou retire) le drapeau d'administrateur à l'échelle du serveur pour l'
 ### Créer un point de terminaison webhook
 
 ```
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 Enregistre un point de terminaison webhook pour un utilisateur et affiche son identifiant et son secret de signature. Les utilisateurs peuvent aussi faire cela eux-mêmes depuis les paramètres de leur profil. Notez qu'aucun événement applicatif ne déclenche encore de webhooks ; voyez @doc(webhooks.overview).
@@ -45,17 +45,17 @@ Reconstruit l'index de recherche derrière la bibliothèque de photos et comble 
 ### Amorcer une locale pour la traduction
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Extrait chaque chaîne traduisible de l'application et la synchronise dans le fichier JSON de la locale. Voyez @doc(selfHosting.addLanguage).
 
 ## Réservé au développement
 
-Deux autres commandes existent dans le code source, et aucune n'a sa place sur une instance de production. `beaver:bruno` réinitialise la base de données avec des données de départ pour les tests de client API, ce qui détruirait de vraies données, et `beaver:sync-skills` maintient l'outillage propre au projet. Vous pouvez ignorer les deux en tant qu'opérateur.
+Deux autres commandes existent dans le code source, et aucune n'a sa place sur une instance de production. `kollek:bruno` réinitialise la base de données avec des données de départ pour les tests de client API, ce qui détruirait de vraies données, et `kollek:sync-skills` maintient l'outillage propre au projet. Vous pouvez ignorer les deux en tant qu'opérateur.
 
 :::warning
-N'exécutez jamais `beaver:bruno` sur une instance réelle. Elle efface la base de données et la ré-ensemence avec des données de démonstration.
+N'exécutez jamais `kollek:bruno` sur une instance réelle. Elle efface la base de données et la ré-ensemence avec des données de démonstration.
 :::
 
 ## Et ensuite

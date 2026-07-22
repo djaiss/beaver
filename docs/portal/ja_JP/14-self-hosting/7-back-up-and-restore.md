@@ -32,7 +32,7 @@ docker compose exec mysql mysqldump -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE"
 ストレージボリュームをアーカイブします。
 
 ```bash
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar czf /backup/kollek-storage.tar.gz -C /data .
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine tar czf /backup/kollek-storage.tar.gz -C /data .
 ```
 
 両方のファイルと、`.env`のコピーを、サーバーの外のどこかにコピーしてください。夜間のcronジョブで自動化し、複数世代を保持しましょう。一度も復元したことのないバックアップは、希望的観測であって計画とは言えません。
@@ -51,7 +51,7 @@ docker compose exec -T mysql mysql -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" 
 3. ストレージのアーカイブをストレージボリュームに展開します。
 
 ```bash
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar xzf /backup/kollek-storage.tar.gz -C /data
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine tar xzf /backup/kollek-storage.tar.gz -C /data
 ```
 
 4. `docker compose up -d`でスタックを再起動し、サインインして確認します。

@@ -7,7 +7,7 @@
     'tooLarge' => __('The document is too large to import (:max KB maximum).', ['max' => (int) ($maxLength / 1024)]),
     'invalidJson' => __('This is not valid JSON: :message'),
     'rootMustBeObject' => __('The root of the document must be a JSON object.'),
-    'missingSchemaVersion' => __('The document is missing its "schemaVersion" number. Export a type from Beaver to get a valid document.'),
+    'missingSchemaVersion' => __('The document is missing its "schemaVersion" number. Export a type from KolleK to get a valid document.'),
     'missingType' => __('The document must contain a "type" object.'),
     'theType' => __('The type'),
     'group' => __('Group :position'),
@@ -53,7 +53,7 @@
           <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Import a collection type') }}</h1>
           <x-help id="settings.import_collection_type" />
         </div>
-        <p class="mt-1.5 max-w-2xl text-[15px] text-muted">{{ __('Paste a type schema exported from Beaver to recreate it here. Importing creates a brand new type, it never overwrites an existing one.') }}</p>
+        <p class="mt-1.5 max-w-2xl text-[15px] text-muted">{{ __('Paste a type schema exported from KolleK to recreate it here. Importing creates a brand new type, it never overwrites an existing one.') }}</p>
       </div>
 
       <x-form method="post" :action="route('settings.types.import.create')" data-turbo="true" data-test="import-type-form">

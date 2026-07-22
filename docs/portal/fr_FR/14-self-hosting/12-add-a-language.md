@@ -17,10 +17,10 @@ Chaque locale correspond à un fichier JSON sous `lang/`, nommé d'après le cod
 
 ## Amorcer ou actualiser une locale
 
-La commande `beaver:localize` analyse l'ensemble de l'application à la recherche de chaînes traduisibles et les synchronise dans le fichier d'une locale :
+La commande `kollek:localize` analyse l'ensemble de l'application à la recherche de chaînes traduisibles et les synchronise dans le fichier d'une locale :
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Les chaînes apparues depuis la dernière exécution sont ajoutées, et les chaînes qui n'existent plus sont retirées. Dans le fichier anglais, chaque chaîne est sa propre traduction, l'anglais est donc toujours complet par définition. Dans chaque autre locale, les nouvelles chaînes arrivent vides, prêtes à être remplies par un traducteur.

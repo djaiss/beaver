@@ -23,13 +23,13 @@ Alex 负责运维俱乐部的实例，他的用户带有这个标志，同时在
 这个标志只能通过命令行管理，这是刻意的设计：获取这个服务器级面板的初始访问权限，本身就应该要求你先拥有服务器的访问权限。
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 撤销方式相同：
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 已有的管理员也可以在面板内切换其他用户的该标志。

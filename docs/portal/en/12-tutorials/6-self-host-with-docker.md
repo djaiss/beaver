@@ -83,7 +83,7 @@ Alex registers, lands on the getting started checklist, and resists cataloguing 
 An instance administrator can see across every account on the instance, from the instance administration panel. The flag is granted from the command line:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Use the email you just registered with. The same command with `--revoke` takes the flag back. What the flag does, and deliberately does not do, is covered in @doc(instanceAdmin.grantAccess).

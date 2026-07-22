@@ -1,6 +1,6 @@
-# Self-hosting Beaver with Docker
+# Self-hosting KolleK with Docker
 
-Beaver ships a production Docker image and a Compose stack so you can run your
+KolleK ships a production Docker image and a Compose stack so you can run your
 own instance. Self-hosting is a first-class, supported use case.
 
 ## What the stack runs
@@ -32,7 +32,7 @@ docker compose run --rm app php artisan key:generate --show
 docker compose up -d --build
 ```
 
-Beaver is then available at the `APP_URL` you set (http://localhost:8000 by
+KolleK is then available at the `APP_URL` you set (http://localhost:8000 by
 default). Create your account from the registration page.
 
 ## Configuration
@@ -100,7 +100,7 @@ and user on the instance. It is gated on a per user flag that nobody has by
 default, so grant it to yourself once after registering your user:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Pass `--revoke` to take it away again. The flag is separate from the owner,
@@ -111,11 +111,11 @@ editor and viewer roles, which only ever apply inside a single account.
 ```bash
 # Database
 docker compose exec mysql \
-  mysqldump -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" > beaver-backup.sql
+  mysqldump -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" > kollek-backup.sql
 
 # Uploaded files
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine \
-  tar czf /backup/beaver-storage.tar.gz -C /data .
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine \
+  tar czf /backup/kollek-storage.tar.gz -C /data .
 ```
 
 ## Common commands

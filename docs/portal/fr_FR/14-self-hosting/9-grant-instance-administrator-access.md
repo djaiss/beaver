@@ -23,13 +23,13 @@ Alex, qui gère l'instance du club, détient le drapeau sur son propre utilisate
 Le drapeau est géré depuis la ligne de commande, ce qui est délibéré : l'accès initial au panneau à l'échelle du serveur doit nécessiter un accès au serveur.
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Révoquez-le de la même façon :
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 Un administrateur existant peut aussi basculer le drapeau sur d'autres utilisateurs depuis le panneau.

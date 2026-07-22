@@ -23,13 +23,13 @@ Alex, der die Instanz des Vereins betreibt, trägt das Flag auf seinem eigenen B
 Das Flag wird über die Kommandozeile verwaltet, und das ist Absicht: Der erste Zugriff auf das serverweite Panel sollte Zugriff auf den Server voraussetzen.
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Entziehe es auf demselben Weg:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 Ein bestehender Administrator kann das Flag bei anderen Benutzern auch direkt aus dem Panel heraus umschalten.

@@ -68,7 +68,7 @@ docker compose up -d --build
 サーバー全体の管理パネルを使いたい場合は、自分のユーザーにフラグを付与します。
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 これによって何ができて何ができないかについては、@doc(instanceAdmin.grantAccess)を参照してください。

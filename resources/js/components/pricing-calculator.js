@@ -1,4 +1,4 @@
-// The Dam Accurate Pricing Calculator. Every slider, toggle and option feeds an
+// The Suspiciously Accurate Pricing Calculator. Every slider, toggle and option feeds an
 // itemized estimate that, no matter how you drag it, always resolves to exactly $49.
 // That is the joke, and also the entire business model.
 export default () => ({
@@ -74,7 +74,7 @@ export default () => ({
   get quip() {
     const quips = [
       'Math checks out. It always does.',
-      'Our accountant, a beaver, approves.',
+      'Our imaginary accountant approves.',
       'Suspiciously round. Beautifully flat.',
       'The algorithm has spoken. Loudly. $49.',
       'No matter how you slice the log: $49.',

@@ -68,7 +68,7 @@ Abra a URL em um navegador e use a página de cadastro para se registrar. Isso c
 Se você quiser o painel de administração de toda a instância, conceda a flag ao seu usuário:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Veja @doc(instanceAdmin.grantAccess) para saber o que isso concede, e o que não concede.

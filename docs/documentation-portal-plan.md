@@ -14,7 +14,7 @@ Read this section first. It sets the scope, the naming, and the conventions used
 
 KolleK is a self hostable web application for cataloguing collections of any kind (comics, vinyl, coins, watches, wine, books, cards, video games, and so on). Every account is a private, multi user workspace. Users create collections, describe what those collections hold with their own custom fields, add items with photos and tags, and track each physical copy they own, including its condition, storage location, value, and full history. Sensitive data is encrypted at rest. A token authenticated JSON API mirrors the whole application.
 
-The product is branded **KolleK** in user facing surfaces. The codebase and command namespace are internally called **beaver**. Documentation should always say KolleK to the reader, and only mention "beaver" where a user literally types it (for example the `beaver:make-instance-administrator` command).
+The product is branded **KolleK** in user facing surfaces, and the codebase and command namespace share the same name. Documentation should always say KolleK to the reader, including in the artisan command names the reader types (for example the `kollek:make-instance-administrator` command).
 
 ### Who the readers are
 
@@ -732,7 +732,7 @@ Sections are ordered by how a new user naturally learns the product. A beginner 
 
 - **Purpose.** Document webhook setup honestly, including its current limits.
 - **Audience.** Developers.
-- **Summary.** How to register a webhook endpoint (from profile settings or via the `beaver:create-webhook-endpoint` command), that each endpoint gets its own signing secret, and the signed payload shape a receiver should expect (an event name, a timestamp, and data, with a signature and timestamp header to verify). State clearly and up front that no application event currently triggers a webhook: the delivery machinery, signing, and retries are in place, but events will be wired up as the collection domain grows. Do not describe webhooks as a working automation feature today.
+- **Summary.** How to register a webhook endpoint (from profile settings or via the `kollek:create-webhook-endpoint` command), that each endpoint gets its own signing secret, and the signed payload shape a receiver should expect (an event name, a timestamp, and data, with a signature and timestamp header to verify). State clearly and up front that no application event currently triggers a webhook: the delivery machinery, signing, and retries are in place, but events will be wired up as the collection domain grows. Do not describe webhooks as a working automation feature today.
 - **Prerequisites.** API overview.
 - **Related pages.** Authenticate with the API.
 
@@ -812,7 +812,7 @@ Sections are ordered by how a new user naturally learns the product. A beginner 
 
 - **Purpose.** Bootstrap and manage the server wide administrator.
 - **Audience.** Operators.
-- **Summary.** What the instance administrator flag is (server wide, separate from account roles, granting nothing extra inside one's own account) and how to grant or revoke it with the `beaver:make-instance-administrator` command. Why the panel answers as not found rather than forbidden to anyone without the flag. The safeguard that an administrator cannot revoke their own flag or delete their own user, so an instance cannot be locked out.
+- **Summary.** What the instance administrator flag is (server wide, separate from account roles, granting nothing extra inside one's own account) and how to grant or revoke it with the `kollek:make-instance-administrator` command. Why the panel answers as not found rather than forbidden to anyone without the flag. The safeguard that an administrator cannot revoke their own flag or delete their own user, so an instance cannot be locked out.
 - **Prerequisites.** Install with Docker; Accounts, users, and roles.
 - **Related pages.** The instance administration panel.
 

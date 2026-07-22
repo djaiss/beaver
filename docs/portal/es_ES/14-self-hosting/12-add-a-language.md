@@ -17,10 +17,10 @@ Cada idioma es un archivo JSON en `lang/`, con el nombre del código de idioma, 
 
 ## Preparar o actualizar un idioma
 
-El comando `beaver:localize` recorre toda la aplicación en busca de cadenas traducibles y las sincroniza con el archivo de un idioma:
+El comando `kollek:localize` recorre toda la aplicación en busca de cadenas traducibles y las sincroniza con el archivo de un idioma:
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Las cadenas nuevas desde la última ejecución se añaden, y las que ya no existen se eliminan. En el archivo de inglés, cada cadena es su propia traducción, así que el inglés siempre está completo por definición. En cualquier otro idioma, las cadenas nuevas llegan vacías, listas para que un traductor las rellene.

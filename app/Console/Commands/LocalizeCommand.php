@@ -14,7 +14,7 @@ class LocalizeCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'beaver:localize {locales}';
+    protected $signature = 'kollek:localize {locales}';
 
     /**
      * @var string

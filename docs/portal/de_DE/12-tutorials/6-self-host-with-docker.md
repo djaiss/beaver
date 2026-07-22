@@ -83,7 +83,7 @@ Alex registriert sich, landet auf der Checkliste für den Einstieg und widersteh
 Ein Instanzadministrator kann über das Instanzadministrationspanel über alle Konten der Instanz hinweg sehen. Das Flag wird über die Kommandozeile vergeben:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Verwende die E-Mail-Adresse, mit der du dich gerade registriert hast. Derselbe Befehl mit `--revoke` nimmt das Flag wieder zurück. Was das Flag tut, und bewusst nicht tut, behandelt @doc(instanceAdmin.grantAccess).

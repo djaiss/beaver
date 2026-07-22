@@ -5,13 +5,13 @@ use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 
 it('refreshes and seeds the database then updates the bruno api key', function () {
-    $collectionPath = base_path('docs/beaver/collection.bru');
+    $collectionPath = base_path('docs/kollek/collection.bru');
     $originalCollection = file_get_contents($collectionPath);
 
     expect($originalCollection)->toBeString();
 
     try {
-        $this->artisan('beaver:bruno')
+        $this->artisan('kollek:bruno')
             ->assertSuccessful();
 
         $user = User::query()

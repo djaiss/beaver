@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "beaver",
+  "name": "kollek",
   "type": "collection",
   "ignore": [
     "node_modules",

@@ -68,7 +68,7 @@ Abre la URL en un navegador y usa la página de registro para darte de alta. Est
 Si quieres el panel de administración de toda la instancia, concede el indicador a tu usuario:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Consulta @doc(instanceAdmin.grantAccess) para saber qué te da esto y qué no.

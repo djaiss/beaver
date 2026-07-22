@@ -9,7 +9,7 @@ uses(RefreshDatabase::class);
 it('creates a webhook endpoint for a user', function () {
     $user = $this->createUser(['email' => 'rachel@central-perk.test']);
 
-    $this->artisan('beaver:create-webhook-endpoint', [
+    $this->artisan('kollek:create-webhook-endpoint', [
         'email' => 'rachel@central-perk.test',
         'url' => 'https://rachel.test/webhooks',
         '--label' => 'Rachel',
@@ -24,7 +24,7 @@ it('creates a webhook endpoint for a user', function () {
 });
 
 it('fails when no user matches the email', function () {
-    $this->artisan('beaver:create-webhook-endpoint', [
+    $this->artisan('kollek:create-webhook-endpoint', [
         'email' => 'gunther@central-perk.test',
         'url' => 'https://gunther.test/webhooks',
     ])->assertFailed();

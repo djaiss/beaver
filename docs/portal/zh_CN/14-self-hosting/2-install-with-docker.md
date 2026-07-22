@@ -68,7 +68,7 @@ docker compose up -d --build
 如果你想使用服务器级的管理面板，可以为自己的用户授予相应标志：
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 关于这个操作具体授予了什么权限、又没有授予什么权限，参见 @doc(instanceAdmin.grantAccess)。

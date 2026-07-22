@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Config;
 uses(RefreshDatabase::class);
 
 it('should have correct envelope subject', function () {
-    Config::set('app.name', 'beaver');
+    Config::set('app.name', 'kollek');
 
     $user = User::factory()->create([
         'email' => 'chandler.bing@friends.com',
@@ -20,7 +20,7 @@ it('should have correct envelope subject', function () {
         ip: '192.168.1.1',
     );
 
-    expect($mailable->envelope()->subject)->toEqual('New sign-in detected on your beaver account');
+    expect($mailable->envelope()->subject)->toEqual('New sign-in detected on your kollek account');
 
     $rendered = $mailable->render();
 

@@ -83,7 +83,7 @@ Alex se registra, chega na checklist de primeiros passos, e resiste a catalogar 
 Um administrador de instância consegue ver todas as contas da instância, a partir do painel de administração da instância. A flag é concedida pela linha de comando:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Use o e-mail com o qual você acabou de se registrar. O mesmo comando com `--revoke` retira a flag. O que a flag faz, e propositalmente não faz, está coberto em @doc(instanceAdmin.grantAccess).

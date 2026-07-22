@@ -12,7 +12,7 @@ class SyncSkillsCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'beaver:sync-skills';
+    protected $signature = 'kollek:sync-skills';
 
     /**
      * @var string

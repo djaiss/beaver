@@ -26,7 +26,7 @@ No aplicativo, abra as configurações do seu perfil e vá para **Webhooks**. Ad
 Um operador também pode criar um endpoint pela linha de comando:
 
 ```bash
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 O comando exibe o id do endpoint e sua chave secreta de assinatura.

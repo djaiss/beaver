@@ -147,7 +147,7 @@ class ImportCollectionType
         $version = $document['schemaVersion'] ?? null;
 
         if (! is_int($version)) {
-            $this->fail(__('The document is missing its "schemaVersion" number. Export a type from Beaver to get a valid document.'));
+            $this->fail(__('The document is missing its "schemaVersion" number. Export a type from KolleK to get a valid document.'));
         }
 
         if ($version !== ExportCollectionType::SCHEMA_VERSION) {

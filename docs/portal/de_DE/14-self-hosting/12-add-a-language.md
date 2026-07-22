@@ -17,10 +17,10 @@ Jedes Sprachgebiet ist eine JSON-Datei unter `lang/`, benannt nach dem Sprachcod
 
 ## Ein Sprachgebiet anlegen oder auffrischen
 
-Der Befehl `beaver:localize` durchsucht die gesamte Anwendung nach übersetzbaren Strings und gleicht sie mit der Datei eines Sprachgebiets ab:
+Der Befehl `kollek:localize` durchsucht die gesamte Anwendung nach übersetzbaren Strings und gleicht sie mit der Datei eines Sprachgebiets ab:
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Strings, die seit dem letzten Lauf neu hinzugekommen sind, werden hinzugefügt, und Strings, die nicht mehr existieren, werden entfernt. In der englischen Datei ist jeder String seine eigene Übersetzung, Englisch ist also per Definition immer vollständig. In jedem anderen Sprachgebiet kommen neue Strings leer an, bereit für einen Übersetzer, sie auszufüllen.

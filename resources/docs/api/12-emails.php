@@ -52,7 +52,7 @@ return [
             ],
             'returns' => 'A paginated list of email objects.',
             'response' => ApiDocumentation::paginated([
-                $email('1', 'welcome', 'Welcome to Beaver', 'Thanks for signing up! Here is how to get started.'),
+                $email('1', 'welcome', 'Welcome to Kollek', 'Thanks for signing up! Here is how to get started.'),
             ], '/administration/emails'),
         ],
         [
@@ -72,7 +72,7 @@ return [
                 ],
             ],
             'returns' => 'An email object, or 404 when the email belongs to another user.',
-            'response' => ['data' => $email('1', 'welcome', 'Welcome to Beaver', 'Thanks for signing up! Here is how to get started.')],
+            'response' => ['data' => $email('1', 'welcome', 'Welcome to Kollek', 'Thanks for signing up! Here is how to get started.')],
         ],
     ],
 ];

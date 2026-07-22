@@ -68,7 +68,7 @@ Der erste Build dauert ein paar Minuten. Wenn er fertig ist, wendet der Web-Cont
 Wenn du das instanzweite Administrationspanel nutzen möchtest, gewähre deinem Benutzer das Flag:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Was das gibt und was nicht, erfährst du unter @doc(instanceAdmin.grantAccess).

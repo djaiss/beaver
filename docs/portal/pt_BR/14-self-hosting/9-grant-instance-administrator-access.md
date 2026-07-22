@@ -23,13 +23,13 @@ Alex, que opera a instância do clube, mantém a flag no próprio usuário e é 
 A flag é gerenciada pela linha de comando, o que é proposital: o acesso inicial ao painel global do servidor deveria exigir acesso ao servidor.
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Revogue-a da mesma forma:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 Um administrador já existente também pode alternar a flag de outros usuários de dentro do painel.

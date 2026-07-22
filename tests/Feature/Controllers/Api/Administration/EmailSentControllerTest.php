@@ -37,7 +37,7 @@ it('lists the emails of the current user', function () {
         'user_id' => $user->id,
         'email_type' => 'welcome',
         'email_address' => 'chandler.bing@friends.test',
-        'subject' => 'Welcome to beaver',
+        'subject' => 'Welcome to kollek',
         'body' => 'Could this BE any more of a welcome email?',
         'sent_at' => '2025-06-30 12:00:00',
         'delivered_at' => '2025-06-30 12:00:00',
@@ -67,7 +67,7 @@ it('lists the emails of the current user', function () {
         ->assertJsonPath('data.0.id', (string) $email->id)
         ->assertJsonPath('data.0.attributes.email_type', 'welcome')
         ->assertJsonPath('data.0.attributes.email_address', 'chandler.bing@friends.test')
-        ->assertJsonPath('data.0.attributes.subject', 'Welcome to beaver')
+        ->assertJsonPath('data.0.attributes.subject', 'Welcome to kollek')
         ->assertJsonPath('data.0.attributes.body', 'Could this BE any more of a welcome email?')
         ->assertJsonPath('data.0.attributes.sent_at', 1751284800)
         ->assertJsonPath('data.0.attributes.bounced_at', null)
@@ -98,7 +98,7 @@ it('shows an email', function () {
         'user_id' => $user->id,
         'email_type' => 'welcome',
         'email_address' => 'monica.geller@friends.test',
-        'subject' => 'Welcome to beaver',
+        'subject' => 'Welcome to kollek',
         'body' => 'I know!',
         'sent_at' => '2025-06-30 12:00:00',
         'delivered_at' => '2025-06-30 12:00:00',
@@ -118,7 +118,7 @@ it('shows an email', function () {
         ->assertJsonPath('data.id', (string) $email->id)
         ->assertJsonPath('data.attributes.email_type', 'welcome')
         ->assertJsonPath('data.attributes.email_address', 'monica.geller@friends.test')
-        ->assertJsonPath('data.attributes.subject', 'Welcome to beaver')
+        ->assertJsonPath('data.attributes.subject', 'Welcome to kollek')
         ->assertJsonPath('data.attributes.body', 'I know!')
         ->assertJsonPath('data.attributes.sent_at', 1751284800)
         ->assertJsonPath('data.attributes.delivered_at', 1751284800)

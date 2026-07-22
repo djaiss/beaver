@@ -23,13 +23,13 @@ section: serufu-hosutingu
 このフラグはコマンドラインから管理します。これは意図的な設計で、サーバー全体のパネルへの最初のアクセスには、サーバーそのものへのアクセスが必要であるべきだからです。
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 剥奪も同じ方法で行います。
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 既存の管理者は、パネル内から他のユーザーのフラグを切り替えることもできます。
