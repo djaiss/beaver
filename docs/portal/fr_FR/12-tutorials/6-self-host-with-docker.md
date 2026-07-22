@@ -83,7 +83,7 @@ Alex s'inscrit, atterrit sur la liste de contrôle de prise en main, et résiste
 Un administrateur d'instance peut voir à travers tous les comptes de l'instance, depuis le panneau d'administration d'instance. Le drapeau est accordé depuis la ligne de commande.
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Utilisez l'adresse e-mail avec laquelle vous venez de vous inscrire. La même commande avec `--revoke` retire le drapeau. Ce que le drapeau fait, et ne fait délibérément pas, est couvert dans @doc(instanceAdmin.grantAccess).

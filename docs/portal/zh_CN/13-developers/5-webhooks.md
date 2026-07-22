@@ -26,7 +26,7 @@ Webhook 端点归属于你的用户，而不是整个账户。
 运营者也可以通过命令行创建端点：
 
 ```bash
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 该命令会输出端点 id 及其签名密钥。

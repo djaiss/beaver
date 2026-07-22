@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->command->newLine();
         $this->command->info('-----------------------------');
         $this->command->line('|');
-        $this->command->line('| Welcome to beaver');
+        $this->command->line('| Welcome to kollek');
         $this->command->line('|');
         $this->command->info('-----------------------------');
         $this->command->info('| You can now sign in with one of these two accounts:');

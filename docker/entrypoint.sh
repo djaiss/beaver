@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Container entrypoint for every Beaver role (web, queue, scheduler).
+# Container entrypoint for every KolleK role (web, queue, scheduler).
 #
 # It prepares the writable directories, waits for the database, applies
 # pending migrations (web container only) and warms the framework caches

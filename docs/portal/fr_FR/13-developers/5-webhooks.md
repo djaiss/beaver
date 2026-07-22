@@ -26,7 +26,7 @@ Depuis l'application, ouvrez les paramètres de votre profil et allez dans **Web
 Un opérateur peut aussi créer un point d'accès depuis la ligne de commande :
 
 ```bash
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 La commande affiche l'identifiant du point d'accès et son secret de signature.

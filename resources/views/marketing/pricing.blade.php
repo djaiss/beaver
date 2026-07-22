@@ -3,7 +3,7 @@
   lives next to the markup it belongs to. Strings are plain English for now (no __()); wrap them
   when the marketing site gets translated.
 
-  The centrepiece is the Dam Accurate Pricing Calculator: a fully interactive set of sliders,
+  The centrepiece is the Suspiciously Accurate Pricing Calculator: a fully interactive set of sliders,
   toggles and options whose itemized estimate always, deliberately, resolves to $49. The logic
   lives in resources/js/components/pricing-calculator.js.
 --}}
@@ -12,7 +12,7 @@
   {{-- Scoped styling for the calculator: the range sliders and the little pop on the total.
        The var(--*) values are the theme tokens, so both respond to light and dark mode. --}}
   <style>
-    input[type="range"].bvr-slider {
+    input[type="range"].price-slider {
         -webkit-appearance: none;
         appearance: none;
         width: 100%;
@@ -21,7 +21,7 @@
         background: var(--hairline);
         outline: none;
     }
-    input[type="range"].bvr-slider::-webkit-slider-thumb {
+    input[type="range"].price-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 18px;
@@ -32,7 +32,7 @@
         border: 2px solid var(--page);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
     }
-    input[type="range"].bvr-slider::-moz-range-thumb {
+    input[type="range"].price-slider::-moz-range-thumb {
         width: 18px;
         height: 18px;
         border-radius: 9999px;
@@ -40,27 +40,27 @@
         cursor: pointer;
         border: 2px solid var(--page);
     }
-    @keyframes bvr-pop {
+    @keyframes price-pop {
         0% { transform: scale(0.96); }
         60% { transform: scale(1.02); }
         100% { transform: scale(1); }
     }
-    .bvr-pop { animation: bvr-pop 0.3s ease; }
+    .price-pop { animation: price-pop 0.3s ease; }
   </style>
 
   {{-- HERO --}}
   <section id="top" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 text-center sm:px-8 sm:pt-24">
     <div class="mb-7 inline-flex items-center gap-x-2 rounded-full bg-card py-1.5 pr-3.5 pl-1.5 text-[13px] font-semibold text-ink">
       <span class="rounded-full bg-primary px-2 py-[3px] text-[11px] text-on-primary">NO SUBSCRIPTION</span>
-      Pay once. Own it fur-ever.
+      Pay once. Own it forever.
     </div>
 
     <h1 class="mx-auto max-w-[840px] text-[32px] leading-[1.08] font-semibold tracking-[-1px] text-balance text-ink sm:text-5xl sm:tracking-[-1.5px] lg:text-[64px] lg:leading-[1.05] lg:tracking-[-2px]">
-      Pricing so simple, it's almost un-be-leaf-able.
+      Pricing so simple, it's almost unbelievable.
     </h1>
 
     <p class="mx-auto mt-6 max-w-[600px] text-[17px] leading-relaxed text-muted sm:text-[19px]">
-      One price. One time. No monthly nibbling at your wallet. Or, and we genuinely mean this, host it yourself for free and pay us nothing. We won't be gnawed at.
+      One price. One time. No monthly nibbling at your wallet. Or, and we genuinely mean this, host it yourself for free and pay us nothing. We won't come back asking for more.
     </p>
   </section>
 
@@ -75,13 +75,13 @@
 
           <h2 class="text-[28px] leading-[1.12] font-semibold tracking-[-1px] sm:text-4xl">Self-host it. It's free, and we recommend it.</h2>
           <p class="mt-4.5 mb-6 text-base leading-relaxed text-[#a1a1aa]">
-            Most billing pages bury the free option. We're putting ours first, because it's genuinely the best deal in the pond. One Docker command and Beaver is running on your own hardware: your data, your rules, zero dollars. Dam good, if we say so ourselves.
+            Most billing pages bury the free option. We're putting ours first, because it's genuinely the best deal around. One Docker command and KolleK is running on your own hardware: your data, your rules, zero dollars. Genuinely good, if we say so ourselves.
           </p>
 
           <div class="mb-7 flex flex-col gap-y-3">
             @foreach ([
                 'Free forever, not a trial or a tease',
-                'One Docker command to build your dam',
+                'One Docker command and you are up and running',
                 'Your data on your hardware, always',
                 'Same full app as the paid cloud',
             ] as $point)
@@ -104,14 +104,14 @@
             <span class="h-2.5 w-2.5 rounded-full bg-[#333333]"></span>
             <span class="h-2.5 w-2.5 rounded-full bg-[#333333]"></span>
             <span class="h-2.5 w-2.5 rounded-full bg-[#333333]"></span>
-            <span class="ml-2 font-mono text-xs text-[#6b7280]">terminal, build your dam</span>
+            <span class="ml-2 font-mono text-xs text-[#6b7280]">terminal, get it running</span>
           </div>
           <div class="overflow-x-auto px-4.5 py-4.5 font-mono text-[13px] leading-relaxed whitespace-nowrap">
             <p class="text-[#6b7280]"># pull it, run it, done, $0 forever</p>
             <p><span class="text-badge-emerald">$</span> <span class="text-[#e5e7eb]">docker run -p 8080:8080 \</span></p>
-            <p class="pl-4 text-[#e5e7eb]">-v beaver:/data ghcr.io/beaver/app</p>
+            <p class="pl-4 text-[#e5e7eb]">-v kollek:/data ghcr.io/kollek/app</p>
             <p class="mt-2.5 text-[#6b7280]">&check; pulling image…</p>
-            <p class="text-[#6b7280]">&check; building your dam…</p>
+            <p class="text-[#6b7280]">&check; starting the app…</p>
             <p class="mt-1.5 text-badge-emerald">&check; listening on http://localhost:8080</p>
             <p class="mt-2.5 text-[#6b7280]"># that's the whole invoice. seriously.</p>
           </div>
@@ -125,14 +125,14 @@
     <div class="mb-12 text-center">
       <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">Two ways in. Both fair.</h2>
       <p class="mx-auto mt-4.5 max-w-[520px] text-[17px] text-muted">
-        Roll up your sleeves and self-host for free, or let us handle the ops for a single, one-time $49. No wood, no water, no worries.
+        Roll up your sleeves and self-host for free, or let us handle the ops for a single, one-time $49. No fine print, no surprises.
       </p>
     </div>
 
     <div class="mx-auto grid max-w-[840px] grid-cols-1 gap-6 md:grid-cols-2">
       <div class="flex flex-col rounded-lg border border-hairline bg-canvas p-8">
         <p class="text-[22px] font-semibold tracking-[-0.3px] text-ink">Self-host</p>
-        <p class="mt-1.5 text-sm text-muted">The thrifty beaver's choice.</p>
+        <p class="mt-1.5 text-sm text-muted">The thrifty collector's choice.</p>
         <p class="mt-4 text-[34px] font-semibold tracking-[-1px] text-ink">$0<span class="text-[15px] font-medium text-muted"> &middot; forever</span></p>
 
         <div class="my-7 flex flex-col gap-y-3">
@@ -161,7 +161,7 @@
           <p class="text-[22px] font-semibold tracking-[-0.3px]">Cloud</p>
           <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold text-badge-emerald">PAY ONCE</span>
         </div>
-        <p class="mt-1.5 text-sm text-[#a1a1aa]">For beavers who'd rather not chew logs.</p>
+        <p class="mt-1.5 text-sm text-[#a1a1aa]">For collectors who'd rather not run servers.</p>
         <div class="mt-4 flex flex-wrap items-baseline gap-x-2">
           <p class="text-[34px] font-semibold tracking-[-1px]">$49<span class="text-[15px] font-medium text-[#a1a1aa]"> once</span></p>
           <span class="text-[13px] text-[#6b7280] line-through">$6/mo forever</span>
@@ -191,7 +191,7 @@
       </div>
     </div>
 
-    <p class="mt-6 text-center text-[13px] text-muted-soft">No hidden fees. No auto-renewals. No teeth marks on your credit card.</p>
+    <p class="mt-6 text-center text-[13px] text-muted-soft">No hidden fees. No auto-renewals. No surprise charges on your credit card.</p>
   </section>
 
   {{-- PRICING CALCULATOR. Every input is real; the total is engineered to stay $49. --}}
@@ -204,7 +204,7 @@
             ['key' => 'storage', 'label' => 'Storage needed (GB)', 'hint' => 'For all those high-res cover scans.', 'min' => 1, 'max' => 2000, 'step' => 1, 'display' => 'storageDisplay'],
             ['key' => 'chaos', 'label' => 'Current shelf chaos level', 'hint' => '0 = librarian. 100 = archaeological dig.', 'min' => 0, 'max' => 100, 'step' => 1, 'display' => "chaos + '%'"],
             ['key' => 'giveups', 'label' => 'Times you alphabetized then gave up', 'hint' => 'Be honest. Nobody is judging. Much.', 'min' => 0, 'max' => 50, 'step' => 1, 'display' => 'giveupsDisplay'],
-            ['key' => 'raccoons', 'label' => 'Raccoons infiltrating the collection', 'hint' => 'A known threat to any well-run dam.', 'min' => 0, 'max' => 12, 'step' => 1, 'display' => 'raccoonsDisplay'],
+            ['key' => 'raccoons', 'label' => 'Raccoons infiltrating the collection', 'hint' => 'A known threat to any well-organized shelf.', 'min' => 0, 'max' => 12, 'step' => 1, 'display' => 'raccoonsDisplay'],
         ];
 
         $toggles = [
@@ -218,7 +218,7 @@
     @endphp
 
     <div class="mb-12 text-center">
-      <p class="mb-3.5 text-[13px] font-semibold tracking-[0.6px] text-muted-soft uppercase">The Dam Accurate Pricing Calculator&trade;</p>
+      <p class="mb-3.5 text-[13px] font-semibold tracking-[0.6px] text-muted-soft uppercase">The Suspiciously Accurate Pricing Calculator&trade;</p>
       <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">Configure your quote.</h2>
       <p class="mx-auto mt-4.5 max-w-[560px] text-[17px] text-muted">
         Our proprietary algorithm weighs {{ count($sliders) + count($toggles) + 1 }} rigorous factors to calculate your exact, personalized price. Drag away. We'll wait.
@@ -237,7 +237,7 @@
               </div>
               <span class="shrink-0 rounded-md border border-hairline bg-page px-2.5 py-1 font-mono text-[13px] font-medium text-body whitespace-nowrap" x-text="{{ $slider['display'] }}"></span>
             </div>
-            <input type="range" class="bvr-slider" min="{{ $slider['min'] }}" max="{{ $slider['max'] }}" step="{{ $slider['step'] }}" x-model.number="{{ $slider['key'] }}" />
+            <input type="range" class="price-slider" min="{{ $slider['min'] }}" max="{{ $slider['max'] }}" step="{{ $slider['step'] }}" x-model.number="{{ $slider['key'] }}" />
           </div>
         @endforeach
 
@@ -303,7 +303,7 @@
         <div class="bg-[#101010] px-7 py-7 text-white">
           <div class="flex items-baseline justify-between">
             <span class="text-sm font-medium text-[#a1a1aa]">Your total, one time</span>
-            <span class="bvr-pop text-[40px] font-semibold tracking-[-1.5px]" x-effect="pop($el)">$49</span>
+            <span class="price-pop text-[40px] font-semibold tracking-[-1.5px]" x-effect="pop($el)">$49</span>
           </div>
           <p class="mt-1.5 text-xs text-[#6b7280]" x-text="quip"></p>
           <a href="#buy" class="mt-5 flex h-[46px] items-center justify-center rounded-md bg-white text-sm font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">Lock in this incredible rate</a>
@@ -313,7 +313,7 @@
     </div>
 
     <p class="mx-auto mt-5 max-w-[640px] text-center text-xs text-muted-soft">
-      * The Dam Accurate Pricing Calculator&trade; is fully functional and has never once returned a price other than $49. This is not a bug. It is our entire business model.
+      * The Suspiciously Accurate Pricing Calculator&trade; is fully functional and has never once returned a price other than $49. This is not a bug. It is our entire business model.
     </p>
   </section>
 
@@ -324,17 +324,17 @@
           [
               'radius' => 'rounded-[4px]',
               'title' => 'No monthly nibbling',
-              'desc' => "Subscriptions gnaw a little every month until there's nothing left. We charge once and then get out of your pond.",
+              'desc' => "Subscriptions nibble away a little every month until there's nothing left. We charge once and then get out of your way.",
           ],
           [
               'radius' => 'rounded-full',
               'title' => 'Portable either way',
-              'desc' => 'Self-host or cloud, your catalog exports to open JSON in one click. Leave whenever you like, dam doors are always open.',
+              'desc' => 'Self-host or cloud, your catalog exports to open JSON in one click. Leave whenever you like, the door is always open.',
           ],
           [
               'radius' => 'rounded-[3px]',
               'title' => 'Refund, no hard feelings',
-              'desc' => "30 days to change your mind. If Beaver isn't your bark, we return the $49 and part as friends.",
+              'desc' => "30 days to change your mind. If KolleK isn't for you, we return the $49 and part as friends.",
           ],
       ] as $card)
         <div class="flex flex-col gap-y-3.5 rounded-lg bg-card p-8">
@@ -353,14 +353,14 @@
   <section class="mx-auto max-w-[1200px] px-5 pt-16 sm:px-8 sm:pt-24">
     @php
         $comparisons = [
-            ['emoji' => '☕', 'eq' => '≈ 12.25×', 'thing' => '4 fancy oat-milk lattes', 'note' => 'Gone in an afternoon. Beaver is gone... never. It just stays and helps.'],
+            ['emoji' => '☕', 'eq' => '≈ 12.25×', 'thing' => '4 fancy oat-milk lattes', 'note' => 'Gone in an afternoon. KolleK is gone... never. It just stays and helps.'],
             ['emoji' => '🥐', 'eq' => '≈ 3×', 'thing' => '16 chocolatines', 'note' => 'Roughly $3 each at the good bakery. Flakier than a subscription, at least.'],
-            ['emoji' => '🏋️', 'eq' => '≈ 0.7×', 'thing' => 'One month of that gym', 'note' => "You know the one. You've been twice. Beaver you'll actually use."],
+            ['emoji' => '🏋️', 'eq' => '≈ 0.7×', 'thing' => 'One month of that gym', 'note' => "You know the one. You've been twice. KolleK is the app you'll actually use."],
             ['emoji' => '🎮', 'eq' => '≈ 1×', 'thing' => 'A single video-game skin', 'note' => "For a character you'll retire next season. This organizes real treasure."],
-            ['emoji' => '🚕', 'eq' => '≈ 6.5×', 'thing' => '7 rideshare surge fares', 'note' => 'One rainy Friday night, basically. Beaver never surge-prices at 2am.'],
+            ['emoji' => '🚕', 'eq' => '≈ 6.5×', 'thing' => '7 rideshare surge fares', 'note' => 'One rainy Friday night, basically. KolleK never surge-prices at 2am.'],
             ['emoji' => '🔌', 'eq' => '≈ 0.25×', 'thing' => 'That impulse cable purchase', 'note' => 'The mystery HDMI drawer thanks you. So does a real catalog.'],
             ['emoji' => '🍿', 'eq' => '≈ 2×', 'thing' => '2 movie tickets + popcorn', 'note' => 'Two hours of entertainment vs. a lifetime of tidy shelves. Bold trade.'],
-            ['emoji' => '🦫', 'eq' => '≈ ∞×', 'thing' => 'Zero monthly renewals', 'note' => 'The one comparison that matters: you pay it once and never again.'],
+            ['emoji' => '♾️', 'eq' => '≈ ∞×', 'thing' => 'Zero monthly renewals', 'note' => 'The one comparison that matters: you pay it once and never again.'],
         ];
     @endphp
 
@@ -368,7 +368,7 @@
       <p class="mb-3.5 text-[13px] font-semibold tracking-[0.6px] text-muted-soft uppercase">$49 in perspective</p>
       <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">What else is forty-nine bucks?</h2>
       <p class="mx-auto mt-4.5 max-w-[560px] text-[17px] text-muted">
-        To help you feel good about it, here's exactly what $49 buys elsewhere. Beaver is the only one that also organizes your entire life's collection. Just saying.
+        To help you feel good about it, here's exactly what $49 buys elsewhere. KolleK is the only one that also organizes your entire life's collection. Just saying.
       </p>
     </div>
 
@@ -384,35 +384,35 @@
       @endforeach
     </div>
 
-    <p class="mt-6 text-center text-[13px] text-muted-soft">Prices approximate, sourced from vibes and one very expensive coffee habit. Beaver, however, is exactly $49.</p>
+    <p class="mt-6 text-center text-[13px] text-muted-soft">Prices approximate, sourced from vibes and one very expensive coffee habit. KolleK, however, is exactly $49.</p>
   </section>
 
   {{-- FAQ --}}
   <section id="faq" class="mx-auto max-w-[760px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <h2 class="text-center text-[28px] leading-[1.15] font-semibold tracking-[-1px] text-ink sm:text-4xl">Frequently Asked Quest-ions.</h2>
-    <p class="mt-3 mb-10 text-center text-base text-muted">Everything you're gnawing on, answered.</p>
+    <p class="mt-3 mb-10 text-center text-base text-muted">Everything you're wondering about, answered.</p>
 
     <div class="flex flex-col border-t border-hairline" x-data="{ open: null }">
       @foreach ([
           [
               'question' => 'Wait, is it really just $49, one time?',
-              'answer' => "Yes. Forty-nine dollars, paid once, and the cloud-hosted Beaver is yours. No monthly fee, no annual renewal, no surprise 'loyalty' price hikes. We only charge you the one time, and then we leave your wallet a-loan.",
+              'answer' => "Yes. Forty-nine dollars, paid once, and the cloud-hosted KolleK is yours. No monthly fee, no annual renewal, no surprise 'loyalty' price hikes. We only charge you the one time, and then we leave your wallet a-loan.",
           ],
           [
               'question' => 'Should I self-host instead?',
-              'answer' => "Honestly? If you're even a little bit technical, yes. Self-hosting is free forever and takes one Docker command. You keep full control of your data and pay us nothing. We put the free option first on this page for a reason: it's the best deal in the dam.",
+              'answer' => "Honestly? If you're even a little bit technical, yes. Self-hosting is free forever and takes one Docker command. You keep full control of your data and pay us nothing. We put the free option first on this page for a reason: it's the best deal, period.",
           ],
           [
               'question' => 'How do I self-host it?',
-              'answer' => "Run 'docker run -p 8080:8080 -v beaver:/data ghcr.io/beaver/app' and open localhost:8080. That's the whole thing. Your data lives on a volume you own, updates are a docker pull away, and there's no invoice at the end.",
+              'answer' => "Run 'docker run -p 8080:8080 -v kollek:/data ghcr.io/kollek/app' and open localhost:8080. That's the whole thing. Your data lives on a volume you own, updates are a docker pull away, and there's no invoice at the end.",
           ],
           [
               'question' => 'What does the $49 cloud plan actually cover?',
-              'answer' => "Managed hosting for life, automatic updates, encrypted daily backups, and zero maintenance on your end. You collect; we keep the servers from flooding. It's the same software as self-host, you're just paying us to chew the logs for you.",
+              'answer' => "Managed hosting for life, automatic updates, encrypted daily backups, and zero maintenance on your end. You collect; we keep the servers running. It's the same software as self-host, you're just paying us to handle the infrastructure for you.",
           ],
           [
               'question' => 'Is there a subscription hiding somewhere?',
-              'answer' => "Not a chance. We built a whole pricing page and couldn't find one either. There is no per-seat fee, no storage tier, no 'premium' upsell. One payment, everything included, fur-ever.",
+              'answer' => "Not a chance. We built a whole pricing page and couldn't find one either. There is no per-seat fee, no storage tier, no 'premium' upsell. One payment, everything included, forever.",
           ],
           [
               'question' => 'Why does the calculator always say $49?',
@@ -420,11 +420,11 @@
           ],
           [
               'question' => 'Can I get a refund if I change my mind?',
-              'answer' => "Yes, a 30-day, no-questions-asked, no-hard-feelings refund. If Beaver isn't your cup of bark, we'll return your $49 and wish you well. We'd rather part as friends than gnaw on a grudge.",
+              'answer' => "Yes, a 30-day, no-questions-asked, no-hard-feelings refund. If KolleK isn't your cup of tea, we'll return your $49 and wish you well. We'd rather part as friends than hold a grudge.",
           ],
           [
-              'question' => 'Do you offer a discount for teams, students, or very good beavers?',
-              'answer' => "The price is already $49 one time with unlimited members, so a team of one pays the same as a team of thirty. That's about as discounted as flat gets. Students and very good beavers: you were already getting the deal.",
+              'question' => 'Do you offer a discount for teams, students, or very good collectors?',
+              'answer' => "The price is already $49 one time with unlimited members, so a team of one pays the same as a team of thirty. That's about as discounted as flat gets. Students and very good collectors: you were already getting the deal.",
           ],
       ] as $index => $faq)
         <div class="border-b border-hairline">
@@ -454,10 +454,10 @@
   <section class="mx-auto max-w-[1200px] px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="rounded-xl bg-card px-6 py-14 text-center sm:px-12 sm:py-18">
       <h2 class="mx-auto max-w-[620px] text-[28px] leading-[1.15] font-semibold tracking-[-1px] text-balance text-ink sm:text-[40px]">
-        Stop paddling around. Start collecting.
+        Stop putting it off. Start collecting.
       </h2>
       <p class="mx-auto mt-4.5 max-w-[460px] text-[17px] text-muted">
-        Free if you self-host, $49 once if you'd like us to handle the logs. Either way, no subscription is ever going to dam up your bank account.
+        Free if you self-host, $49 once if you'd like us to handle the hosting. Either way, no subscription is ever going to eat into your bank account.
       </p>
 
       <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

@@ -23,13 +23,13 @@ Alex, who operates the club's instance, holds the flag on their own user and is 
 The flag is managed from the command line, which is deliberate: bootstrap access to the server wide panel should require access to the server.
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Revoke it the same way:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 An existing administrator can also toggle the flag on other users from inside the panel.

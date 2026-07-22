@@ -26,7 +26,7 @@ Webhook-Endpunkte gehören zu deinem Benutzer, nicht zum gesamten Konto.
 Ein Betreiber kann einen Endpunkt auch über die Kommandozeile erstellen:
 
 ```bash
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 Der Befehl gibt die Endpunkt-ID und ihr Signierungsgeheimnis aus.

@@ -15,7 +15,7 @@
           <x-slot:icon>
             @svg('lucide-star', 'size-5 text-muted')
           </x-slot>
-          Beaver does not collect user reviews yet. When it does, you will moderate them here before they appear on the marketing site.
+          KolleK does not collect user reviews yet. When it does, you will moderate them here before they appear on the marketing site.
         </x-empty-state>
       </x-box>
     </div>

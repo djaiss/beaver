@@ -12,7 +12,7 @@ it('grants the instance administration', function () {
         'is_instance_administrator' => false,
     ]);
 
-    $this->artisan('beaver:make-instance-administrator', ['email' => 'monica@friends.com'])
+    $this->artisan('kollek:make-instance-administrator', ['email' => 'monica@friends.com'])
         ->assertSuccessful();
 
     expect($monica->refresh()->isInstanceAdministrator())->toBeTrue();
@@ -24,7 +24,7 @@ it('revokes the instance administration', function () {
         'is_instance_administrator' => true,
     ]);
 
-    $this->artisan('beaver:make-instance-administrator', [
+    $this->artisan('kollek:make-instance-administrator', [
         'email' => 'monica@friends.com',
         '--revoke' => true,
     ])->assertSuccessful();
@@ -33,6 +33,6 @@ it('revokes the instance administration', function () {
 });
 
 it('fails when no user has this email', function () {
-    $this->artisan('beaver:make-instance-administrator', ['email' => 'gunther@friends.com'])
+    $this->artisan('kollek:make-instance-administrator', ['email' => 'gunther@friends.com'])
         ->assertFailed();
 });

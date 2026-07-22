@@ -26,7 +26,7 @@ From the app, open your profile settings and go to **Webhooks**. Add the URL you
 An operator can also create an endpoint from the command line:
 
 ```bash
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 The command prints the endpoint id and its signing secret.

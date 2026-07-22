@@ -68,7 +68,7 @@ Open the URL in a browser and use the registration page to sign up. This creates
 If you want the server wide administration panel, grant your user the flag:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 See @doc(instanceAdmin.grantAccess) for what this does and does not give you.

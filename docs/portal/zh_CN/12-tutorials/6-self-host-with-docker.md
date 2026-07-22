@@ -83,7 +83,7 @@ Alex 完成了注册，进入了新手入门清单页面，并克制住了立刻
 实例管理员可以通过实例管理面板查看实例上的所有账户。这个标志通过命令行授予：
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 使用你刚刚注册时用的邮箱。同样的命令加上 `--revoke` 可以收回这个标志。这个标志具体做了什么、又刻意没有做什么，在 @doc(instanceAdmin.grantAccess) 中有说明。

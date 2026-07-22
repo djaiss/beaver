@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Beaver production image.
+# KolleK production image.
 #
 # Multi-stage build:
 #   1. vendor  — install PHP dependencies with Composer.

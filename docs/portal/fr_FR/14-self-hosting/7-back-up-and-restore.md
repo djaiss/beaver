@@ -32,7 +32,7 @@ docker compose exec mysql mysqldump -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE"
 Archivez le volume de stockage :
 
 ```bash
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar czf /backup/kollek-storage.tar.gz -C /data .
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine tar czf /backup/kollek-storage.tar.gz -C /data .
 ```
 
 Copiez les deux fichiers, ainsi qu'une copie de votre `.env`, quelque part en dehors du serveur. Automatisez cela avec une tâche cron nocturne et conservez plus d'une génération ; une sauvegarde que vous n'avez jamais restaurée est un espoir, pas un plan.
@@ -51,7 +51,7 @@ docker compose exec -T mysql mysql -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" 
 3. Décompressez l'archive de stockage dans le volume de stockage :
 
 ```bash
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar xzf /backup/kollek-storage.tar.gz -C /data
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine tar xzf /backup/kollek-storage.tar.gz -C /data
 ```
 
 4. Redémarrez la stack avec `docker compose up -d` et connectez-vous pour vérifier.

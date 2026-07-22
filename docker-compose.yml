@@ -1,4 +1,4 @@
-# Beaver self-hosting stack.
+# KolleK self-hosting stack.
 #
 # Quick start:
 #   cp .env.docker.example .env
@@ -9,7 +9,7 @@
 # that are independent of the image, so upgrading to a newer image never resets
 # them. See docker/README.md for the full guide.
 
-name: beaver
+name: kollek
 
 services:
   # Web server (nginx + PHP-FPM). Also owns database migrations on boot.
@@ -17,7 +17,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: beaver:latest
+    image: kollek:latest
     restart: unless-stopped
     env_file: .env
     environment:
@@ -38,7 +38,7 @@ services:
 
   # Queue worker. Processes the high, default and low queues.
   queue:
-    image: beaver:latest
+    image: kollek:latest
     restart: unless-stopped
     env_file: .env
     environment:
@@ -61,7 +61,7 @@ services:
 
   # Scheduler. Runs the artisan schedule (e.g. the daily inactive-user cleanup).
   scheduler:
-    image: beaver:latest
+    image: kollek:latest
     restart: unless-stopped
     env_file: .env
     environment:
@@ -81,8 +81,8 @@ services:
     image: mysql:8.4
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE:-beaver}
-      MYSQL_USER: ${DB_USERNAME:-beaver}
+      MYSQL_DATABASE: ${DB_DATABASE:-kollek}
+      MYSQL_USER: ${DB_USERNAME:-kollek}
       MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-secret}
     volumes:

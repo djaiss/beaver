@@ -20,8 +20,8 @@ docker compose exec app php artisan <command>
 ### 授予或撤销实例管理员权限
 
 ```
-php artisan beaver:make-instance-administrator you@example.com
-php artisan beaver:make-instance-administrator you@example.com --revoke
+php artisan kollek:make-instance-administrator you@example.com
+php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 为指定邮箱对应的用户授予（或收回）服务器级管理员标志。安装完成后，第一个管理员就是通过这种方式初始化的。参见 @doc(instanceAdmin.grantAccess)。
@@ -29,7 +29,7 @@ php artisan beaver:make-instance-administrator you@example.com --revoke
 ### 创建 Webhook 端点
 
 ```
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 为某个用户注册一个 Webhook 端点，并打印出它的 ID 和签名密钥。用户也可以自行在个人资料设置中完成这个操作。请注意，目前应用内还没有任何事件会触发 Webhook，参见 @doc(webhooks.overview)。
@@ -45,17 +45,17 @@ php artisan photos:rebuild-search-index
 ### 为翻译搭建语言包骨架
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 提取应用中所有可翻译的字符串，并将其同步到 `lang/` 目录下对应语言的 JSON 文件中。参见 @doc(selfHosting.addLanguage)。
 
 ## 仅用于开发环境
 
-代码库中还有另外两个命令，它们都不应该出现在生产实例上。`beaver:bruno` 会用种子数据重置数据库，用于 API 客户端测试，这会破坏真实数据；`beaver:sync-skills` 用于维护项目自身的工具链。作为运维者，这两个命令你都可以忽略。
+代码库中还有另外两个命令，它们都不应该出现在生产实例上。`kollek:bruno` 会用种子数据重置数据库，用于 API 客户端测试，这会破坏真实数据；`kollek:sync-skills` 用于维护项目自身的工具链。作为运维者，这两个命令你都可以忽略。
 
 :::warning
-切勿在真实实例上运行 `beaver:bruno`。它会清空数据库，并重新填充演示数据。
+切勿在真实实例上运行 `kollek:bruno`。它会清空数据库，并重新填充演示数据。
 :::
 
 ## 接下来去哪里

@@ -20,8 +20,8 @@ docker compose exec app php artisan <command>
 ### Instanzadministration gewähren oder entziehen
 
 ```
-php artisan beaver:make-instance-administrator you@example.com
-php artisan beaver:make-instance-administrator you@example.com --revoke
+php artisan kollek:make-instance-administrator you@example.com
+php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 Gewährt (oder entzieht) das serverweite Administrator-Flag für den Benutzer mit dieser E-Mail-Adresse. So wird der erste Administrator nach der Installation eingerichtet. Siehe @doc(instanceAdmin.grantAccess).
@@ -29,7 +29,7 @@ Gewährt (oder entzieht) das serverweite Administrator-Flag für den Benutzer mi
 ### Einen Webhook-Endpunkt erstellen
 
 ```
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 Registriert einen Webhook-Endpunkt für einen Benutzer und gibt dessen ID und Signaturschlüssel aus. Benutzer können das auch selbst aus ihren Profileinstellungen heraus tun. Beachte, dass momentan noch kein Anwendungsereignis Webhooks auslöst, siehe @doc(webhooks.overview).
@@ -45,17 +45,17 @@ Baut den Suchindex hinter der Fotobibliothek neu auf und füllt fehlende Bildabm
 ### Ein Sprachgebiet für die Übersetzung anlegen
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Extrahiert jeden übersetzbaren String der Anwendung und gleicht ihn mit der JSON-Datei des Sprachgebiets unter `lang/` ab. Siehe @doc(selfHosting.addLanguage).
 
 ## Nur für die Entwicklung
 
-Es gibt zwei weitere Befehle im Code, und keiner davon gehört auf eine Produktivinstanz. `beaver:bruno` setzt die Datenbank mit Seed-Daten für das Testen von API-Clients zurück, was echte Daten zerstören würde, und `beaver:sync-skills` pflegt das eigene Tooling des Projekts. Als Betreiber kannst du beide ignorieren.
+Es gibt zwei weitere Befehle im Code, und keiner davon gehört auf eine Produktivinstanz. `kollek:bruno` setzt die Datenbank mit Seed-Daten für das Testen von API-Clients zurück, was echte Daten zerstören würde, und `kollek:sync-skills` pflegt das eigene Tooling des Projekts. Als Betreiber kannst du beide ignorieren.
 
 :::warning
-Führe `beaver:bruno` niemals auf einer echten Instanz aus. Es löscht die Datenbank vollständig und füllt sie neu mit Demodaten.
+Führe `kollek:bruno` niemals auf einer echten Instanz aus. Es löscht die Datenbank vollständig und füllt sie neu mit Demodaten.
 :::
 
 ## Wie es weitergeht

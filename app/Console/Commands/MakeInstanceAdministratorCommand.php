@@ -14,7 +14,7 @@ class MakeInstanceAdministratorCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'beaver:make-instance-administrator
+    protected $signature = 'kollek:make-instance-administrator
         {email : The email of the user who should administer the instance}
         {--revoke : Take the instance administration away instead of granting it}';
 

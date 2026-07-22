@@ -18,7 +18,7 @@
     <div class="mx-auto w-full max-w-5xl space-y-8">
       <div>
         <h1 class="text-[22px] font-semibold tracking-tight text-ink">Instance overview</h1>
-        <p class="mt-1 text-sm text-muted">Activity across every account on this Beaver instance.</p>
+        <p class="mt-1 text-sm text-muted">Activity across every account on this KolleK instance.</p>
       </div>
 
       {{-- Counts --}}
@@ -55,11 +55,11 @@
         </div>
       </x-box>
 
-      {{-- Everything the mockup showed that Beaver cannot answer yet. Better to
+      {{-- Everything the mockup showed that KolleK cannot answer yet. Better to
            name them than to invent numbers. --}}
       <x-box title="Not tracked yet">
         <x-slot:description>
-          Beaver does not have the data behind these yet.
+          KolleK does not have the data behind these yet.
         </x-slot>
 
         <ul class="space-y-2.5">

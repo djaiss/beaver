@@ -23,13 +23,13 @@ Alex, que gestiona la instancia del club, tiene el indicador en su propio usuari
 El indicador se gestiona desde la línea de comandos, algo deliberado: el acceso inicial al panel de toda la instancia debería requerir acceso al servidor.
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Revócalo de la misma forma:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com --revoke
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 Un administrador ya existente también puede activar o desactivar el indicador de otros usuarios desde dentro del panel.

@@ -35,7 +35,7 @@
             <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Sets') }}</h1>
             <x-help id="sets.list" />
           </div>
-          <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('A set is a checklist of the items that belong together: a full run, a series, a want list. Beaver tracks which ones you own and how close you are to complete.') }}</p>
+          <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('A set is a checklist of the items that belong together: a full run, a series, a want list. KolleK tracks which ones you own and how close you are to complete.') }}</p>
         </div>
 
         @if ($sets->isNotEmpty())
@@ -51,7 +51,7 @@
       {{-- Add set panel --}}
       <div id="add-set-panel" x-show="showAddForm" x-cloak class="mt-6 rounded-xl border border-hairline bg-canvas p-6">
         <div class="text-base font-semibold text-ink">{{ __('New set') }}</div>
-        <p class="mt-0.5 mb-4 text-[13px] text-muted">{{ __('Give it a target so Beaver can show how complete it is. Leave the target empty to just group items.') }}</p>
+        <p class="mt-0.5 mb-4 text-[13px] text-muted">{{ __('Give it a target so KolleK can show how complete it is. Leave the target empty to just group items.') }}</p>
 
         <x-form method="post" :action="route('sets.create', $collection->id)" data-test="create-set-form" x-target="sets-panel add-set-fields notifications" x-on:ajax:after="showAddForm = document.querySelector('#add-set-fields .text-error') !== null">
           <div id="add-set-fields">
@@ -94,7 +94,7 @@
 
             <p class="text-[21px] font-semibold tracking-tight text-ink">{{ __('No sets yet') }}</p>
             <p class="mt-2.5 max-w-[480px] text-[15px] leading-relaxed text-muted">
-              {{ __('Unlike categories, which just group items, a set defines a target: the complete list of what you are chasing. Beaver checks your collection against it, shows a completion bar, and flags how many pieces are still missing.') }}
+              {{ __('Unlike categories, which just group items, a set defines a target: the complete list of what you are chasing. KolleK checks your collection against it, shows a completion bar, and flags how many pieces are still missing.') }}
             </p>
 
             <div class="mt-7 w-full max-w-[440px] rounded-xl border border-dashed border-hairline bg-sidebar px-5 py-5 text-left">

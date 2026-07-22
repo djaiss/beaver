@@ -17,10 +17,10 @@ Every locale is one JSON file under `lang/`, named after the locale code, for ex
 
 ## Scaffold or refresh a locale
 
-The `beaver:localize` command scans the whole application for translatable strings and syncs them into a locale's file:
+The `kollek:localize` command scans the whole application for translatable strings and syncs them into a locale's file:
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 Strings that are new since the last run are added, and strings that no longer exist are removed. In the English file every string is its own translation, so English is always complete by definition. In every other locale, new strings arrive empty, ready for a translator to fill in.

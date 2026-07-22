@@ -3,12 +3,12 @@ APP_NAME=Laravel
 APP_ENV=testing
 APP_KEY=base64:NTrXToqFZJlv48dgPc+kNpc3SBt333TfDnF1mDShsBg=
 APP_DEBUG=true
-APP_URL=https://beaver.test
+APP_URL=https://kollek.test
 
 DB_HOST=localhost
 DB_PORT=5432
-DB_DATABASE=beaver
-DB_USERNAME=beaver
+DB_DATABASE=kollek
+DB_USERNAME=kollek
 DB_PASSWORD=secret
 
 BROADCAST_DRIVER=log

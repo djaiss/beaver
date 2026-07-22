@@ -83,7 +83,7 @@ Alex se registra, aterriza en la lista de primeros pasos, y se resiste a catalog
 Un administrador de instancia puede ver todas las cuentas de la instancia, desde el panel de administración de instancia. El indicador se concede desde la línea de comandos:
 
 ```bash
-docker compose exec app php artisan beaver:make-instance-administrator you@example.com
+docker compose exec app php artisan kollek:make-instance-administrator you@example.com
 ```
 
 Usa el correo con el que te acabas de registrar. El mismo comando con `--revoke` retira el indicador. Qué hace, y qué deliberadamente no hace, el indicador se explica en @doc(instanceAdmin.grantAccess).

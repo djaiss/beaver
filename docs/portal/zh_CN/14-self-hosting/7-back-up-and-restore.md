@@ -32,7 +32,7 @@ docker compose exec mysql mysqldump -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE"
 打包存储卷：
 
 ```bash
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar czf /backup/kollek-storage.tar.gz -C /data .
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine tar czf /backup/kollek-storage.tar.gz -C /data .
 ```
 
 把这两个文件，连同一份 `.env`，复制到服务器之外的地方保存。建议用每晚运行的 cron 任务自动完成，并保留多个历史版本；一份从未验证过能否恢复的备份，只是一种侥幸，算不上真正的方案。
@@ -51,7 +51,7 @@ docker compose exec -T mysql mysql -u root -p"$DB_ROOT_PASSWORD" "$DB_DATABASE" 
 3. 将存储卷的备份文件解压到存储卷中：
 
 ```bash
-docker run --rm -v beaver_storage-data:/data -v "$PWD":/backup alpine tar xzf /backup/kollek-storage.tar.gz -C /data
+docker run --rm -v kollek_storage-data:/data -v "$PWD":/backup alpine tar xzf /backup/kollek-storage.tar.gz -C /data
 ```
 
 4. 使用 `docker compose up -d` 重启服务栈，然后登录验证是否恢复成功。

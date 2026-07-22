@@ -14,7 +14,7 @@ uses(DatabaseTransactions::class);
 it('destroys an account', function () {
     Queue::fake();
     Mail::fake();
-    config(['app.account_deletion_notification_email' => 'regis@beaver.com']);
+    config(['app.account_deletion_notification_email' => 'regis@kollek.com']);
 
     $user = User::factory()->create();
 
@@ -30,5 +30,5 @@ it('destroys an account', function () {
     expect(UserDeletionReason::query()->count())->toEqual(1);
 
     Mail::assertQueued(UserDeleted::class, fn (UserDeleted $job): bool => $job->reason === 'the service is not working'
-        && $job->to[0]['address'] === 'regis@beaver.com');
+        && $job->to[0]['address'] === 'regis@kollek.com');
 });

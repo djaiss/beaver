@@ -20,8 +20,8 @@ docker compose exec app php artisan <command>
 ### インスタンス管理者権限の付与と剥奪
 
 ```
-php artisan beaver:make-instance-administrator you@example.com
-php artisan beaver:make-instance-administrator you@example.com --revoke
+php artisan kollek:make-instance-administrator you@example.com
+php artisan kollek:make-instance-administrator you@example.com --revoke
 ```
 
 指定したメールアドレスのユーザーに、サーバー全体の管理者フラグを付与(または剥奪)します。インストール後、最初の管理者を用意する方法はこれです。@doc(instanceAdmin.grantAccess)を参照してください。
@@ -29,7 +29,7 @@ php artisan beaver:make-instance-administrator you@example.com --revoke
 ### Webhookエンドポイントを作成する
 
 ```
-php artisan beaver:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
+php artisan kollek:create-webhook-endpoint you@example.com https://example.com/hooks --label="My receiver"
 ```
 
 ユーザーのためにWebhookエンドポイントを登録し、そのIDと署名用シークレットを出力します。ユーザー自身がプロフィール設定から行うこともできます。なお、現時点ではWebhookを発火させるアプリケーションイベントはまだありません。@doc(webhooks.overview)を参照してください。
@@ -45,17 +45,17 @@ php artisan photos:rebuild-search-index
 ### 翻訳用にロケールをひな形化する
 
 ```
-php artisan beaver:localize fr_FR
+php artisan kollek:localize fr_FR
 ```
 
 アプリケーション内の翻訳可能な文字列をすべて抽出し、そのロケールの`lang/`配下のJSONファイルに同期します。@doc(selfHosting.addLanguage)を参照してください。
 
 ## 開発用のみ
 
-コードベースにはあと2つコマンドがありますが、どちらも本番インスタンスで使うものではありません。`beaver:bruno`は、APIクライアントのテスト用にシードデータでデータベースをリセットするもので、実データを破壊してしまいます。`beaver:sync-skills`は、プロジェクト自身のツール群を保守するためのものです。運用者としては、どちらも気にする必要はありません。
+コードベースにはあと2つコマンドがありますが、どちらも本番インスタンスで使うものではありません。`kollek:bruno`は、APIクライアントのテスト用にシードデータでデータベースをリセットするもので、実データを破壊してしまいます。`kollek:sync-skills`は、プロジェクト自身のツール群を保守するためのものです。運用者としては、どちらも気にする必要はありません。
 
 :::warning
-本番インスタンスで`beaver:bruno`を絶対に実行しないでください。データベースを消去し、デモデータで再シードします。
+本番インスタンスで`kollek:bruno`を絶対に実行しないでください。データベースを消去し、デモデータで再シードします。
 :::
 
 ## 次に読むべきもの
