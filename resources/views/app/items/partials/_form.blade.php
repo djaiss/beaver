@@ -66,6 +66,7 @@
     mainPhotoId: @js($mainPhotoId),
     nextPhotoKey: 0,
     dragging: false,
+    sizeError: '',
     get selectedType() { return this.types.find(t => String(t.id) === String(this.typeId)) || null },
     get customFields() { return this.selectedType ? this.selectedType.fields : [] },
     get canSubmit() { return this.name.trim().length > 0 },
@@ -96,8 +97,15 @@
       if (this.mainPhotoId === null) this.mainPhotoId = id
     },
     addFiles(fileList) {
+      this.sizeError = ''
       for (const file of fileList) {
         if (!file.type.startsWith('image/')) continue
+        // Reject here so an oversized photo never leaves the browser: the server
+        // caps a photo at 10 MB, and a bigger request would bounce off nginx.
+        if (window.oversizedFiles([file], 10240).length) {
+          this.sizeError = @js(__('Each photo must be under 10 MB. Larger ones were skipped.'))
+          continue
+        }
         this.newPhotos.push({ key: this.nextPhotoKey++, file, preview: URL.createObjectURL(file) })
       }
       this.syncPhotoInput()
@@ -229,6 +237,7 @@
       </template>
       <input type="hidden" name="main_photo_id" :value="mainPhotoId ?? ''" />
 
+      <p x-show="sizeError" x-cloak x-text="sizeError" class="mt-2 text-sm text-error"></p>
       <x-error :messages="$errors->get('photos')" class="mt-2" />
       <x-error :messages="$errors->get('photos.*')" class="mt-2" />
     </div>

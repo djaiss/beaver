@@ -26,7 +26,7 @@ Attach to the most specific place. A receipt attached to its purchase transactio
 
 A document is either an **uploaded file** or an **external link**.
 
-Uploads accept PDFs, common image formats (including HEIC photos from a phone), Word and Excel files, CSV, and plain text, up to 20 MB per file. Stored files are private: they are served only to signed in members of your account, never from a public address.
+Uploads accept PDFs, common image formats (including HEIC photos from a phone), Word and Excel files, CSV, and plain text, up to 12 MB per file. Stored files are private: they are served only to signed in members of your account, never from a public address.
 
 An external link points at something that lives elsewhere, such as an auction listing or a manufacturer's archive entry. KolleK stores the address, not a copy of the page.
 

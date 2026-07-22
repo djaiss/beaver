@@ -26,7 +26,7 @@ Anexe ao lugar mais específico possível. Um recibo anexado à sua transação 
 
 Um documento é um **arquivo enviado** ou um **link externo**.
 
-Envios aceitam PDFs, formatos de imagem comuns (incluindo fotos HEIC de um celular), arquivos do Word e do Excel, CSV e texto simples, com até 20 MB por arquivo. Os arquivos armazenados são privados: são servidos apenas para membros autenticados da sua conta, nunca a partir de um endereço público.
+Envios aceitam PDFs, formatos de imagem comuns (incluindo fotos HEIC de um celular), arquivos do Word e do Excel, CSV e texto simples, com até 12 MB por arquivo. Os arquivos armazenados são privados: são servidos apenas para membros autenticados da sua conta, nunca a partir de um endereço público.
 
 Um link externo aponta para algo que vive em outro lugar, como um anúncio de leilão ou um registro de arquivo de um fabricante. O KolleK guarda o endereço, não uma cópia da página.
 

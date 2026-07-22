@@ -86,6 +86,13 @@ window.switchPhotoView = (target) => {
   }).catch(() => {});
 };
 
+// --- Upload size guard ---
+// Returns the files from `fileList` that are larger than maxKilobytes, so an
+// upload form can reject them in the browser and show a friendly message rather
+// than letting an oversized request hit the server and bounce off nginx.
+window.oversizedFiles = (fileList, maxKilobytes) =>
+  Array.from(fileList ?? []).filter((file) => file.size > maxKilobytes * 1024);
+
 // --- Light/dark theme ---
 // The initial class is set before paint by the inline script in partials/meta.
 Alpine.store('theme', {
