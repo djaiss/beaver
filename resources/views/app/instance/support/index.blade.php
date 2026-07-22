@@ -5,9 +5,28 @@
 
   <div class="px-6 py-8 lg:px-12 lg:py-10">
     <div class="mx-auto w-full max-w-6xl space-y-6">
-      <div>
-        <h1 class="text-[22px] font-semibold tracking-tight text-ink">Support tickets</h1>
-        <p class="mt-1 text-sm text-muted">Messages sent to support from across the instance.</p>
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 class="text-[22px] font-semibold tracking-tight text-ink">Support tickets</h1>
+          <p class="mt-1 text-sm text-muted">Messages sent to support from every account on this instance.</p>
+        </div>
+
+        {{-- A search box is a genuinely free-form input, so it stays in the query
+             string while the tab lives in the path. Submitting lands back on the
+             same tab with the term applied and the selection reset to the first
+             match. --}}
+        <form method="get" action="{{ route('instanceAdmin.support.index', ['status' => $status]) }}" class="w-full sm:max-w-xs">
+          <div class="flex items-center gap-2 rounded-lg border border-hairline bg-input px-3 py-2 shadow-xs dark:shadow-none">
+            @svg('lucide-search', 'size-4 shrink-0 text-muted-soft')
+            <input
+              type="search"
+              name="search"
+              value="{{ $search }}"
+              placeholder="Search subject, requester, account…"
+              class="min-w-0 flex-1 border-none bg-transparent p-0 text-[13px] text-ink placeholder-muted-soft focus:ring-0"
+            />
+          </div>
+        </form>
       </div>
 
       {{-- Tabs. Each bucket is a dedicated URL, so switching one is a normal
@@ -50,6 +69,9 @@
             <x-slot:icon>
               @svg('lucide-message-square', 'size-5 text-muted')
             </x-slot>
+            @if ($search !== '')
+              No conversations match "{{ $search }}".
+            @else
             @switch($status)
               @case('closed')
                 No closed conversations yet.
@@ -60,6 +82,7 @@
               @default
                 No open conversations. When someone writes to support, their message lands here.
             @endswitch
+            @endif
           </x-empty-state>
         </x-box>
       @else
@@ -89,6 +112,14 @@
                   <span class="min-w-0 flex-1 truncate text-xs text-muted">{{ $ticket->user->getFullName() }}</span>
                   <span class="shrink-0 text-xs text-muted-soft">{{ $ticket->created_at->diffForHumans() }}</span>
                 </div>
+
+                {{-- The account the requester belongs to. Spanning every account is
+                     what sets the panel apart from a single tenant's own inbox, so
+                     each ticket names its account. --}}
+                <div class="mt-3 flex items-center gap-1.5 border-t border-dashed border-hairline pt-3">
+                  @svg('lucide-folder', 'size-3 shrink-0 text-badge-orange')
+                  <span class="min-w-0 truncate font-mono text-[11px] font-medium text-muted">{{ $ticket->user->account->name }}</span>
+                </div>
               </a>
             @endforeach
           </div>
@@ -111,12 +142,24 @@
                   <x-badge :color="$selected->status->badgeColor()">{{ $selected->status->label() }}</x-badge>
                 </div>
 
-                <div class="mt-4 flex items-center gap-3">
+                <div class="mt-4 flex items-center gap-3 rounded-xl border border-hairline bg-card/60 p-3">
                   <x-avatar :user="$selected->user" :size="32" class="size-8 shrink-0 text-xs" />
-                  <div class="min-w-0">
+                  <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-semibold text-ink">{{ $selected->user->getFullName() }}</p>
                     <p class="truncate text-xs text-muted-soft">{{ $selected->user->email }}</p>
                   </div>
+
+                  {{-- Jump straight to the requester's account. Being able to step
+                       into the account behind a ticket is the whole point of reading
+                       it from the instance panel. --}}
+                  <a
+                    href="{{ route('instanceAdmin.accounts.show', $selected->user->account) }}"
+                    data-turbo="true"
+                    class="flex shrink-0 items-center gap-1.5 rounded-lg border border-hairline bg-canvas px-2.5 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-muted-soft"
+                  >
+                    @svg('lucide-folder', 'size-3.5 text-badge-orange')
+                    <span class="max-w-32 truncate">{{ $selected->user->account->name }}</span>
+                  </a>
                 </div>
               </div>
 
@@ -147,42 +190,61 @@
               {{-- Reply as the team. Sending marks the conversation answered and
                    emails the person who opened it. --}}
               <div class="mt-auto space-y-3 border-t border-hairline p-5">
-                <x-form method="post" :action="route('instanceAdmin.support.messages.create', $selected->id)" class="space-y-2">
+                {{-- The composer holds only the textarea. Its submit lives in the
+                     shared action bar below and is wired back to it with the form
+                     attribute, so the send and status buttons can group on one row
+                     even though a status change is a separate form. --}}
+                <x-form id="team-reply-form" method="post" :action="route('instanceAdmin.support.messages.create', $selected->id)" class="space-y-2">
                   <textarea
                     name="body"
                     rows="3"
                     placeholder="Write a reply…"
+                    form="team-reply-form"
                     class="block w-full resize-y rounded-lg border border-hairline bg-input px-3 py-2 text-[13px] leading-relaxed text-ink placeholder-muted-soft shadow-xs aria-invalid:border-error dark:shadow-none"
                   >{{ old('body') }}</textarea>
                   <x-error :messages="$errors->get('body')" />
+                </x-form>
 
-                  <x-button type="submit" data-test="team-reply-button">
+                @php($isClosed = $selected->status === \App\Enums\SupportTicketStatus::Closed)
+
+                <x-form id="team-status-form" method="put" :action="route('instanceAdmin.support.update', $selected->id)">
+                  <input type="hidden" name="status" value="{{ $isClosed ? 'open' : 'closed' }}" />
+                </x-form>
+
+                {{-- One action bar: the reply and the status change sit together on
+                     the left, and the closed-at note trails on the right rather than
+                     leaving the two buttons stranded at opposite edges. --}}
+                <div class="flex flex-wrap items-center gap-2">
+                  <x-button type="submit" form="team-reply-form" data-test="team-reply-button">
                     <x-slot:icon>
                       <x-lucide-send class="size-4" />
                     </x-slot>
                     Send reply
                   </x-button>
-                </x-form>
 
-                <div class="flex items-center gap-3 text-xs text-muted">
-                  @if ($selected->status === \App\Enums\SupportTicketStatus::Closed)
-                    <span class="inline-flex items-center gap-2">
+                  @if ($isClosed)
+                    <x-button.secondary type="submit" form="team-status-form" data-test="reopen-button">Reopen conversation</x-button.secondary>
+                    <span class="ml-auto inline-flex items-center gap-1.5 text-xs text-muted-soft">
                       @svg('lucide-check', 'size-4 shrink-0')
                       Closed {{ $selected->closed_at?->diffForHumans() }}
                     </span>
-                    <div class="flex-1"></div>
-                    <x-form method="put" :action="route('instanceAdmin.support.update', $selected->id)">
-                      <input type="hidden" name="status" value="open" />
-                      <x-button.secondary type="submit" data-test="reopen-button">Reopen conversation</x-button.secondary>
-                    </x-form>
                   @else
-                    <div class="flex-1"></div>
-                    <x-form method="put" :action="route('instanceAdmin.support.update', $selected->id)">
-                      <input type="hidden" name="status" value="closed" />
-                      <x-button.secondary type="submit" data-test="close-button">Close conversation</x-button.secondary>
-                    </x-form>
+                    <x-button.secondary type="submit" form="team-status-form" data-test="close-button" class="ml-auto">Close conversation</x-button.secondary>
                   @endif
                 </div>
+              </div>
+
+              {{-- A one-line reminder of what replying does from here, phrased for
+                   the bucket the conversation is in. --}}
+              <div class="flex items-center gap-2 border-t border-hairline bg-card/40 px-5 py-3">
+                @svg('lucide-clock', 'size-3.5 shrink-0 text-muted-soft')
+                <span class="text-xs text-muted">
+                  @if ($selected->status === \App\Enums\SupportTicketStatus::Closed)
+                    Closed. Reopen to continue the conversation with the requester.
+                  @else
+                    Replying from here lands in the requester's support inbox and notifies them by email.
+                  @endif
+                </span>
               </div>
             @endif
           </div>

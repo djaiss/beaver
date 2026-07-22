@@ -23,25 +23,56 @@ class SupportController extends Controller
      * closed, so a conversation the team has answered stays in view until it is
      * closed for good.
      */
-    public function index(string $status = 'open', ?int $ticket = null): View
+    public function index(Request $request, string $status = 'open', ?int $ticket = null): View
     {
+        $search = trim((string) $request->query('search', ''));
+
         $tickets = SupportTicket::query()
-            ->with('user')
+            ->with('user.account')
             ->withCount('messages')
             ->when($status === 'open', fn ($query) => $query->where('status', '!=', SupportTicketStatus::Closed))
             ->when($status === 'closed', fn ($query) => $query->where('status', SupportTicketStatus::Closed))
             ->latest()
             ->latest('id')
-            ->get();
+            ->get()
+            ->pipe(fn ($tickets) => $this->filterBySearch($tickets, $search));
 
         return view('app.instance.support.index', [
             'status' => $status,
+            'search' => $search,
             'tickets' => $tickets,
             'selected' => $this->resolveSelected($ticket, $tickets),
             'openCount' => SupportTicket::query()->where('status', '!=', SupportTicketStatus::Closed)->count(),
             'closedCount' => SupportTicket::query()->where('status', SupportTicketStatus::Closed)->count(),
             'allCount' => SupportTicket::query()->count(),
         ]);
+    }
+
+    /**
+     * Narrow the inbox to a free-text search. The subject, requester and account
+     * name are all encrypted at rest, so the match happens in memory over the
+     * already-loaded collection rather than in SQL.
+     *
+     * @param  Collection<int, SupportTicket>  $tickets
+     * @return Collection<int, SupportTicket>
+     */
+    private function filterBySearch(Collection $tickets, string $search): Collection
+    {
+        if ($search === '') {
+            return $tickets;
+        }
+
+        $needle = mb_strtolower($search);
+
+        return $tickets->filter(function (SupportTicket $ticket) use ($needle): bool {
+            $haystack = mb_strtolower(implode(' ', [
+                $ticket->subject,
+                $ticket->user->getFullName(),
+                $ticket->user->account->name,
+            ]));
+
+            return str_contains($haystack, $needle);
+        })->values();
     }
 
     /**

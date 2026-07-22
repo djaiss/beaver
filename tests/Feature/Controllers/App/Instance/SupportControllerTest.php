@@ -60,6 +60,38 @@ it('spans every account on the instance', function () {
     expect($response->viewData('tickets')->pluck('id')->all())->toContain($theirs->id);
 });
 
+it('narrows the inbox to a search term', function () {
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+
+    $centralPerk = $this->createAccount('Central Perk');
+    $ross = $this->createUser(['account_id' => $centralPerk->id]);
+
+    $matching = SupportTicket::factory()->create(['user_id' => $ross->id, 'subject' => 'The espresso machine is broken']);
+    $other = SupportTicket::factory()->create(['subject' => 'Cannot export my collection']);
+
+    $response = $this->actingAs($monica)->get('instance-admin/support/all?search=espresso');
+
+    $response->assertOk();
+    expect($response->viewData('search'))->toBe('espresso');
+    expect($response->viewData('tickets')->pluck('id')->all())->toBe([$matching->id]);
+    expect($response->viewData('tickets')->pluck('id')->all())->not->toContain($other->id);
+});
+
+it('matches a search term against the requester account name', function () {
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+
+    $centralPerk = $this->createAccount('Central Perk');
+    $ross = $this->createUser(['account_id' => $centralPerk->id]);
+    $theirs = SupportTicket::factory()->create(['user_id' => $ross->id]);
+
+    SupportTicket::factory()->create();
+
+    $response = $this->actingAs($monica)->get('instance-admin/support/all?search=central+perk');
+
+    $response->assertOk();
+    expect($response->viewData('tickets')->pluck('id')->all())->toBe([$theirs->id]);
+});
+
 it('selects the first conversation of the tab by default', function () {
     $monica = $this->createUser(['is_instance_administrator' => true]);
     SupportTicket::factory()->create();
