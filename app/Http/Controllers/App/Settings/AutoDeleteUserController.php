@@ -23,6 +23,7 @@ class AutoDeleteUserController extends Controller
         )->execute();
 
         return to_route('profile.security.index')
-            ->with('status', trans('Changes saved'));
+            ->with('status', trans('Changes saved'))
+            ->with('status_description', trans('Your auto-delete preference was updated.'));
     }
 }

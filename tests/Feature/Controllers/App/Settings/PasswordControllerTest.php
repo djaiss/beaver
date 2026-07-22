@@ -19,4 +19,23 @@ it('allows the user to update their password', function () {
         ]);
 
     $response->assertRedirect('/profile/security');
+    $response->assertSessionHas('status', 'Changes saved');
+    $response->assertSessionHas('status_description', 'Your new password is now in effect.');
+});
+
+it('rejects an incorrect current password with a validation error', function () {
+    $user = $this->createUser([
+        'password' => bcrypt('5UTHSmdj'),
+    ]);
+
+    $response = $this->actingAs($user)
+        ->from('/profile/security')
+        ->put('/profile/security/password', [
+            'current_password' => 'not-my-password',
+            'new_password' => 'new-5UTHSmdj',
+            'new_password_confirmation' => 'new-5UTHSmdj',
+        ]);
+
+    $response->assertRedirect('/profile/security');
+    $response->assertSessionHasErrors('current_password');
 });

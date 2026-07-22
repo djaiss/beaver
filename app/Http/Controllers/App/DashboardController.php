@@ -6,23 +6,34 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use App\Models\Log;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         $user = $request->user();
         $account = $user->account;
+
+        // Every route out of authentication lands here, so this is the one place that has to
+        // know an empty account belongs on the getting started screen instead. Once the account
+        // holds a collection there is a dashboard worth showing, and the redirect stops.
+        if ($account->show_getting_started && ! $account->collections()->exists()) {
+            return to_route('gettingStarted.index');
+        }
+
         $userIds = $account->users()->pluck('id');
 
         $activity = Log::query()
             ->whereIn('user_id', $userIds)
+            ->with('user')
             ->latest()
             ->limit(6)
             ->get()
             ->map(fn (Log $log): object => (object) [
+                'user' => $log->user,
                 'name' => $log->getUserName(),
                 'description' => $log->getTranslatedDescription(),
                 'createdAtHuman' => $log->created_at->diffForHumans(),

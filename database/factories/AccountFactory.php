@@ -22,6 +22,7 @@ class AccountFactory extends Factory
         return [
             'name' => fake()->company(),
             'currency_code' => 'USD',
+            'show_getting_started' => true,
         ];
     }
 }

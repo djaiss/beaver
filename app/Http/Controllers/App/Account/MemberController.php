@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App\Account;
 
 use App\Actions\InviteToAccount;
+use App\Actions\PreviewAccountInvitation;
 use App\Actions\RemoveAccountMember;
 use App\Actions\UpdateMemberRole;
 use App\Enums\PermissionEnum;
@@ -32,10 +33,18 @@ class MemberController extends Controller
             ->where('expires_at', '>', now())
             ->get();
 
+        $showPreview = $request->boolean('preview');
+        $role = (PermissionEnum::tryFrom((string) $request->query('role')) ?? PermissionEnum::Viewer)->value;
+        $email = (string) $request->query('email', '');
+
         return view('app.settings.members.index', [
             'account' => $account,
             'members' => $members,
             'invitations' => $invitations,
+            'showPreview' => $showPreview,
+            'previewEmail' => $email,
+            'previewRole' => $role,
+            'previewHtml' => $showPreview ? new PreviewAccountInvitation(account: $account, role: $role)->execute() : null,
         ]);
     }
 
@@ -54,7 +63,8 @@ class MemberController extends Controller
         )->execute();
 
         return to_route('settings.members.index')
-            ->with('status', __('Invitation sent successfully'));
+            ->with('status', __('Invitation sent successfully'))
+            ->with('status_description', __('An invitation email is on its way.'));
     }
 
     public function update(Request $request, int $userId): RedirectResponse
@@ -74,7 +84,8 @@ class MemberController extends Controller
         )->execute();
 
         return to_route('settings.members.index')
-            ->with('status', __('Member role updated successfully'));
+            ->with('status', __('Member role updated successfully'))
+            ->with('status_description', __("The member's permissions were changed."));
     }
 
     public function destroy(Request $request, int $userId): RedirectResponse
@@ -89,6 +100,7 @@ class MemberController extends Controller
         )->execute();
 
         return to_route('settings.members.index')
-            ->with('status', __('Member removed successfully'));
+            ->with('status', __('Member removed successfully'))
+            ->with('status_description', __('The member no longer has access to the account.'));
     }
 }

@@ -1,4 +1,4 @@
-<x-box>
+<x-box helpId="profile.details">
   <x-slot:title>{{ __('Details') }}</x-slot>
 
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -8,7 +8,8 @@
       <p class="text-sm text-muted">{{ __('If you change your email address, you will need to verify it again. In this case, you will receive a new verification link.') }}</p>
     </div>
 
-    <x-form method="put" :action="route('profile.update')" class="space-y-4">
+    {{-- A locale change must re-render the whole page, not just this fragment. --}}
+    <x-form id="profile-details-form" x-target="profile-details-form" x-on:ajax:success="if ($el.querySelector('#locale').value.replace('_', '-') !== document.documentElement.lang) window.location.reload()" method="put" :action="route('profile.update')" class="space-y-4">
       <!-- First name -->
       <x-input id="first_name" value="{{ old('first_name', $user->first_name) }}" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" autofocus />
 
@@ -22,7 +23,7 @@
       <x-input id="email" value="{{ old('email', $user->email) }}" :label="__('Email')" required placeholder="john@doe.com" :error="$errors->get('email')" />
 
       <!-- locale -->
-      <x-select id="locale" :label="__('Language')" :options="['en' => __('English'), 'fr_FR' => __('French'), 'es_ES' => __('Spanish'), 'de_DE' => __('German')]" selected="{{ $user->locale }}" required :error="$errors->get('locale')" />
+      <x-select id="locale" :label="__('Language')" :options="['en' => __('English'), 'fr_FR' => __('French'), 'es_ES' => __('Spanish'), 'de_DE' => __('German'), 'pt_BR' => __('Portuguese'), 'zh_CN' => __('Chinese'), 'ja_JP' => __('Japanese')]" selected="{{ $user->locale }}" required :error="$errors->get('locale')" />
 
       <!-- time format -->
       <x-select id="time_format_24h" :label="__('Time format')" :options="['true' => __('24-hour (e.g., 14:00)'), 'false' => __('12-hour (e.g., 2:00 PM)')]" selected="{{ $user->time_format_24h ? 'true' : 'false' }}" required :error="$errors->get('time_format_24h')" />

@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property int $id
  * @property int $type_id
+ * @property int|null $group_id
  * @property string $name
  * @property FieldTypeEnum $field_type
  * @property array<int, mixed>|null $options
@@ -44,6 +45,7 @@ class CustomField extends Model
      */
     protected $fillable = [
         'type_id',
+        'group_id',
         'name',
         'field_type',
         'options',
@@ -73,5 +75,15 @@ class CustomField extends Model
     public function collectionType(): BelongsTo
     {
         return $this->belongsTo(CollectionType::class, 'type_id');
+    }
+
+    /**
+     * Get the group the field sits in, if any.
+     *
+     * @return BelongsTo<CustomFieldGroup, $this>
+     */
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(CustomFieldGroup::class, 'group_id');
     }
 }

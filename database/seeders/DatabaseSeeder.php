@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Config;
 
+/*
+ * Model events stay on while seeding. A collection gets its uuid from a
+ * `creating` hook, so muting them would write rows the app cannot serve.
+ */
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
         // Run seeders in the correct order
         $this->call([
             UserSeeder::class,
+            CollectionSeeder::class,
         ]);
 
         $this->displayLoginInfo();
@@ -35,13 +37,14 @@ class DatabaseSeeder extends Seeder
         $this->command->newLine();
         $this->command->info('-----------------------------');
         $this->command->line('|');
-        $this->command->line('| Welcome to beaver');
+        $this->command->line('| Welcome to kollek');
         $this->command->line('|');
         $this->command->info('-----------------------------');
         $this->command->info('| You can now sign in with one of these two accounts:');
         $this->command->line('| An account with a lot of data:');
         $this->command->line('| username: admin@admin.com');
         $this->command->line('| password: admin123');
+        $this->command->line('| this one also administers the instance');
         $this->command->line('|----------------------------');
         $this->command->line('| A blank account:');
         $this->command->line('| username: blank@blank.com');

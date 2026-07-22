@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Services\DocNavigationBuilder;
+use App\Models\Copy;
+use App\Models\InsuranceRecord;
+use App\Models\Loan;
+use App\Models\MaintenanceRecord;
+use App\Models\ProvenanceEvent;
+use App\Models\Transaction;
+use App\Models\Valuation;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,12 +23,44 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerAuthorMacro();
+        $this->registerMorphMap();
+        $this->registerDefaultUrlLocale();
+    }
 
-        View::composer('layouts.docs', function (\Illuminate\View\View $view): void {
-            $version = request()->route('version') ?? config('docs.default_version');
-            $view->with('docNav', (new DocNavigationBuilder)->build($version));
-            $view->with('currentVersion', $version);
-        });
+    /**
+     * Every public URL carries a language prefix (getkollek.com/en/...), so the
+     * {locale} route parameter needs a value even when a URL is generated
+     * outside a localized request, such as a "back to the site" link on an auth
+     * page. Default it to the default locale's prefix; the marketing locale
+     * middleware overrides it per request to the locale actually being viewed.
+     */
+    private function registerDefaultUrlLocale(): void
+    {
+        $default = config('docs.default_locale');
+
+        URL::defaults(['locale' => config("docs.locales.{$default}.url", $default)]);
+    }
+
+    /**
+     * Pins the polymorphic type strings that documents store, so a renamed or
+     * moved model never changes what is written in documentable_type, and a raw
+     * class name never leaks into the database or the API.
+     *
+     * This registers the map without enforcing it globally: the framework's own
+     * morphs (Sanctum tokens are tokenable to a User) stay on their class names,
+     * and only the documentable models resolve to these stable aliases.
+     */
+    private function registerMorphMap(): void
+    {
+        Relation::morphMap([
+            'copy' => Copy::class,
+            'transaction' => Transaction::class,
+            'provenance_event' => ProvenanceEvent::class,
+            'valuation' => Valuation::class,
+            'insurance_record' => InsuranceRecord::class,
+            'maintenance_record' => MaintenanceRecord::class,
+            'loan' => Loan::class,
+        ]);
     }
 
     /**

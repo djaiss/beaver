@@ -7,13 +7,26 @@
     <div class="mx-auto w-full max-w-3xl space-y-8">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Collection types') }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Collection types') }}</h1>
+            <x-help id="settings.collection_types" />
+          </div>
           <p class="mt-1 max-w-lg text-sm text-muted">{{ __('Types define the custom fields available on items, and which collections can use them.') }}</p>
         </div>
 
-        <x-form method="post" :action="route('settings.types.create')" class="shrink-0">
-          <x-button type="submit" data-test="new-type-button">{{ __('New type') }}</x-button>
-        </x-form>
+        <div class="shrink-0">
+          {{-- The primary action posts, so its form lives outside the menu and is reached with form=. --}}
+          <x-form method="post" :action="route('settings.types.create')" id="new-type-form" data-turbo="true" class="hidden"></x-form>
+
+          <x-button.split type="submit" form="new-type-form" :label="__('New type')" data-test="new-type-button">
+            <x-menu-item :href="route('settings.types.import.new')" turbo data-test="import-type-button">
+              <x-slot:icon>
+                @svg('lucide-download', 'size-4 text-muted')
+              </x-slot>
+              {{ __('Import JSON') }}
+            </x-menu-item>
+          </x-button.split>
+        </div>
       </div>
 
       <x-box padding="p-0">
@@ -29,6 +42,11 @@
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm font-semibold text-ink">{{ $type->name }}</p>
               <p class="mt-0.5 truncate text-xs text-muted">{{ $type->field_summary }}</p>
+            </div>
+
+            <div class="hidden w-16 shrink-0 text-right sm:block">
+              <p class="text-sm font-semibold text-ink">{{ $type->group_count }}</p>
+              <p class="text-xs text-muted-soft">{{ __('groups') }}</p>
             </div>
 
             <div class="w-24 shrink-0 text-right">

@@ -99,16 +99,16 @@ jobs:
         if: matrix.connection == 'mysql'
         run: |
           sudo systemctl start mysql.service
-          mysql --protocol=tcp -u root -proot -e "CREATE DATABASE IF NOT EXISTS beaver CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+          mysql --protocol=tcp -u root -proot -e "CREATE DATABASE IF NOT EXISTS kollek CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
       - name: Create pgsql database
         if: matrix.connection == 'pgsql'
         run: |
           sudo systemctl start postgresql.service
-          sudo -u postgres psql --command="CREATE USER beaver PASSWORD 'secret'" --command="\du"
-          sudo -u postgres psql --command="ALTER USER beaver CREATEDB"
-          sudo -u postgres createdb --owner=beaver beaver
-          PGPASSWORD=secret psql --username=beaver --host=localhost --list beaver
+          sudo -u postgres psql --command="CREATE USER kollek PASSWORD 'secret'" --command="\du"
+          sudo -u postgres psql --command="ALTER USER kollek CREATEDB"
+          sudo -u postgres createdb --owner=kollek kollek
+          PGPASSWORD=secret psql --username=kollek --host=localhost --list kollek
 
       - name: Generate key
         run: php artisan key:generate

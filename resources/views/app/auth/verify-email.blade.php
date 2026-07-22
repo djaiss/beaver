@@ -8,7 +8,7 @@
           <div class="flex items-center gap-x-2">
             <a href="" class="group flex items-center gap-x-2 transition-transform ease-in-out">
               <div class="flex h-7 w-7 items-center justify-center transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
-                <x-image src="{{ asset('images/marketing/logo/30x30.webp') }}" srcset="{{ asset('images/marketing/logo/30x30.webp') }} 1x, {{ asset('images/marketing/logo/30x30@2x.webp') }} 2x" width="25" height="25" alt="{{ config('app.name') }} logo" />
+                <x-logo size="25" />
               </div>
             </a>
             <h1 class="text-2xl font-semibold text-ink">

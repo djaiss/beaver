@@ -94,3 +94,26 @@ it('encrypts the name at rest', function () {
     expect($account->name)->toBe('Central Perk');
     expect($account->fresh()->name)->toBe('Central Perk');
 });
+
+it('knows who owns it', function () {
+    $account = Account::factory()->create();
+    $owner = User::factory()->create(['account_id' => $account->id, 'role' => PermissionEnum::Owner->value]);
+    $editor = User::factory()->create(['account_id' => $account->id, 'role' => PermissionEnum::Editor->value]);
+
+    expect($account->isOwnedBy($owner))->toBeTrue();
+    expect($account->isOwnedBy($editor))->toBeFalse();
+});
+
+// User::isOwner() only reads the role, so an owner of a different account would pass it.
+it('does not treat the owner of another account as its own', function () {
+    $account = Account::factory()->create();
+    $other = Account::factory()->create();
+    $stranger = User::factory()->create(['account_id' => $other->id, 'role' => PermissionEnum::Owner->value]);
+
+    expect($stranger->isOwner())->toBeTrue();
+    expect($account->isOwnedBy($stranger))->toBeFalse();
+});
+
+it('shows the getting started screen by default', function () {
+    expect(Account::factory()->create()->show_getting_started)->toBeTrue();
+});

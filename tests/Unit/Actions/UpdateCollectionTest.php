@@ -7,6 +7,7 @@ use App\Enums\UserActionEnum;
 use App\Enums\VisibilityEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
+use App\Models\CollectionType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -67,4 +68,68 @@ it('throws when the user is only a viewer', function () {
         collection: $collection,
         name: 'New name',
     )->execute();
+});
+
+it('syncs the collection types when ids are given', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $stale = CollectionType::factory()->create(['account_id' => $account->id]);
+    $wanted = CollectionType::factory()->create(['account_id' => $account->id]);
+    $collection->collectionTypes()->attach($stale->id);
+
+    new UpdateCollection(
+        user: $owner,
+        collection: $collection,
+        name: 'Comics',
+        visibility: VisibilityEnum::Shared->value,
+        collectionTypeIds: [$wanted->id],
+    )->execute();
+
+    expect($collection->fresh()->collectionTypes->pluck('id')->all())->toBe([$wanted->id]);
+});
+
+it('ignores a type belonging to another account', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $foreign = CollectionType::factory()->create();
+
+    new UpdateCollection(
+        user: $owner,
+        collection: $collection,
+        name: 'Comics',
+        visibility: VisibilityEnum::Shared->value,
+        collectionTypeIds: [$foreign->id],
+    )->execute();
+
+    expect($collection->fresh()->collectionTypes)->toBeEmpty();
+});
+
+// The API does not manage types, so it must be able to update a collection without
+// disturbing the links the web screen set up.
+it('leaves the collection types alone when no ids are given', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $collection->collectionTypes()->attach($type->id);
+
+    new UpdateCollection(
+        user: $owner,
+        collection: $collection,
+        name: 'Comics',
+        visibility: VisibilityEnum::Shared->value,
+    )->execute();
+
+    expect($collection->fresh()->collectionTypes->pluck('id')->all())->toBe([$type->id]);
 });

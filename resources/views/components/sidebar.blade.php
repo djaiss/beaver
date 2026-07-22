@@ -1,34 +1,53 @@
+@use('App\Helpers\Palette')
+
+@props(['collection' => null, 'categories' => null])
+
 @php
     $user = auth()->user();
     $isProfile = request()->routeIs('profile.*');
     $isAccount = request()->routeIs('settings.*');
+    $isInstance = request()->routeIs('instanceAdmin.*');
+    $isSupport = request()->routeIs('support.*');
+    $isCollection = $collection !== null;
 @endphp
 
+{{-- The closed position is a static class rather than an x-cloak plus :class pair. x-cloak
+     would hide the sidebar until Alpine boots, and since it is in flow on desktop that drops
+     it out of the layout and shifts the page once it appears. Alpine only removes
+     -translate-x-full to slide it in on mobile. --}}
 <aside
-    x-cloak
     data-morph-skip
-    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-    class="fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 flex-col gap-6 border-r border-hairline bg-sidebar px-4 py-5 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
+    :class="{ '-translate-x-full': ! sidebarOpen }"
+    class="fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 -translate-x-full flex-col gap-6 border-r border-hairline bg-sidebar px-4 py-5 transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0"
 >
     {{-- Logo + theme toggle --}}
     <div class="flex items-center justify-between px-2">
+        {{-- The mark is decorative here: the wordmark next to it already names the app,
+             so labelling both would announce it twice. --}}
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2">
-            <span class="size-[26px] shrink-0 rounded-full bg-ink"></span>
-            <span class="text-[17px] font-semibold tracking-tight text-ink">{{ config('app.name') }}</span>
+            <x-logo size="26" aria-hidden="true" />
+            <x-wordmark height="15" class="text-ink" />
         </a>
 
-        <button
-            type="button"
-            @click="$store.theme.toggle()"
-            class="flex size-8 items-center justify-center rounded-full border border-hairline bg-canvas text-muted transition-colors hover:text-ink"
-            aria-label="{{ __('Toggle theme') }}"
-        >
-            <span x-cloak x-show="$store.theme.dark">@svg('lucide-sun', 'size-4 text-warning')</span>
-            <span x-cloak x-show="!$store.theme.dark">@svg('lucide-moon', 'size-4')</span>
-        </button>
+        <x-theme-toggle class="border border-hairline bg-canvas text-muted hover:text-ink" />
     </div>
 
-    @if ($isProfile)
+    @if ($isInstance)
+        {{-- The instance administration panel is English only and never translated,
+             so its labels are plain strings rather than __() calls. --}}
+        <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
+            @svg('lucide-arrow-left', 'size-4')
+            Back to app
+        </a>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">Manage</p>
+            <x-sidebar-link :href="route('instanceAdmin.index')" :active="request()->routeIs('instanceAdmin.index')" icon="layout-grid">Overview</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.accounts.index')" :active="request()->routeIs('instanceAdmin.accounts.*')" icon="users">Accounts & users</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.support.index')" :active="request()->routeIs('instanceAdmin.support.*')" icon="message-square">Support tickets</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.reviews.index')" :active="request()->routeIs('instanceAdmin.reviews.*')" icon="star">User reviews</x-sidebar-link>
+        </nav>
+    @elseif ($isProfile)
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
             @svg('lucide-arrow-left', 'size-4')
             {{ __('Back to dashboard') }}
@@ -53,19 +72,96 @@
                 <x-sidebar-link :href="route('settings.index')" :active="request()->routeIs('settings.index')" icon="settings">{{ __('General') }}</x-sidebar-link>
                 <x-sidebar-link :href="route('settings.members.index')" :active="request()->routeIs('settings.members.*')" icon="users">{{ __('Members') }}</x-sidebar-link>
             @endif
+            <x-sidebar-link :href="route('settings.trash.index')" :active="request()->routeIs('settings.trash.*')" icon="trash-2">{{ __('Trash') }}</x-sidebar-link>
+        </nav>
+
+        <nav class="-mt-2 flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Administration') }}</p>
             <x-sidebar-link :href="route('settings.types.index')" :active="request()->routeIs('settings.types.*')" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('settings.tags.index')" :active="request()->routeIs('settings.tags.*')" icon="tag">{{ __('Tags') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('settings.itemConditions.index')" :active="request()->routeIs('settings.itemConditions.*')" icon="gauge">{{ __('Item conditions') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('settings.photos.index')" :active="request()->routeIs('settings.photos.*')" icon="image">{{ __('Photos') }}</x-sidebar-link>
+        </nav>
+    @elseif ($isSupport)
+        <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
+            @svg('lucide-arrow-left', 'size-4')
+            {{ __('Back to dashboard') }}
+        </a>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Support') }}</p>
+            <x-sidebar-link :href="route('support.tickets.index')" :active="request()->routeIs('support.tickets.index') || request()->routeIs('support.tickets.show') || request()->routeIs('support.tickets.update') || request()->routeIs('support.tickets.destroy')" icon="messages-square">{{ __('Your conversations') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('support.tickets.new')" :active="request()->routeIs('support.tickets.new') || request()->routeIs('support.tickets.create')" icon="plus">{{ __('New conversation') }}</x-sidebar-link>
+        </nav>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Resources') }}</p>
+            <x-sidebar-link :href="route('marketing.docs.portal.home.show')" :active="false" icon="book-open">{{ __('Documentation') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('marketing.docs.api.index')" :active="false" icon="code">{{ __('API Docs') }}</x-sidebar-link>
+        </nav>
+    @elseif ($isCollection)
+        <a href="{{ route('collections.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
+            @svg('lucide-arrow-left', 'size-4')
+            {{ __('Back to collections') }}
+        </a>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $collection->name }}</p>
+            <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" icon="library-big">{{ __('Items') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('sets.index', $collection)" :active="request()->routeIs('sets.*')" icon="radiation">{{ __('Sets') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('statistics.index', $collection)" :active="request()->routeIs('statistics.*')" icon="chart-no-axes-combined">{{ __('Statistics') }}</x-sidebar-link>
+        </nav>
+
+        {{-- The categories are the navigation of the collection, so they are listed here
+             rather than hidden behind the screen that manages them. Nesting is flattened:
+             the tree is what the manage screen is for. --}}
+        @if ($categories?->isNotEmpty())
+            <nav class="flex flex-col gap-0.5">
+                <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Categories') }}</p>
+                @foreach ($categories as $category)
+                    <x-sidebar-link
+                        :href="route('categories.show', [$collection, $category])"
+                        :active="request()->routeIs('categories.show') && (int) request()->route('category') === $category->id"
+                        :dot="Palette::forId($category->id)"
+                        :count="$category->items_count"
+                        data-test="sidebar-category-{{ $category->id }}"
+                    >{{ $category->name }}</x-sidebar-link>
+                @endforeach
+            </nav>
+        @endif
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Manage collection') }}</p>
+            <x-sidebar-link :href="route('categories.index', $collection)" :active="request()->routeIs('categories.index')" icon="folder-tree">{{ __('Manage categories') }}</x-sidebar-link>
         </nav>
     @else
         <nav class="flex flex-col gap-0.5">
-            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
-            <x-sidebar-link :href="route('dashboard.index')" :active="request()->routeIs('dashboard.*')" icon="layout-grid">{{ __('Dashboard') }}</x-sidebar-link>
             <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
+            <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
+            {{-- Only while the account still wants the screen. Dismissing it takes the link with it. --}}
+            @if ($user->account->show_getting_started)
+                <x-sidebar-link :href="route('gettingStarted.index')" :active="request()->routeIs('gettingStarted.*')" icon="rocket">{{ __('Getting started') }}</x-sidebar-link>
+            @endif
+            <x-sidebar-link :href="route('dashboard.index')" :active="request()->routeIs('dashboard.*')" icon="layout-grid">{{ __('Dashboard') }}</x-sidebar-link>
             <x-sidebar-link :href="route('collections.index')" :active="request()->routeIs('collections.*')" icon="layers">{{ __('Collections') }}</x-sidebar-link>
+            {{-- A series spans collections rather than living in one, so it sits beside them
+                 in the workspace nav rather than inside a collection. --}}
+            <x-sidebar-link :href="route('series.index')" :active="request()->routeIs('series.*')" icon="library">{{ __('Series') }}</x-sidebar-link>
             <x-sidebar-link :href="route('locations.index')" :active="request()->routeIs('locations.*')" icon="map-pin">{{ __('Locations') }}</x-sidebar-link>
+
+            <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Account management') }}</p>
             @if ($user->isOwner())
                 <x-sidebar-link :href="route('settings.index')" :active="false" icon="settings">{{ __('Account settings') }}</x-sidebar-link>
             @elseif ($user->account->allowsManagementBy($user))
                 <x-sidebar-link :href="route('settings.types.index')" :active="false" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
+            @endif
+
+            <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Documentation') }}</p>
+            <x-sidebar-link :href="route('marketing.docs.portal.home.show')" :active="false" icon="book-open">{{ __('Documentation site') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('marketing.docs.api.index')" :active="false" icon="code">{{ __('API Docs') }}</x-sidebar-link>
+            {{-- The support section only exists when the instance turns it on. --}}
+            @if (config('support.enabled'))
+                <x-sidebar-link :href="route('support.tickets.index')" :active="request()->routeIs('support.*')" icon="life-buoy">{{ __('Support') }}</x-sidebar-link>
             @endif
         </nav>
     @endif
@@ -75,7 +171,7 @@
     {{-- User block --}}
     <div x-data="{ open: false }" class="relative border-t border-hairline pt-3">
         <button type="button" @click="open = !open" class="cursor-pointer flex w-full items-center gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-canvas">
-            <x-avatar-initials :name="$user->getFullName()" class="size-8 text-xs" />
+            <x-avatar :user="$user" :size="32" class="size-8 text-xs" />
             <span class="flex min-w-0 flex-1 flex-col text-left">
                 <span class="truncate text-[13px] font-semibold text-ink">{{ $user->getFullName() }}</span>
                 <span class="text-xs text-muted-soft capitalize">{{ __(ucfirst($user->role)) }}</span>
@@ -94,6 +190,12 @@
                 @svg('lucide-user', 'size-4 text-muted')
                 {{ __('Profile') }}
             </a>
+            @if ($user->isInstanceAdministrator())
+                <a href="{{ route('instanceAdmin.index') }}" data-turbo="true" class="cursor-pointer flex items-center gap-2 rounded px-2 py-1.5 text-sm text-body transition-colors hover:bg-card hover:text-ink">
+                    @svg('lucide-shield', 'size-4 text-muted')
+                    {{ __('Instance admin') }}
+                </a>
+            @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="flex w-full cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm text-body transition-colors hover:bg-card hover:text-ink">

@@ -41,7 +41,8 @@ class AccountController extends Controller
         )->execute();
 
         return to_route('settings.index')
-            ->with('status', __('Account updated successfully'));
+            ->with('status', __('Account updated successfully'))
+            ->with('status_description', __('Your account settings were saved.'));
     }
 
     public function destroy(Request $request): RedirectResponse

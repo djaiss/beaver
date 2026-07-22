@@ -33,6 +33,7 @@ class CustomFieldOrderController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Field moved'));
+            ->with('status', __('Field moved'))
+            ->with('status_description', __('The field order was updated.'));
     }
 }

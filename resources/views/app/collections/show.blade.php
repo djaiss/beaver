@@ -1,56 +1,139 @@
-<x-app-layout>
-  <x-slot:title>
-    {{ $collection->name }}
-  </x-slot>
+@use('App\Enums\ItemViewEnum')
+@use('App\Helpers\Money')
 
-  <div class="px-6 py-8 lg:px-12 lg:py-10">
-    <div class="mx-auto w-full max-w-2xl space-y-8">
-      <div class="flex items-center gap-1.5 text-[13px]">
-        <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
-        <span class="text-muted-soft">/</span>
-        <span class="font-medium text-ink">{{ $collection->name }}</span>
-      </div>
+@php
+    $user = auth()->user();
+    $canManage = $user->account->allowsManagementBy($user);
 
-      <div class="flex items-start gap-5">
-        <div class="flex size-16 shrink-0 items-center justify-center rounded-xl border border-hairline bg-card text-3xl">{{ $collection->emoji ?? '📦' }}</div>
+    // Format an amount held in cents into the collection's currency.
+    $money = fn (int $cents): string => Money::format($cents, $collection->currency);
 
-        <div class="min-w-0 flex-1">
-          <h1 class="truncate text-[28px] font-semibold tracking-tight text-ink">{{ $collection->name }}</h1>
-          @if ($collection->description)
-            <p class="mt-1.5 text-[15px] text-muted">{{ $collection->description }}</p>
-          @endif
+    // One display row per item, derived from its copies. Condition and location come from the
+    // first copy; value is the sum across copies; quantity is the number of copies.
+    $rows = $items->getCollection()->map(function ($item) use ($money) {
+        $copies = $item->copies;
+        $first = $copies->first();
+        $valueCents = (int) $copies->sum(fn ($copy): int => $copy->estimatedValue() ?? 0);
+
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'photoUrl' => $item->mainPhoto?->url(),
+            'condition' => $first?->itemCondition?->name ?? '—',
+            'location' => $first?->currentLocation?->name ?? '—',
+            'quantity' => $copies->count(),
+            'value' => $valueCents > 0 ? $money($valueCents) : '—',
+            'added' => $item->created_at->isoFormat('MMM D, YYYY'),
+        ];
+    });
+
+    // Distinct locations used on this page, with counts, for the table's left filter pane.
+    $locationFilters = $rows
+        ->filter(fn (array $row): bool => $row['location'] !== '—')
+        ->groupBy('location')
+        ->map(fn ($group, string $label): array => ['label' => $label, 'count' => $group->count()])
+        ->values();
+
+    $totalValueLabel = $totalValue > 0 ? $money($totalValue) : '—';
+@endphp
+
+@if ($view === ItemViewEnum::Table)
+    <x-app-layout>
+        <x-slot:title>{{ $collection->name }}</x-slot>
+        <x-slot:topNav>
+            @include('app.collections.partials._top-bar')
+        </x-slot>
+
+        <div
+            class="flex h-[calc(100vh-3.75rem)] flex-col overflow-hidden"
+            x-data="{
+                view: @js($view->value),
+                serverView: @js($view->value),
+                q: '',
+                location: 'all',
+                selectedId: {{ $rows->first()['id'] ?? 'null' }},
+                columns: { condition: true, location: true, quantity: false, value: true, added: false },
+                columnsOpen: false,
+                items: @js($rows->values()),
+                switchView(target) { switchCollectionView(this, target); },
+                get selected() { return this.items.find(i => i.id === this.selectedId) ?? null; },
+                rowVisible(name, loc) {
+                    return (this.location === 'all' || this.location === loc)
+                        && (this.q === '' || name.toLowerCase().includes(this.q.toLowerCase()));
+                },
+            }"
+        >
+            {{-- The view-switch endpoint for the current collection, read by switchCollectionView in app.js. --}}
+            <input type="hidden" id="collection-view-endpoint" value="{{ route('collections.item-view.update', $collection) }}" />
+
+            @include('app.collections.partials._table-header')
+            @include('app.collections.partials._table')
         </div>
-      </div>
+    </x-app-layout>
+@else
+    <x-app-layout :collection="$collection">
+        <x-slot:title>{{ $collection->name }}</x-slot>
 
-      <div class="flex flex-wrap gap-2">
-        @foreach ($collection->collectionTypes as $type)
-          <span class="flex items-center gap-2 rounded-full border border-hairline px-3.5 py-2 text-sm font-medium text-ink">
-            <span class="size-2 shrink-0 rounded-full" style="background-color: {{ $type->color }}"></span>
-            {{ $type->name }}
-          </span>
-        @endforeach
-      </div>
+        <div
+            class="px-6 py-8 lg:px-10"
+            x-data="{
+                view: @js($view->value),
+                serverView: @js($view->value),
+                q: '',
+                switchView(target) { switchCollectionView(this, target); },
+                cardVisible(name) {
+                    return this.q === '' || name.toLowerCase().includes(this.q.toLowerCase());
+                },
+            }"
+        >
+            @include('app.collections.partials._header')
 
-      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <div class="rounded-lg bg-card p-4">
-          <p class="text-[13px] font-medium text-muted">{{ __('Visibility') }}</p>
-          <p class="mt-1 text-sm font-semibold text-ink capitalize">{{ $collection->visibility->value }}</p>
+            {{-- An empty category still shows the filter, otherwise there is no way
+                 back to the other categories from it. --}}
+            @if ($items->isNotEmpty() || $category)
+                @include('app.collections.partials._toolbar')
+            @endif
+
+            @if ($category)
+                @include('app.collections.partials._category-panel')
+            @endif
+
+            @if ($items->isEmpty())
+                <div class="mt-8 rounded-lg border border-hairline">
+                    <x-empty-state>
+                        <x-slot:icon>
+                            <x-lucide-layers class="size-6 text-muted" />
+                        </x-slot>
+                        @if ($category)
+                            {{ __('No items in this category yet.') }}
+                        @elseif ($canManage)
+                            {{ __('No items yet. Add your first one to start cataloging.') }}
+                        @else
+                            {{ __('No items yet.') }}
+                        @endif
+                    </x-empty-state>
+                </div>
+            @else
+                {{-- Which view is visible on first paint is decided here, server side. Alpine
+                     takes over the display once it boots, but until then x-show is inert, so
+                     without this the page would paint the grid whatever the remembered view is. --}}
+                <div x-show="view === '{{ ItemViewEnum::Grid->value }}'" @style(['display: none' => $view !== ItemViewEnum::Grid])>
+                    @include('app.collections.partials._grid')
+                </div>
+
+                <div x-show="view === '{{ ItemViewEnum::List->value }}'" @style(['display: none' => $view !== ItemViewEnum::List])>
+                    @include('app.collections.partials._list')
+                </div>
+
+                @include('app.collections.partials._pagination')
+
+                @if ($category)
+                    <div class="mt-5 flex flex-wrap items-center justify-between gap-2 text-[13px] text-muted-soft">
+                        <span>{{ __('Showing :shown of :total items in :category', ['shown' => number_format($items->count()), 'total' => number_format($itemCount), 'category' => $category->name]) }}</span>
+                        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="font-semibold text-ink transition-colors hover:text-muted">{{ __('See all items in collection →') }}</a>
+                    </div>
+                @endif
+            @endif
         </div>
-
-        <div class="rounded-lg bg-card p-4">
-          <p class="text-[13px] font-medium text-muted">{{ __('Currency') }}</p>
-          <p class="mt-1 text-sm font-semibold text-ink">{{ $collection->currency ?? __('None') }}</p>
-        </div>
-      </div>
-
-      <div class="rounded-lg border border-hairline">
-        <x-empty-state>
-          <x-slot:icon>
-            <x-lucide-layers class="size-6 text-muted" />
-          </x-slot>
-          {{ __('No items yet. Items are coming soon.') }}
-        </x-empty-state>
-      </div>
-    </div>
-  </div>
-</x-app-layout>
+    </x-app-layout>
+@endif

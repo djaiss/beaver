@@ -10,6 +10,8 @@
   'placeholder' => null,
   'value' => null,
   'help' => null,
+  'helpId' => null,
+  'helpAlign' => 'left',
   'autofocus' => false,
   'disabled' => false,
 ])
@@ -35,6 +37,9 @@
   <div class="space-y-2">
     <div class="flex items-center space-x-2">
       <x-label :for="$id" :value="$label" />
+      @if ($helpId)
+        <x-help :id="$helpId" :align="$helpAlign" />
+      @endif
       @if (! $required)
         <span class="text-sm text-muted-soft">({{ __('Optional') }})</span>
       @endif

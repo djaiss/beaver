@@ -1,13 +1,13 @@
 {
   "$schema": "https://getcomposer.org/schema.json",
-  "name": "djaiss/beaver",
+  "name": "djaiss/kollek",
   "type": "project",
   "description": "The operating system for managing your life.",
   "keywords": [
     "laravel",
     "framework",
     "blade",
-    "beaver"
+    "kollek"
   ],
   "license": "MIT",
   "require": {
@@ -15,13 +15,16 @@
     "bacon/bacon-qr-code": "^3.0.3",
     "cesargb/laravel-magiclink": "^2.25.1",
     "erag/laravel-disposable-email": "^5.0",
+    "intervention/image": "^4.2",
     "laravel/framework": "^13.8",
     "laravel/sanctum": "^4.0",
     "laravel/tinker": "^3.0",
+    "league/commonmark": "^2.8",
     "mallardduck/blade-lucide-icons": "^1.26",
     "pragmarx/google2fa-laravel": "^3.0",
     "resend/resend-laravel": "^1.2",
     "spatie/laravel-login-link": "^1.6.3",
+    "spatie/laravel-responsecache": "^8.4",
     "spatie/laravel-webhook-server": "^3.10",
     "stevebauman/purify": "^6.3.1"
   },
@@ -90,28 +93,28 @@
     "pre-package-uninstall": [
       "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
     ],
-    "beaver:unit": "rm -f database/test.sqlite_test* && php artisan migrate:fresh --database=testing && php artisan test --parallel",
-    "beaver:browser": "bun run build && php artisan migrate:fresh --database=testing && php artisan test tests/Browser",
-    "beaver:locale": "php artisan beaver:localize en,fr_FR,es_ES,de_DE",
-    "beaver:bruno": "php artisan beaver:bruno",
-    "beaver:sync-skills": "php artisan beaver:sync-skills",
-    "beaver:prettier": "npx prettier --write resources/",
-    "beaver:pint": "./vendor/bin/pint",
-    "beaver:rector": "./vendor/bin/rector",
-    "beaver:update": "composer update && bun update && bun upgrade",
-    "beaver:update-blacklist-domains": "php artisan erag:sync-disposable-email-list",
+    "kollek:unit": "rm -f database/test.sqlite_test* && php artisan migrate:fresh --database=testing && php artisan test --parallel",
+    "kollek:browser": "bun run build && php artisan migrate:fresh --database=testing && php artisan test tests/Browser",
+    "kollek:locale": "php artisan kollek:localize en,fr_FR,es_ES,de_DE,pt_BR,zh_CN,ja_JP",
+    "kollek:bruno": "php artisan kollek:bruno",
+    "kollek:sync-skills": "php artisan kollek:sync-skills",
+    "kollek:prettier": "npx prettier --write resources/",
+    "kollek:pint": "./vendor/bin/pint",
+    "kollek:rector": "./vendor/bin/rector",
+    "kollek:update": "composer update && bun update && bun upgrade",
+    "kollek:update-blacklist-domains": "php artisan erag:sync-disposable-email-list",
     "lint": [
-      "@beaver:prettier",
-      "@beaver:pint",
-      "@beaver:rector"
+      "@kollek:prettier",
+      "@kollek:pint",
+      "@kollek:rector"
     ],
     "precommit": [
-      "@beaver:unit",
-      "@beaver:locale",
+      "@kollek:unit",
+      "@kollek:locale",
       "@lint",
-      "@beaver:update-blacklist-domains",
-      "@beaver:update",
-      "@beaver:sync-skills"
+      "@kollek:update-blacklist-domains",
+      "@kollek:update",
+      "@kollek:sync-skills"
     ]
   },
   "extra": {

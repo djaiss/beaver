@@ -1,11 +1,14 @@
 <?php
 
 declare(strict_types=1);
+use App\Actions\UpdateUserAvatar;
 use App\Enums\PermissionEnum;
 use App\Mail\AccountInvitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -18,6 +21,18 @@ it('lists the members for an owner', function () {
 
     $response->assertOk();
     $response->assertViewIs('app.settings.members.index');
+});
+
+it('renders the section title help popovers on the members page', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get('settings/members');
+
+    $response->assertOk();
+    $response->assertSee('role that decides what they can do here');
+    $response->assertSee('Brings someone new into this account');
 });
 
 it('forbids a non owner from listing the members', function () {
@@ -60,6 +75,42 @@ it('sends an invitation', function () {
         'role' => PermissionEnum::Editor->value,
     ]);
     Mail::assertQueued(AccountInvitation::class);
+});
+
+it('previews the invitation email without an email address', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount(name: 'Central Perk');
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get('settings/members?preview=1&role=editor');
+
+    $response->assertOk();
+    $response->assertViewIs('app.settings.members.index');
+    $response->assertViewHas('showPreview', true);
+    $response->assertSee('Central Perk', escape: false);
+    $response->assertSee('This is a preview. Links are disabled and nothing has been sent.');
+    $this->assertDatabaseCount('invitations', 0);
+});
+
+it('does not show a preview on a normal page load', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get('settings/members');
+
+    $response->assertOk();
+    $response->assertViewHas('showPreview', false);
+});
+
+it('forbids a non owner from previewing the invitation email', function () {
+    $user = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
+
+    $response = $this->actingAs($user)->get('settings/members?preview=1&role=editor');
+
+    $response->assertForbidden();
 });
 
 it('updates the role of a member', function () {
@@ -145,4 +196,27 @@ it('cannot demote the last owner', function () {
 
     $response->assertSessionHasErrors('role');
     expect($member->fresh()->role)->toBe(PermissionEnum::Owner->value);
+});
+
+it('shows the avatar of a member when they have one, and the initials otherwise', function () {
+    Storage::fake();
+
+    $owner = $this->createUser(['first_name' => 'Monica', 'last_name' => 'Geller']);
+    $owner->update(['role' => PermissionEnum::Owner->value]);
+
+    $rachel = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
+    $rachel->update(['account_id' => $owner->account_id]);
+
+    new UpdateUserAvatar(
+        user: $rachel,
+        file: UploadedFile::fake()->image('rachel.jpg', 400, 400),
+    )->execute();
+
+    $response = $this->actingAs($owner)->get(route('settings.members.index'));
+
+    $response->assertOk();
+    $response->assertSee(route('profile.avatar.show', ['user' => $rachel, 'size' => 32]), escape: false);
+
+    // Monica never uploaded one, so she keeps her initials.
+    $response->assertSee('MG');
 });

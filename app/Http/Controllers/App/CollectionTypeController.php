@@ -27,7 +27,7 @@ class CollectionTypeController extends Controller
 
         $types = $account->collectionTypes()
             ->with('customFields')
-            ->withCount('collections')
+            ->withCount(['collections', 'customFieldGroups'])
             ->orderByDesc('updated_at')
             ->get()
             ->map(fn (CollectionType $type): object => (object) [
@@ -35,6 +35,7 @@ class CollectionTypeController extends Controller
                 'name' => $type->name,
                 'color' => $type->color,
                 'field_count' => $type->customFields->count(),
+                'group_count' => $type->custom_field_groups_count,
                 'collection_count' => $type->collections_count,
                 'field_summary' => $this->fieldSummary($type),
                 'updated_at' => $type->updated_at?->diffForHumans(),
@@ -54,7 +55,9 @@ class CollectionTypeController extends Controller
             color: self::PALETTE[0],
         )->execute();
 
-        return to_route('settings.types.edit', $type->id);
+        return to_route('settings.types.edit', $type->id)
+            ->with('status', __('Type created'))
+            ->with('status_description', __('Give it a name and add custom fields.'));
     }
 
     public function edit(Request $request, int $collectionType): View
@@ -63,7 +66,13 @@ class CollectionTypeController extends Controller
 
         try {
             $type = $account->collectionTypes()
-                ->with(['customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'), 'collections'])
+                ->with([
+                    'ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+                    'customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+                    'customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+                    'collections',
+                ])
+                ->withCount(['customFields', 'customFieldGroups'])
                 ->findOrFail($collectionType);
         } catch (ModelNotFoundException) {
             abort(404);
@@ -73,6 +82,8 @@ class CollectionTypeController extends Controller
             'type' => $type,
             'fieldTypes' => $this->fieldTypeOptions(),
             'palette' => self::PALETTE,
+            // The name is encrypted, so it can only be sorted once decrypted.
+            'collections' => $type->collections->sortBy('name'),
         ]);
     }
 
@@ -99,7 +110,8 @@ class CollectionTypeController extends Controller
         )->execute();
 
         return to_route('settings.types.edit', $type->id)
-            ->with('status', __('Type updated'));
+            ->with('status', __('Type updated'))
+            ->with('status_description', __('Your changes to the type were saved.'));
     }
 
     public function destroy(Request $request, int $collectionType): RedirectResponse
@@ -118,7 +130,8 @@ class CollectionTypeController extends Controller
         )->execute();
 
         return to_route('settings.types.index')
-            ->with('status', __('Type deleted'));
+            ->with('status', __('Type deleted'))
+            ->with('status_description', __('The type and its custom fields were removed.'));
     }
 
     private function fieldSummary(CollectionType $type): string
@@ -127,8 +140,11 @@ class CollectionTypeController extends Controller
             return __('No custom fields');
         }
 
+        // Ungrouped fields read first, then each group's, mirroring how a type
+        // renders. Positions restart within every group, so the group is part
+        // of the sort rather than the position alone.
         $names = $type->customFields
-            ->sortBy('position')
+            ->sortBy(fn (CustomField $field): array => [$field->group_id ?? 0, $field->position])
             ->take(4)
             ->map(fn (CustomField $field): string => $field->name !== '' ? $field->name : __('(untitled)'))
             ->implode(', ');
@@ -147,6 +163,7 @@ class CollectionTypeController extends Controller
             FieldTypeEnum::Date->value => __('Date'),
             FieldTypeEnum::Boolean->value => __('Yes / No'),
             FieldTypeEnum::Select->value => __('Select'),
+            FieldTypeEnum::Rating->value => __('Rating'),
         ];
     }
 }

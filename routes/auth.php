@@ -12,7 +12,7 @@ use App\Http\Controllers\App\Auth\TwoFAChallengeController;
 use App\Http\Controllers\App\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function (): void {
+Route::middleware(['guest', 'set.locale'])->group(function (): void {
     Route::get('register', [RegistrationController::class, 'create'])->name('register');
     Route::post('register', [RegistrationController::class, 'store']);
 

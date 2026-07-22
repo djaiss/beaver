@@ -1,0 +1,44 @@
+# Keep the build context small and free of host-only or generated files.
+
+# Version control and CI
+.git
+.gitattributes
+.github
+
+# Dependencies and build artefacts (rebuilt inside the image)
+/vendor
+/node_modules
+/public/build
+/public/hot
+
+# Local environment and secrets (never bake these into the image)
+.env
+.env.*
+!.env.docker.example
+
+# Runtime state
+/storage/*.key
+/storage/pail
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/app/public/*
+/storage/app/private/*
+
+# Local databases
+/database/*.sqlite
+/database/*.sqlite-*
+
+# Tooling and editor config
+/.idea
+/.vscode
+/.fleet
+.phpunit.result.cache
+.phpunit.cache
+/tests/Browser/screenshots
+/tests/Browser/console
+
+# Docker files themselves are not needed inside the image build context copy
+docker-compose.yml
+docker-compose.*.yml

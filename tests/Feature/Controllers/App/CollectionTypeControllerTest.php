@@ -22,6 +22,41 @@ it('lists the account collection types', function () {
     $response->assertSee('Publisher');
 });
 
+it('renders the collection types title help popover', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/settings/types');
+
+    $response->assertOk();
+    $response->assertSee('reused by any number of collections');
+});
+
+it('keeps the actions menu out of the morph', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
+
+    $response->assertOk();
+
+    // This screen refreshes itself with a Turbo morph, which reverts the display
+    // Alpine sets on the menu and leaves it hanging open. data-morph-skip is what
+    // keeps it closed, so the attribute has to stay on the menu itself.
+    expect($response->getContent())->toMatch('/role="menu"[^>]*data-morph-skip|data-morph-skip[^>]*role="menu"/s');
+});
+
+it('offers rating as a field type', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    CustomField::factory()->create(['type_id' => $type->id, 'name' => 'Publisher']);
+
+    $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
+
+    $response->assertOk();
+    $response->assertSee('value="rating"', false);
+    $response->assertSee('Rating');
+});
+
 it('does not list another accounts types', function () {
     $user = $this->createUser();
     CollectionType::factory()->create(['name' => 'Foreign type']);
@@ -76,28 +111,45 @@ it('shows the edit page', function () {
         ->assertSee('saved automatically in real time');
 });
 
-it('links to the collections that use the type', function () {
+it('links to each collection using the type', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Vinyl Records']);
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Chaney Salinas']);
-    $collection->collectionTypes()->attach($type->id);
-    $unrelated = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Unrelated Collection']);
+    $linked = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Central Perk Vinyl']);
+    $linked->collectionTypes()->attach($type->id);
+    $unlinked = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Joeys Baywatch Tapes']);
 
     $response = $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit');
 
     $response->assertOk();
-    $response->assertSee('Chaney Salinas');
-    $response->assertSee(route('collections.show', $collection->id), false);
-    $response->assertDontSee('Unrelated Collection');
+
+    // The collection using the type links through to it.
+    $response->assertSee('Central Perk Vinyl');
+    $response->assertSee('href="'.route('collections.show', $linked->id).'"', false);
+
+    // A collection that does not use the type is no longer listed at all.
+    $response->assertDontSee('Joeys Baywatch Tapes');
+    $response->assertDontSee('href="'.route('collections.show', $unlinked->id).'"', false);
 });
 
-it('shows a message when no collections use the type', function () {
+it('tells the user when no collection uses the type', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Joeys Baywatch Tapes']);
 
     $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
         ->assertOk()
-        ->assertSee('No collections use this type yet.');
+        ->assertSee('No collections use this type yet.')
+        ->assertDontSee('Joeys Baywatch Tapes');
+});
+
+it('does not offer the collections of another account', function () {
+    $user = $this->createUser();
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    Collection::factory()->create(['name' => 'Someone Elses Collection']);
+
+    $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
+        ->assertOk()
+        ->assertDontSee('Someone Elses Collection');
 });
 
 it('cannot edit another accounts type', function () {
@@ -120,6 +172,7 @@ it('updates the name and color', function () {
 
     $response->assertRedirect('/settings/types/'.$type->id.'/edit');
     $response->assertSessionHas('status', 'Type updated');
+    $response->assertSessionHas('status_description', 'Your changes to the type were saved.');
 
     $type->refresh();
     expect($type->name)->toBe('Trading Cards');

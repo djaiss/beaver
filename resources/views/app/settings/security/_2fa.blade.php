@@ -1,4 +1,4 @@
-<x-box padding="p-0">
+<x-box padding="p-0" helpId="profile.two_factor_auth">
   <x-slot:title>{{ __('Two-factor authentication') }}</x-slot>
   <!-- Authenticator app -->
   <div id="authenticator-app" class="flex items-center p-3">

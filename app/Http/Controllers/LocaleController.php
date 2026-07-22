@@ -25,6 +25,8 @@ class LocaleController extends Controller
             Auth::user()->update(['locale' => $validated['locale']]);
         }
 
-        return back()->with('status', __('Locale updated'));
+        return back()
+            ->with('status', __('Locale updated'))
+            ->with('status_description', __('The interface language was changed.'));
     }
 }

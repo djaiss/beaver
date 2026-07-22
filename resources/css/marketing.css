@@ -1,73 +1,81 @@
-@import 'prismjs/themes/prism.css';
+/* Styles specific to the marketing site. */
 
-pre[class*='language-'] {
-  background-color: rgb(243 244 246);
-  padding: 0.5rem;
-  font-size: 14px;
+/*
+ * The documentation portal renders note, warning and step blocks as `not-prose`
+ * islands so the Tailwind typography plugin does not fight their custom layout.
+ * These rules give the Markdown inside them (code, lists, links) a polished look
+ * on their own.
+ */
+.doc-admonition > :first-child,
+.doc-step > :first-child {
+  margin-top: 0;
 }
 
-.dark pre[class*='language-'] {
-  background-color: rgb(31 41 55);
+.doc-admonition > :last-child,
+.doc-step > :last-child {
+  margin-bottom: 0;
 }
 
-.token.operator {
-  background-color: transparent;
+.doc-admonition p,
+.doc-step p {
+  margin: 0.5rem 0;
 }
 
-.documentation {
-  h1 {
-    margin-bottom: 30px;
-    font-size: 30px;
-  }
-
-  h2 {
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: 500;
-  }
-
-  /* The table of contents and the LLM actions bring their own styles, so the
-     prose rules below exclude anything nested inside them. */
-
-  ul:not(.toc ul) {
-    margin-block: 1rem;
-    padding-left: 1.5rem;
-    list-style-position: outside;
-    list-style-type: disc;
-  }
-
-  ul:not(.toc ul) ul {
-    margin-block: 0.5rem;
-    list-style-type: circle;
-  }
-
-  li:not(.toc li) + li {
-    margin-top: 0.5rem;
-  }
-
-  a:not(.llm a) {
-    color: #2563eb; /* blue-600 */
-    text-underline-offset: 4px;
-    text-decoration-line: underline;
-    text-decoration-color: #d1d5db; /* gray-300 */
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 200ms;
-  }
-
-  a:not(.llm a):hover {
-    text-decoration-thickness: 1.15px;
-    color: #2563eb; /* blue-600 */
-    text-decoration-color: #60a5fa; /* blue-400 */
-  }
+.doc-admonition ul,
+.doc-admonition ol,
+.doc-step ul,
+.doc-step ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
 }
 
-.dark .documentation a:not(.llm a) {
-  color: #d1d5db; /* gray-300 */
-  text-decoration-color: #4b5563; /* gray-600 */
+.doc-admonition ol,
+.doc-step ol {
+  list-style: decimal;
 }
 
-.dark .documentation a:not(.llm a):hover {
-  color: #60a5fa; /* blue-400 */
-  text-decoration-color: #60a5fa; /* blue-400 */
+.doc-admonition li,
+.doc-step li {
+  margin: 0.25rem 0;
+}
+
+.doc-admonition a,
+.doc-step a {
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.doc-admonition a:hover,
+.doc-step a:hover {
+  text-decoration: underline;
+}
+
+.doc-admonition :not(pre) > code,
+.doc-step :not(pre) > code {
+  border-radius: 4px;
+  background: rgba(17, 17, 17, 0.06);
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.doc-admonition pre,
+.doc-step pre {
+  margin: 0.75rem 0;
+  overflow-x: auto;
+  border-radius: 0.625rem;
+  border: 1px solid #e5e7eb;
+  background: #f8f9fa;
+  padding: 0.875rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.doc-admonition pre code,
+.doc-step pre code {
+  font-family: inherit;
 }

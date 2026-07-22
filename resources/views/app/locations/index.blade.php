@@ -7,7 +7,10 @@
     <div class="mx-auto w-full max-w-3xl" x-data="{ showAddForm: false, addParentId: '', addEmoji: '📦' }">
       <div class="mb-2 flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Locations') }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Locations') }}</h1>
+            <x-help id="locations.list" />
+          </div>
           <p class="mt-1 max-w-lg text-[15px] text-muted">{{ __('Where items are physically stored — shelves, boxes, display cases. Locations can be nested.') }}</p>
         </div>
 
@@ -36,7 +39,7 @@
 
               <div class="min-w-[200px]">
                 <x-label for="add-parent-id">{{ __('Parent location') }}</x-label>
-                <select id="add-parent-id" name="parent_id" x-model="addParentId" class="mt-1.5 h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink">
+                <select id="add-parent-id" name="parent_id" x-model="addParentId" class="mt-1.5 h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
                   @foreach ($parentOptions as $id => $label)
                     <option value="{{ $id }}">{{ $label }}</option>
                   @endforeach

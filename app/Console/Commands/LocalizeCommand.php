@@ -14,7 +14,7 @@ class LocalizeCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'beaver:localize {locales}';
+    protected $signature = 'kollek:localize {locales}';
 
     /**
      * @var string
@@ -86,7 +86,9 @@ class LocalizeCommand extends Command
             }
         }
 
-        return array_keys($keysByValue);
+        // A key that looks like a number, e.g. __('10'), comes back out of the array as an int,
+        // since PHP coerces numeric string keys. Cast it back so the callers keep their strings.
+        return array_map(strval(...), array_keys($keysByValue));
     }
 
     /**
@@ -94,7 +96,9 @@ class LocalizeCommand extends Command
      */
     private function extractKeysFromContent(string $content): array
     {
-        $functions = ['__', 'trans', '@lang', 'trans_key'];
+        // trans_choice carries the pluralized keys, e.g. ":count item|:count items". It was
+        // missing here, so none of them ever reached the locale files.
+        $functions = ['__', 'trans', 'trans_choice', '@lang', 'trans_key'];
         $patterns = [];
 
         foreach ($functions as $function) {

@@ -1,0 +1,99 @@
+# KolleK self-hosting stack.
+#
+# Quick start:
+#   cp .env.docker.example .env
+#   docker compose run --rm app php artisan key:generate --show   # paste into .env as APP_KEY
+#   docker compose up -d --build
+#
+# The database and uploaded files live in named volumes (db-data, storage-data)
+# that are independent of the image, so upgrading to a newer image never resets
+# them. See docker/README.md for the full guide.
+
+name: kollek
+
+services:
+  # Web server (nginx + PHP-FPM). Also owns database migrations on boot.
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kollek:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      CONTAINER_ROLE: app
+    ports:
+      - "${APP_PORT:-8000}:80"
+    volumes:
+      - storage-data:/var/www/html/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Queue worker. Processes the high, default and low queues.
+  queue:
+    image: kollek:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      CONTAINER_ROLE: queue
+    command:
+      - php
+      - artisan
+      - queue:work
+      - --queue=high,default,low
+      - --sleep=3
+      - --tries=3
+      - --max-time=3600
+    volumes:
+      - storage-data:/var/www/html/storage
+    depends_on:
+      app:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+
+  # Scheduler. Runs the artisan schedule (e.g. the daily inactive-user cleanup).
+  scheduler:
+    image: kollek:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      CONTAINER_ROLE: scheduler
+      RUN_MIGRATIONS: "false"
+    command: ["php", "artisan", "schedule:work"]
+    volumes:
+      - storage-data:/var/www/html/storage
+    depends_on:
+      app:
+        condition: service_started
+      mysql:
+        condition: service_healthy
+
+  # Database.
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-kollek}
+      MYSQL_USER: ${DB_USERNAME:-kollek}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-secret}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_ROOT_PASSWORD:-root-secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  db-data:
+  storage-data:

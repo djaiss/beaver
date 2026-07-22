@@ -1,13 +1,48 @@
 <?php
 
 declare(strict_types=1);
+use App\Enums\ItemViewEnum;
 use App\Enums\VisibilityEnum;
 use App\Models\Account;
 use App\Models\Collection;
+use App\Models\CollectionView;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
+
+it('defaults the view for a user to the grid when none is stored', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    expect($collection->viewForUser($user))->toBe(ItemViewEnum::Grid);
+});
+
+it('returns the stored view for a user', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    CollectionView::factory()->create([
+        'user_id' => $user->id,
+        'collection_id' => $collection->id,
+        'items_view' => ItemViewEnum::Table->value,
+    ]);
+
+    expect($collection->viewForUser($user))->toBe(ItemViewEnum::Table);
+});
+
+it('remembers the view per user', function () {
+    $collection = Collection::factory()->create();
+    $ross = $this->createUser();
+    $rachel = $this->createUser();
+    CollectionView::factory()->create([
+        'user_id' => $ross->id,
+        'collection_id' => $collection->id,
+        'items_view' => ItemViewEnum::Table->value,
+    ]);
+
+    expect($collection->viewForUser($ross))->toBe(ItemViewEnum::Table);
+    expect($collection->viewForUser($rachel))->toBe(ItemViewEnum::Grid);
+});
 
 it('belongs to an account', function () {
     $account = $this->createAccount();

@@ -11,6 +11,7 @@ use Database\Factories\AccountFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Class Account
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $name
  * @property string $currency_code
+ * @property bool $show_getting_started
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -42,6 +44,7 @@ class Account extends Model
     protected $fillable = [
         'name',
         'currency_code',
+        'show_getting_started',
     ];
 
     /**
@@ -53,6 +56,7 @@ class Account extends Model
     {
         return [
             'name' => 'encrypted',
+            'show_getting_started' => 'boolean',
         ];
     }
 
@@ -107,6 +111,56 @@ class Account extends Model
     }
 
     /**
+     * Get the conditions that belong to the account, excluding the system defaults.
+     *
+     * @return HasMany<ItemCondition, $this>
+     */
+    public function itemConditions(): HasMany
+    {
+        return $this->hasMany(ItemCondition::class);
+    }
+
+    /**
+     * Get the tags that belong to the account.
+     *
+     * @return HasMany<Tag, $this>
+     */
+    public function tags(): HasMany
+    {
+        return $this->hasMany(Tag::class);
+    }
+
+    /**
+     * Get the series that belong to the account.
+     *
+     * @return HasMany<Series, $this>
+     */
+    public function series(): HasMany
+    {
+        return $this->hasMany(Series::class);
+    }
+
+    /**
+     * Get the sets that belong to the account, through the collections they live in.
+     *
+     * @return HasManyThrough<Set, Collection, $this>
+     */
+    public function sets(): HasManyThrough
+    {
+        return $this->hasManyThrough(Set::class, Collection::class);
+    }
+
+    /**
+     * Get the items that belong to the account, through the collections they live in.
+     *
+     * @return HasManyThrough<Item, Collection, $this>
+     */
+    public function items(): HasManyThrough
+    {
+        return $this->hasManyThrough(Item::class, Collection::class);
+    }
+
+    /**
      * Get the users who administer the account.
      *
      * @return HasMany<User, $this>
@@ -130,6 +184,15 @@ class Account extends Model
     public function roleFor(User $user): ?string
     {
         return $user->account_id === $this->id ? $user->role : null;
+    }
+
+    /**
+     * Whether the user owns the account. Distinct from User::isOwner(), which
+     * only reads the role and does not check the user belongs to this account.
+     */
+    public function isOwnedBy(User $user): bool
+    {
+        return $this->roleFor($user) === PermissionEnum::Owner->value;
     }
 
     /**

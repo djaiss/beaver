@@ -18,6 +18,27 @@ it('shows the account settings page for an owner', function () {
     $response->assertViewHas('currencies');
 });
 
+it('renders the field help popovers on the settings page', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('settings');
+
+    $response->assertOk();
+    $response->assertSee('identifies the account to everyone you share it with');
+    $response->assertSee('valuation totals across all of your collections');
+    $response->assertSee('account-settings');
+});
+
+it('renders the section title help popovers on the settings page', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('settings');
+
+    $response->assertOk();
+    $response->assertSee('welcome checklist that greets a new account');
+    $response->assertSee('most destructive action in KolleK');
+});
+
 it('forbids a non owner from viewing the account settings', function () {
     $user = $this->createUser(['role' => PermissionEnum::Viewer->value]);
 

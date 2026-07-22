@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     $this->originalBasePath = $this->app->basePath();
-    $this->temporaryBasePath = sys_get_temp_dir().'/beaver-sync-skills-'.bin2hex(random_bytes(8));
+    $this->temporaryBasePath = sys_get_temp_dir().'/kollek-sync-skills-'.bin2hex(random_bytes(8));
 
     File::makeDirectory($this->temporaryBasePath, 0755, true);
     File::ensureDirectoryExists($this->temporaryBasePath.'/scripts');
@@ -28,7 +28,7 @@ it('replaces agent and ai skills with github skills', function () {
     writeFile('.agents/skills/stale/SKILL.md', 'stale agent skill');
     writeFile('.ai/skills/stale/SKILL.md', 'stale AI skill');
 
-    $this->artisan('beaver:sync-skills')
+    $this->artisan('kollek:sync-skills')
         ->expectsOutput('Skills synchronized.')
         ->assertSuccessful();
 
@@ -44,7 +44,7 @@ it('fails without removing existing skills when the source directory is missing'
     writeFile('.agents/skills/existing/SKILL.md', 'agent skill');
     writeFile('.ai/skills/existing/SKILL.md', 'AI skill');
 
-    $this->artisan('beaver:sync-skills')
+    $this->artisan('kollek:sync-skills')
         ->expectsOutputToContain('The source skills directory was not found')
         ->assertFailed();
 
@@ -60,7 +60,7 @@ it('stages source skills before removing linked target directories', function ()
         base_path('.github/skills/tailwindcss-development'),
     );
 
-    $this->artisan('beaver:sync-skills')
+    $this->artisan('kollek:sync-skills')
         ->expectsOutput('Skills synchronized.')
         ->assertSuccessful();
 
@@ -76,7 +76,7 @@ it('does not touch targets when another sync is running', function () {
     writeFile('.ai/skills/existing/SKILL.md', 'AI skill');
     File::makeDirectory(base_path('.sync-skills.lock'));
 
-    $this->artisan('beaver:sync-skills')
+    $this->artisan('kollek:sync-skills')
         ->expectsOutputToContain('Another skills synchronization is already running')
         ->assertFailed();
 

@@ -14,7 +14,7 @@
     @yield('json-ld')
   </head>
   <body class="font-sans antialiased">
-    <div class="min-h-screen bg-white dark:bg-gray-900">
+    <div class="min-h-screen bg-page text-ink">
       @include('components.marketing.header')
 
       <!-- Page Content -->

@@ -15,7 +15,7 @@ uses(RefreshDatabase::class);
 
 it('sends email the traditional way', function () {
     Config::set('app.use_resend', false);
-    Config::set('app.name', 'beaver');
+    Config::set('app.name', 'kollek');
     Config::set('mail.from.address', 'noreply@example.com');
     Mail::fake();
 
@@ -39,12 +39,12 @@ it('sends email the traditional way', function () {
     $emailSent = EmailSent::query()->latest()->first();
     expect($emailSent->email_type)->toEqual(EmailType::LoginFailed->value);
     expect($emailSent->email_address)->toEqual('chandler.bing@friends.com');
-    expect($emailSent->subject)->toEqual('Login attempt on beaver');
+    expect($emailSent->subject)->toEqual('Login attempt on kollek');
 });
 
 it('sends email with resend facade', function () {
     Config::set('app.use_resend', true);
-    Config::set('app.name', 'beaver');
+    Config::set('app.name', 'kollek');
     Config::set('mail.from.address', 'noreply@example.com');
 
     $resendMock = Mockery::mock();
@@ -57,7 +57,7 @@ it('sends email with resend facade', function () {
             fn ($args): bool => (
                 $args['from'] === 'noreply@example.com'
                 && $args['to'] === ['chandler.bing@friends.com']
-                && $args['subject'] === 'Login attempt on beaver'
+                && $args['subject'] === 'Login attempt on kollek'
                 && is_string($args['html'])
                 && mb_strlen($args['html']) > 0
             ),
@@ -88,6 +88,6 @@ it('sends email with resend facade', function () {
     $emailSent = EmailSent::query()->latest()->first();
     expect($emailSent->email_type)->toEqual(EmailType::LoginFailed->value);
     expect($emailSent->email_address)->toEqual('chandler.bing@friends.com');
-    expect($emailSent->subject)->toEqual('Login attempt on beaver');
+    expect($emailSent->subject)->toEqual('Login attempt on kollek');
     expect($emailSent->uuid)->toEqual('resend-uuid-12345');
 });

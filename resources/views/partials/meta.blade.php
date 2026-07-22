@@ -5,7 +5,9 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <meta name="description" content="{{ config('app.description') }}" />
-<link rel="icon" type="image/png" href="{{ asset('images/marketing/logo/30x30@2x.png') }}" sizes="60x60" />
+
+<link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+<link rel="alternate icon" href="{{ asset('favicon.ico') }}" sizes="32x32" />
 
 <link rel="preconnect" href="https://fonts.bunny.net" />
 <link href="https://fonts.bunny.net/css?family=inter:400,500,600&family=jetbrains-mono:400,500&display=swap" rel="stylesheet" />

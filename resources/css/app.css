@@ -114,6 +114,9 @@
 }
 
 select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml,%3csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M8 9L12 5L16 9' stroke='%23d4d4d4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M16 15L12 19L8 15' stroke='%23d4d4d4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
   background-position: right 0.5rem center;
   background-repeat: no-repeat;
@@ -135,6 +138,14 @@ select:hover:not(:disabled) {
   background-image: url("data:image/svg+xml,%3csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M8 9L12 5L16 9' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3cpath d='M16 15L12 19L8 15' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
 }
 
+.logo .logo-mark {
+  transition: fill var(--logo-duration, 200ms) ease;
+}
+
+.logo:hover .logo-mark {
+  fill: var(--logo-hover-color, #fb923c);
+}
+
 .heading-anchor {
   opacity: 0;
   margin-left: 0.375rem;
@@ -146,4 +157,116 @@ select:hover:not(:disabled) {
 
 :is(h1, h2, h3, h4, h5, h6):hover .heading-anchor {
   opacity: 1;
+}
+
+/* The spinning counter, driven by resources/js/components/spinning-counter.js.
+   The cell height is written by the component from the type the number is
+   already rendered in, so a reel lines up whatever size it is used at. */
+.t-reel {
+  --reel-cell: 30px;
+  --reel-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  display: inline-flex;
+  align-items: center;
+  height: var(--reel-cell);
+  font-variant-numeric: tabular-nums;
+}
+
+.t-reel-col {
+  position: relative;
+  height: var(--reel-cell);
+  overflow: hidden;
+  /* Soft-fade the window edges instead of hard-cropping. */
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+
+.t-reel-strip {
+  display: flex;
+  flex-direction: column;
+  will-change: transform, filter;
+}
+
+.t-reel-digit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--reel-cell);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-reel-strip {
+    transition: none !important;
+    filter: none !important;
+  }
+}
+
+/* The card hover tilt, driven by resources/js/components/tilt-card.js. The
+   rotation and glare position are written to the outer element as custom
+   properties, and the inner card reads them. Radius and clipping stay with the
+   utility classes on the element itself, so a card keeps the shape it had. */
+.t-tilt {
+  --tilt-perspective: 1000px;
+  --tilt-return: 1000ms;
+  --tilt-return-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tilt-follow: 400ms;
+  --tilt-follow-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --tilt-glare-opacity: 0.32;
+  --tilt-glare-fade: 300ms;
+  --tilt-glare-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Lets a finger drag the tilt instead of scrolling the page. */
+  touch-action: none;
+}
+
+.t-tilt-card {
+  transform: perspective(var(--tilt-perspective)) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform var(--tilt-return) var(--tilt-return-ease);
+  will-change: transform;
+}
+
+/* While the pointer moves, a shorter transition so the tilt tracks it closely.
+   Dropping the class on leave hands the card back to the longer return. */
+.t-tilt-card.is-tilting {
+  transition: transform var(--tilt-follow) var(--tilt-follow-ease);
+}
+
+/* Layered soft circles that add like light at the pointer position. */
+.t-tilt-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(
+      circle 95px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgb(255 255 255 / 0.48),
+      rgb(255 255 255 / 0.06) 52%,
+      rgb(255 255 255 / 0) 84%
+    ),
+    radial-gradient(
+      circle 200px at var(--tilt-gx, 50%) var(--tilt-gy, 50%),
+      rgb(255 255 255 / 0.22),
+      rgb(255 255 255 / 0.04) 58%,
+      rgb(255 255 255 / 0) 78%
+    ),
+    radial-gradient(circle 360px at var(--tilt-gx, 50%) var(--tilt-gy, 50%), rgb(255 255 255 / 0.1), rgb(255 255 255 / 0) 88%);
+  transition: opacity var(--tilt-glare-fade) var(--tilt-glare-ease);
+}
+
+.t-tilt.is-hover .t-tilt-glare {
+  opacity: var(--tilt-glare-opacity);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-tilt-card {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .t-tilt-glare {
+    display: none;
+  }
 }

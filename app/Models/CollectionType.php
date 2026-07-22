@@ -83,6 +83,36 @@ class CollectionType extends Model
     }
 
     /**
+     * Get the custom fields that sit outside of any group.
+     *
+     * @return HasMany<CustomField, $this>
+     */
+    public function ungroupedCustomFields(): HasMany
+    {
+        return $this->customFields()->whereNull('group_id');
+    }
+
+    /**
+     * Get the groups of custom fields defined on the type.
+     *
+     * @return HasMany<CustomFieldGroup, $this>
+     */
+    public function customFieldGroups(): HasMany
+    {
+        return $this->hasMany(CustomFieldGroup::class, 'type_id');
+    }
+
+    /**
+     * Get the items using the type.
+     *
+     * @return HasMany<Item, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class, 'type_id');
+    }
+
+    /**
      * Get the collections the type is linked to.
      *
      * @return BelongsToMany<Collection, $this>

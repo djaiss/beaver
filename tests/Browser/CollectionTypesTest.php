@@ -57,6 +57,21 @@ it('creates a type, renames it, and edits its fields inline', function () {
     expect($type->customFields()->first()->options)->toBe([]);
 });
 
+it('reaches the export page from the menu of the two part button', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+
+    $page->click('[data-test="export-type-button"]')
+        ->assertSee('Export Comics')
+        ->assertSee('schemaVersion')
+        ->assertSee('comics.type.json');
+
+    $page->assertNoSmoke();
+});
+
 it('keeps fields renameable and reorderable after adding more', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
@@ -85,4 +100,127 @@ it('keeps fields renameable and reorderable after adding more', function () {
     expect($first->fresh()->position)->toBeGreaterThan($fields[1]->fresh()->position);
 
     $page->assertNoSmoke();
+});
+
+it('adds a group, puts a field in it, and keeps that field when the group goes', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+    $page->assertSee('No field groups yet');
+
+    // Adding a group saves immediately.
+    $page->click('[data-test="add-group-button"]')->assertSee('Group added');
+
+    $group = $type->customFieldGroups()->first();
+    expect($group)->not->toBeNull();
+
+    // Naming it auto-saves on blur.
+    $page->type('[data-test="group-name-'.$group->id.'"]', 'Publishing info')
+        ->keys('[data-test="group-name-'.$group->id.'"]', 'Enter')
+        ->assertSee('Group updated');
+
+    expect($group->fresh()->name)->toBe('Publishing info');
+
+    // A field added from the group header lands inside it, not standalone.
+    $page->click('[data-test="add-field-to-group-'.$group->id.'"]')->assertSee('Field added');
+
+    $field = $type->customFields()->first();
+    expect($field->group_id)->toBe($group->id);
+    expect($type->ungroupedCustomFields()->count())->toBe(0);
+
+    $page->type('[data-test="field-name-'.$field->id.'"]', 'Issue #')
+        ->keys('[data-test="field-name-'.$field->id.'"]', 'Enter')
+        ->assertSee('Field updated');
+
+    // Deleting the group keeps the field: it drops back to standalone.
+    $page->script('window.confirm = () => true');
+    $page->click('[data-test="delete-group-'.$group->id.'"]')->assertSee('Group removed');
+
+    expect($group->fresh())->toBeNull();
+    expect($field->fresh()->group_id)->toBeNull();
+    expect($field->fresh()->name)->toBe('Issue #');
+
+    // The field is still on the page, now rendered as a standalone field.
+    $page->assertSee('No field groups yet')
+        ->assertPresent('[data-test="field-row-'.$field->id.'"]')
+        ->assertValue('[data-test="field-name-'.$field->id.'"]', 'Issue #');
+
+    $page->assertNoSmoke();
+});
+
+it('reorders the groups of a type', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+    $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+
+    $page = visit('/settings/types/'.$type->id.'/edit');
+
+    $page->click('[data-test="add-group-button"]')->assertSee('Group added');
+    $page->click('[data-test="add-group-button"]')->assertSee('Group added');
+
+    $groups = $type->customFieldGroups()->orderBy('id')->get();
+    $first = $groups[0];
+
+    $page->click('[data-test="move-group-down-'.$first->id.'"]')->assertSee('Group moved');
+
+    expect($first->fresh()->position)->toBeGreaterThan($groups[1]->fresh()->position);
+
+    $page->assertNoSmoke();
+});
+
+it('imports a type from the JSON pasted into the import screen', function () {
+    // Vite is stubbed out in the test environment, so this drives the screen with
+    // no JavaScript at all: the import has to work on the server alone.
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $page = visit('/settings/types');
+
+    // The import screen hangs off the menu of the two part button.
+    $page->click('[data-test="import-type-button"]')
+        ->assertSee('Import a collection type')
+        ->assertSee('Paste a schema to validate it');
+
+    $page->fill('[data-test="import-json-input"]', json_encode([
+        'schemaVersion' => 1,
+        'type' => [
+            'name' => 'Comics',
+            'color' => '#FB923C',
+            'groups' => [
+                ['name' => 'Publishing info', 'fields' => [
+                    ['name' => 'Issue #', 'type' => 'number'],
+                    ['name' => 'Grade', 'type' => 'select', 'options' => ['CGC 9.8', 'Raw']],
+                ]],
+            ],
+            'standaloneFields' => [['name' => 'Notes', 'type' => 'text']],
+        ],
+    ]));
+
+    // Group and field names land in inputs, so the counts are what is readable here.
+    $page->press('Import type')
+        ->assertSee('Type imported')
+        ->assertSee('Comics')
+        ->assertSee('1 field group(s)')
+        ->assertSee('3 custom field(s)');
+
+    $type = CollectionType::query()->sole();
+    expect($type->customFieldGroups()->sole()->name)->toBe('Publishing info');
+    expect($type->ungroupedCustomFields()->sole()->name)->toBe('Notes');
+
+    $page->assertNoSmoke();
+});
+
+it('rejects a document the import screen cannot trust', function () {
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $page = visit('/settings/types/import');
+
+    $page->fill('[data-test="import-json-input"]', '{"schemaVersion": 1, "type": {"name": "Comics", "groups": [{"name": "Main", "fields": [{"name": "Grade", "type": "select"}]}]}}')
+        ->press('Import type')
+        ->assertSee('Grade is a select field');
+
+    expect(CollectionType::query()->count())->toBe(0);
 });

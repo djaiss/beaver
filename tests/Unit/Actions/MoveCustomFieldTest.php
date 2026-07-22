@@ -7,6 +7,7 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\CollectionType;
 use App\Models\CustomField;
+use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -65,4 +66,55 @@ it('throws when a viewer tries to move a field', function () {
     $field = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
 
     new MoveCustomField(user: $viewer, customField: $field, direction: 'up')->execute();
+});
+
+it('swaps within the group rather than stealing a field from a neighbouring group', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $publishing = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'position' => 1]);
+    $grading = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'position' => 2]);
+
+    // Positions restart in every group, so both groups hold a field at 1 and 2.
+    $lastOfPublishing = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => $publishing->id, 'position' => 2]);
+    $firstOfGrading = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => $grading->id, 'position' => 1]);
+    $secondOfGrading = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => $grading->id, 'position' => 2]);
+
+    // The first field of a group has nowhere to go up: the move stops at the boundary.
+    new MoveCustomField(user: $owner, customField: $firstOfGrading, direction: 'up')->execute();
+
+    expect($firstOfGrading->refresh()->position)->toBe(1);
+    expect($firstOfGrading->refresh()->group_id)->toBe($grading->id);
+    expect($lastOfPublishing->refresh()->position)->toBe(2);
+    expect($lastOfPublishing->refresh()->group_id)->toBe($publishing->id);
+
+    // Within the group, it still swaps normally.
+    new MoveCustomField(user: $owner, customField: $firstOfGrading, direction: 'down')->execute();
+
+    expect($firstOfGrading->refresh()->position)->toBe(2);
+    expect($secondOfGrading->refresh()->position)->toBe(1);
+});
+
+it('does not swap a standalone field with a grouped one', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $type->id]);
+
+    $standalone = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => null, 'position' => 1]);
+    $grouped = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => $group->id, 'position' => 2]);
+
+    new MoveCustomField(user: $owner, customField: $standalone, direction: 'down')->execute();
+
+    expect($standalone->refresh()->position)->toBe(1);
+    expect($standalone->refresh()->group_id)->toBeNull();
+    expect($grouped->refresh()->position)->toBe(2);
 });

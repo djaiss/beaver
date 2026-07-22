@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ItemViewEnum;
 use App\Enums\VisibilityEnum;
 use App\Models\Concerns\HasAuthor;
+use App\Models\Concerns\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\CollectionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -31,6 +34,8 @@ use Illuminate\Support\Str;
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
  * @property string|null $updated_by_name
+ * @property int|null $deleted_by_id
+ * @property string|null $deleted_by_name
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -38,6 +43,7 @@ use Illuminate\Support\Str;
 class Collection extends Model
 {
     use HasAuthor;
+    use HasDeleter;
 
     /** @use HasFactory<CollectionFactory> */
     use HasFactory;
@@ -101,5 +107,55 @@ class Collection extends Model
     public function collectionTypes(): BelongsToMany
     {
         return $this->belongsToMany(CollectionType::class, 'collection_type', 'collection_id', 'type_id');
+    }
+
+    /**
+     * Get the items catalogued in the collection.
+     *
+     * @return HasMany<Item, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    /**
+     * Get the categories that group the collection's items.
+     *
+     * @return HasMany<Category, $this>
+     */
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    /**
+     * Get the sets being tracked within the collection.
+     *
+     * @return HasMany<Set, $this>
+     */
+    public function sets(): HasMany
+    {
+        return $this->hasMany(Set::class);
+    }
+
+    /**
+     * Get the remembered view preferences, one per user who has opened the collection.
+     *
+     * @return HasMany<CollectionView, $this>
+     */
+    public function collectionViews(): HasMany
+    {
+        return $this->hasMany(CollectionView::class);
+    }
+
+    /**
+     * The items view the given user last opened for this collection, defaulting to the grid.
+     */
+    public function viewForUser(User $user): ItemViewEnum
+    {
+        return $this->collectionViews()
+            ->where('user_id', $user->id)
+            ->value('items_view') ?? ItemViewEnum::Grid;
     }
 }
