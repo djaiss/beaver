@@ -111,3 +111,17 @@ it('carries signed in users on to their dashboard when the marketing site is off
 
     $response->assertOk();
 });
+
+it('drives the header and footer navigation through turbo', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/en');
+
+    $response
+        ->assertOk()
+        // Header and footer in app links opt into Turbo Drive (which is off by
+        // default), while the off site GitHub link is left as a plain link.
+        ->assertSee('/en/pricing" data-turbo="true"', false)
+        ->assertSee('href="'.config('marketing.github_url').'" target="_blank"', false)
+        ->assertDontSee('href="'.config('marketing.github_url').'" data-turbo="true"', false);
+});

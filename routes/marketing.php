@@ -23,7 +23,13 @@ $urlLocales = collect(config('docs.locales'))
 Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
     Route::get('/', fn () => redirect()->route('marketing.index'))->name('marketing.root');
 
-    Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware('marketing.locale')->group(function (): void {
+    // Every localized page is a public GET that changes only when the site is
+    // redeployed, so the whole group is response cached (7 days, see
+    // config/responsecache.php). The default cache profile keys on the URL and
+    // suffixes the authenticated user id, so a signed in visitor and a guest
+    // never share a cached page (the header differs between them). The bare
+    // root redirect above is left uncached on purpose.
+    Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'cacheResponse'])->group(function (): void {
         Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
 
         Route::get('pricing', [PricingController::class, 'index'])->name('marketing.pricing.index');

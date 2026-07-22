@@ -6,7 +6,9 @@ namespace App\Services;
 
 use Illuminate\Support\Str;
 use League\CommonMark\Environment\Environment;
+use League\CommonMark\Event\DocumentParsedEvent;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 
@@ -35,8 +37,48 @@ class DocumentationParser
 
         $environment->addExtension(new CommonMarkCoreExtension);
         $environment->addExtension(new GithubFlavoredMarkdownExtension);
+        $environment->addEventListener(DocumentParsedEvent::class, $this->driveInternalLinksThroughTurbo(...));
 
         $this->markdown = new MarkdownConverter($environment);
+    }
+
+    /**
+     * Tag every in app link in the rendered body with data-turbo="true" so the
+     * portal navigates it through Turbo Drive, the same as the sidebar and the
+     * surrounding chrome. Off site links (https://github.com, mailto:) and page
+     * anchors are left untouched, matching Turbo's own same origin rule.
+     */
+    private function driveInternalLinksThroughTurbo(DocumentParsedEvent $event): void
+    {
+        foreach ($event->getDocument()->iterator() as $node) {
+            if (! $node instanceof Link) {
+                continue;
+            }
+
+            if (! $this->isInternalUrl($node->getUrl())) {
+                continue;
+            }
+
+            $node->data->set('attributes/data-turbo', 'true');
+        }
+    }
+
+    /**
+     * A link is internal when it is a root relative path or points at this
+     * application's own base URL. Protocol relative, external and anchor only
+     * links are treated as external.
+     */
+    private function isInternalUrl(string $url): bool
+    {
+        if (str_starts_with($url, '//')) {
+            return false;
+        }
+
+        if (str_starts_with($url, '/')) {
+            return true;
+        }
+
+        return str_starts_with($url, (string) config('app.url'));
     }
 
     /**

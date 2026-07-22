@@ -127,3 +127,14 @@ it('points the language switcher at the equivalent page in each locale, not the 
         ->assertSee(route('marketing.docs.portal.show', ['locale' => 'en', 'section' => 'getting-started', 'slug' => 'create-your-account']), false)
         ->assertDontSee('/en/docs/demarrage/', false);
 });
+
+it('drives the docs sidebar and content links through turbo', function () {
+    $response = $this->get('/en/docs/getting-started/what-is-kollek');
+
+    $response
+        ->assertOk()
+        // The sidebar navigation and the resolved in content @doc() link both
+        // opt into Turbo Drive.
+        ->assertSee('data-turbo="true"', false)
+        ->assertSee('/en/docs/', false);
+});

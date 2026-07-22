@@ -11,6 +11,7 @@ use App\Http\Middleware\SetMarketingLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Spatie\ResponseCache\Middlewares\CacheResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'instance.admin' => EnsureInstanceAdministrator::class,
             'marketing' => CheckMarketing::class,
             'marketing.locale' => SetMarketingLocale::class,
+            'cacheResponse' => CacheResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

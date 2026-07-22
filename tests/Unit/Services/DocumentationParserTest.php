@@ -87,3 +87,28 @@ it('reports the doc references found in a body', function () {
 
     expect($references)->toBe(['a.one', 'b.two']);
 });
+
+it('drives internal content links through turbo but leaves external ones alone', function () {
+    config()->set('app.url', 'https://getkollek.com');
+
+    $body = '[Absolute internal](https://getkollek.com/en/pricing) and '
+        .'[Root relative](/en/docs) and '
+        .'[External](https://github.com/kollek) and '
+        .'[Anchor](#section) and '
+        .'[Protocol relative](//cdn.example.com/x).';
+
+    $result = $this->parser->render($body, 'en');
+
+    expect($result['html'])
+        ->toContain('<a data-turbo="true" href="https://getkollek.com/en/pricing">')
+        ->toContain('<a data-turbo="true" href="/en/docs">')
+        ->toContain('<a href="https://github.com/kollek">')
+        ->toContain('<a href="#section">')
+        ->toContain('<a href="//cdn.example.com/x">');
+});
+
+it('drives a resolved doc directive link through turbo', function () {
+    $result = $this->parser->render('See @doc(kollek.whatIs) for details.', 'en');
+
+    expect($result['html'])->toContain('data-turbo="true"');
+});

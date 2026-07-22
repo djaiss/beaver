@@ -18,6 +18,7 @@
           @php($active = $item['id'] === $currentId)
           <a
             href="{{ $item['url'] }}"
+            data-turbo="true"
             @class([
                 'mb-px block rounded-r-md border-l-2 px-2.5 py-2 text-sm hover:bg-gray-50 hover:border-blue-600 hover:bg-blue-50/60',
                 'border-blue-600 bg-blue-50/60 text-gray-900' => $active,
@@ -30,7 +31,7 @@
   @endforeach
 
   <div class="mt-2 border-t border-gray-100 pt-4">
-    <a href="{{ route('marketing.index') }}" class="flex items-center gap-2 text-[13px] text-gray-400 hover:text-gray-700">
+    <a href="{{ route('marketing.index') }}" data-turbo="true" class="flex items-center gap-2 text-[13px] text-gray-400 hover:text-gray-700">
       <x-lucide-arrow-left class="h-3.5 w-3.5" />
       {{ __('Back to :name', ['name' => config('app.name')]) }}
     </a>
