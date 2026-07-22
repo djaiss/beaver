@@ -6,6 +6,7 @@ use App\Http\Controllers\Marketing\Docs\ApiDocsController;
 use App\Http\Controllers\Marketing\Docs\ApiDocsMarkdownController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
+use App\Http\Controllers\Marketing\FeaturesController;
 use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\PricingController;
 use App\Http\Controllers\Marketing\TestimonialsController;
@@ -32,6 +33,9 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
     // root redirect above is left uncached on purpose.
     Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'cacheResponse'])->group(function (): void {
         Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
+
+        Route::get('features', [FeaturesController::class, 'index'])->name('marketing.features.index');
+        Route::get('features/{slug}', [FeaturesController::class, 'show'])->where('slug', '[a-z0-9\-]+')->name('marketing.features.show');
 
         Route::get('pricing', [PricingController::class, 'index'])->name('marketing.pricing.index');
 
