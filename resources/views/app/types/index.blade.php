@@ -7,7 +7,10 @@
     <div class="mx-auto w-full max-w-3xl space-y-8">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Collection types') }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Collection types') }}</h1>
+            <x-help id="settings.collection_types" />
+          </div>
           <p class="mt-1 max-w-lg text-sm text-muted">{{ __('Types define the custom fields available on items, and which collections can use them.') }}</p>
         </div>
 

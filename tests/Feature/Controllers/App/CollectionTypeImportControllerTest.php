@@ -33,6 +33,14 @@ it('shows the import screen', function (): void {
         ->assertSee('schemaVersion');
 });
 
+it('renders the import title help popover', function (): void {
+    $user = $this->createUser();
+
+    $this->actingAs($user)->get('/settings/types/import')
+        ->assertOk()
+        ->assertSee('Recreates a collection type from a JSON file');
+});
+
 it('links to the import screen from the collection types list', function (): void {
     $user = $this->createUser();
 
