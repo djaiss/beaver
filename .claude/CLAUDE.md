@@ -59,6 +59,29 @@ Never hand an Eloquent model straight to a JSON response. Go through a Resource,
 or project the fields explicitly, so a service returning a model does not leak a
 whole row.
 
+## Inline help and documentation
+
+The product should explain itself. Two rules follow from that, and both ship in
+the same PR as the feature they describe, never later.
+
+Inline help on forms. When you add a form, every field that is not self evident
+carries an inline help popup through the `<x-help>` component, wired in with the
+field component's `helpId` prop. Genuinely obvious fields, a plain name or an
+email, may skip it, but anything with a rule, a consequence, or a domain meaning
+gets one. Each popup is a Markdown snippet at
+`docs/help/{locale}/{page}.{section}.{field}.md`, for example
+`docs/help/en/settings.general.currency.md`. A snippet is authored in English and
+then translated into every language the app supports (the same set as the `lang`
+files), not English alone. It carries a short blurb, an optional kicker and note,
+and where a matching portal page exists a `doc:` id that becomes the "Read more"
+link. The content is read by the `HelpSnippets` service.
+
+Feature documentation. Every feature has a real page in the documentation portal
+under `docs/portal`, written with the `writer` skill, in the same PR that adds the
+feature. A capability a user can reach but cannot read about is not finished. The
+inline help `doc:` links resolve to these portal pages, so the portal stays the
+single source of truth the popups defer to.
+
 ## The instance administration
 
 `/instance-admin` looks across every account on the instance: how many there are,

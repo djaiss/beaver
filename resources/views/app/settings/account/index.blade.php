@@ -13,8 +13,8 @@
       {{-- General --}}
       <x-box title="{{ __('General') }}">
         <x-form id="account-general-form" x-target="account-general-form account-settings-header" method="put" :action="route('settings.update')" class="space-y-4">
-          <x-input id="name" name="name" :label="__('Account name')" :value="$account->name" :error="$errors->get('name')" required />
-          <x-select id="currency_code" :label="__('Default currency')" :options="$currencies" :selected="$account->currency_code" :error="$errors->get('currency_code')" required help="{{ __('Used for valuation totals across your collections.') }}" />
+          <x-input id="name" name="name" :label="__('Account name')" helpId="settings.general.account_name" :value="$account->name" :error="$errors->get('name')" required />
+          <x-select id="currency_code" :label="__('Default currency')" helpId="settings.general.currency" :options="$currencies" :selected="$account->currency_code" :error="$errors->get('currency_code')" required help="{{ __('Used for valuation totals across your collections.') }}" />
           <div class="flex items-center justify-end">
             <x-button type="submit">{{ __('Save') }}</x-button>
           </div>
