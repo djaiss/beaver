@@ -80,3 +80,23 @@ jobs:
 
       - name: Check code style
         run: vendor/bin/pint --test
+
+  assets:
+    name: Build assets (Vite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install JS dependencies
+        run: bun install
+
+      # Nothing else in CI builds the assets, so a production-only failure such
+      # as a selector the minifier rejects would otherwise reach main unnoticed.
+      - name: Build assets
+        run: bun run build
