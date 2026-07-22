@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('conditions', function (Blueprint $table): void {
+        Schema::create('item_conditions', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('account_id')->nullable()->comment('account the condition belongs to, null if a system default');
             $table->text('name')->comment('name of the condition, e.g. New or Used');
@@ -26,6 +26,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('conditions');
+        Schema::dropIfExists('item_conditions');
     }
 };

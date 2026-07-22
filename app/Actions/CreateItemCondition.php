@@ -8,16 +8,16 @@ use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
 use App\Models\Account;
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
  * Create a condition within an account. Only owners and editors may do so.
  */
-class CreateCondition
+class CreateItemCondition
 {
-    private Condition $condition;
+    private ItemCondition $itemCondition;
 
     public function __construct(
         private readonly User $user,
@@ -25,7 +25,7 @@ class CreateCondition
         private string $name,
     ) {}
 
-    public function execute(): Condition
+    public function execute(): ItemCondition
     {
         $this->validate();
         $this->sanitize();
@@ -33,7 +33,7 @@ class CreateCondition
         $this->stampAuthor();
         $this->log();
 
-        return $this->condition;
+        return $this->itemCondition;
     }
 
     private function validate(): void
@@ -50,7 +50,7 @@ class CreateCondition
 
     private function create(): void
     {
-        $this->condition = Condition::query()->create([
+        $this->itemCondition = ItemCondition::query()->create([
             'account_id' => $this->account->id,
             'name' => $this->name,
         ]);
@@ -58,11 +58,11 @@ class CreateCondition
 
     private function stampAuthor(): void
     {
-        $this->condition->created_by_id = $this->user->id;
-        $this->condition->created_by_name = $this->user->getFullName();
-        $this->condition->updated_by_id = $this->user->id;
-        $this->condition->updated_by_name = $this->user->getFullName();
-        $this->condition->save();
+        $this->itemCondition->created_by_id = $this->user->id;
+        $this->itemCondition->created_by_name = $this->user->getFullName();
+        $this->itemCondition->updated_by_id = $this->user->id;
+        $this->itemCondition->updated_by_name = $this->user->getFullName();
+        $this->itemCondition->save();
     }
 
     private function log(): void
@@ -70,7 +70,7 @@ class CreateCondition
         LogUserAction::dispatch(
             user: $this->user,
             action: UserActionEnum::ConditionCreation,
-            parameters: ['name' => $this->condition->name],
+            parameters: ['name' => $this->itemCondition->name],
         )->onQueue('low');
     }
 }

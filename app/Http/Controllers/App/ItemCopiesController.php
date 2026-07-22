@@ -21,7 +21,7 @@ class ItemCopiesController extends Controller
         $collectionModel = $this->findCollection($request, $collection);
         $itemModel = $this->findItem($collectionModel, $item, [
             'tags',
-            'copies.condition',
+            'copies.itemCondition',
             'copies.currentLocation',
             'copies.openLocationHistory',
             'copies.latestValuation',

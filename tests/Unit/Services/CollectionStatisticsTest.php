@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Enums\TransactionType;
 use App\Models\Category;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Set;
 use App\Models\Transaction;
@@ -326,9 +326,9 @@ it('sums the smallest categories into a single slice', function (): void {
 it('groups the copies by the condition they are in', function (): void {
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $mint = Condition::factory()->create(['account_id' => $collection->account_id, 'name' => 'Mint']);
-    Copy::factory()->count(3)->create(['item_id' => $item->id, 'condition_id' => $mint->id]);
-    Copy::factory()->create(['item_id' => $item->id, 'condition_id' => null]);
+    $mint = ItemCondition::factory()->create(['account_id' => $collection->account_id, 'name' => 'Mint']);
+    Copy::factory()->count(3)->create(['item_id' => $item->id, 'item_condition_id' => $mint->id]);
+    Copy::factory()->create(['item_id' => $item->id, 'item_condition_id' => null]);
 
     $conditions = new CollectionStatistics(collection: $collection)->byCondition();
 
@@ -384,10 +384,10 @@ it('leaves out the items no copy has put a value on', function (): void {
 it('names the condition and the location of the copy carrying the most value', function (): void {
     $collection = Collection::factory()->create();
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Rachel Green']);
-    $mint = Condition::factory()->create(['account_id' => $collection->account_id, 'name' => 'Mint']);
+    $mint = ItemCondition::factory()->create(['account_id' => $collection->account_id, 'name' => 'Mint']);
     $attic = Location::factory()->create(['account_id' => $collection->account_id, 'name' => 'Attic']);
-    valuedCopy(['item_id' => $item->id, 'condition_id' => null, 'current_location_id' => null], 100);
-    valuedCopy(['item_id' => $item->id, 'condition_id' => $mint->id, 'current_location_id' => $attic->id], 90000);
+    valuedCopy(['item_id' => $item->id, 'item_condition_id' => null, 'current_location_id' => null], 100);
+    valuedCopy(['item_id' => $item->id, 'item_condition_id' => $mint->id, 'current_location_id' => $attic->id], 90000);
 
     $top = new CollectionStatistics(collection: $collection)->topItems();
 

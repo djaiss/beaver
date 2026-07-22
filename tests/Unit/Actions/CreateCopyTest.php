@@ -9,9 +9,9 @@ use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\LocationHistory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -28,13 +28,13 @@ it('creates a copy and stamps the author', function () {
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
     $copy = new CreateCopy(
         user: $editor,
         item: $item,
-        condition: $condition,
+        itemCondition: $condition,
         location: $location,
         identifier: 'CGC 1234567',
         status: CopyStatus::Loaned,
@@ -46,7 +46,7 @@ it('creates a copy and stamps the author', function () {
 
     expect($copy)->toBeInstanceOf(Copy::class);
     expect($copy->item_id)->toBe($item->id);
-    expect($copy->condition_id)->toBe($condition->id);
+    expect($copy->item_condition_id)->toBe($condition->id);
     expect($copy->current_location_id)->toBe($location->id);
     expect($copy->identifier)->toBe('CGC 1234567');
     expect($copy->status)->toBe(CopyStatus::Loaned);
@@ -84,7 +84,7 @@ it('creates a copy with only an item', function () {
         item: $item,
     )->execute();
 
-    expect($copy->condition_id)->toBeNull();
+    expect($copy->item_condition_id)->toBeNull();
     expect($copy->current_location_id)->toBeNull();
     expect($copy->identifier)->toBeNull();
     expect($copy->status)->toBe(CopyStatus::Owned);
@@ -132,12 +132,12 @@ it('throws when the condition belongs to another account', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $foreignCondition = Condition::factory()->create();
+    $foreignCondition = ItemCondition::factory()->create();
 
     new CreateCopy(
         user: $owner,
         item: $item,
-        condition: $foreignCondition,
+        itemCondition: $foreignCondition,
     )->execute();
 });
 

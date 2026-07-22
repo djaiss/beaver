@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin Condition
+ * @mixin ItemCondition
  */
-class ConditionResource extends JsonResource
+class ItemConditionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,7 +21,7 @@ class ConditionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type' => 'condition',
+            'type' => 'item_condition',
             'id' => (string) $this->id,
             'attributes' => [
                 'name' => $this->name,
@@ -29,7 +29,7 @@ class ConditionResource extends JsonResource
                 'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.conditions.show', $this->id),
+                'self' => route('api.itemConditions.show', $this->id),
             ],
         ];
     }

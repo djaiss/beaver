@@ -35,14 +35,14 @@ class LoanReturnController extends Controller
 
         $validated = $request->validate([
             'returned_at' => ['required', 'date'],
-            'condition_in_id' => ['nullable', 'integer'],
+            'item_condition_in_id' => ['nullable', 'integer'],
         ]);
 
         new ReturnLoan(
             user: $request->user(),
             loan: $loanModel,
             returnedAt: $validated['returned_at'],
-            conditionInId: $this->toId($validated['condition_in_id'] ?? null),
+            itemConditionInId: $this->toId($validated['item_condition_in_id'] ?? null),
         )->execute();
 
         return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])

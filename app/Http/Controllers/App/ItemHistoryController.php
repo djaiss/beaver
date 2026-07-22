@@ -41,7 +41,7 @@ class ItemHistoryController extends Controller
         $collectionModel = $this->findCollection($request, $collection);
         $itemModel = $this->findItem($collectionModel, $item, [
             'tags',
-            'copies.condition',
+            'copies.itemCondition',
             'copies.currentLocation',
             'copies.latestValuation',
             'copies.valuations.documents',
@@ -50,11 +50,11 @@ class ItemHistoryController extends Controller
             'copies.provenanceEvents.transaction',
             'copies.provenanceEvents.documents',
             'copies.insuranceRecords.documents',
-            'copies.maintenanceRecords.conditionBefore',
-            'copies.maintenanceRecords.conditionAfter',
+            'copies.maintenanceRecords.itemConditionBefore',
+            'copies.maintenanceRecords.itemConditionAfter',
             'copies.maintenanceRecords.documents',
-            'copies.loans.conditionOut',
-            'copies.loans.conditionIn',
+            'copies.loans.itemConditionOut',
+            'copies.loans.itemConditionIn',
             'copies.loans.documents',
             'copies.documents',
             'copies.activeLoan',
@@ -147,7 +147,7 @@ class ItemHistoryController extends Controller
      */
     private function conditionOptions(Request $request): array
     {
-        return $request->user()->account->conditions()
+        return $request->user()->account->itemConditions()
             ->orderBy('name')
             ->get()
             ->mapWithKeys(fn ($condition): array => [$condition->id => $condition->name])

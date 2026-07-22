@@ -31,8 +31,8 @@ class MaintenanceRecordFactory extends Factory
             'performed_at' => fake()->date(),
             'cost_amount' => fake()->numberBetween(0, 50000),
             'cost_currency_code' => 'USD',
-            'condition_before_id' => null,
-            'condition_after_id' => null,
+            'item_condition_before_id' => null,
+            'item_condition_after_id' => null,
             'next_due_at' => null,
             'include_in_provenance' => false,
         ];

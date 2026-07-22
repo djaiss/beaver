@@ -11,9 +11,9 @@ use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\Valuation;
@@ -32,7 +32,7 @@ class CreateCopy
     public function __construct(
         private readonly User $user,
         private readonly Item $item,
-        private readonly ?Condition $condition = null,
+        private readonly ?ItemCondition $itemCondition = null,
         private readonly ?Location $location = null,
         private readonly ?string $identifier = null,
         private readonly CopyStatus $status = CopyStatus::Owned,
@@ -62,7 +62,7 @@ class CreateCopy
             throw new ModelNotFoundException('Account not found');
         }
 
-        if ($this->condition instanceof Condition && $this->condition->account_id !== $account->id) {
+        if ($this->itemCondition instanceof ItemCondition && $this->itemCondition->account_id !== $account->id) {
             throw new ModelNotFoundException('Condition not found');
         }
 
@@ -76,7 +76,7 @@ class CreateCopy
         $this->copy = Copy::query()->create([
             'item_id' => $this->item->id,
             'identifier' => $this->identifier,
-            'condition_id' => $this->condition?->id,
+            'item_condition_id' => $this->itemCondition?->id,
             'status' => $this->status,
             'quantity' => $this->quantity,
             'disposed_at' => $this->disposedAt,
@@ -146,7 +146,7 @@ class CreateCopy
             item: $this->item,
             user: $this->user,
             action: ItemActionEnum::CopyCreation,
-            parameters: $this->condition instanceof Condition ? ['label' => $this->condition->name] : null,
+            parameters: $this->itemCondition instanceof ItemCondition ? ['label' => $this->itemCondition->name] : null,
         )->onQueue('low');
     }
 }

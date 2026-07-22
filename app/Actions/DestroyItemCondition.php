@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -14,27 +14,27 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * Delete a condition. Only owners and editors of its account may do so;
  * system default conditions cannot be deleted.
  */
-class DestroyCondition
+class DestroyItemCondition
 {
     public function __construct(
         private readonly User $user,
-        private readonly Condition $condition,
+        private readonly ItemCondition $itemCondition,
     ) {}
 
     public function execute(): void
     {
         $this->validate();
         $this->log();
-        $this->condition->delete();
+        $this->itemCondition->delete();
     }
 
     private function validate(): void
     {
-        if ($this->condition->isSystemDefault()) {
+        if ($this->itemCondition->isSystemDefault()) {
             throw new ModelNotFoundException('Account not found');
         }
 
-        if (! $this->condition->account->allowsManagementBy($this->user)) {
+        if (! $this->itemCondition->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }
@@ -44,7 +44,7 @@ class DestroyCondition
         LogUserAction::dispatch(
             user: $this->user,
             action: UserActionEnum::ConditionDeletion,
-            parameters: ['name' => $this->condition->name],
+            parameters: ['name' => $this->itemCondition->name],
         )->onQueue('low');
     }
 }

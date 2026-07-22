@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\CreateCondition;
-use App\Actions\DestroyCondition;
-use App\Actions\UpdateCondition;
+use App\Actions\CreateItemCondition;
+use App\Actions\DestroyItemCondition;
+use App\Actions\UpdateItemCondition;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ConditionResource;
+use App\Http\Resources\ItemConditionResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
-class ConditionController extends Controller
+class ItemConditionController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -22,20 +22,20 @@ class ConditionController extends Controller
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
-        $conditions = $account->conditions()
+        $itemConditions = $account->itemConditions()
             ->orderBy('id')
             ->paginate($perPage);
 
-        return ConditionResource::collection($conditions);
+        return ItemConditionResource::collection($itemConditions);
     }
 
     public function show(Request $request): JsonResponse
     {
-        $conditionId = $request->route()->parameter('condition');
+        $itemConditionId = $request->route()->parameter('itemCondition');
 
-        $condition = $request->user()->account->conditions()->findOrFail($conditionId);
+        $itemCondition = $request->user()->account->itemConditions()->findOrFail($itemConditionId);
 
-        return new ConditionResource($condition)
+        return new ItemConditionResource($itemCondition)
             ->response()
             ->setStatusCode(200);
     }
@@ -46,47 +46,47 @@ class ConditionController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $condition = new CreateCondition(
+        $itemCondition = new CreateItemCondition(
             user: $request->user(),
             account: $request->user()->account,
             name: $validated['name'],
         )->execute();
 
-        return new ConditionResource($condition)
+        return new ItemConditionResource($itemCondition)
             ->response()
             ->setStatusCode(201);
     }
 
     public function update(Request $request): JsonResponse
     {
-        $conditionId = $request->route()->parameter('condition');
+        $itemConditionId = $request->route()->parameter('itemCondition');
 
-        $condition = $request->user()->account->conditions()->findOrFail($conditionId);
+        $itemCondition = $request->user()->account->itemConditions()->findOrFail($itemConditionId);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $condition = new UpdateCondition(
+        $itemCondition = new UpdateItemCondition(
             user: $request->user(),
-            condition: $condition,
+            itemCondition: $itemCondition,
             name: $validated['name'],
         )->execute();
 
-        return new ConditionResource($condition)
+        return new ItemConditionResource($itemCondition)
             ->response()
             ->setStatusCode(200);
     }
 
     public function destroy(Request $request): Response
     {
-        $conditionId = $request->route()->parameter('condition');
+        $itemConditionId = $request->route()->parameter('itemCondition');
 
-        $condition = $request->user()->account->conditions()->findOrFail($conditionId);
+        $itemCondition = $request->user()->account->itemConditions()->findOrFail($itemConditionId);
 
-        new DestroyCondition(
+        new DestroyItemCondition(
             user: $request->user(),
-            condition: $condition,
+            itemCondition: $itemCondition,
         )->execute();
 
         return response()->noContent(204);

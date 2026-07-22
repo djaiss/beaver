@@ -17,7 +17,6 @@ use App\Http\Controllers\Api\CollectionTypeCollectionController;
 use App\Http\Controllers\Api\CollectionTypeController;
 use App\Http\Controllers\Api\CollectionTypeExportController;
 use App\Http\Controllers\Api\CollectionTypeImportController;
-use App\Http\Controllers\Api\ConditionController;
 use App\Http\Controllers\Api\CopyController;
 use App\Http\Controllers\Api\CopyHistoryController;
 use App\Http\Controllers\Api\CustomFieldController;
@@ -27,6 +26,7 @@ use App\Http\Controllers\Api\CustomFieldOrderController;
 use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\InsuranceRecordController;
+use App\Http\Controllers\Api\ItemConditionController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\ItemLogController;
 use App\Http\Controllers\Api\ItemPhotoController;
@@ -130,12 +130,12 @@ Route::name('api.')->group(function (): void {
         Route::put('locations/{location}', [LocationController::class, 'update'])->where('location', '[1-9][0-9]*')->name('locations.update');
         Route::delete('locations/{location}', [LocationController::class, 'destroy'])->where('location', '[1-9][0-9]*')->name('locations.destroy');
 
-        // conditions
-        Route::get('conditions', [ConditionController::class, 'index'])->name('conditions');
-        Route::get('conditions/{condition}', [ConditionController::class, 'show'])->where('condition', '[1-9][0-9]*')->name('conditions.show');
-        Route::post('conditions', [ConditionController::class, 'create'])->name('conditions.create');
-        Route::put('conditions/{condition}', [ConditionController::class, 'update'])->where('condition', '[1-9][0-9]*')->name('conditions.update');
-        Route::delete('conditions/{condition}', [ConditionController::class, 'destroy'])->where('condition', '[1-9][0-9]*')->name('conditions.destroy');
+        // item conditions
+        Route::get('item-conditions', [ItemConditionController::class, 'index'])->name('itemConditions');
+        Route::get('item-conditions/{itemCondition}', [ItemConditionController::class, 'show'])->where('itemCondition', '[1-9][0-9]*')->name('itemConditions.show');
+        Route::post('item-conditions', [ItemConditionController::class, 'create'])->name('itemConditions.create');
+        Route::put('item-conditions/{itemCondition}', [ItemConditionController::class, 'update'])->where('itemCondition', '[1-9][0-9]*')->name('itemConditions.update');
+        Route::delete('item-conditions/{itemCondition}', [ItemConditionController::class, 'destroy'])->where('itemCondition', '[1-9][0-9]*')->name('itemConditions.destroy');
 
         // tags
         Route::get('tags', [TagController::class, 'index'])->name('tags');

@@ -103,8 +103,8 @@
         >
           <span class="size-[7px] shrink-0 rounded-full" style="background-color: {{ $copy->status->color() === 'error' ? 'var(--color-error)' : '#34d399' }}"></span>
           <span class="text-[13px] font-semibold text-ink">{{ __('Copy :number', ['number' => $loop->iteration]) }}</span>
-          @if ($copy->condition)
-            <span class="text-xs text-muted-soft">{{ $copy->condition->name }}</span>
+          @if ($copy->itemCondition)
+            <span class="text-xs text-muted-soft">{{ $copy->itemCondition->name }}</span>
           @endif
         </a>
       @endforeach

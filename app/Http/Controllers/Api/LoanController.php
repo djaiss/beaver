@@ -58,8 +58,8 @@ class LoanController extends Controller
             purpose: $validated['purpose'] ?? null,
             dueAt: $validated['due_at'] ?? null,
             returnedAt: $validated['returned_at'] ?? null,
-            conditionOutId: $validated['condition_out_id'] ?? null,
-            conditionInId: $validated['condition_in_id'] ?? null,
+            itemConditionOutId: $validated['item_condition_out_id'] ?? null,
+            itemConditionInId: $validated['item_condition_in_id'] ?? null,
             depositAmount: $validated['deposit_amount'] ?? null,
             depositCurrencyCode: $validated['deposit_currency_code'] ?? null,
             includeInProvenance: (bool) ($validated['include_in_provenance'] ?? false),
@@ -86,8 +86,8 @@ class LoanController extends Controller
             purpose: $validated['purpose'] ?? null,
             dueAt: $validated['due_at'] ?? null,
             returnedAt: $validated['returned_at'] ?? null,
-            conditionOutId: $validated['condition_out_id'] ?? null,
-            conditionInId: $validated['condition_in_id'] ?? null,
+            itemConditionOutId: $validated['item_condition_out_id'] ?? null,
+            itemConditionInId: $validated['item_condition_in_id'] ?? null,
             depositAmount: $validated['deposit_amount'] ?? null,
             depositCurrencyCode: $validated['deposit_currency_code'] ?? null,
             includeInProvenance: (bool) ($validated['include_in_provenance'] ?? false),
@@ -104,14 +104,14 @@ class LoanController extends Controller
 
         $validated = $request->validate([
             'returned_at' => ['required', 'date'],
-            'condition_in_id' => ['nullable', 'integer'],
+            'item_condition_in_id' => ['nullable', 'integer'],
         ]);
 
         $loan = new ReturnLoan(
             user: $request->user(),
             loan: $loan,
             returnedAt: $validated['returned_at'],
-            conditionInId: $validated['condition_in_id'] ?? null,
+            itemConditionInId: $validated['item_condition_in_id'] ?? null,
         )->execute();
 
         return new LoanResource($loan)
@@ -144,8 +144,8 @@ class LoanController extends Controller
             'loaned_at' => ['required', 'date'],
             'due_at' => ['nullable', 'date'],
             'returned_at' => ['nullable', 'date'],
-            'condition_out_id' => ['nullable', 'integer'],
-            'condition_in_id' => ['nullable', 'integer'],
+            'item_condition_out_id' => ['nullable', 'integer'],
+            'item_condition_in_id' => ['nullable', 'integer'],
             'deposit_amount' => ['nullable', 'integer', 'min:0'],
             'deposit_currency_code' => ['nullable', 'string', 'size:3'],
             'include_in_provenance' => ['nullable', 'boolean'],

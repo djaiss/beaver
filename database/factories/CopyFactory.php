@@ -24,7 +24,7 @@ class CopyFactory extends Factory
         return [
             'item_id' => Item::factory(),
             'identifier' => null,
-            'condition_id' => null,
+            'item_condition_id' => null,
             'current_location_id' => null,
             'status' => CopyStatus::Owned,
             'quantity' => 1,

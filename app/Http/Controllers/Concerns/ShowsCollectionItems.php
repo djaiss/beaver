@@ -34,7 +34,7 @@ trait ShowsCollectionItems
             ->when($category, fn ($items) => $items->where('category_id', $category->id));
 
         $items = $query()
-            ->with(['mainPhoto', 'copies.condition', 'copies.currentLocation', 'copies.latestValuation'])
+            ->with(['mainPhoto', 'copies.itemCondition', 'copies.currentLocation', 'copies.latestValuation'])
             ->orderByDesc('id')
             ->paginate(self::ITEMS_PER_PAGE)
             ->withQueryString();

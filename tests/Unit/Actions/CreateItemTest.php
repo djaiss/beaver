@@ -12,9 +12,9 @@ use App\Jobs\LogUserAction;
 use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionType;
-use App\Models\Condition;
 use App\Models\CustomField;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Series;
 use App\Models\Set;
@@ -158,7 +158,7 @@ it('creates the copies along with the item', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
@@ -168,7 +168,7 @@ it('creates the copies along with the item', function () {
         copies: [
             [
                 'identifier' => 'CGC 1234567',
-                'condition_id' => $condition->id,
+                'item_condition_id' => $condition->id,
                 'current_location_id' => $location->id,
                 'status' => CopyStatus::Loaned,
                 'quantity' => 2,
@@ -184,7 +184,7 @@ it('creates the copies along with the item', function () {
 
     $first = $item->copies->first();
 
-    expect($first->condition_id)->toBe($condition->id);
+    expect($first->item_condition_id)->toBe($condition->id);
     expect($first->current_location_id)->toBe($location->id);
     expect($first->identifier)->toBe('CGC 1234567');
     expect($first->status)->toBe(CopyStatus::Loaned);
@@ -240,7 +240,7 @@ it('leaves a copy without any valuation when no estimated value is given', funct
         user: $owner,
         collection: $collection,
         name: 'Amazing Spider-Man #1',
-        copies: [['condition_id' => null]],
+        copies: [['item_condition_id' => null]],
     )->execute();
 
     expect($item->copies->first()->valuations()->count())->toBe(0);
@@ -255,13 +255,13 @@ it('throws when a copy condition belongs to another account', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $foreignCondition = Condition::factory()->create();
+    $foreignCondition = ItemCondition::factory()->create();
 
     new CreateItem(
         user: $owner,
         collection: $collection,
         name: 'Amazing Spider-Man #1',
-        copies: [['condition_id' => $foreignCondition->id]],
+        copies: [['item_condition_id' => $foreignCondition->id]],
     )->execute();
 
     expect(Item::query()->count())->toBe(0);

@@ -35,7 +35,7 @@
 
   <x-form
     method="put"
-    :action="route('settings.conditions.update', $condition->id)"
+    :action="route('settings.itemConditions.update', $condition->id)"
     x-ref="form"
     x-target="conditions-search conditions-list notifications"
     class="min-w-0 flex-1"
@@ -72,7 +72,7 @@
 
     <x-form
       method="delete"
-      :action="route('settings.conditions.destroy', $condition->id)"
+      :action="route('settings.itemConditions.destroy', $condition->id)"
       x-target="conditions-search conditions-list notifications"
       x-on:ajax:before="confirm(confirmMessage) || $event.preventDefault()"
     >

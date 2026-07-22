@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 use App\Enums\MaintenanceType;
-use App\Models\Condition;
 use App\Models\Copy;
+use App\Models\ItemCondition;
 use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,16 +20,16 @@ it('belongs to a copy', function () {
 });
 
 it('belongs to a condition before and after', function () {
-    $before = Condition::factory()->create();
-    $after = Condition::factory()->create();
+    $before = ItemCondition::factory()->create();
+    $after = ItemCondition::factory()->create();
     $record = MaintenanceRecord::factory()->create([
-        'condition_before_id' => $before->id,
-        'condition_after_id' => $after->id,
+        'item_condition_before_id' => $before->id,
+        'item_condition_after_id' => $after->id,
     ]);
 
-    expect($record->conditionBefore)->toBeInstanceOf(Condition::class);
-    expect($record->conditionBefore->id)->toBe($before->id);
-    expect($record->conditionAfter->id)->toBe($after->id);
+    expect($record->itemConditionBefore)->toBeInstanceOf(ItemCondition::class);
+    expect($record->itemConditionBefore->id)->toBe($before->id);
+    expect($record->itemConditionAfter->id)->toBe($after->id);
 });
 
 it('belongs to the provenance event it generated', function () {

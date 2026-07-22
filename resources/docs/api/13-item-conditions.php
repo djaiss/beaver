@@ -7,7 +7,7 @@ use App\Services\ApiDocumentation;
 $base = ApiDocumentation::baseUrl();
 
 $condition = fn (string $id, string $name): array => [
-    'type' => 'condition',
+    'type' => 'item_condition',
     'id' => $id,
     'attributes' => [
         'name' => $name,
@@ -15,7 +15,7 @@ $condition = fn (string $id, string $name): array => [
         'updated_at' => 1752537600,
     ],
     'links' => [
-        'self' => $base.'/conditions/'.$id,
+        'self' => $base.'/item-conditions/'.$id,
     ],
 ];
 
@@ -37,7 +37,7 @@ $pagination = [
 ];
 
 $conditionId = [
-    'name' => 'condition',
+    'name' => 'itemCondition',
     'type' => 'integer',
     'required' => true,
     'description' => 'The ID of the condition.',
@@ -47,10 +47,10 @@ return [
     'name' => 'Conditions',
     'sections' => [
         [
-            'id' => 'conditions-list',
+            'id' => 'item-conditions-list',
             'title' => 'List conditions',
             'method' => 'GET',
-            'path' => '/conditions',
+            'path' => '/item-conditions',
             'description' => 'Retrieve the conditions of your account, e.g. New, Used or Damaged, used to describe the state of an item.',
             'permissions' => 'Any member of the account.',
             'queryParams' => $pagination,
@@ -58,15 +58,15 @@ return [
             'response' => ApiDocumentation::paginated([
                 $condition('1', 'New'),
                 $condition('2', 'Used'),
-            ], '/conditions'),
+            ], '/item-conditions'),
         ],
         [
-            'id' => 'conditions-show',
+            'id' => 'item-conditions-show',
             'title' => 'Get a condition',
             'label' => 'Get a condition',
             'method' => 'GET',
-            'path' => '/conditions/{condition}',
-            'examplePath' => '/conditions/2',
+            'path' => '/item-conditions/{itemCondition}',
+            'examplePath' => '/item-conditions/2',
             'description' => 'Retrieve a single condition of your account by its ID.',
             'permissions' => 'Any member of the account.',
             'pathParams' => [$conditionId],
@@ -74,11 +74,11 @@ return [
             'response' => ['data' => $condition('2', 'Used')],
         ],
         [
-            'id' => 'conditions-create',
+            'id' => 'item-conditions-create',
             'title' => 'Create a condition',
             'label' => 'Create a condition',
             'method' => 'POST',
-            'path' => '/conditions',
+            'path' => '/item-conditions',
             'description' => 'Create a condition for your account.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'bodyParams' => [
@@ -95,12 +95,12 @@ return [
             'response' => ['data' => $condition('2', 'Used')],
         ],
         [
-            'id' => 'conditions-update',
+            'id' => 'item-conditions-update',
             'title' => 'Update a condition',
             'label' => 'Update a condition',
             'method' => 'PUT',
-            'path' => '/conditions/{condition}',
-            'examplePath' => '/conditions/2',
+            'path' => '/item-conditions/{itemCondition}',
+            'examplePath' => '/item-conditions/2',
             'description' => 'Update the name of a condition.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$conditionId],
@@ -117,12 +117,12 @@ return [
             'response' => ['data' => $condition('2', 'Used')],
         ],
         [
-            'id' => 'conditions-destroy',
+            'id' => 'item-conditions-destroy',
             'title' => 'Delete a condition',
             'label' => 'Delete a condition',
             'method' => 'DELETE',
-            'path' => '/conditions/{condition}',
-            'examplePath' => '/conditions/1',
+            'path' => '/item-conditions/{itemCondition}',
+            'examplePath' => '/item-conditions/1',
             'description' => 'Delete a condition.',
             'permissions' => 'Owners and editors. Viewers get a 404 response.',
             'pathParams' => [$conditionId],

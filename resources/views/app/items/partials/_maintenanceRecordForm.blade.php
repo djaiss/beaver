@@ -96,24 +96,24 @@
     <div class="mb-3.5 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
       <div>
         <label for="{{ $formId }}-condition-before" class="{{ $labelClasses }}">{{ __('Condition before') }} {!! $optional !!}</label>
-        <select id="{{ $formId }}-condition-before" name="condition_before_id" class="{{ $inputClasses }}">
+        <select id="{{ $formId }}-condition-before" name="item_condition_before_id" class="{{ $inputClasses }}">
           <option value="">{{ __('—') }}</option>
           @foreach ($conditions as $id => $name)
-            <option value="{{ $id }}" @selected($record?->condition_before_id === $id)>{{ $name }}</option>
+            <option value="{{ $id }}" @selected($record?->item_condition_before_id === $id)>{{ $name }}</option>
           @endforeach
         </select>
-        <x-error :messages="$errors->get('condition_before_id')" class="mt-2" />
+        <x-error :messages="$errors->get('item_condition_before_id')" class="mt-2" />
       </div>
 
       <div>
         <label for="{{ $formId }}-condition-after" class="{{ $labelClasses }}">{{ __('Condition after') }} {!! $optional !!}</label>
-        <select id="{{ $formId }}-condition-after" name="condition_after_id" class="{{ $inputClasses }}" data-test="{{ $formId }}-condition-after">
+        <select id="{{ $formId }}-condition-after" name="item_condition_after_id" class="{{ $inputClasses }}" data-test="{{ $formId }}-condition-after">
           <option value="">{{ __('—') }}</option>
           @foreach ($conditions as $id => $name)
-            <option value="{{ $id }}" @selected($record?->condition_after_id === $id)>{{ $name }}</option>
+            <option value="{{ $id }}" @selected($record?->item_condition_after_id === $id)>{{ $name }}</option>
           @endforeach
         </select>
-        <x-error :messages="$errors->get('condition_after_id')" class="mt-2" />
+        <x-error :messages="$errors->get('item_condition_after_id')" class="mt-2" />
         <p class="mt-1.5 text-[11.5px] leading-relaxed text-muted-soft">{{ __('Setting this updates the copy\'s current condition.') }}</p>
       </div>
     </div>

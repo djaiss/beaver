@@ -9,9 +9,9 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
 use App\Models\User;
@@ -98,25 +98,25 @@ it('updates the copy condition to the condition after the work', function () {
     Queue::fake();
     $ross = $this->createUser();
     $copy = copyToMaintain($ross);
-    $after = Condition::factory()->create(['account_id' => $ross->account_id]);
+    $after = ItemCondition::factory()->create(['account_id' => $ross->account_id]);
 
     new CreateMaintenanceRecord(
         user: $ross,
         copy: $copy,
         type: MaintenanceType::Restoration,
         title: 'Full restoration',
-        conditionAfterId: $after->id,
+        itemConditionAfterId: $after->id,
     )->execute();
 
-    expect($copy->refresh()->condition_id)->toBe($after->id);
+    expect($copy->refresh()->item_condition_id)->toBe($after->id);
 });
 
 it('leaves the copy condition untouched when no condition after is given', function () {
     Queue::fake();
     $ross = $this->createUser();
-    $before = Condition::factory()->create(['account_id' => $ross->account_id]);
+    $before = ItemCondition::factory()->create(['account_id' => $ross->account_id]);
     $copy = copyToMaintain($ross);
-    $copy->update(['condition_id' => $before->id]);
+    $copy->update(['item_condition_id' => $before->id]);
 
     new CreateMaintenanceRecord(
         user: $ross,
@@ -125,7 +125,7 @@ it('leaves the copy condition untouched when no condition after is given', funct
         title: 'Light dusting',
     )->execute();
 
-    expect($copy->refresh()->condition_id)->toBe($before->id);
+    expect($copy->refresh()->item_condition_id)->toBe($before->id);
 });
 
 it('generates a matching provenance event when marked for provenance', function () {
@@ -170,14 +170,14 @@ it('refuses a condition from another account', function () {
     Queue::fake();
     $ross = $this->createUser();
     $copy = copyToMaintain($ross);
-    $foreign = Condition::factory()->create(['account_id' => $this->createAccount()->id]);
+    $foreign = ItemCondition::factory()->create(['account_id' => $this->createAccount()->id]);
 
     new CreateMaintenanceRecord(
         user: $ross,
         copy: $copy,
         type: MaintenanceType::Cleaning,
         title: 'Cleaning',
-        conditionAfterId: $foreign->id,
+        itemConditionAfterId: $foreign->id,
     )->execute();
 })->throws(ModelNotFoundException::class);
 

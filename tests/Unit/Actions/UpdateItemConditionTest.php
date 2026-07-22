@@ -1,11 +1,11 @@
 <?php
 
 declare(strict_types=1);
-use App\Actions\UpdateCondition;
+use App\Actions\UpdateItemCondition;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -18,15 +18,15 @@ it('updates a condition and stamps the editor', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Monica', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $condition = Condition::factory()->create(['account_id' => $account->id, 'name' => 'Old name']);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id, 'name' => 'Old name']);
 
-    $result = new UpdateCondition(
+    $result = new UpdateItemCondition(
         user: $editor,
-        condition: $condition,
+        itemCondition: $condition,
         name: 'Used',
     )->execute();
 
-    expect($result)->toBeInstanceOf(Condition::class);
+    expect($result)->toBeInstanceOf(ItemCondition::class);
     expect($condition->fresh()->name)->toBe('Used');
     expect($condition->fresh()->updated_by_id)->toBe($editor->id);
 
@@ -43,11 +43,11 @@ it('sanitizes the name', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
 
-    new UpdateCondition(
+    new UpdateItemCondition(
         user: $owner,
-        condition: $condition,
+        itemCondition: $condition,
         name: '<strong>Used</strong>',
     )->execute();
 
@@ -61,11 +61,11 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
 
-    new UpdateCondition(
+    new UpdateItemCondition(
         user: $viewer,
-        condition: $condition,
+        itemCondition: $condition,
         name: 'Used',
     )->execute();
 });
@@ -75,11 +75,11 @@ it('throws when the condition is a system default', function () {
     $this->expectException(ModelNotFoundException::class);
 
     $owner = $this->createUser();
-    $condition = Condition::factory()->systemDefault()->create();
+    $condition = ItemCondition::factory()->systemDefault()->create();
 
-    new UpdateCondition(
+    new UpdateItemCondition(
         user: $owner,
-        condition: $condition,
+        itemCondition: $condition,
         name: 'Used',
     )->execute();
 });

@@ -41,8 +41,8 @@ class CreateLoan
         private readonly ?string $purpose = null,
         private readonly ?string $dueAt = null,
         private readonly ?string $returnedAt = null,
-        private readonly ?int $conditionOutId = null,
-        private readonly ?int $conditionInId = null,
+        private readonly ?int $itemConditionOutId = null,
+        private readonly ?int $itemConditionInId = null,
         private readonly ?int $depositAmount = null,
         private readonly ?string $depositCurrencyCode = null,
         private readonly bool $includeInProvenance = false,
@@ -68,7 +68,7 @@ class CreateLoan
             throw new ModelNotFoundException('Account not found');
         }
 
-        $this->guardConditionsBelongToAccount($account, $this->conditionOutId, $this->conditionInId);
+        $this->guardConditionsBelongToAccount($account, $this->itemConditionOutId, $this->itemConditionInId);
     }
 
     private function create(): void
@@ -82,8 +82,8 @@ class CreateLoan
             'loaned_at' => $this->loanedAt,
             'due_at' => $this->dueAt,
             'returned_at' => $this->returnedAt,
-            'condition_out_id' => $this->conditionOutId,
-            'condition_in_id' => $this->conditionInId,
+            'item_condition_out_id' => $this->itemConditionOutId,
+            'item_condition_in_id' => $this->itemConditionInId,
             'deposit_amount' => $this->depositAmount,
             // The collection's currency is the sensible default when the caller
             // holds a deposit but does not say what it is in.

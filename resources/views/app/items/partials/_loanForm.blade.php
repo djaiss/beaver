@@ -47,7 +47,7 @@
          return through an edit rather than dropping it. --}}
     @if ($isEdit)
       <input type="hidden" name="returned_at" value="{{ $loan->returned_at?->toDateString() }}" />
-      <input type="hidden" name="condition_in_id" value="{{ $loan->condition_in_id }}" />
+      <input type="hidden" name="item_condition_in_id" value="{{ $loan->item_condition_in_id }}" />
     @endif
 
     <div class="mb-3.5 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
@@ -95,13 +95,13 @@
     <div class="mb-3.5 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
       <div>
         <label for="{{ $formId }}-condition-out" class="{{ $labelClasses }}">{{ __('Condition out') }} {!! $optional !!}</label>
-        <select id="{{ $formId }}-condition-out" name="condition_out_id" class="{{ $inputClasses }}">
+        <select id="{{ $formId }}-condition-out" name="item_condition_out_id" class="{{ $inputClasses }}">
           <option value="">{{ __('—') }}</option>
           @foreach ($conditions as $id => $name)
-            <option value="{{ $id }}" @selected($loan?->condition_out_id === $id)>{{ $name }}</option>
+            <option value="{{ $id }}" @selected($loan?->item_condition_out_id === $id)>{{ $name }}</option>
           @endforeach
         </select>
-        <x-error :messages="$errors->get('condition_out_id')" class="mt-2" />
+        <x-error :messages="$errors->get('item_condition_out_id')" class="mt-2" />
       </div>
 
       <div>

@@ -3,9 +3,9 @@
 declare(strict_types=1);
 use App\Enums\CopyStatus;
 use App\Enums\TransactionType;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Transaction;
 use App\Models\Valuation;
@@ -23,17 +23,17 @@ it('belongs to an item', function () {
 });
 
 it('belongs to a condition', function () {
-    $condition = Condition::factory()->create();
-    $copy = Copy::factory()->create(['condition_id' => $condition->id]);
+    $condition = ItemCondition::factory()->create();
+    $copy = Copy::factory()->create(['item_condition_id' => $condition->id]);
 
-    expect($copy->condition)->toBeInstanceOf(Condition::class);
-    expect($copy->condition->id)->toBe($condition->id);
+    expect($copy->itemCondition)->toBeInstanceOf(ItemCondition::class);
+    expect($copy->itemCondition->id)->toBe($condition->id);
 });
 
 it('has no condition when unknown', function () {
-    $copy = Copy::factory()->create(['condition_id' => null]);
+    $copy = Copy::factory()->create(['item_condition_id' => null]);
 
-    expect($copy->condition)->toBeNull();
+    expect($copy->itemCondition)->toBeNull();
 });
 
 it('belongs to a current location', function () {

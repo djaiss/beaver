@@ -26,7 +26,7 @@
     $existingCopies = $item?->copies->map(fn ($copy) => [
         'id' => $copy->id,
         'identifier' => $copy->identifier ?? '',
-        'condition_id' => (string) $copy->condition_id,
+        'item_condition_id' => (string) $copy->item_condition_id,
         'current_location_id' => (string) $copy->current_location_id,
         'location_name' => $copy->currentLocation?->name ?? '',
         'status' => $copy->status->value,
@@ -35,7 +35,7 @@
         'estimated_value' => $copy->estimatedValue() === null ? '' : number_format($copy->estimatedValue() / 100, 2, '.', ''),
     ])->values()->all() ?? [];
 
-    $blankCopy = ['id' => null, 'identifier' => '', 'condition_id' => '', 'current_location_id' => '', 'location_name' => '', 'status' => CopyStatus::Owned->value, 'quantity' => 1, 'note' => '', 'estimated_value' => ''];
+    $blankCopy = ['id' => null, 'identifier' => '', 'item_condition_id' => '', 'current_location_id' => '', 'location_name' => '', 'status' => CopyStatus::Owned->value, 'quantity' => 1, 'note' => '', 'estimated_value' => ''];
 
     $selectedCategoryId = old('category_id', $item?->category_id);
     $selectedSetId = old('set_id', $item?->set_id);
@@ -450,7 +450,7 @@
           <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <div>
               <label class="mb-1.5 block text-xs font-semibold text-muted-soft">{{ __('Condition') }}</label>
-              <select :name="`copies[${index}][condition_id]`" x-model="copy.condition_id" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
+              <select :name="`copies[${index}][item_condition_id]`" x-model="copy.item_condition_id" class="h-10 w-full appearance-none rounded-md border border-hairline bg-input pl-3 pr-9 text-sm text-ink">
                 <option value="">{{ __('Not set') }}</option>
                 @foreach ($conditions as $condition)
                   <option value="{{ $condition->id }}">{{ $condition->name }}</option>

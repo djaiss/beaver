@@ -23,7 +23,7 @@ trait GuardsMaintenanceConditions
             return;
         }
 
-        $owned = $account->conditions()->whereIn('id', $ids)->pluck('id')->all();
+        $owned = $account->itemConditions()->whereIn('id', $ids)->pluck('id')->all();
 
         foreach ($ids as $id) {
             if (! in_array($id, $owned, true)) {

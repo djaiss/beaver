@@ -30,7 +30,7 @@ class ReturnLoan
         private readonly User $user,
         private readonly Loan $loan,
         private readonly string $returnedAt,
-        private readonly ?int $conditionInId = null,
+        private readonly ?int $itemConditionInId = null,
     ) {}
 
     public function execute(): Loan
@@ -59,7 +59,7 @@ class ReturnLoan
             throw new ModelNotFoundException('Loan not found');
         }
 
-        $this->guardConditionsBelongToAccount($account, null, $this->conditionInId);
+        $this->guardConditionsBelongToAccount($account, null, $this->itemConditionInId);
     }
 
     private function close(): void
@@ -67,7 +67,7 @@ class ReturnLoan
         $this->loan->fill([
             'status' => LoanStatus::Returned,
             'returned_at' => $this->returnedAt,
-            'condition_in_id' => $this->conditionInId,
+            'item_condition_in_id' => $this->itemConditionInId,
         ]);
         $this->loan->updated_by_id = $this->user->id;
         $this->loan->updated_by_name = $this->user->getFullName();
@@ -80,12 +80,12 @@ class ReturnLoan
      */
     private function syncCopyCondition(): void
     {
-        if ($this->conditionInId === null) {
+        if ($this->itemConditionInId === null) {
             return;
         }
 
         $copy = $this->loan->copy;
-        $copy->condition_id = $this->conditionInId;
+        $copy->item_condition_id = $this->itemConditionInId;
         $copy->save();
     }
 

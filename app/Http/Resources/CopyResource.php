@@ -30,7 +30,7 @@ class CopyResource extends JsonResource
             'attributes' => [
                 'item_id' => (string) $this->item_id,
                 'identifier' => $this->identifier,
-                'condition_id' => $this->condition_id !== null ? (string) $this->condition_id : null,
+                'item_condition_id' => $this->item_condition_id !== null ? (string) $this->item_condition_id : null,
                 'current_location_id' => $this->current_location_id !== null ? (string) $this->current_location_id : null,
                 'status' => $this->status->value,
                 'quantity' => $this->quantity,

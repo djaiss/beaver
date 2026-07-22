@@ -37,7 +37,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $item_id
  * @property string|null $identifier
- * @property int|null $condition_id
+ * @property int|null $item_condition_id
  * @property int|null $current_location_id
  * @property CopyStatus $status
  * @property int $quantity
@@ -74,7 +74,7 @@ class Copy extends Model
     protected $fillable = [
         'item_id',
         'identifier',
-        'condition_id',
+        'item_condition_id',
         'current_location_id',
         'status',
         'quantity',
@@ -111,11 +111,11 @@ class Copy extends Model
     /**
      * Get the current condition of the copy, if any.
      *
-     * @return BelongsTo<Condition, $this>
+     * @return BelongsTo<ItemCondition, $this>
      */
-    public function condition(): BelongsTo
+    public function itemCondition(): BelongsTo
     {
-        return $this->belongsTo(Condition::class);
+        return $this->belongsTo(ItemCondition::class);
     }
 
     /**

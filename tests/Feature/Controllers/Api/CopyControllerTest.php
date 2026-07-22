@@ -30,7 +30,7 @@ beforeEach(function () {
         'attributes' => [
             'item_id',
             'identifier',
-            'condition_id',
+            'item_condition_id',
             'current_location_id',
             'status',
             'quantity',

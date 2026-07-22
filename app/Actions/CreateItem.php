@@ -45,7 +45,7 @@ class CreateItem
      * @param  list<int>  $tagIds  ids of existing account tags to apply
      * @param  list<string>  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>  $customFieldValues  custom field id to raw value
-     * @param  list<array{identifier?: string|null, condition_id?: int|null, current_location_id?: int|null, status?: CopyStatus|null, quantity?: int|null, disposed_at?: string|null, note?: string|null, estimated_value?: int|null}>  $copies
+     * @param  list<array{identifier?: string|null, item_condition_id?: int|null, current_location_id?: int|null, status?: CopyStatus|null, quantity?: int|null, disposed_at?: string|null, note?: string|null, estimated_value?: int|null}>  $copies
      * @param  list<UploadedFile>  $photos  in the order they should appear, the first becoming the cover
      */
     public function __construct(
@@ -126,11 +126,11 @@ class CreateItem
 
     private function validateCopies(): void
     {
-        $conditionIds = $this->collection->account->conditions()->pluck('id')->all();
+        $conditionIds = $this->collection->account->itemConditions()->pluck('id')->all();
         $locationIds = $this->collection->account->locations()->pluck('id')->all();
 
         foreach ($this->copies as $copy) {
-            $conditionId = $copy['condition_id'] ?? null;
+            $conditionId = $copy['item_condition_id'] ?? null;
             $locationId = $copy['current_location_id'] ?? null;
 
             if ($conditionId !== null && ! in_array($conditionId, $conditionIds, true)) {
@@ -250,7 +250,7 @@ class CreateItem
             $created = Copy::query()->create([
                 'item_id' => $this->item->id,
                 'identifier' => $copy['identifier'] ?? null,
-                'condition_id' => $copy['condition_id'] ?? null,
+                'item_condition_id' => $copy['item_condition_id'] ?? null,
                 'status' => $copy['status'] ?? CopyStatus::Owned,
                 'quantity' => $copy['quantity'] ?? 1,
                 'disposed_at' => $copy['disposed_at'] ?? null,

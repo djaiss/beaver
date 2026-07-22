@@ -79,7 +79,7 @@
             <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Administration') }}</p>
             <x-sidebar-link :href="route('settings.types.index')" :active="request()->routeIs('settings.types.*')" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.tags.index')" :active="request()->routeIs('settings.tags.*')" icon="tag">{{ __('Tags') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('settings.conditions.index')" :active="request()->routeIs('settings.conditions.*')" icon="gauge">{{ __('Item conditions') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('settings.itemConditions.index')" :active="request()->routeIs('settings.itemConditions.*')" icon="gauge">{{ __('Item conditions') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.photos.index')" :active="request()->routeIs('settings.photos.*')" icon="image">{{ __('Photos') }}</x-sidebar-link>
         </nav>
     @elseif ($isSupport)

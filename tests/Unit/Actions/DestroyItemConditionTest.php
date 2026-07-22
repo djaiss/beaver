@@ -1,11 +1,11 @@
 <?php
 
 declare(strict_types=1);
-use App\Actions\DestroyCondition;
+use App\Actions\DestroyItemCondition;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -18,14 +18,14 @@ it('deletes a condition', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
 
-    new DestroyCondition(
+    new DestroyItemCondition(
         user: $owner,
-        condition: $condition,
+        itemCondition: $condition,
     )->execute();
 
-    $this->assertDatabaseMissing('conditions', ['id' => $condition->id]);
+    $this->assertDatabaseMissing('item_conditions', ['id' => $condition->id]);
 
     Queue::assertPushedOn(
         queue: 'low',
@@ -41,11 +41,11 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
 
-    new DestroyCondition(
+    new DestroyItemCondition(
         user: $viewer,
-        condition: $condition,
+        itemCondition: $condition,
     )->execute();
 });
 
@@ -54,10 +54,10 @@ it('throws when the condition is a system default', function () {
     $this->expectException(ModelNotFoundException::class);
 
     $owner = $this->createUser();
-    $condition = Condition::factory()->systemDefault()->create();
+    $condition = ItemCondition::factory()->systemDefault()->create();
 
-    new DestroyCondition(
+    new DestroyItemCondition(
         user: $owner,
-        condition: $condition,
+        itemCondition: $condition,
     )->execute();
 });

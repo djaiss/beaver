@@ -19,7 +19,7 @@
             'id' => $item->id,
             'name' => $item->name,
             'photoUrl' => $item->mainPhoto?->url(),
-            'condition' => $first?->condition?->name ?? '—',
+            'condition' => $first?->itemCondition?->name ?? '—',
             'location' => $first?->currentLocation?->name ?? '—',
             'quantity' => $copies->count(),
             'value' => $valueCents > 0 ? $money($valueCents) : '—',

@@ -35,7 +35,7 @@ class BuildCopyHistory
             'valuations',
             'insuranceRecords',
             'maintenanceRecords',
-            'loans.conditionIn',
+            'loans.itemConditionIn',
             'locationHistory.location',
         ]);
     }

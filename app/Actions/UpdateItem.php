@@ -55,7 +55,7 @@ class UpdateItem
      * @param  list<int>|null  $tagIds  ids of existing account tags to apply
      * @param  list<string>|null  $newTagNames  names of new tags to create and apply
      * @param  array<int, string|null>|null  $customFieldValues  custom field id to raw value
-     * @param  list<array{id?: int|null, identifier?: string|null, condition_id?: int|null, current_location_id?: int|null, status?: CopyStatus|null, quantity?: int|null, disposed_at?: string|null, note?: string|null, estimated_value?: int|null}>|null  $copies
+     * @param  list<array{id?: int|null, identifier?: string|null, item_condition_id?: int|null, current_location_id?: int|null, status?: CopyStatus|null, quantity?: int|null, disposed_at?: string|null, note?: string|null, estimated_value?: int|null}>|null  $copies
      * @param  list<UploadedFile>  $photos  new photos, appended after the ones the item already has
      * @param  list<int>  $deletedPhotoIds  ids of photos of this item to remove
      * @param  int|null  $mainPhotoId  id of the photo to make the cover, among those the item keeps
@@ -147,13 +147,13 @@ class UpdateItem
         }
 
         $account = $this->item->collection->account;
-        $conditionIds = $account->conditions()->pluck('id')->all();
+        $conditionIds = $account->itemConditions()->pluck('id')->all();
         $locationIds = $account->locations()->pluck('id')->all();
         $copyIds = $this->item->copies()->pluck('id')->all();
 
         foreach ($this->copies as $copy) {
             $id = $copy['id'] ?? null;
-            $conditionId = $copy['condition_id'] ?? null;
+            $conditionId = $copy['item_condition_id'] ?? null;
             $locationId = $copy['current_location_id'] ?? null;
 
             if ($id !== null && ! in_array($id, $copyIds, true)) {
@@ -341,7 +341,7 @@ class UpdateItem
         foreach ($this->copies as $copy) {
             $attributes = [
                 'identifier' => $copy['identifier'] ?? null,
-                'condition_id' => $copy['condition_id'] ?? null,
+                'item_condition_id' => $copy['item_condition_id'] ?? null,
                 'status' => $copy['status'] ?? CopyStatus::Owned,
                 'quantity' => $copy['quantity'] ?? 1,
                 'disposed_at' => $copy['disposed_at'] ?? null,

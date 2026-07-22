@@ -35,7 +35,7 @@ class PopulateAccount implements ShouldQueue
                     ->all()
             );
 
-            $this->account->conditions()->createMany(
+            $this->account->itemConditions()->createMany(
                 collect($this->defaultConditions())
                     ->map(fn (string $name): array => ['name' => $name])
                     ->all()
