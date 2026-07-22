@@ -43,7 +43,7 @@ Sensitive fields are encrypted at rest in the database with your instance's key.
 
 ## Can I add my own conditions?
 
-Not from the web app yet. The seeded conditions (New, Like New, Used, Worn, Damaged) appear as dropdowns everywhere, and adding or renaming conditions is currently only possible through the API. See @doc(conditions.overview) and @doc(troubleshooting.featureStatus).
+Yes. Open **Item conditions** in account settings to add, rename, or delete conditions, including the seeded ones (New, Like New, Used, Worn, Damaged). See @doc(conditions.manage).
 
 ## Something was deleted. Can I get it back?
 

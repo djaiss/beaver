@@ -35,10 +35,6 @@ Every collection carries a visibility setting (private, shared, or public), and 
 
 You can register webhook endpoints, and each receives a signing secret, but no application event fires a webhook yet. The signing and delivery machinery is in place, waiting for events to be wired up. Set up now if you like; deliveries arrive as the domain grows. See @doc(webhooks.overview).
 
-### Managing conditions on the web
-
-Conditions appear as ready made dropdown choices everywhere they are needed, but there is no web screen for creating or renaming them. That is currently only possible through the API. See @doc(conditions.overview).
-
 ### Item and collection import and export
 
 Import and export exist for collection type definitions only. There is no item level or whole collection import or export yet. For getting everything out, self hosters have full instance backups; see @doc(dataSafety.backupCollectionData).
