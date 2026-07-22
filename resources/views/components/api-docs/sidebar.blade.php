@@ -9,7 +9,7 @@
   ];
 @endphp
 
-<aside class="sticky top-16 hidden h-[calc(100vh-4rem)] w-72 shrink-0 overflow-y-auto border-r border-gray-200 py-8 pr-5 pl-6 lg:block">
+<aside class="sticky top-[7.5rem] hidden h-[calc(100vh-7.5rem)] w-72 shrink-0 overflow-y-auto border-r border-gray-200 py-8 pr-5 pl-6 lg:block">
   <p class="mb-2 text-[11px] font-semibold tracking-wider text-gray-400 uppercase">Getting started</p>
   @foreach ($navigation['guides'] as $item)
     <a

@@ -3,7 +3,7 @@
   <head>
     @include('partials.meta', ['title' => config('app.name').' API documentation'])
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
 
     <style>
       html {
@@ -34,7 +34,9 @@
   </head>
   <body class="bg-white font-sans text-gray-900 antialiased">
     <div x-data="{ query: '' }">
-      <x-api-docs.topbar />
+      @include('components.marketing.header')
+
+      <x-api-docs.subheader />
 
       <div class="flex">
         <x-api-docs.sidebar :navigation="$navigation" />
