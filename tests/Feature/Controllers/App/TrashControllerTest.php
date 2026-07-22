@@ -24,6 +24,17 @@ it('shows the trash screen', function () {
     $response->assertSee('Empty trash');
 });
 
+it('renders the trash title help popover', function () {
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get(route('settings.trash.index'));
+
+    $response->assertStatus(200);
+    $response->assertSee('kept for a retention period');
+});
+
 it('shows an empty trash screen', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
