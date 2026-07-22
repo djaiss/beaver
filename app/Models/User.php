@@ -138,6 +138,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the support conversations the user has opened.
+     *
+     * @return HasMany<SupportTicket, $this>
+     */
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    /**
      * The sizes, in CSS pixels, the avatar is displayed at in the app. Each one
      * is stored twice, at its own size and at twice that size, so a dense
      * screen has a sharp version to pick from.

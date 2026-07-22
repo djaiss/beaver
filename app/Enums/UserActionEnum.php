@@ -84,6 +84,12 @@ enum UserActionEnum: string
     case ApiKeyDeletion = 'api_key_deleted';
     case WebhookEndpointCreation = 'webhook_endpoint_created';
     case WebhookEndpointDeletion = 'webhook_endpoint_deleted';
+    case SupportTicketCreation = 'support_ticket_created';
+    case SupportTicketUpdate = 'support_ticket_updated';
+    case SupportTicketDeletion = 'support_ticket_deleted';
+    case SupportMessageCreation = 'support_message_created';
+    case SupportMessageUpdate = 'support_message_updated';
+    case SupportMessageDeletion = 'support_message_deleted';
     case MagicLinkCreated = 'magic_link_created';
     case PersonalProfileUpdate = 'user_profile_updated';
     case AvatarUpdate = 'user_avatar_updated';
@@ -177,6 +183,12 @@ enum UserActionEnum: string
             self::ApiKeyDeletion => 'Deleted an API key',
             self::WebhookEndpointCreation => 'Created a webhook endpoint',
             self::WebhookEndpointDeletion => 'Deleted a webhook endpoint',
+            self::SupportTicketCreation => 'Opened a support conversation',
+            self::SupportTicketUpdate => 'Updated a support conversation',
+            self::SupportTicketDeletion => 'Deleted a support conversation',
+            self::SupportMessageCreation => 'Replied to a support conversation',
+            self::SupportMessageUpdate => 'Edited a support message',
+            self::SupportMessageDeletion => 'Deleted a support message',
             self::MagicLinkCreated => 'Sent a magic link',
             self::PersonalProfileUpdate => 'Updated their personal profile',
             self::AvatarUpdate => 'Updated their avatar',
