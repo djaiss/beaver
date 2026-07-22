@@ -6,6 +6,7 @@ use App\Http\Middleware\CheckMarketing;
 use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\EnsureEditorAccess;
 use App\Http\Middleware\EnsureInstanceAdministrator;
+use App\Http\Middleware\EnsureSupportEnabled;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SetMarketingLocale;
 use Illuminate\Foundation\Application;
@@ -26,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'owner' => EnsureAccountOwner::class,
             'editor' => EnsureEditorAccess::class,
             'instance.admin' => EnsureInstanceAdministrator::class,
+            'support.enabled' => EnsureSupportEnabled::class,
             'marketing' => CheckMarketing::class,
             'marketing.locale' => SetMarketingLocale::class,
             'cacheResponse' => CacheResponse::class,

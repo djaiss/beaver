@@ -7,6 +7,7 @@
     $isProfile = request()->routeIs('profile.*');
     $isAccount = request()->routeIs('settings.*');
     $isInstance = request()->routeIs('instanceAdmin.*');
+    $isSupport = request()->routeIs('support.*');
     $isCollection = $collection !== null;
 @endphp
 
@@ -78,6 +79,23 @@
             <x-sidebar-link :href="route('settings.tags.index')" :active="request()->routeIs('settings.tags.*')" icon="tag">{{ __('Tags') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.photos.index')" :active="request()->routeIs('settings.photos.*')" icon="image">{{ __('Photos') }}</x-sidebar-link>
         </nav>
+    @elseif ($isSupport)
+        <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
+            @svg('lucide-arrow-left', 'size-4')
+            {{ __('Back to dashboard') }}
+        </a>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Support') }}</p>
+            <x-sidebar-link :href="route('support.tickets.index')" :active="request()->routeIs('support.tickets.index') || request()->routeIs('support.tickets.show') || request()->routeIs('support.tickets.update') || request()->routeIs('support.tickets.destroy')" icon="messages-square">{{ __('Your conversations') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('support.tickets.new')" :active="request()->routeIs('support.tickets.new') || request()->routeIs('support.tickets.create')" icon="plus">{{ __('New conversation') }}</x-sidebar-link>
+        </nav>
+
+        <nav class="flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Resources') }}</p>
+            <x-sidebar-link :href="route('marketing.docs.portal.home.show')" :active="false" icon="book-open">{{ __('Documentation') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('marketing.docs.api.index')" :active="false" icon="code">{{ __('API Docs') }}</x-sidebar-link>
+        </nav>
     @elseif ($isCollection)
         <a href="{{ route('collections.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
             @svg('lucide-arrow-left', 'size-4')
@@ -127,10 +145,20 @@
                  in the workspace nav rather than inside a collection. --}}
             <x-sidebar-link :href="route('series.index')" :active="request()->routeIs('series.*')" icon="library">{{ __('Series') }}</x-sidebar-link>
             <x-sidebar-link :href="route('locations.index')" :active="request()->routeIs('locations.*')" icon="map-pin">{{ __('Locations') }}</x-sidebar-link>
+
+            <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Account management') }}</p>
             @if ($user->isOwner())
                 <x-sidebar-link :href="route('settings.index')" :active="false" icon="settings">{{ __('Account settings') }}</x-sidebar-link>
             @elseif ($user->account->allowsManagementBy($user))
                 <x-sidebar-link :href="route('settings.types.index')" :active="false" icon="boxes">{{ __('Collection types') }}</x-sidebar-link>
+            @endif
+
+            <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Documentation') }}</p>
+            <x-sidebar-link :href="route('marketing.docs.portal.home.show')" :active="false" icon="book-open">{{ __('Documentation site') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('marketing.docs.api.index')" :active="false" icon="code">{{ __('API Docs') }}</x-sidebar-link>
+            {{-- The support section only exists when the instance turns it on. --}}
+            @if (config('support.enabled'))
+                <x-sidebar-link :href="route('support.tickets.index')" :active="request()->routeIs('support.*')" icon="life-buoy">{{ __('Support') }}</x-sidebar-link>
             @endif
         </nav>
     @endif

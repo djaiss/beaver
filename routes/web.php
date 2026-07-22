@@ -59,6 +59,8 @@ use App\Http\Controllers\App\Settings\TwoFAController;
 use App\Http\Controllers\App\Settings\UserController;
 use App\Http\Controllers\App\Settings\WebhookController;
 use App\Http\Controllers\App\StatisticsController;
+use App\Http\Controllers\App\Support\MessageController as SupportMessageController;
+use App\Http\Controllers\App\Support\TicketController as SupportTicketController;
 use App\Http\Controllers\App\TagController;
 use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\App\TrashController;
@@ -232,6 +234,19 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // profile: danger zone (delete your own user)
     Route::get('profile/user', [UserController::class, 'index'])->name('profile.user.index');
     Route::delete('profile/user', [UserController::class, 'destroy'])->name('profile.user.destroy');
+
+    // support — a signed in user's own conversations with the instance team. The
+    // whole section only exists when SUPPORT_ENABLED is on: the middleware answers
+    // 404 otherwise, matching the sidebar that hides the link.
+    Route::middleware(['support.enabled'])->prefix('support')->name('support.')->group(function (): void {
+        Route::get('/', [SupportTicketController::class, 'index'])->name('tickets.index');
+        Route::get('new', [SupportTicketController::class, 'new'])->name('tickets.new');
+        Route::post('/', [SupportTicketController::class, 'create'])->name('tickets.create');
+        Route::get('{supportTicket}', [SupportTicketController::class, 'show'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.show');
+        Route::put('{supportTicket}', [SupportTicketController::class, 'update'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.update');
+        Route::delete('{supportTicket}', [SupportTicketController::class, 'destroy'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.destroy');
+        Route::post('{supportTicket}/messages', [SupportMessageController::class, 'create'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.messages.create');
+    });
 
     // account settings — the account and its members (owners only)
     Route::middleware(['owner'])->group(function (): void {
