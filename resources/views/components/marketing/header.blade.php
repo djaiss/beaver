@@ -1,11 +1,15 @@
 @php
+    // "Features" is not a plain link: it opens the mega menu on hover and leads
+    // to the features hub on click, so it is rendered on its own below and left
+    // out of this list.
     $navigation = [
-        ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
         ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
         ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
         ['label' => __('Docs'), 'url' => route('marketing.docs.portal.home.show')],
         ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
     ];
+
+    $featureColumns = app(\App\Services\MarketingFeatures::class)->columns();
 
     // The reviews link only appears once there is something to read, so the site
     // never points visitors at an empty page.
@@ -17,7 +21,18 @@
 {{-- display:contents so the sticky nav below resolves against the page container,
      not this short wrapper. Otherwise the nav can only stick within the wrapper's
      own height (announcement bar + nav) and unsticks as soon as you scroll past it. --}}
-<div x-data="{ mobileMenuOpen: false }" class="contents">
+<div
+  x-data="{
+    mobileMenuOpen: false,
+    mobileFeaturesOpen: false,
+    featuresOpen: false,
+    featuresTimer: null,
+    openFeatures() { clearTimeout(this.featuresTimer); this.featuresOpen = true; },
+    closeFeatures() { this.featuresTimer = setTimeout(() => this.featuresOpen = false, 140); },
+  }"
+  @keydown.escape.window="featuresOpen = false"
+  class="contents"
+>
   <div class="flex flex-col items-center justify-center gap-2 bg-[#101010] px-4 py-2 text-center text-[13px] font-medium sm:h-10 sm:flex-row sm:py-0">
     <div class="flex items-center gap-2">
       <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold tracking-wide text-badge-emerald">v0.9</span>
@@ -38,6 +53,27 @@
 
       {{-- Desktop navigation --}}
       <div class="hidden items-center gap-x-1 lg:flex">
+        {{-- Features: hover opens the mega menu, click goes to the hub. The
+             wrapper holds both the trigger and the panel, so mouseleave only
+             fires once the pointer has left both (the panel is a descendant),
+             which is what makes the hover close reliable. --}}
+        <div @mouseenter="openFeatures()" @mouseleave="closeFeatures()">
+          <a
+            href="{{ route('marketing.features.index') }}"
+            data-turbo="true"
+            @click="featuresOpen = false"
+            aria-haspopup="true"
+            :aria-expanded="featuresOpen"
+            class="flex items-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar"
+            :class="featuresOpen ? 'bg-sidebar text-ink' : 'text-body'"
+          >
+            {{ __('Features') }}
+            <x-lucide-chevron-down class="h-3.5 w-3.5 transition-transform duration-200" ::class="featuresOpen ? 'rotate-180' : ''" />
+          </a>
+
+          <x-marketing.features-menu :columns="$featureColumns" />
+        </div>
+
         @foreach ($navigation as $link)
           <a href="{{ $link['url'] }}" data-turbo="true" class="rounded-md px-3 py-2 text-sm font-medium text-body transition-colors hover:bg-sidebar hover:text-ink">{{ $link['label'] }}</a>
         @endforeach
@@ -77,6 +113,37 @@
       </div>
 
       <div class="flex flex-col">
+        {{-- Features: a collapsible section listing every feature area, with the
+             hub itself one tap away. Replaces the hover mega menu on touch. --}}
+        <div class="border-b border-hairline-soft">
+          <button type="button" @click="mobileFeaturesOpen = ! mobileFeaturesOpen" :aria-expanded="mobileFeaturesOpen" class="flex w-full items-center justify-between py-3.5 text-base font-semibold text-ink">
+            {{ __('Features') }}
+            <x-lucide-chevron-down class="h-5 w-5 text-muted transition-transform duration-200" ::class="mobileFeaturesOpen ? 'rotate-180' : ''" />
+          </button>
+
+          <div x-show="mobileFeaturesOpen" x-cloak class="pb-2">
+            <a href="{{ route('marketing.features.index') }}" data-turbo="true" @click="mobileMenuOpen = false" class="flex items-center gap-1.5 pb-2 text-[13px] font-semibold text-body">
+              {{ __('All features') }}
+              <x-lucide-arrow-right class="h-3.5 w-3.5" />
+            </a>
+            @foreach ($featureColumns as $column)
+              <div class="mt-2 mb-1 flex items-center gap-2">
+                <span class="h-1.5 w-1.5 rounded-full" style="background:{{ $column['dot'] }};"></span>
+                <span class="text-[11px] font-semibold tracking-[0.6px] text-muted-soft uppercase">{{ $column['label'] }}</span>
+              </div>
+              @foreach ($column['items'] as $item)
+                <a href="{{ route('marketing.features.show', $item['slug']) }}" data-turbo="true" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 py-2 pl-3.5 text-[15px] text-body">
+                  <span class="h-2 w-2 shrink-0 rounded-full" style="background:{{ $item['dot'] }};"></span>
+                  {{ $item['title'] }}
+                  @if ($item['isNew'])
+                    <span class="rounded-full bg-[#e7f6ee] px-1.5 py-0.5 text-[9px] font-bold tracking-[0.4px] text-[#0f7a4d]">{{ __('NEW') }}</span>
+                  @endif
+                </a>
+              @endforeach
+            @endforeach
+          </div>
+        </div>
+
         @foreach ($navigation as $link)
           <a href="{{ $link['url'] }}" data-turbo="true" @click="mobileMenuOpen = false" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ $link['label'] }}</a>
         @endforeach

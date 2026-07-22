@@ -11,12 +11,14 @@ class MarketingLayout extends Component
 {
     public function __construct(
         public array $breadcrumbItems = [],
+        public ?string $title = null,
     ) {}
 
     public function render(): View
     {
         return view('layouts.marketing', [
             'breadcrumbItems' => $this->breadcrumbItems,
+            'title' => $this->title ? $this->title.' · '.config('app.name') : null,
         ]);
     }
 }
