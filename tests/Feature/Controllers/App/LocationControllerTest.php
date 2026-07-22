@@ -20,6 +20,15 @@ it('lists the account locations, nested', function () {
     $response->assertSee('Box 1');
 });
 
+it('renders the locations title help popover', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/locations');
+
+    $response->assertOk();
+    $response->assertSee('Where copies are physically stored');
+});
+
 it('does not list another accounts locations', function () {
     $user = $this->createUser();
     Location::factory()->create(['name' => 'Foreign Location']);

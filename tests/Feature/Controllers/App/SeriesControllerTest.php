@@ -23,6 +23,15 @@ it('lists the series of the account', function () {
         ->assertSee('2 series');
 });
 
+it('renders the series title help popover', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/series');
+
+    $response->assertOk()
+        ->assertSee('Ties related items into a broader franchise or body of work');
+});
+
 it('does not list the series of another account', function () {
     $user = $this->createUser();
     Series::factory()->create(['name' => 'Someone else’s franchise']);

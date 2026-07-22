@@ -7,7 +7,10 @@
     <div class="mx-auto w-full max-w-3xl" x-data="{ showAddForm: false, addParentId: '', addEmoji: '📦' }">
       <div class="mb-2 flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Locations') }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Locations') }}</h1>
+            <x-help id="locations.list" />
+          </div>
           <p class="mt-1 max-w-lg text-[15px] text-muted">{{ __('Where items are physically stored — shelves, boxes, display cases. Locations can be nested.') }}</p>
         </div>
 
