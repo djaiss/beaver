@@ -14,11 +14,15 @@
           $columns = [
               [
                   'title' => __('Product'),
-                  'links' => [
+                  'links' => array_values(array_filter([
                       ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
                       ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
                       ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
-                  ],
+                      // Only linked once there is something published to read.
+                      \App\Models\Testimonial::query()->published()->exists()
+                          ? ['label' => __('Reviews'), 'url' => route('marketing.testimonials.index')]
+                          : null,
+                  ])),
               ],
               [
                   'title' => __('Resources'),

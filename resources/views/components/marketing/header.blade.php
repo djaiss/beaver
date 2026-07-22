@@ -6,6 +6,12 @@
         ['label' => __('Docs'), 'url' => route('marketing.docs.portal.home.show')],
         ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
     ];
+
+    // The reviews link only appears once there is something to read, so the site
+    // never points visitors at an empty page.
+    if (\App\Models\Testimonial::query()->published()->exists()) {
+        $navigation[] = ['label' => __('Reviews'), 'url' => route('marketing.testimonials.index')];
+    }
 @endphp
 
 {{-- display:contents so the sticky nav below resolves against the page container,

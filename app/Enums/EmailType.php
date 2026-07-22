@@ -13,4 +13,5 @@ enum EmailType: string
     case ApiCreated = 'api_created';
     case ApiDestroyed = 'api_destroyed';
     case SupportTeamReply = 'support_team_reply';
+    case TestimonialPublished = 'testimonial_published';
 }

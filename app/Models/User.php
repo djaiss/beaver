@@ -12,6 +12,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -242,6 +243,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
+    }
+
+    /**
+     * Get the user's testimonial for the marketing site, if they have written
+     * one. Each user has at most one.
+     *
+     * @return HasOne<Testimonial, $this>
+     */
+    public function testimonial(): HasOne
+    {
+        return $this->hasOne(Testimonial::class);
     }
 
     /**

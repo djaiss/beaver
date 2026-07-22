@@ -22,9 +22,9 @@ use App\Http\Controllers\App\DocumentDownloadController;
 use App\Http\Controllers\App\GettingStartedController;
 use App\Http\Controllers\App\Instance\AccountController as InstanceAccountController;
 use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
-use App\Http\Controllers\App\Instance\ReviewController as InstanceReviewController;
 use App\Http\Controllers\App\Instance\SupportController as InstanceSupportController;
 use App\Http\Controllers\App\Instance\SupportMessageController as InstanceSupportMessageController;
+use App\Http\Controllers\App\Instance\TestimonialController as InstanceTestimonialController;
 use App\Http\Controllers\App\Instance\UserController as InstanceUserController;
 use App\Http\Controllers\App\InsuranceRecordController;
 use App\Http\Controllers\App\ItemActivitiesController;
@@ -57,6 +57,7 @@ use App\Http\Controllers\App\Settings\PhotoViewController;
 use App\Http\Controllers\App\Settings\RecoveryCodeController;
 use App\Http\Controllers\App\Settings\SecurityController;
 use App\Http\Controllers\App\Settings\SettingsController;
+use App\Http\Controllers\App\Settings\TestimonialController as SettingsTestimonialController;
 use App\Http\Controllers\App\Settings\TwoFAController;
 use App\Http\Controllers\App\Settings\UserController;
 use App\Http\Controllers\App\Settings\WebhookController;
@@ -323,6 +324,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('settings/trash', [TrashController::class, 'update'])->name('settings.trash.update');
         Route::delete('settings/trash', [TrashController::class, 'destroy'])->name('settings.trash.destroy');
     });
+
+    // account settings: testimonials — any member may submit one for the marketing
+    // site, so these are not role gated. The controller answers 404 when the
+    // marketing site is not served, matching the sidebar section that surfaces them.
+    Route::get('settings/testimonials', [SettingsTestimonialController::class, 'index'])->name('settings.testimonials.index');
+    Route::post('settings/testimonials', [SettingsTestimonialController::class, 'create'])->name('settings.testimonials.create');
+    Route::delete('settings/testimonials', [SettingsTestimonialController::class, 'destroy'])->name('settings.testimonials.destroy');
+
     // instance administration — spans every account on the instance, so it is
     // gated on the per user flag rather than on any role within an account
     Route::middleware(['instance.admin'])->prefix('instance-admin')->name('instanceAdmin.')->group(function (): void {
@@ -342,8 +351,11 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::post('support/{supportTicket}/messages', [InstanceSupportMessageController::class, 'create'])->where('supportTicket', '[1-9][0-9]*')->name('support.messages.create');
         Route::put('support/{supportTicket}', [InstanceSupportController::class, 'update'])->where('supportTicket', '[1-9][0-9]*')->name('support.update');
 
-        // not built yet, this page says so
-        Route::get('reviews', [InstanceReviewController::class, 'index'])->name('reviews.index');
+        // marketing — moderating the testimonials members submit for the public
+        // site. The filter bucket lives in the path, so each bucket is its own URL.
+        // Publishing and rejecting are one update, told apart by the intent field.
+        Route::get('marketing/testimonials/{status?}', [InstanceTestimonialController::class, 'index'])->where('status', 'in_review|published|rejected|draft|all')->name('marketing.testimonials.index');
+        Route::put('marketing/testimonials/{testimonial}', [InstanceTestimonialController::class, 'update'])->where('testimonial', '[1-9][0-9]*')->name('marketing.testimonials.update');
     });
 });
 

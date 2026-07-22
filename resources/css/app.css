@@ -66,6 +66,16 @@
   --primary: #111111;
   --on-primary: #ffffff;
   --theme-icon: #111111;
+
+  /* Testimonial notes: pastel papers and the strip of tape holding them up. */
+  --note-1: #fdf6e3;
+  --note-2: #fdeef0;
+  --note-3: #eef4fd;
+  --note-4: #eef7f0;
+  --note-5: #f6eefb;
+  --note-6: #fff2e8;
+  --tape: rgba(17, 17, 17, 0.05);
+  --tape-edge: rgba(17, 17, 17, 0.1);
   color-scheme: light;
 }
 
@@ -85,6 +95,16 @@
   --primary: #ffffff;
   --on-primary: #111111;
   --theme-icon: #f59e0b;
+
+  /* Testimonial notes: muted papers and lighter tape for the dark wall. */
+  --note-1: #24220f;
+  --note-2: #241619;
+  --note-3: #141b26;
+  --note-4: #14201a;
+  --note-5: #1d1526;
+  --note-6: #241a12;
+  --tape: rgba(255, 255, 255, 0.05);
+  --tape-edge: rgba(255, 255, 255, 0.1);
   color-scheme: dark;
 }
 
