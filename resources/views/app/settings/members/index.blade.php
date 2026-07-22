@@ -45,11 +45,43 @@
       {{-- Invite --}}
       <x-box title="{{ __('Invite a member') }}" helpId="settings.invite_member">
         <x-form method="post" :action="route('settings.members.create')" x-target="members" class="space-y-4">
-          <x-input id="email" name="email" :label="__('Email')" :error="$errors->get('email')" required placeholder="ross@friends.com" />
-          <x-select id="role" :label="__('Role')" :options="$roleOptions" :selected="'viewer'" :error="$errors->get('role')" required />
-          <div class="flex items-center justify-end">
+          <x-input id="email" name="email" :label="__('Email')" :value="$previewEmail ?? ''" :error="$errors->get('email')" required placeholder="ross@friends.com" />
+          <x-select id="role" :label="__('Role')" :options="$roleOptions" :selected="$previewRole ?? 'viewer'" :error="$errors->get('role')" required />
+          <div class="flex items-center justify-end gap-2">
+            <x-button.secondary
+              type="submit"
+              name="preview"
+              value="{{ ($showPreview ?? false) ? '0' : '1' }}"
+              formmethod="get"
+              formaction="{{ route('settings.members.index') }}"
+            >
+              {{ ($showPreview ?? false) ? __('Hide preview') : __('Preview email') }}
+            </x-button.secondary>
             <x-button type="submit">{{ __('Send invitation') }}</x-button>
           </div>
+
+          @if ($showPreview ?? false)
+            <div class="overflow-hidden rounded-lg border border-hairline">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-hairline-soft bg-card px-4 py-2.5">
+                <div class="flex items-center gap-2 text-xs font-semibold tracking-wide text-muted uppercase">
+                  @svg('lucide-eye', 'size-4')
+                  {{ __('Preview — not sent yet') }}
+                </div>
+                @if (str_contains($previewEmail ?? '', '@'))
+                  <div class="text-xs text-muted">{{ __('To:') }} <span class="font-medium text-ink">{{ $previewEmail }}</span></div>
+                @endif
+              </div>
+
+              <div class="flex items-center gap-2 border-b border-warning/20 bg-warning/10 px-4 py-2 text-xs text-warning">
+                @svg('lucide-triangle-alert', 'size-4 shrink-0')
+                {{ __('This is a preview. Links are disabled and nothing has been sent.') }}
+              </div>
+
+              <div class="bg-card p-4">
+                {!! $previewHtml !!}
+              </div>
+            </div>
+          @endif
         </x-form>
       </x-box>
 

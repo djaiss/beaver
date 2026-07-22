@@ -34,6 +34,8 @@ Vá para as configurações da sua conta e abra a área de membros. Você vai ve
 
 :::step title="Digite o endereço de e-mail e escolha uma função"
 Digite o **endereço de e-mail** da pessoa e escolha sua **função**. Se você não mexer na função, ela vai entrar como visualizadora.
+
+Curioso para saber como é o e-mail de convite? Selecione **Pré-visualizar e-mail** para vê-lo direto nesta página, antes mesmo de digitar um endereço ou enviar qualquer coisa. A pré-visualização é claramente identificada como tal, e o botão de aceitar não pode ser clicado. Selecione **Ocultar pré-visualização** para fechá-la novamente.
 :::
 
 :::step title="Envie"

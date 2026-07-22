@@ -34,6 +34,8 @@ Go to your account settings and open the members area. You will see the current 
 
 :::step title="Enter the email address and pick a role"
 Type the person's **email address** and choose their **role**. If you leave the role alone, they will join as a viewer.
+
+Curious what the invitation email looks like? Select **Preview email** to see it right on this page, before you enter an address or send anything. The preview is clearly marked as a preview, and its accept button cannot be clicked. Select **Hide preview** to close it again.
 :::
 
 :::step title="Send it"

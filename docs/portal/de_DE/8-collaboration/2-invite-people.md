@@ -34,6 +34,8 @@ Gehe zu deinen Kontoeinstellungen und öffne den Mitgliederbereich. Du siehst di
 
 :::step title="Gib die E-Mail-Adresse ein und wähle eine Rolle"
 Gib die **E-Mail-Adresse** der Person ein und wähle ihre **Rolle**. Lässt du die Rolle unverändert, tritt sie als Betrachter bei.
+
+Neugierig, wie die Einladungs-E-Mail aussieht? Wähle **E-Mail als Vorschau anzeigen**, um sie direkt auf dieser Seite zu sehen, noch bevor du eine Adresse eingibst oder etwas sendest. Die Vorschau ist deutlich als solche gekennzeichnet, und ihre Schaltfläche zum Annehmen lässt sich nicht anklicken. Wähle **Vorschau ausblenden**, um sie wieder zu schließen.
 :::
 
 :::step title="Absenden"

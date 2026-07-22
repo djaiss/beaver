@@ -34,6 +34,8 @@ Allez dans les paramètres de votre compte et ouvrez la zone des membres. Vous v
 
 :::step title="Saisissez l'adresse e-mail et choisissez un rôle"
 Saisissez l'**adresse e-mail** de la personne et choisissez son **rôle**. Si vous laissez le rôle par défaut, elle rejoindra le compte en tant que lectrice.
+
+Curieux de voir à quoi ressemble l'e-mail d'invitation ? Sélectionnez **Aperçu de l'e-mail** pour le voir directement sur cette page, avant même de saisir une adresse ou d'envoyer quoi que ce soit. L'aperçu est clairement identifié comme tel, et son bouton d'acceptation ne peut pas être cliqué. Sélectionnez **Masquer l'aperçu** pour le refermer.
 :::
 
 :::step title="Envoyez l'invitation"

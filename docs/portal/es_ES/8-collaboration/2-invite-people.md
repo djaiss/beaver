@@ -34,6 +34,8 @@ Ve a la configuración de tu cuenta y abre el área de miembros. Verás los miem
 
 :::step title="Introduce el correo electrónico y elige un rol"
 Escribe el **correo electrónico** de la persona y elige su **rol**. Si dejas el rol tal cual, se unirá como lector.
+
+¿Tienes curiosidad por saber cómo es el correo de invitación? Selecciona **Vista previa del correo** para verlo directamente en esta página, antes de introducir una dirección o enviar nada. La vista previa queda claramente marcada como tal, y su botón de aceptar no se puede pulsar. Selecciona **Ocultar vista previa** para cerrarla de nuevo.
 :::
 
 :::step title="Envíala"
