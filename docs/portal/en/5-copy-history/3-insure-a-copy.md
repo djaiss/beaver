@@ -31,7 +31,7 @@ Add an insurance record and fill in the **provider**, the **insured value**, and
 :::
 
 :::step title="Describe the coverage"
-Fill in the **coverage type** in your own words (for example "scheduled item" or "all risks"), the **deductible**, and the **start** and **end dates**. Mark whether the copy is a **scheduled item**, meaning it is listed individually on the policy.
+Fill in the **coverage type** in your own words (for example "scheduled item" or "all risks"), the **deductible**, and the **start** and **end dates**. Turn on **listed individually on the policy** if this item is named on the policy by itself, rather than covered as part of your general contents coverage.
 :::
 
 :::step title="Add the insurer's contact details and status"

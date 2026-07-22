@@ -31,7 +31,7 @@ Ajoutez un enregistrement d'assurance et renseignez l'**assureur**, la **valeur 
 :::
 
 :::step title="Décrivez la couverture"
-Renseignez le **type de couverture** avec vos propres mots (par exemple « objet listé individuellement » ou « tous risques »), la **franchise**, et les **dates de début** et de **fin**. Indiquez si l'exemplaire est un **objet listé individuellement**, c'est-à-dire s'il figure nommément sur la police.
+Renseignez le **type de couverture** avec vos propres mots (par exemple « objet listé individuellement » ou « tous risques »), la **franchise**, et les **dates de début** et de **fin**. Activez **inscrit individuellement sur la police** si cet objet est nommé seul sur la police, plutôt que couvert au titre de votre garantie générale du contenu.
 :::
 
 :::step title="Ajoutez les coordonnées de l'assureur et le statut"
