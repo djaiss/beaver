@@ -39,7 +39,10 @@
 
       <div class="mb-2 flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Categories') }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Categories') }}</h1>
+            <x-help id="categories.list" />
+          </div>
           <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('Group the items in this collection into a browsable structure, like folders. An item sits in one category, and categories can nest.') }}</p>
         </div>
 
@@ -69,7 +72,10 @@
               </div>
 
               <div class="min-w-[200px]">
-                <x-label for="add-parent-id">{{ __('Parent category') }}</x-label>
+                <div class="flex items-center gap-1.5">
+                  <x-label for="add-parent-id">{{ __('Parent category') }}</x-label>
+                  <x-help id="categories.parent" align="right" />
+                </div>
                 <select id="add-parent-id" name="parent_id" x-model="addParentId" class="mt-1.5 h-10 w-full appearance-none rounded-md border border-hairline bg-input pr-9 pl-3 text-sm text-ink">
                   @foreach ($parentOptions as $id => $label)
                     <option value="{{ $id }}">{{ $label }}</option>

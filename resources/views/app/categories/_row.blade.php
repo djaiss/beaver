@@ -88,7 +88,10 @@
         </div>
 
         <div class="min-w-[180px]">
-          <x-label>{{ __('Parent category') }}</x-label>
+          <div class="flex items-center gap-1.5">
+            <x-label>{{ __('Parent category') }}</x-label>
+            <x-help id="categories.parent" align="right" />
+          </div>
           <select name="parent_id" x-model="editParentId" class="mt-1.5 h-9 w-full appearance-none rounded-md border border-hairline bg-input pr-9 pl-3 text-sm text-ink">
             @foreach ($rowOptions as $id => $label)
               <option value="{{ $id }}">{{ $label }}</option>
