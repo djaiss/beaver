@@ -46,8 +46,8 @@ class MaintenanceRecordController extends Controller
             performedAt: $validated['performed_at'] ?? null,
             costAmount: $this->toCents($validated['cost_amount'] ?? null),
             costCurrencyCode: $validated['currency'] ?? null,
-            conditionBeforeId: $this->toId($validated['condition_before_id'] ?? null),
-            conditionAfterId: $this->toId($validated['condition_after_id'] ?? null),
+            itemConditionBeforeId: $this->toId($validated['item_condition_before_id'] ?? null),
+            itemConditionAfterId: $this->toId($validated['item_condition_after_id'] ?? null),
             nextDueAt: $validated['next_due_at'] ?? null,
             includeInProvenance: $request->boolean('include_in_provenance'),
         )->execute();
@@ -76,8 +76,8 @@ class MaintenanceRecordController extends Controller
             performedAt: $validated['performed_at'] ?? null,
             costAmount: $this->toCents($validated['cost_amount'] ?? null),
             costCurrencyCode: $validated['currency'] ?? null,
-            conditionBeforeId: $this->toId($validated['condition_before_id'] ?? null),
-            conditionAfterId: $this->toId($validated['condition_after_id'] ?? null),
+            itemConditionBeforeId: $this->toId($validated['item_condition_before_id'] ?? null),
+            itemConditionAfterId: $this->toId($validated['item_condition_after_id'] ?? null),
             nextDueAt: $validated['next_due_at'] ?? null,
             includeInProvenance: $request->boolean('include_in_provenance'),
         )->execute();
@@ -135,8 +135,8 @@ class MaintenanceRecordController extends Controller
             'performed_at' => ['nullable', 'date'],
             'cost_amount' => ['nullable', 'numeric', 'min:0'],
             'currency' => ['nullable', 'string', Rule::in(array_keys(config('currencies')))],
-            'condition_before_id' => ['nullable', 'integer'],
-            'condition_after_id' => ['nullable', 'integer'],
+            'item_condition_before_id' => ['nullable', 'integer'],
+            'item_condition_after_id' => ['nullable', 'integer'],
             'next_due_at' => ['nullable', 'date'],
             'include_in_provenance' => ['nullable', 'boolean'],
         ];

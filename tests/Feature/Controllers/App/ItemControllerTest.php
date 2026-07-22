@@ -7,12 +7,12 @@ use App\Enums\PermissionEnum;
 use App\Models\Category;
 use App\Models\Collection;
 use App\Models\CollectionType;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use App\Models\CustomFieldValue;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\ItemPhoto;
 use App\Models\Location;
 use App\Models\Series;
@@ -290,7 +290,7 @@ it('creates an item with all its parts and redirects to the collection', functio
     $field = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Number]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
     $set = Set::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
 
@@ -306,7 +306,7 @@ it('creates an item with all its parts and redirects to the collection', functio
         'copies' => [
             [
                 'identifier' => 'CGC 1234567',
-                'condition_id' => $condition->id,
+                'item_condition_id' => $condition->id,
                 'current_location_id' => $location->id,
                 'status' => CopyStatus::Loaned->value,
                 'quantity' => '2',
@@ -457,7 +457,7 @@ it('updates an item with all its parts and redirects to the item', function () {
     $field = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Number]);
     $category = Category::factory()->create(['collection_id' => $collection->id]);
     $set = Set::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Fantastic Four #1']);
@@ -477,7 +477,7 @@ it('updates an item with all its parts and redirects to the item', function () {
             [
                 'id' => $keptCopy->id,
                 'identifier' => 'CGC 1234567',
-                'condition_id' => $condition->id,
+                'item_condition_id' => $condition->id,
                 'current_location_id' => $location->id,
                 'status' => CopyStatus::Sold->value,
                 'quantity' => '2',
@@ -592,18 +592,18 @@ it('accepts a condition and a location sent as strings when creating', function 
 
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $user->account_id]);
     $location = Location::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->post("/collections/{$collection->id}/items", [
         'name' => 'Amazing Spider-Man #1',
         'copies' => [
-            ['condition_id' => (string) $condition->id, 'current_location_id' => (string) $location->id],
+            ['item_condition_id' => (string) $condition->id, 'current_location_id' => (string) $location->id],
         ],
     ])->assertRedirect("/collections/{$collection->id}");
 
     $item = Item::query()->firstWhere('collection_id', $collection->id);
-    expect($item->copies->first()->condition_id)->toBe($condition->id);
+    expect($item->copies->first()->item_condition_id)->toBe($condition->id);
     expect($item->copies->first()->current_location_id)->toBe($location->id);
 });
 
@@ -612,7 +612,7 @@ it('accepts copy ids, conditions and locations sent as strings when updating', f
 
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $user->account_id]);
     $location = Location::factory()->create(['account_id' => $user->account_id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
@@ -620,12 +620,12 @@ it('accepts copy ids, conditions and locations sent as strings when updating', f
     $this->actingAs($user)->put(route('items.update', [$collection, $item]), [
         'name' => 'Amazing Spider-Man #1',
         'copies' => [
-            ['id' => (string) $copy->id, 'condition_id' => (string) $condition->id, 'current_location_id' => (string) $location->id],
+            ['id' => (string) $copy->id, 'item_condition_id' => (string) $condition->id, 'current_location_id' => (string) $location->id],
         ],
     ])->assertRedirect("/collections/{$collection->id}/items/{$item->id}");
 
     $copy->refresh();
-    expect($copy->condition_id)->toBe($condition->id);
+    expect($copy->item_condition_id)->toBe($condition->id);
     expect($copy->current_location_id)->toBe($location->id);
     expect($item->refresh()->copies)->toHaveCount(1);
 });

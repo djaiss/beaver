@@ -51,7 +51,7 @@
           $pricePaid = $copy->pricePaid();
 
           $facts = [
-              ['test' => 'copy-condition', 'label' => __('Condition'), 'value' => $copy->condition?->name ?? '—'],
+              ['test' => 'copy-condition', 'label' => __('Condition'), 'value' => $copy->itemCondition?->name ?? '—'],
               ['test' => 'copy-location', 'label' => __('Location'), 'value' => $copy->currentLocation === null
                   ? '—'
                   : ($copy->currentLocation->name . ($copy->openLocationHistory ? ' · ' . __('since :date', ['date' => $copy->openLocationHistory->moved_at->isoFormat('MMM YYYY')]) : ''))],

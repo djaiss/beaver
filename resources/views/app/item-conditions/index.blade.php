@@ -32,7 +32,7 @@
       <div class="mt-7 flex flex-wrap items-center gap-2.5">
         <x-form
           method="post"
-          :action="route('settings.conditions.create')"
+          :action="route('settings.itemConditions.create')"
           data-test="create-condition-form"
           x-target="add-condition-fields conditions-search conditions-list notifications"
           x-on:ajax:success="$refs.addInput.value = ''"
@@ -85,7 +85,7 @@
           </div>
 
           @foreach ($conditions as $condition)
-            @include('app.conditions._row', ['condition' => $condition])
+            @include('app.item-conditions._row', ['condition' => $condition])
           @endforeach
 
           <div x-show="noResults" x-cloak class="p-8 text-center text-sm text-muted" data-test="no-condition-results">

@@ -6,9 +6,9 @@ use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Loan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -62,11 +62,11 @@ it('marks a loan as returned', function () {
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id, 'status' => CopyStatus::Loaned]);
     $loan = Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $user->account_id]);
 
     $response = $this->actingAs($user)->put(route('loans.return.update', [$collection, $item, $copy, $loan]), [
         'returned_at' => '2024-06-01',
-        'condition_in_id' => (string) $condition->id,
+        'item_condition_in_id' => (string) $condition->id,
     ]);
 
     $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'loans']));
@@ -74,7 +74,7 @@ it('marks a loan as returned', function () {
 
     expect($loan->refresh()->status)->toBe(LoanStatus::Returned);
     expect($copy->refresh()->status)->toBe(CopyStatus::Owned);
-    expect($copy->condition_id)->toBe($condition->id);
+    expect($copy->item_condition_id)->toBe($condition->id);
 });
 
 it('updates a loan', function () {

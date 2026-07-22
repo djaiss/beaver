@@ -58,7 +58,7 @@ class CopyController extends Controller
         $copy = new CreateCopy(
             user: $request->user(),
             item: $item,
-            condition: isset($validated['condition_id']) ? $account->conditions()->find($validated['condition_id']) : null,
+            itemCondition: isset($validated['item_condition_id']) ? $account->itemConditions()->find($validated['item_condition_id']) : null,
             location: isset($validated['location_id']) ? $account->locations()->find($validated['location_id']) : null,
             identifier: $validated['identifier'] ?? null,
             status: isset($validated['status']) ? CopyStatus::from($validated['status']) : CopyStatus::Owned,
@@ -87,7 +87,7 @@ class CopyController extends Controller
         $copy = new UpdateCopy(
             user: $request->user(),
             copy: $copy,
-            condition: isset($validated['condition_id']) ? $account->conditions()->find($validated['condition_id']) : null,
+            itemCondition: isset($validated['item_condition_id']) ? $account->itemConditions()->find($validated['item_condition_id']) : null,
             location: isset($validated['location_id']) ? $account->locations()->find($validated['location_id']) : null,
             identifier: $validated['identifier'] ?? null,
             status: isset($validated['status']) ? CopyStatus::from($validated['status']) : CopyStatus::Owned,
@@ -127,7 +127,7 @@ class CopyController extends Controller
     {
         return $request->validate([
             'identifier' => ['nullable', 'string', 'max:255'],
-            'condition_id' => ['nullable', 'integer'],
+            'item_condition_id' => ['nullable', 'integer'],
             'location_id' => ['nullable', 'integer'],
             'status' => ['nullable', Rule::enum(CopyStatus::class)],
             'quantity' => ['nullable', 'integer', 'min:1'],

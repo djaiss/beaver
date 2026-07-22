@@ -9,9 +9,9 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
 use App\Models\User;
@@ -60,7 +60,7 @@ it('updates the copy condition to the condition after the work', function () {
     Queue::fake();
     $ross = $this->createUser();
     $copy = copyToUpdateMaintenance($ross);
-    $after = Condition::factory()->create(['account_id' => $ross->account_id]);
+    $after = ItemCondition::factory()->create(['account_id' => $ross->account_id]);
     $record = MaintenanceRecord::factory()->create(['copy_id' => $copy->id]);
 
     new UpdateMaintenanceRecord(
@@ -68,10 +68,10 @@ it('updates the copy condition to the condition after the work', function () {
         record: $record,
         type: MaintenanceType::Restoration,
         title: 'Full restoration',
-        conditionAfterId: $after->id,
+        itemConditionAfterId: $after->id,
     )->execute();
 
-    expect($copy->refresh()->condition_id)->toBe($after->id);
+    expect($copy->refresh()->item_condition_id)->toBe($after->id);
 });
 
 it('generates a provenance event when the flag is newly turned on', function () {

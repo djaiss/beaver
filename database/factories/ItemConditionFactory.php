@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Account;
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Condition>
+ * @extends Factory<ItemCondition>
  */
-class ConditionFactory extends Factory
+class ItemConditionFactory extends Factory
 {
-    protected $model = Condition::class;
+    protected $model = ItemCondition::class;
 
     /**
      * @return array<string, mixed>

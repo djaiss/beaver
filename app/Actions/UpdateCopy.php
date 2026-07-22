@@ -12,8 +12,8 @@ use App\Enums\ValuationType;
 use App\Helpers\Money;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Condition;
 use App\Models\Copy;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\Valuation;
@@ -37,7 +37,7 @@ class UpdateCopy
     public function __construct(
         private readonly User $user,
         private readonly Copy $copy,
-        private readonly ?Condition $condition = null,
+        private readonly ?ItemCondition $itemCondition = null,
         private readonly ?Location $location = null,
         private readonly ?string $identifier = null,
         private readonly CopyStatus $status = CopyStatus::Owned,
@@ -67,7 +67,7 @@ class UpdateCopy
             throw new ModelNotFoundException('Account not found');
         }
 
-        if ($this->condition instanceof Condition && $this->condition->account_id !== $account->id) {
+        if ($this->itemCondition instanceof ItemCondition && $this->itemCondition->account_id !== $account->id) {
             throw new ModelNotFoundException('Condition not found');
         }
 
@@ -85,7 +85,7 @@ class UpdateCopy
 
         $this->changes = array_values(array_filter([
             $this->change('Identifier', $this->copy->identifier, $this->identifier),
-            $this->change('Condition', $this->copy->condition?->name, $this->condition?->name),
+            $this->change('Condition', $this->copy->itemCondition?->name, $this->itemCondition?->name),
             $this->change('Location', $this->copy->currentLocation?->name, $this->location?->name),
             $this->change('Status', $this->copy->status->label(), $this->status->label()),
             $this->change('Quantity', (string) $this->copy->quantity, (string) $this->quantity),
@@ -116,7 +116,7 @@ class UpdateCopy
     {
         $this->copy->fill([
             'identifier' => $this->identifier,
-            'condition_id' => $this->condition?->id,
+            'item_condition_id' => $this->itemCondition?->id,
             'status' => $this->status,
             'quantity' => $this->quantity,
             'disposed_at' => $this->disposedAt,

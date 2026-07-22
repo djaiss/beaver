@@ -113,11 +113,11 @@ class Account extends Model
     /**
      * Get the conditions that belong to the account, excluding the system defaults.
      *
-     * @return HasMany<Condition, $this>
+     * @return HasMany<ItemCondition, $this>
      */
-    public function conditions(): HasMany
+    public function itemConditions(): HasMany
     {
-        return $this->hasMany(Condition::class);
+        return $this->hasMany(ItemCondition::class);
     }
 
     /**

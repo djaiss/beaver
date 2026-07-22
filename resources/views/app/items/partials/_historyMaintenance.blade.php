@@ -48,8 +48,8 @@
     @forelse ($records as $record)
       @php
         $typeColor = $record->type->color();
-        $before = $record->conditionBefore?->name;
-        $after = $record->conditionAfter?->name;
+        $before = $record->itemConditionBefore?->name;
+        $after = $record->itemConditionAfter?->name;
         $dueSoon = $record->isDueSoon();
         $facts = [
             __('Performed by') => $record->performed_by ?? '—',

@@ -4,9 +4,9 @@ declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Models\Category;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Valuation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,9 +72,9 @@ it('breaks the items down by category, condition and location', function (): voi
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
     $category = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Spider-Man']);
     $item = Item::factory()->create(['collection_id' => $collection->id, 'category_id' => $category->id]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Mint']);
+    $condition = ItemCondition::factory()->create(['account_id' => $user->account_id, 'name' => 'Mint']);
     $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Attic']);
-    valuedCopyOnStatistics(['item_id' => $item->id, 'condition_id' => $condition->id, 'current_location_id' => $location->id], 1000);
+    valuedCopyOnStatistics(['item_id' => $item->id, 'item_condition_id' => $condition->id, 'current_location_id' => $location->id], 1000);
 
     $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/statistics');
 

@@ -7,9 +7,9 @@ use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Enums\ProvenanceEventType;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Loan;
 use App\Models\ProvenanceEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -48,12 +48,12 @@ it('takes the condition on return as the copy current condition', function () {
     $user = $this->createUser();
     $copy = copyForLoan($user->account_id, ['copy' => ['status' => CopyStatus::Loaned]]);
     $loan = Loan::factory()->create(['copy_id' => $copy->id, 'status' => LoanStatus::Overdue]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $user->account_id]);
 
-    new ReturnLoan(user: $user, loan: $loan, returnedAt: '2024-06-01', conditionInId: $condition->id)->execute();
+    new ReturnLoan(user: $user, loan: $loan, returnedAt: '2024-06-01', itemConditionInId: $condition->id)->execute();
 
-    expect($loan->refresh()->condition_in_id)->toBe($condition->id);
-    expect($copy->refresh()->condition_id)->toBe($condition->id);
+    expect($loan->refresh()->item_condition_in_id)->toBe($condition->id);
+    expect($copy->refresh()->item_condition_id)->toBe($condition->id);
 });
 
 it('records the return in provenance when the loan is part of it', function () {

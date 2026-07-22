@@ -9,9 +9,9 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\LocationHistory;
 use App\Models\Valuation;
@@ -30,13 +30,13 @@ it('updates a copy and stamps the editor', function () {
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
     $copy = new UpdateCopy(
         user: $editor,
         copy: $copy,
-        condition: $condition,
+        itemCondition: $condition,
         location: $location,
         identifier: 'CGC 1234567',
         status: CopyStatus::Sold,
@@ -46,7 +46,7 @@ it('updates a copy and stamps the editor', function () {
         estimatedValue: 9900,
     )->execute();
 
-    expect($copy->condition_id)->toBe($condition->id);
+    expect($copy->item_condition_id)->toBe($condition->id);
     expect($copy->current_location_id)->toBe($location->id);
     expect($copy->identifier)->toBe('CGC 1234567');
     expect($copy->status)->toBe(CopyStatus::Sold);
@@ -76,15 +76,15 @@ it('clears the condition and location when none are given', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
-    $copy = Copy::factory()->create(['item_id' => $item->id, 'condition_id' => $condition->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id, 'item_condition_id' => $condition->id]);
 
     $copy = new UpdateCopy(
         user: $owner,
         copy: $copy,
     )->execute();
 
-    expect($copy->condition_id)->toBeNull();
+    expect($copy->item_condition_id)->toBeNull();
     expect($copy->current_location_id)->toBeNull();
 });
 
@@ -145,12 +145,12 @@ it('throws when the condition belongs to another account', function () {
     $collection = Collection::factory()->create(['account_id' => $account->id]);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
-    $foreignCondition = Condition::factory()->create();
+    $foreignCondition = ItemCondition::factory()->create();
 
     new UpdateCopy(
         user: $owner,
         copy: $copy,
-        condition: $foreignCondition,
+        itemCondition: $foreignCondition,
     )->execute();
 });
 
@@ -200,7 +200,7 @@ it('records the values that moved on the activity of the item', function () {
     $copy = Copy::factory()->create([
         'item_id' => $item->id,
         'current_location_id' => $wasIn->id,
-        'condition_id' => null,
+        'item_condition_id' => null,
     ]);
     Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 39000]);
 
@@ -230,14 +230,14 @@ it('records no chips when nothing on the copy moved', function () {
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
     $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $account->id]);
+    $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $copy = Copy::factory()->create([
         'item_id' => $item->id,
-        'condition_id' => $condition->id,
+        'item_condition_id' => $condition->id,
         'current_location_id' => null,
     ]);
 
-    new UpdateCopy(user: $editor, copy: $copy, condition: $condition)->execute();
+    new UpdateCopy(user: $editor, copy: $copy, itemCondition: $condition)->execute();
 
     Queue::assertPushedOn(
         queue: 'low',

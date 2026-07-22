@@ -4,9 +4,9 @@ declare(strict_types=1);
 use App\Enums\MaintenanceType;
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +21,7 @@ it('logs work against a copy', function () {
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
-    $after = Condition::factory()->create(['account_id' => $user->account_id]);
+    $after = ItemCondition::factory()->create(['account_id' => $user->account_id]);
 
     $response = $this->actingAs($user)->post(route('maintenanceRecords.create', [$collection, $item, $copy]), [
         'type' => MaintenanceType::Conservation->value,
@@ -30,7 +30,7 @@ it('logs work against a copy', function () {
         'performed_at' => '2024-01-01',
         'cost_amount' => '120.50',
         'currency' => 'EUR',
-        'condition_after_id' => (string) $after->id,
+        'item_condition_after_id' => (string) $after->id,
         'next_due_at' => '2025-01-01',
     ]);
 
@@ -42,7 +42,7 @@ it('logs work against a copy', function () {
     expect($record->type)->toBe(MaintenanceType::Conservation);
     expect($record->cost_amount)->toBe(12050);
     expect($record->cost_currency_code)->toBe('EUR');
-    expect($copy->refresh()->condition_id)->toBe($after->id);
+    expect($copy->refresh()->item_condition_id)->toBe($after->id);
 });
 
 it('generates a provenance event when the toggle is on', function () {

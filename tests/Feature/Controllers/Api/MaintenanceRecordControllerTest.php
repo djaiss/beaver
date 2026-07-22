@@ -4,9 +4,9 @@ declare(strict_types=1);
 use App\Enums\MaintenanceType;
 use App\Enums\PermissionEnum;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -40,8 +40,8 @@ beforeEach(function () {
             'performed_at',
             'cost_amount',
             'cost_currency_code',
-            'condition_before_id',
-            'condition_after_id',
+            'item_condition_before_id',
+            'item_condition_after_id',
             'next_due_at',
             'include_in_provenance',
             'created_at',
@@ -136,17 +136,17 @@ it('updates the copy condition through the condition after', function () {
 
     $user = $this->createUser();
     $copy = copyToMaintainForAccount($user->account_id);
-    $after = Condition::factory()->create(['account_id' => $user->account_id]);
+    $after = ItemCondition::factory()->create(['account_id' => $user->account_id]);
 
     Sanctum::actingAs($user);
 
     $this->json('POST', '/api/copies/'.$copy->id.'/maintenance-records', [
         'type' => MaintenanceType::Restoration->value,
         'title' => 'Full restoration',
-        'condition_after_id' => $after->id,
+        'item_condition_after_id' => $after->id,
     ])->assertCreated();
 
-    expect($copy->refresh()->condition_id)->toBe($after->id);
+    expect($copy->refresh()->item_condition_id)->toBe($after->id);
 });
 
 it('generates a provenance event when marked for provenance', function () {

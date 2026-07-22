@@ -14,8 +14,8 @@ use App\Enums\TransactionType;
 use App\Enums\VisibilityEnum;
 use App\Models\Category;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Set;
 use App\Models\User;
@@ -66,7 +66,7 @@ class CollectionSeeder extends Seeder
         $categories = $this->createCategories($user, $collection);
         $sets = $this->createSets($user, $collection);
 
-        $conditions = $account->conditions()->get();
+        $conditions = $account->itemConditions()->get();
         $locations = $account->locations()->get();
 
         $this->createItems($user, $collection, $categories, $sets, $conditions, $locations);
@@ -117,7 +117,7 @@ class CollectionSeeder extends Seeder
     /**
      * @param  array<string, Category>  $categories
      * @param  array<string, Set>  $sets
-     * @param  EloquentCollection<int, Condition>  $conditions
+     * @param  EloquentCollection<int, ItemCondition>  $conditions
      * @param  EloquentCollection<int, Location>  $locations
      */
     private function createItems(User $user, Collection $collection, array $categories, array $sets, EloquentCollection $conditions, EloquentCollection $locations): void
@@ -222,9 +222,9 @@ class CollectionSeeder extends Seeder
      * is ignored when the copy is written. When transactions land the real
      * acquisition date comes from them instead.
      *
-     * @param  EloquentCollection<int, Condition>  $conditions
+     * @param  EloquentCollection<int, ItemCondition>  $conditions
      * @param  EloquentCollection<int, Location>  $locations
-     * @return list<array{condition_id: int|null, current_location_id: int|null, status: CopyStatus, quantity: int, estimated_value: int, backdate_to: string|null}>
+     * @return list<array{item_condition_id: int|null, current_location_id: int|null, status: CopyStatus, quantity: int, estimated_value: int, backdate_to: string|null}>
      */
     private function copiesFor(int $counter, int $lowValue, int $highValue, EloquentCollection $conditions, EloquentCollection $locations): array
     {
@@ -241,7 +241,7 @@ class CollectionSeeder extends Seeder
             $value = $lowValue + (($seed * 37) % max(1, $highValue - $lowValue));
 
             $copies[] = [
-                'condition_id' => $conditions->isEmpty() ? null : $conditions[self::WEIGHTS[$seed % count(self::WEIGHTS)] % $conditions->count()]->id,
+                'item_condition_id' => $conditions->isEmpty() ? null : $conditions[self::WEIGHTS[$seed % count(self::WEIGHTS)] % $conditions->count()]->id,
                 'current_location_id' => $locations->isEmpty() ? null : $locations[self::WEIGHTS[($seed + 5) % count(self::WEIGHTS)] % $locations->count()]->id,
                 'status' => CopyStatus::Owned,
                 'quantity' => 1,

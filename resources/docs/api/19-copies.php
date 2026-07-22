@@ -12,7 +12,7 @@ $copy = fn (string $id, ?string $conditionId, ?int $estimatedValue): array => [
     'attributes' => [
         'item_id' => '1',
         'identifier' => null,
-        'condition_id' => $conditionId,
+        'item_condition_id' => $conditionId,
         'current_location_id' => null,
         'status' => 'owned',
         'quantity' => 1,
@@ -67,7 +67,7 @@ $bodyParams = [
         'example' => 'CP-0042',
     ],
     [
-        'name' => 'condition_id',
+        'name' => 'item_condition_id',
         'type' => 'integer',
         'required' => false,
         'description' => 'The ID of the condition of the copy. Must be a condition of your account.',

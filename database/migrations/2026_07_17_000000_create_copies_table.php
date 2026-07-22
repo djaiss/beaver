@@ -14,7 +14,7 @@ return new class extends Migration
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('item_id')->comment('item this is a physical copy of');
             $table->text('identifier')->nullable()->comment('account defined identifier for this copy, null when it has none');
-            $table->unsignedBigInteger('condition_id')->nullable()->comment('current condition of the copy, null when unknown');
+            $table->unsignedBigInteger('item_condition_id')->nullable()->comment('current condition of the copy, null when unknown');
             $table->unsignedBigInteger('current_location_id')->nullable()->comment('where the copy is currently stored, mirrors the open location history record, null when unknown');
             $table->string('status')->default('owned')->comment('where the copy sits in its lifecycle, a CopyStatus value');
             $table->unsignedInteger('quantity')->default(1)->comment('how many identical instances this row stands for');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreign('item_id')->references('id')->on('items')->cascadeOnDelete();
 
             // Deleting a condition or location leaves its copies alone: they drop back to none.
-            $table->foreign('condition_id')->references('id')->on('conditions')->nullOnDelete();
+            $table->foreign('item_condition_id')->references('id')->on('item_conditions')->nullOnDelete();
             $table->foreign('current_location_id')->references('id')->on('locations')->nullOnDelete();
         });
     }

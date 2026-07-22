@@ -36,8 +36,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null $performed_at
  * @property int|null $cost_amount
  * @property string|null $cost_currency_code
- * @property int|null $condition_before_id
- * @property int|null $condition_after_id
+ * @property int|null $item_condition_before_id
+ * @property int|null $item_condition_after_id
  * @property Carbon|null $next_due_at
  * @property bool $include_in_provenance
  * @property int|null $created_by_id
@@ -75,8 +75,8 @@ class MaintenanceRecord extends Model
         'performed_at',
         'cost_amount',
         'cost_currency_code',
-        'condition_before_id',
-        'condition_after_id',
+        'item_condition_before_id',
+        'item_condition_after_id',
         'next_due_at',
         'include_in_provenance',
     ];
@@ -113,21 +113,21 @@ class MaintenanceRecord extends Model
     /**
      * Get the copy's condition before the work, if recorded.
      *
-     * @return BelongsTo<Condition, $this>
+     * @return BelongsTo<ItemCondition, $this>
      */
-    public function conditionBefore(): BelongsTo
+    public function itemConditionBefore(): BelongsTo
     {
-        return $this->belongsTo(Condition::class, 'condition_before_id');
+        return $this->belongsTo(ItemCondition::class, 'item_condition_before_id');
     }
 
     /**
      * Get the copy's condition after the work, if recorded.
      *
-     * @return BelongsTo<Condition, $this>
+     * @return BelongsTo<ItemCondition, $this>
      */
-    public function conditionAfter(): BelongsTo
+    public function itemConditionAfter(): BelongsTo
     {
-        return $this->belongsTo(Condition::class, 'condition_after_id');
+        return $this->belongsTo(ItemCondition::class, 'item_condition_after_id');
     }
 
     /**

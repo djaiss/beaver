@@ -5,9 +5,9 @@ use App\Enums\CopyStatus;
 use App\Enums\PermissionEnum;
 use App\Enums\TransactionType;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Transaction;
 use App\Models\Valuation;
@@ -19,11 +19,11 @@ it('shows the copies of an item with their condition and location', function () 
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
     $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $condition = Condition::factory()->create(['account_id' => $user->account_id, 'name' => 'Near Mint']);
+    $condition = ItemCondition::factory()->create(['account_id' => $user->account_id, 'name' => 'Near Mint']);
     $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Display Case']);
     $copy = Copy::factory()->create([
         'item_id' => $item->id,
-        'condition_id' => $condition->id,
+        'item_condition_id' => $condition->id,
         'current_location_id' => $location->id,
     ]);
     Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 42000, 'valued_at' => '2026-01-01']);

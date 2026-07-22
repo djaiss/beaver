@@ -64,7 +64,7 @@ class ItemController extends Controller
             'categories' => $this->categoryOptions($collectionModel),
             'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
             'series' => $account->series()->get()->sortBy(fn ($one): string => mb_strtolower($one->name))->values(),
-            'conditions' => $account->conditions()->orderBy('name')->get(),
+            'conditions' => $account->itemConditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
             'tags' => $this->accountTags($request),
         ]);
@@ -84,7 +84,7 @@ class ItemController extends Controller
             'categories' => $this->categoryOptions($collectionModel),
             'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
             'series' => $account->series()->get()->sortBy(fn ($one): string => mb_strtolower($one->name))->values(),
-            'conditions' => $account->conditions()->orderBy('name')->get(),
+            'conditions' => $account->itemConditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
             'tags' => $this->accountTags($request),
         ]);
@@ -213,7 +213,7 @@ class ItemController extends Controller
             'copies' => ['array'],
             'copies.*.id' => ['nullable', 'integer'],
             'copies.*.identifier' => ['nullable', 'string', 'max:255'],
-            'copies.*.condition_id' => ['nullable', 'integer'],
+            'copies.*.item_condition_id' => ['nullable', 'integer'],
             'copies.*.current_location_id' => ['nullable', 'integer'],
             'copies.*.status' => ['nullable', Rule::enum(CopyStatus::class)],
             'copies.*.quantity' => ['nullable', 'integer', 'min:1'],
@@ -238,7 +238,7 @@ class ItemController extends Controller
      * than reading as a move to nowhere.
      *
      * @param  array<int, array<string, mixed>>  $copies
-     * @return list<array{id: int|null, identifier: string|null, condition_id: int|null, current_location_id?: int|null, status: CopyStatus, quantity: int, disposed_at: string|null, note: string|null, estimated_value: int|null}>
+     * @return list<array{id: int|null, identifier: string|null, item_condition_id: int|null, current_location_id?: int|null, status: CopyStatus, quantity: int, disposed_at: string|null, note: string|null, estimated_value: int|null}>
      */
     private function copies(array $copies): array
     {
@@ -247,7 +247,7 @@ class ItemController extends Controller
                 $shaped = [
                     'id' => $this->toId($copy['id'] ?? null),
                     'identifier' => $this->toText($copy['identifier'] ?? null),
-                    'condition_id' => $this->toId($copy['condition_id'] ?? null),
+                    'item_condition_id' => $this->toId($copy['item_condition_id'] ?? null),
                     'status' => CopyStatus::tryFrom((string) ($copy['status'] ?? '')) ?? CopyStatus::Owned,
                     'quantity' => max(1, (int) ($copy['quantity'] ?? 1)),
                     'disposed_at' => $this->toText($copy['disposed_at'] ?? null),

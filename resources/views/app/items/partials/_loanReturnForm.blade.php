@@ -33,13 +33,13 @@
 
     <div>
       <label for="{{ $formId }}-condition-in" class="{{ $labelClasses }}">{{ __('Condition in') }} {!! $optional !!}</label>
-      <select id="{{ $formId }}-condition-in" name="condition_in_id" class="{{ $inputClasses }}" data-test="{{ $formId }}-condition-in">
+      <select id="{{ $formId }}-condition-in" name="item_condition_in_id" class="{{ $inputClasses }}" data-test="{{ $formId }}-condition-in">
         <option value="">{{ __('—') }}</option>
         @foreach ($conditions as $id => $name)
           <option value="{{ $id }}">{{ $name }}</option>
         @endforeach
       </select>
-      <x-error :messages="$errors->get('condition_in_id')" class="mt-2" />
+      <x-error :messages="$errors->get('item_condition_in_id')" class="mt-2" />
       <p class="mt-1.5 text-[11.5px] leading-relaxed text-muted-soft">{{ __('Setting this updates the copy\'s current condition.') }}</p>
     </div>
   </div>

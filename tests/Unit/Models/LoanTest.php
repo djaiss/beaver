@@ -3,8 +3,8 @@
 declare(strict_types=1);
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
-use App\Models\Condition;
 use App\Models\Copy;
+use App\Models\ItemCondition;
 use App\Models\Loan;
 use App\Models\ProvenanceEvent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,16 +21,16 @@ it('belongs to a copy', function () {
 });
 
 it('belongs to a condition out and in', function () {
-    $out = Condition::factory()->create();
-    $in = Condition::factory()->create();
+    $out = ItemCondition::factory()->create();
+    $in = ItemCondition::factory()->create();
     $loan = Loan::factory()->create([
-        'condition_out_id' => $out->id,
-        'condition_in_id' => $in->id,
+        'item_condition_out_id' => $out->id,
+        'item_condition_in_id' => $in->id,
     ]);
 
-    expect($loan->conditionOut)->toBeInstanceOf(Condition::class);
-    expect($loan->conditionOut->id)->toBe($out->id);
-    expect($loan->conditionIn->id)->toBe($in->id);
+    expect($loan->itemConditionOut)->toBeInstanceOf(ItemCondition::class);
+    expect($loan->itemConditionOut->id)->toBe($out->id);
+    expect($loan->itemConditionIn->id)->toBe($in->id);
 });
 
 it('belongs to the provenance events it generated', function () {

@@ -56,8 +56,8 @@ class MaintenanceRecordController extends Controller
             performedAt: $validated['performed_at'] ?? null,
             costAmount: $validated['cost_amount'] ?? null,
             costCurrencyCode: $validated['cost_currency_code'] ?? null,
-            conditionBeforeId: $validated['condition_before_id'] ?? null,
-            conditionAfterId: $validated['condition_after_id'] ?? null,
+            itemConditionBeforeId: $validated['item_condition_before_id'] ?? null,
+            itemConditionAfterId: $validated['item_condition_after_id'] ?? null,
             nextDueAt: $validated['next_due_at'] ?? null,
             includeInProvenance: (bool) ($validated['include_in_provenance'] ?? false),
         )->execute();
@@ -83,8 +83,8 @@ class MaintenanceRecordController extends Controller
             performedAt: $validated['performed_at'] ?? null,
             costAmount: $validated['cost_amount'] ?? null,
             costCurrencyCode: $validated['cost_currency_code'] ?? null,
-            conditionBeforeId: $validated['condition_before_id'] ?? null,
-            conditionAfterId: $validated['condition_after_id'] ?? null,
+            itemConditionBeforeId: $validated['item_condition_before_id'] ?? null,
+            itemConditionAfterId: $validated['item_condition_after_id'] ?? null,
             nextDueAt: $validated['next_due_at'] ?? null,
             includeInProvenance: (bool) ($validated['include_in_provenance'] ?? false),
         )->execute();
@@ -119,8 +119,8 @@ class MaintenanceRecordController extends Controller
             'performed_at' => ['nullable', 'date'],
             'cost_amount' => ['nullable', 'integer', 'min:0'],
             'cost_currency_code' => ['nullable', 'string', 'size:3'],
-            'condition_before_id' => ['nullable', 'integer'],
-            'condition_after_id' => ['nullable', 'integer'],
+            'item_condition_before_id' => ['nullable', 'integer'],
+            'item_condition_after_id' => ['nullable', 'integer'],
             'next_due_at' => ['nullable', 'date'],
             'include_in_provenance' => ['nullable', 'boolean'],
         ]);

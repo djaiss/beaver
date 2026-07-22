@@ -21,8 +21,8 @@ return new class extends Migration
             $table->date('performed_at')->nullable()->comment('when the work was done, null when unrecorded');
             $table->unsignedInteger('cost_amount')->nullable()->comment('what the work cost, in cents, null when free or unrecorded');
             $table->string('cost_currency_code', 3)->nullable()->comment('ISO 4217 code the cost is in, null when no cost');
-            $table->unsignedBigInteger('condition_before_id')->nullable()->comment('the copy condition before the work, null when unrecorded');
-            $table->unsignedBigInteger('condition_after_id')->nullable()->comment('the copy condition after the work, null when unrecorded');
+            $table->unsignedBigInteger('item_condition_before_id')->nullable()->comment('the copy condition before the work, null when unrecorded');
+            $table->unsignedBigInteger('item_condition_after_id')->nullable()->comment('the copy condition after the work, null when unrecorded');
             $table->date('next_due_at')->nullable()->comment('when this care is next due, null when it is not recurring');
             $table->boolean('include_in_provenance')->default(false)->comment('whether this record is significant enough to belong to the object story');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the record');
@@ -33,8 +33,8 @@ return new class extends Migration
 
             $table->foreign('copy_id')->references('id')->on('copies')->cascadeOnDelete();
             $table->foreign('provenance_event_id')->references('id')->on('provenance_events')->nullOnDelete();
-            $table->foreign('condition_before_id')->references('id')->on('conditions')->nullOnDelete();
-            $table->foreign('condition_after_id')->references('id')->on('conditions')->nullOnDelete();
+            $table->foreign('item_condition_before_id')->references('id')->on('item_conditions')->nullOnDelete();
+            $table->foreign('item_condition_after_id')->references('id')->on('item_conditions')->nullOnDelete();
 
             // The records read newest first per copy, and the due ones are looked
             // up by their next due date, so the indexes are shaped for both.

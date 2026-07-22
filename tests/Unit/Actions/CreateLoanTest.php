@@ -9,9 +9,9 @@ use App\Enums\ProvenanceEventType;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Collection;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Loan;
 use App\Models\ProvenanceEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -124,7 +124,7 @@ it('guards a condition from another account', function () {
 
     $user = $this->createUser();
     $copy = copyForLoan($user->account_id);
-    $foreign = Condition::factory()->create(['account_id' => $this->createAccount()->id]);
+    $foreign = ItemCondition::factory()->create(['account_id' => $this->createAccount()->id]);
 
     expect(fn () => new CreateLoan(
         user: $user,
@@ -132,7 +132,7 @@ it('guards a condition from another account', function () {
         direction: LoanDirection::Outgoing,
         party: 'A gallery',
         loanedAt: '2024-01-01',
-        conditionOutId: $foreign->id,
+        itemConditionOutId: $foreign->id,
     )->execute())->toThrow(ModelNotFoundException::class);
 });
 

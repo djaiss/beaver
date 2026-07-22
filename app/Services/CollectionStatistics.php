@@ -7,9 +7,9 @@ namespace App\Services;
 use App\Enums\TransactionType;
 use App\Models\Category;
 use App\Models\Collection as CollectionModel;
-use App\Models\Condition;
 use App\Models\Copy;
 use App\Models\Item;
+use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\Set;
 use Carbon\Carbon;
@@ -249,17 +249,17 @@ class CollectionStatistics
     {
         $rows = DB::query()
             ->fromSub($this->valued(), 'valued')
-            ->selectRaw('valued.condition_id as condition_id, count(*) as total')
-            ->groupBy('valued.condition_id')
+            ->selectRaw('valued.item_condition_id as item_condition_id, count(*) as total')
+            ->groupBy('valued.item_condition_id')
             ->get();
 
-        $names = Condition::query()->whereIn('id', $rows->pluck('condition_id')->filter())->get()->keyBy('id');
+        $names = ItemCondition::query()->whereIn('id', $rows->pluck('item_condition_id')->filter())->get()->keyBy('id');
 
         $total = (int) $rows->sum('total');
 
         return $rows
             ->map(fn (object $row): array => [
-                'label' => $names->get($row->condition_id)?->name,
+                'label' => $names->get($row->item_condition_id)?->name,
                 'count' => (int) $row->total,
             ])
             ->sortByDesc('count')
@@ -323,7 +323,7 @@ class CollectionStatistics
 
         $items = Item::query()
             ->whereIn('id', $totals->keys())
-            ->with(['copies.condition', 'copies.currentLocation', 'copies.latestValuation'])
+            ->with(['copies.itemCondition', 'copies.currentLocation', 'copies.latestValuation'])
             ->get()
             ->keyBy('id');
 
@@ -340,7 +340,7 @@ class CollectionStatistics
                 return [
                     'item' => $item,
                     'value' => (int) $total,
-                    'condition' => $copy?->condition?->name,
+                    'condition' => $copy?->itemCondition?->name,
                     'location' => $copy?->currentLocation?->name,
                 ];
             })
@@ -377,7 +377,7 @@ class CollectionStatistics
             ->select([
                 'copies.id',
                 'copies.item_id',
-                'copies.condition_id',
+                'copies.item_condition_id',
                 'copies.current_location_id',
                 'items.category_id',
             ])

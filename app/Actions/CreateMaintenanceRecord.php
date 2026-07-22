@@ -41,8 +41,8 @@ class CreateMaintenanceRecord
         private readonly ?string $performedAt = null,
         private readonly ?int $costAmount = null,
         private readonly ?string $costCurrencyCode = null,
-        private readonly ?int $conditionBeforeId = null,
-        private readonly ?int $conditionAfterId = null,
+        private readonly ?int $itemConditionBeforeId = null,
+        private readonly ?int $itemConditionAfterId = null,
         private readonly ?string $nextDueAt = null,
         private readonly bool $includeInProvenance = false,
     ) {}
@@ -67,7 +67,7 @@ class CreateMaintenanceRecord
             throw new ModelNotFoundException('Account not found');
         }
 
-        $this->guardConditionsBelongToAccount($account, $this->conditionBeforeId, $this->conditionAfterId);
+        $this->guardConditionsBelongToAccount($account, $this->itemConditionBeforeId, $this->itemConditionAfterId);
     }
 
     private function create(): void
@@ -85,8 +85,8 @@ class CreateMaintenanceRecord
             'cost_currency_code' => $this->costAmount === null
                 ? null
                 : ($this->costCurrencyCode ?? $this->copy->item->collection->currency),
-            'condition_before_id' => $this->conditionBeforeId,
-            'condition_after_id' => $this->conditionAfterId,
+            'item_condition_before_id' => $this->itemConditionBeforeId,
+            'item_condition_after_id' => $this->itemConditionAfterId,
             'next_due_at' => $this->nextDueAt,
             'include_in_provenance' => $this->includeInProvenance,
         ]);
@@ -107,11 +107,11 @@ class CreateMaintenanceRecord
      */
     private function syncCopyCondition(): void
     {
-        if ($this->conditionAfterId === null) {
+        if ($this->itemConditionAfterId === null) {
             return;
         }
 
-        $this->copy->condition_id = $this->conditionAfterId;
+        $this->copy->item_condition_id = $this->itemConditionAfterId;
         $this->copy->save();
     }
 

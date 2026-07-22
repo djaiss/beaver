@@ -140,7 +140,7 @@ it('populates the account with the default conditions', function () {
 
     new PopulateAccount($account)->handle();
 
-    $conditions = $account->conditions()->get();
+    $conditions = $account->itemConditions()->get();
 
     expect($conditions)->toHaveCount(5);
     expect($conditions->map->name->all())->toBe([

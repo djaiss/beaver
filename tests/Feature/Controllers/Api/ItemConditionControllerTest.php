@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Condition;
+use App\Models\ItemCondition;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Laravel\Sanctum\Sanctum;
@@ -26,18 +26,18 @@ beforeEach(function () {
 
 it('lists the conditions of the account', function () {
     $user = $this->createUser();
-    Condition::factory()->create([
+    ItemCondition::factory()->create([
         'account_id' => $user->account_id,
         'name' => 'New',
     ]);
-    Condition::factory()->create([
+    ItemCondition::factory()->create([
         'account_id' => $user->account_id,
         'name' => 'Used',
     ]);
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('GET', '/api/conditions');
+    $response = $this->json('GET', '/api/item-conditions');
 
     $response
         ->assertOk()
@@ -55,11 +55,11 @@ it('lists the conditions of the account', function () {
 
 it('does not list conditions from another account', function () {
     $user = $this->createUser();
-    Condition::factory()->create();
+    ItemCondition::factory()->create();
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('GET', '/api/conditions');
+    $response = $this->json('GET', '/api/item-conditions');
 
     $response
         ->assertOk()
@@ -68,33 +68,33 @@ it('does not list conditions from another account', function () {
 
 it('shows a condition', function () {
     $user = $this->createUser();
-    $condition = Condition::factory()->create([
+    $condition = ItemCondition::factory()->create([
         'account_id' => $user->account_id,
         'name' => 'New',
     ]);
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('GET', '/api/conditions/'.$condition->id);
+    $response = $this->json('GET', '/api/item-conditions/'.$condition->id);
 
     $response
         ->assertOk()
         ->assertJsonStructure([
             'data' => $this->jsonStructure,
         ])
-        ->assertJsonPath('data.type', 'condition')
+        ->assertJsonPath('data.type', 'item_condition')
         ->assertJsonPath('data.id', (string) $condition->id)
         ->assertJsonPath('data.attributes.name', 'New')
-        ->assertJsonPath('data.links.self', route('api.conditions.show', $condition->id));
+        ->assertJsonPath('data.links.self', route('api.itemConditions.show', $condition->id));
 });
 
 it('returns not found for a condition from another account', function () {
     $user = $this->createUser();
-    $condition = Condition::factory()->create();
+    $condition = ItemCondition::factory()->create();
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('GET', '/api/conditions/'.$condition->id);
+    $response = $this->json('GET', '/api/item-conditions/'.$condition->id);
 
     $response->assertNotFound();
 });
@@ -106,7 +106,7 @@ it('creates a condition', function () {
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('POST', '/api/conditions', [
+    $response = $this->json('POST', '/api/item-conditions', [
         'name' => 'New',
     ]);
 
@@ -117,7 +117,7 @@ it('creates a condition', function () {
         ])
         ->assertJsonPath('data.attributes.name', 'New');
 
-    $condition = Condition::query()->latest('id')->first();
+    $condition = ItemCondition::query()->latest('id')->first();
     expect($condition->name)->toBe('New');
     expect($condition->account_id)->toBe($user->account_id);
 });
@@ -127,7 +127,7 @@ it('validates the name when creating a condition', function () {
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('POST', '/api/conditions', []);
+    $response = $this->json('POST', '/api/item-conditions', []);
 
     $response
         ->assertUnprocessable()
@@ -140,7 +140,7 @@ it('restricts condition creation to owners and editors', function () {
 
     Sanctum::actingAs($viewer);
 
-    $response = $this->json('POST', '/api/conditions', [
+    $response = $this->json('POST', '/api/item-conditions', [
         'name' => 'New',
     ]);
 
@@ -151,14 +151,14 @@ it('updates a condition', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $condition = Condition::factory()->create([
+    $condition = ItemCondition::factory()->create([
         'account_id' => $user->account_id,
         'name' => 'Old name',
     ]);
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('PUT', '/api/conditions/'.$condition->id, [
+    $response = $this->json('PUT', '/api/item-conditions/'.$condition->id, [
         'name' => 'Used',
     ]);
 
@@ -175,13 +175,13 @@ it('updates a condition', function () {
 it('restricts condition updates to owners and editors', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $condition = Condition::factory()->create([
+    $condition = ItemCondition::factory()->create([
         'account_id' => $account->id,
     ]);
 
     Sanctum::actingAs($viewer);
 
-    $response = $this->json('PUT', '/api/conditions/'.$condition->id, [
+    $response = $this->json('PUT', '/api/item-conditions/'.$condition->id, [
         'name' => 'Used',
     ]);
 
@@ -192,13 +192,13 @@ it('deletes a condition', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $condition = Condition::factory()->create([
+    $condition = ItemCondition::factory()->create([
         'account_id' => $user->account_id,
     ]);
 
     Sanctum::actingAs($user);
 
-    $response = $this->json('DELETE', '/api/conditions/'.$condition->id);
+    $response = $this->json('DELETE', '/api/item-conditions/'.$condition->id);
 
     $response->assertNoContent();
 
@@ -208,13 +208,13 @@ it('deletes a condition', function () {
 it('restricts condition deletion to owners and editors', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $condition = Condition::factory()->create([
+    $condition = ItemCondition::factory()->create([
         'account_id' => $account->id,
     ]);
 
     Sanctum::actingAs($viewer);
 
-    $response = $this->json('DELETE', '/api/conditions/'.$condition->id);
+    $response = $this->json('DELETE', '/api/item-conditions/'.$condition->id);
 
     $response->assertNotFound();
 });

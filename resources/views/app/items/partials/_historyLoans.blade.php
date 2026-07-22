@@ -57,8 +57,8 @@
     @forelse ($loans as $loan)
       @php
         $outgoing = $loan->direction === LoanDirection::Outgoing;
-        $out = $loan->conditionOut?->name;
-        $in = $loan->conditionIn?->name;
+        $out = $loan->itemConditionOut?->name;
+        $in = $loan->itemConditionIn?->name;
         $facts = [
             __('Loaned') => $loan->loaned_at->isoFormat('MMM D, YYYY'),
             __('Due back') => $loan->due_at ? $loan->due_at->isoFormat('MMM D, YYYY') : '—',

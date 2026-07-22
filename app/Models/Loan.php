@@ -45,8 +45,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $loaned_at
  * @property Carbon|null $due_at
  * @property Carbon|null $returned_at
- * @property int|null $condition_out_id
- * @property int|null $condition_in_id
+ * @property int|null $item_condition_out_id
+ * @property int|null $item_condition_in_id
  * @property int|null $deposit_amount
  * @property string|null $deposit_currency_code
  * @property bool $include_in_provenance
@@ -81,8 +81,8 @@ class Loan extends Model
         'loaned_at',
         'due_at',
         'returned_at',
-        'condition_out_id',
-        'condition_in_id',
+        'item_condition_out_id',
+        'item_condition_in_id',
         'deposit_amount',
         'deposit_currency_code',
         'include_in_provenance',
@@ -121,21 +121,21 @@ class Loan extends Model
     /**
      * Get the copy's condition when it left, if recorded.
      *
-     * @return BelongsTo<Condition, $this>
+     * @return BelongsTo<ItemCondition, $this>
      */
-    public function conditionOut(): BelongsTo
+    public function itemConditionOut(): BelongsTo
     {
-        return $this->belongsTo(Condition::class, 'condition_out_id');
+        return $this->belongsTo(ItemCondition::class, 'item_condition_out_id');
     }
 
     /**
      * Get the copy's condition when it came back, if recorded.
      *
-     * @return BelongsTo<Condition, $this>
+     * @return BelongsTo<ItemCondition, $this>
      */
-    public function conditionIn(): BelongsTo
+    public function itemConditionIn(): BelongsTo
     {
-        return $this->belongsTo(Condition::class, 'condition_in_id');
+        return $this->belongsTo(ItemCondition::class, 'item_condition_in_id');
     }
 
     /**
@@ -217,8 +217,8 @@ class Loan extends Model
             title: $this->direction === LoanDirection::Outgoing
                 ? __('Returned from :party', ['party' => $this->party])
                 : __('Returned to :party', ['party' => $this->party]),
-            summary: $this->conditionIn
-                ? __('Condition in: :condition', ['condition' => $this->conditionIn->name])
+            summary: $this->itemConditionIn
+                ? __('Condition in: :condition', ['condition' => $this->itemConditionIn->name])
                 : __('Loan closed'),
             amountCents: null,
             currencyCode: null,
