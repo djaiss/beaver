@@ -125,6 +125,10 @@ it('renders a help popover on every history section title, and on the valuation 
     $this->actingAs($user)
         ->get(route('items.history.show', [$collection, $item, $copy, 'valuations']))
         ->assertSee('record it alongside the value rather than only in the note');
+
+    $this->actingAs($user)
+        ->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+        ->assertSee('Spelling it the same way each time makes it easy to find every transaction');
 });
 
 it('shows the valuations of a copy on its timeline, newest first', function () {

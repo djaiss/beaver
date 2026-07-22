@@ -50,9 +50,12 @@
   :data-test="$dataTest"
   x-target="history-panel notifications"
   x-on:ajax:after="{{ $openVar }} = document.querySelector('#{{ $formId }}-fields .text-error') !== null"
-  class="overflow-hidden rounded-xl border border-brand/60"
+  class="rounded-xl border border-brand/60"
 >
-  <div class="flex items-center gap-2 border-b border-brand/15 bg-brand/8 px-5 py-3.5">
+  {{-- Rounded on this header alone, rather than clipping the whole form with
+       overflow-hidden, so a help popover opened from a field below can escape
+       the card instead of being cut off at its edge. --}}
+  <div class="flex items-center gap-2 rounded-t-xl border-b border-brand/15 bg-brand/8 px-5 py-3.5">
     <span class="size-2 shrink-0 rounded-full bg-brand"></span>
     <span class="text-sm font-semibold text-brand">{{ $title }}</span>
     @if ($subtitle)

@@ -69,7 +69,9 @@
   @endif
 
   @if ($valuations->isNotEmpty())
-    <div class="overflow-hidden rounded-xl border border-hairline">
+    {{-- No overflow-hidden: a help popover opened from a row's edit form needs to
+         escape this card instead of being clipped at its edge. --}}
+    <div class="rounded-xl border border-hairline">
       @foreach ($valuations as $valuation)
         @php
           $percent = $maxAmount > 0 ? round(($valuation->amount / $maxAmount) * 100) : 0;
