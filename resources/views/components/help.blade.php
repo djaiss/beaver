@@ -107,7 +107,7 @@
               @svg('lucide-info', 'mt-px size-4 shrink-0 text-[var(--color-accent)]')
               <div>
                 @if($snippet['note']['title'])
-                  <div class="mb-0.5 text-[12.5px] font-semibold text-ink">{{ $snippet['note']['title'] }}</div>
+                  <div class="mb-1 text-[12.5px] font-semibold text-ink">{{ $snippet['note']['title'] }}</div>
                 @endif
                 <div class="text-[12.5px] leading-normal text-muted">{{ $snippet['note']['text'] }}</div>
               </div>

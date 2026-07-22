@@ -77,6 +77,42 @@ it('sends an invitation', function () {
     Mail::assertQueued(AccountInvitation::class);
 });
 
+it('previews the invitation email without an email address', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount(name: 'Central Perk');
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get('settings/members?preview=1&role=editor');
+
+    $response->assertOk();
+    $response->assertViewIs('app.settings.members.index');
+    $response->assertViewHas('showPreview', true);
+    $response->assertSee('Central Perk', escape: false);
+    $response->assertSee('This is a preview. Links are disabled and nothing has been sent.');
+    $this->assertDatabaseCount('invitations', 0);
+});
+
+it('does not show a preview on a normal page load', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get('settings/members');
+
+    $response->assertOk();
+    $response->assertViewHas('showPreview', false);
+});
+
+it('forbids a non owner from previewing the invitation email', function () {
+    $user = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Viewer->value);
+
+    $response = $this->actingAs($user)->get('settings/members?preview=1&role=editor');
+
+    $response->assertForbidden();
+});
+
 it('updates the role of a member', function () {
     Queue::fake();
 

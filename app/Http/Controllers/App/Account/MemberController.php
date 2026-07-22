@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App\Account;
 
 use App\Actions\InviteToAccount;
+use App\Actions\PreviewAccountInvitation;
 use App\Actions\RemoveAccountMember;
 use App\Actions\UpdateMemberRole;
 use App\Enums\PermissionEnum;
@@ -32,10 +33,18 @@ class MemberController extends Controller
             ->where('expires_at', '>', now())
             ->get();
 
+        $showPreview = $request->boolean('preview');
+        $role = (PermissionEnum::tryFrom((string) $request->query('role')) ?? PermissionEnum::Viewer)->value;
+        $email = (string) $request->query('email', '');
+
         return view('app.settings.members.index', [
             'account' => $account,
             'members' => $members,
             'invitations' => $invitations,
+            'showPreview' => $showPreview,
+            'previewEmail' => $email,
+            'previewRole' => $role,
+            'previewHtml' => $showPreview ? new PreviewAccountInvitation(account: $account, role: $role)->execute() : null,
         ]);
     }
 
