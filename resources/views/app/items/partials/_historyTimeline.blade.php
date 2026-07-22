@@ -32,7 +32,10 @@
 <div x-data="{ filtersOpen: true }">
   <div class="mb-5 flex items-start justify-between gap-4">
     <div>
-      <p class="text-lg font-semibold tracking-[-0.3px] text-ink">{{ __('Unified history') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold tracking-[-0.3px] text-ink">{{ __('Unified history') }}</p>
+        <x-help id="history.timeline" />
+      </div>
       <p class="mt-1 max-w-xl text-[13.5px] leading-relaxed text-muted">{{ __('A combined chronological view built from every record below. Each entry keeps its own source of truth.') }}</p>
     </div>
 

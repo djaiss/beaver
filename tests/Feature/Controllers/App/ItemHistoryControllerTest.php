@@ -97,6 +97,36 @@ it('lists the sections the history is assembled from', function () {
         ]);
 });
 
+it('renders a help popover on every history section title, and on the valuation confidence field', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $copy = Copy::factory()->create(['item_id' => $item->id]);
+
+    $sectionNeedles = [
+        'timeline' => 'Nothing is stored here.',
+        'transactions' => 'the source of truth for what a copy cost and when it was acquired',
+        'valuations' => 'A purchase price belongs on a transaction instead',
+        'provenance' => 'Link an event to a transaction instead of retyping what a moment cost',
+        'insurance' => 'not a single field that gets overwritten',
+        'maintenance' => 'updates the copy\'s current condition automatically',
+        'loans' => 'Closing a loan is its own action rather than an edit',
+        'locations' => 'Moving the copy is its own action rather than a field you edit',
+        'documents' => 'delete the document and attach a fresh one',
+    ];
+
+    foreach ($sectionNeedles as $section => $needle) {
+        $this->actingAs($user)
+            ->get(route('items.history.show', [$collection, $item, $copy, $section]))
+            ->assertOk()
+            ->assertSee($needle);
+    }
+
+    $this->actingAs($user)
+        ->get(route('items.history.show', [$collection, $item, $copy, 'valuations']))
+        ->assertSee('record it alongside the value rather than only in the note');
+});
+
 it('shows the valuations of a copy on its timeline, newest first', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);

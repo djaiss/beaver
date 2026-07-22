@@ -14,7 +14,10 @@
 <div x-data="{ adding: false }">
   <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Transactions') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Transactions') }}</p>
+        <x-help id="history.transactions" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Financial and ownership exchanges. The source of truth for prices, fees and totals.') }}</p>
     </div>
 

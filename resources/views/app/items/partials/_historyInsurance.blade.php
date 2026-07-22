@@ -16,7 +16,10 @@
 <div x-data="{ adding: false }">
   <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Insurance') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Insurance') }}</p>
+        <x-help id="history.insurance" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Coverage records as policies and insured values change over time.') }}</p>
     </div>
 

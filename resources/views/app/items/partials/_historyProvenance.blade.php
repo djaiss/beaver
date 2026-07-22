@@ -15,7 +15,10 @@
 <div x-data="{ addingEvent: false }">
   <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Provenance') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Provenance') }}</p>
+        <x-help id="history.provenance" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Meaningful events in ownership, custody, origin and authenticity. No financial data lives here.') }}</p>
     </div>
 

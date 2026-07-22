@@ -25,7 +25,10 @@
 <div x-data="{ adding: false }">
   <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Loans') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Loans') }}</p>
+        <x-help id="history.loans" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Custody moving out and in over time, without any change of ownership. An active loan means the copy is not in your hands right now.') }}</p>
     </div>
 

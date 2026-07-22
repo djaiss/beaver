@@ -21,7 +21,10 @@
 <div x-data="{ adding: false }">
   <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Valuations') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Valuations') }}</p>
+        <x-help id="history.valuations" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Append-only value estimates over time. The latest is shown as the current estimated value.') }}</p>
     </div>
 
