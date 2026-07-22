@@ -12,9 +12,9 @@ it('renders the pricing page', function () {
 
     $response
         ->assertOk()
-        ->assertSee('almost un-be-leaf-able.')
+        ->assertSee('almost unbelievable.')
         ->assertSee('Two ways in. Both fair.')
-        ->assertSee('The Dam Accurate Pricing Calculator');
+        ->assertSee('The Suspiciously Accurate Pricing Calculator');
 });
 
 it('puts the price in perspective with the comparison grid', function () {
