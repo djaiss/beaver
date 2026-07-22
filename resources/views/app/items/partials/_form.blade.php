@@ -241,7 +241,10 @@
 
     {{-- Type --}}
     <div>
-      <x-label>{{ __('Type') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+      <div class="flex items-center gap-2">
+        <x-label>{{ __('Type') }} <span class="font-normal text-muted-soft">({{ __('Optional') }})</span></x-label>
+        <x-help id="items.type" />
+      </div>
       <p class="mt-0.5 mb-2.5 text-[13px] text-muted-soft">{{ __('Choosing a type unlocks its custom fields below.') }}</p>
       <input type="hidden" name="type_id" :value="typeId" />
       <div class="flex flex-wrap gap-2">
@@ -425,7 +428,10 @@
 
     {{-- Copies --}}
     <div>
-      <h2 class="text-lg font-semibold text-ink">{{ __('Copies') }}</h2>
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-ink">{{ __('Copies') }}</h2>
+        <x-help id="items.copies" />
+      </div>
       <p class="mt-0.5 text-[13px] text-muted-soft">{{ __('Each copy is a physical instance you own — add one row per copy.') }}</p>
     </div>
 

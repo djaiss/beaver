@@ -36,6 +36,16 @@ it('shows the add item form', function () {
         ->assertSee('Marvel Comics 1990s');
 });
 
+it('renders the type and copies help popovers on the add item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+
+    $this->actingAs($user)->get("/collections/{$collection->id}/items/new")
+        ->assertOk()
+        ->assertSee('reveals that type\'s custom fields further down the form')
+        ->assertSee('Add a second copy to this same item, never a second item');
+});
+
 it('offers the categories of the collection on the add item form, nested under their parent', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);
@@ -378,6 +388,18 @@ it('shows the edit item form filled in with the current values', function () {
     $response->assertSee('Silver age');
     $response->assertSee('Signed');
     $response->assertSee('Comics');
+});
+
+it('renders the type and copies help popovers on the edit item form', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->get(route('items.edit', [$collection, $item]));
+
+    $response->assertOk();
+    $response->assertSee('reveals that type\'s custom fields further down the form');
+    $response->assertSee('Add a second copy to this same item, never a second item');
 });
 
 // The estimated value lives in the valuations now, so the form has to read the
