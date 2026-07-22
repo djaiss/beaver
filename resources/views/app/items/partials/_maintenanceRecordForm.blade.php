@@ -124,7 +124,7 @@
       <x-error :messages="$errors->get('description')" class="mt-2" />
     </div>
 
-    <button type="button" x-on:click="provenance = ! provenance" class="flex w-full items-center gap-3 rounded-md border border-hairline px-3.5 py-3 text-left" data-test="{{ $formId }}-provenance-toggle">
+    <button type="button" x-on:click="provenance = ! provenance" class="flex w-full items-center gap-3 rounded-md border border-hairline px-3.5 py-3 text-left mb-3.5" data-test="{{ $formId }}-provenance-toggle">
       <span class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors" x-bind:style="provenance ? 'background-color: #6366f1' : 'background-color: #d1d5db'">
         <span class="absolute top-0.5 size-[18px] rounded-full bg-white shadow transition-all" x-bind:style="provenance ? 'left: 18px' : 'left: 2px'"></span>
       </span>
