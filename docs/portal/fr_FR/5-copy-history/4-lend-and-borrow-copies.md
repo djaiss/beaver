@@ -1,8 +1,8 @@
 ---
 id: loans.lendAndBorrow
 title: Prêter et emprunter des exemplaires
-slug: lend-and-borrow-copies
-section: copy-history
+slug: preter-et-emprunter
+section: historique
 ---
 
 # Prêter et emprunter des exemplaires

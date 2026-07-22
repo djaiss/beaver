@@ -7,7 +7,7 @@ beforeEach(function (): void {
 });
 
 it('shows the api docs portal', function () {
-    $response = $this->get('/docs/api');
+    $response = $this->get('/en/docs/api');
 
     $response
         ->assertOk()
@@ -32,7 +32,7 @@ it('shows the api docs portal', function () {
 });
 
 it('shows the whole reference as markdown', function () {
-    $response = $this->get('/docs/api.md');
+    $response = $this->get('/en/docs/api.md');
 
     $response
         ->assertOk()
@@ -42,7 +42,7 @@ it('shows the whole reference as markdown', function () {
 });
 
 it('shows a single section as markdown', function () {
-    $response = $this->get('/docs/api/collections-list.md');
+    $response = $this->get('/en/docs/api/collections-list.md');
 
     $response
         ->assertOk()
@@ -52,7 +52,7 @@ it('shows a single section as markdown', function () {
 });
 
 it('returns not found for an unknown section', function () {
-    $response = $this->get('/docs/api/unknown-section.md');
+    $response = $this->get('/en/docs/api/unknown-section.md');
 
     $response->assertNotFound();
 });

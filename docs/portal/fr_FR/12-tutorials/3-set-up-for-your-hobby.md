@@ -1,8 +1,8 @@
 ---
 id: tutorials.setupForHobby
 title: "Tutoriel : configurer votre compte pour un loisir spécifique"
-slug: set-up-for-your-hobby
-section: tutorials
+slug: configurer-pour-un-loisir
+section: tutoriels
 ---
 
 # Tutoriel : configurer votre compte pour un loisir spécifique

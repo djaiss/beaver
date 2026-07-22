@@ -1,8 +1,8 @@
 ---
 id: auth.magicLinks
 title: Les liens magiques expliqués
-slug: magic-links
-section: security
+slug: liens-magiques
+section: securite
 ---
 
 # Les liens magiques expliqués

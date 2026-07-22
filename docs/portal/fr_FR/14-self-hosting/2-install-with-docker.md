@@ -1,8 +1,8 @@
 ---
 id: selfHosting.installDocker
 title: Installer avec Docker
-slug: install-with-docker
-section: self-hosting
+slug: installer-avec-docker
+section: auto-hebergement
 ---
 
 # Installer avec Docker

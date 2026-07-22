@@ -8,10 +8,10 @@
         type="button"
         @click="open = !open"
         :aria-expanded="open"
-        class="mb-1.5 flex w-full items-center gap-1 rounded px-2 py-1 text-left"
+        class="mb-1.5 flex w-full items-center gap-1 rounded px-2 py-1 text-left cursor-pointer"
       >
         <x-lucide-chevron-right class="h-2.5 w-2.5 shrink-0 text-gray-400 transition-transform duration-150" x-bind:class="{ 'rotate-90': open }" />
-        <span class="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">{{ $section['title'] }}</span>
+        <span class="text-[14px] text-gray-700 font-semibold">{{ $section['title'] }}</span>
       </button>
       <div x-show="open" x-cloak x-transition:enter="transition duration-150 ease-out" x-transition:enter-start="-translate-y-1 opacity-0" x-transition:enter-end="translate-y-0 opacity-100">
         @foreach ($section['items'] as $item)
@@ -19,9 +19,9 @@
           <a
             href="{{ $item['url'] }}"
             @class([
-                'mb-px block rounded-r-md border-l-2 px-2.5 py-2 text-sm hover:bg-gray-50',
-                'border-blue-600 bg-blue-50/60 font-semibold text-gray-900' => $active,
-                'border-transparent font-medium text-gray-700' => ! $active,
+                'mb-px block rounded-r-md border-l-2 px-2.5 py-2 text-sm hover:bg-gray-50 hover:border-blue-600 hover:bg-blue-50/60',
+                'border-blue-600 bg-blue-50/60 text-gray-900' => $active,
+                'border-transparent text-gray-700' => ! $active,
             ])
           >{{ $item['title'] }}</a>
         @endforeach

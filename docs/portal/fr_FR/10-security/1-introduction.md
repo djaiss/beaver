@@ -1,8 +1,8 @@
 ---
 id: security.index
 title: Aperçu de la sécurité
-slug: security
-section: security
+slug: securite
+section: securite
 ---
 
 # Aperçu de la sécurité

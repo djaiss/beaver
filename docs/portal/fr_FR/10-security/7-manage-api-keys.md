@@ -1,8 +1,8 @@
 ---
 id: apiKeys.manage
 title: Gérer les clés API
-slug: manage-api-keys
-section: security
+slug: gerer-les-cles-api
+section: securite
 ---
 
 # Gérer les clés API

@@ -1,8 +1,8 @@
 ---
 id: items.addAndEdit
 title: Ajouter et modifier des objets
-slug: add-and-edit-items
-section: core-features
+slug: ajouter-et-modifier-des-objets
+section: fonctionnalites
 ---
 
 # Ajouter et modifier des objets

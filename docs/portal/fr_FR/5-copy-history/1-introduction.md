@@ -1,8 +1,8 @@
 ---
 id: copyHistory.index
 title: Suivre l'historique d'un exemplaire
-slug: copy-history
-section: copy-history
+slug: historique
+section: historique
 ---
 
 # Suivre l'historique d'un exemplaire

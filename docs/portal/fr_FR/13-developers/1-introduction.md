@@ -1,8 +1,8 @@
 ---
 id: developers.index
 title: Développeurs et API
-slug: developers
-section: developers
+slug: developpeurs
+section: developpeurs
 ---
 
 # Développeurs et API

@@ -1,7 +1,7 @@
 ---
 id: portal.index
 title: Documentation KolleK
-slug: portal
+slug: documentation
 section: portal
 ---
 

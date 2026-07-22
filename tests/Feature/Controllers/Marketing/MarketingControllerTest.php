@@ -5,10 +5,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('renders the marketing homepage', function () {
+it('redirects the bare root to the default locale home', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get('/');
+    $this->get('/')->assertRedirect(route('marketing.index', ['locale' => 'en']));
+});
+
+it('renders the marketing homepage under the locale prefix', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/en');
 
     $response
         ->assertOk()
@@ -20,7 +26,7 @@ it('renders the marketing homepage', function () {
 it('draws an animated icon for each supported collection', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get('/');
+    $response = $this->get('/en');
 
     $response
         ->assertOk()
@@ -38,7 +44,7 @@ it('draws an animated icon for each supported collection', function () {
 it('shows the privacy section above the pricing section', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get('/');
+    $response = $this->get('/en');
 
     $response
         ->assertOk()
@@ -51,7 +57,7 @@ it('shows the privacy section above the pricing section', function () {
 it('offers a theme toggle in the footer', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get('/');
+    $response = $this->get('/en');
 
     // The same component the logged in sidebar uses. Which icon shows is driven by the
     // `dark` class that the script in partials/meta sets before paint, and that script
@@ -66,7 +72,7 @@ it('offers a theme toggle in the footer', function () {
 it('offers to sign up when the visitor is a guest', function () {
     config()->set('marketing.show', true);
 
-    $response = $this->get('/');
+    $response = $this->get('/en');
 
     $response
         ->assertOk()
@@ -78,7 +84,7 @@ it('offers to go back to the account when the visitor is signed in', function ()
     config()->set('marketing.show', true);
     $user = $this->createUser();
 
-    $response = $this->actingAs($user)->get('/');
+    $response = $this->actingAs($user)->get('/en');
 
     $response
         ->assertOk()

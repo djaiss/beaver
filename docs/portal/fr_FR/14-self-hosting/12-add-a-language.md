@@ -1,8 +1,8 @@
 ---
 id: selfHosting.addLanguage
 title: Ajouter une langue
-slug: add-a-language
-section: self-hosting
+slug: ajouter-une-langue
+section: auto-hebergement
 ---
 
 # Ajouter une langue

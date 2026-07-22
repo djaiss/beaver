@@ -25,11 +25,7 @@
     <div class="min-h-screen bg-white text-gray-900">
       @include('components.marketing.header')
 
-      <x-docs.portal-subheader :locale="$locale" :languageUrls="$languageUrls" />
-
-      @if ($fallback)
-        <x-docs.portal-fallback-banner :locale="$locale" />
-      @endif
+      <x-docs.portal-subheader :locale="$locale" :urlLocale="$urlLocale" :languageUrls="$languageUrls" />
 
       <div class="mx-auto flex max-w-[1440px]">
         <x-docs.portal-sidebar :navigation="$navigation" :locale="$locale" :currentId="$page['id']" />
@@ -39,7 +35,7 @@
           <div class="mx-auto max-w-[720px]">
             {{-- Breadcrumb --}}
             <nav class="mb-5 flex items-center gap-2.5 text-sm text-gray-500">
-              <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $locale]) }}" class="hover:text-gray-900">{{ __('Home') }}</a>
+              <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $urlLocale]) }}" class="hover:text-gray-900">{{ __('Home') }}</a>
               @if ($sectionTitle)
                 <span class="text-gray-300">/</span>
                 <span>{{ $sectionTitle }}</span>
@@ -50,12 +46,12 @@
 
             {{-- Content actions (copy for LLM / view as Markdown are out of scope for now). --}}
             <div class="mb-3.5 flex flex-wrap items-center gap-0 text-sm font-medium text-gray-600">
-              <button type="button" class="flex items-center gap-2 py-1 pr-4.5 hover:text-blue-600">
+              <button type="button" class="flex items-center gap-2 py-1 pr-4.5 hover:text-blue-600 cursor-pointer">
                 <x-lucide-clipboard class="h-[15px] w-[15px]" />
                 {{ __('Copy for LLM') }}
               </button>
               <span class="h-4 w-px bg-gray-200"></span>
-              <button type="button" class="flex items-center gap-2 py-1 px-4.5 hover:text-blue-600">
+              <button type="button" class="flex items-center gap-2 py-1 px-4.5 hover:text-blue-600 cursor-pointer">
                 <x-lucide-file-text class="h-[15px] w-[15px]" />
                 {{ __('View as Markdown') }}
               </button>
@@ -64,7 +60,7 @@
             <div class="mb-7 h-px bg-gray-100"></div>
 
             {{-- Rendered Markdown --}}
-            <div class="doc-content prose prose-gray max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:font-medium prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-code:rounded prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 prose-pre:bg-gray-50 prose-pre:text-gray-800 prose-img:rounded-xl prose-img:border prose-img:border-gray-200">
+            <div class="doc-content prose prose-gray max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:font-normal prose-a:text-gray-900 hover:prose-a:underline prose-code:rounded prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-code:before:content-none prose-code:after:content-none prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 prose-pre:bg-gray-50 prose-pre:text-gray-800 prose-img:rounded-xl prose-img:border prose-img:border-gray-200">
               {!! $content !!}
             </div>
 

@@ -1,7 +1,7 @@
 ---
 id: collections.share
 title: Partager une collection
-slug: share-a-collection
+slug: partager-une-collection
 section: collaboration
 ---
 

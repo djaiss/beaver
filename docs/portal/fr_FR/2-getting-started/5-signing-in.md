@@ -1,8 +1,8 @@
 ---
 id: auth.signIn
 title: Se connecter
-slug: signing-in
-section: getting-started
+slug: se-connecter
+section: demarrage
 ---
 
 # Se connecter

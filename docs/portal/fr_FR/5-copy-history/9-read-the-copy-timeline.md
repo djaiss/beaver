@@ -1,8 +1,8 @@
 ---
 id: copyHistory.readTimeline
 title: Lire la chronologie d'un exemplaire
-slug: read-the-copy-timeline
-section: copy-history
+slug: chronologie-dun-exemplaire
+section: historique
 ---
 
 # Lire la chronologie d'un exemplaire

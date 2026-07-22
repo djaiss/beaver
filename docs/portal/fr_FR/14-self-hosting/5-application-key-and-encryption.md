@@ -1,8 +1,8 @@
 ---
 id: selfHosting.applicationKeyAndEncryption
 title: La clé d'application et le chiffrement
-slug: application-key-and-encryption
-section: self-hosting
+slug: cle-dapplication-et-chiffrement
+section: auto-hebergement
 ---
 
 # La clé d'application et le chiffrement

@@ -1,8 +1,8 @@
 ---
 id: categories.organizeItems
 title: Organiser les objets avec des catégories
-slug: organize-items-with-categories
-section: organizing
+slug: organiser-avec-des-categories
+section: organisation
 ---
 
 # Organiser les objets avec des catégories

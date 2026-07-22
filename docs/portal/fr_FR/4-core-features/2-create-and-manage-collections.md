@@ -1,8 +1,8 @@
 ---
 id: collections.manage
 title: Créer et gérer des collections
-slug: create-and-manage-collections
-section: core-features
+slug: creer-et-gerer-des-collections
+section: fonctionnalites
 ---
 
 # Créer et gérer des collections

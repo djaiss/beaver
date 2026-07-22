@@ -1,8 +1,8 @@
 ---
 id: tutorials.inviteHousehold
 title: "Tutoriel : inviter votre foyer ou club et définir les permissions"
-slug: invite-your-household
-section: tutorials
+slug: inviter-votre-foyer
+section: tutoriels
 ---
 
 # Tutoriel : inviter votre foyer ou club et définir les permissions

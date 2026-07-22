@@ -1,8 +1,8 @@
 ---
 id: selfHosting.cliCommands
 title: Administrer avec la ligne de commande
-slug: cli-commands
-section: self-hosting
+slug: ligne-de-commande
+section: auto-hebergement
 ---
 
 # Administrer avec la ligne de commande

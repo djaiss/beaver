@@ -1,8 +1,8 @@
 ---
 id: sharing.overview
 title: Visibilité et partage
-slug: visibility-and-sharing
-section: core-concepts
+slug: visibilite-et-partage
+section: concepts-fondamentaux
 ---
 
 # Visibilité et partage

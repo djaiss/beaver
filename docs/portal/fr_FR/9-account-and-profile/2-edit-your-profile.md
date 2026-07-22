@@ -1,8 +1,8 @@
 ---
 id: profile.edit
 title: Modifier votre profil
-slug: edit-your-profile
-section: account-and-profile
+slug: modifier-votre-profil
+section: compte-et-profil
 ---
 
 # Modifier votre profil

@@ -1,8 +1,8 @@
 ---
 id: security.twoFactorAuth
 title: Protégez votre compte avec l'authentification à deux facteurs
-slug: two-factor-authentication
-section: security
+slug: authentification-a-deux-facteurs
+section: securite
 ---
 
 # Protégez votre compte avec l'authentification à deux facteurs

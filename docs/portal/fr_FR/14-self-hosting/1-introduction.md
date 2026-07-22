@@ -1,8 +1,8 @@
 ---
 id: selfHosting.index
 title: Aperçu de l'auto-hébergement
-slug: self-hosting
-section: self-hosting
+slug: auto-hebergement
+section: auto-hebergement
 ---
 
 # Aperçu de l'auto-hébergement

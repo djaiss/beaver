@@ -1,8 +1,8 @@
 ---
 id: accounts.delete
 title: Supprimer un compte
-slug: delete-an-account
-section: data-safety
+slug: supprimer-un-compte
+section: protection-des-donnees
 ---
 
 # Supprimer un compte

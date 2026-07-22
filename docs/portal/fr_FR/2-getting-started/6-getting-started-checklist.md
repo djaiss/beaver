@@ -1,8 +1,8 @@
 ---
 id: gettingStarted.checklist
 title: La liste de démarrage
-slug: getting-started-checklist
-section: getting-started
+slug: liste-de-demarrage
+section: demarrage
 ---
 
 # La liste de démarrage

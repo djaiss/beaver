@@ -1,8 +1,8 @@
 ---
 id: selfHosting.upgrade
 title: Mettre à jour votre instance
-slug: upgrade-your-instance
-section: self-hosting
+slug: mettre-a-jour-votre-instance
+section: auto-hebergement
 ---
 
 # Mettre à jour votre instance

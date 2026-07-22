@@ -1,8 +1,8 @@
 ---
 id: locations.overview
 title: Emplacements
-slug: locations
-section: core-concepts
+slug: emplacements
+section: concepts-fondamentaux
 ---
 
 # Emplacements

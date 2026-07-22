@@ -1,8 +1,8 @@
 ---
 id: users.inactiveDeletion
 title: Supprimer automatiquement un utilisateur inactif
-slug: inactive-user-deletion
-section: data-safety
+slug: suppression-dun-utilisateur-inactif
+section: protection-des-donnees
 ---
 
 # Supprimer automatiquement un utilisateur inactif

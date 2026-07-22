@@ -1,8 +1,8 @@
 ---
 id: troubleshooting.signIn
 title: Dépannage de la connexion
-slug: troubleshoot-sign-in
-section: troubleshooting
+slug: depannage-de-la-connexion
+section: depannage
 ---
 
 # Dépannage de la connexion

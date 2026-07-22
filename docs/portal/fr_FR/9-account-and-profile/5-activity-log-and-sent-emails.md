@@ -1,8 +1,8 @@
 ---
 id: activity.logAndSentEmails
 title: Votre journal d'activité et vos emails envoyés
-slug: activity-log-and-sent-emails
-section: account-and-profile
+slug: journal-dactivite-et-emails
+section: compte-et-profil
 ---
 
 # Votre journal d'activité et vos emails envoyés

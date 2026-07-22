@@ -1,8 +1,8 @@
 ---
 id: kollek.howOrganized
 title: Comment KolleK est organisé
-slug: how-kollek-is-organized
-section: core-concepts
+slug: organisation-de-kollek
+section: concepts-fondamentaux
 ---
 
 # Comment KolleK est organisé

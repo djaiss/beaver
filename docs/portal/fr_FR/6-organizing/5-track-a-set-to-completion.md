@@ -1,8 +1,8 @@
 ---
 id: sets.trackCompletion
 title: Suivre un ensemble jusqu'à sa complétion
-slug: track-a-set-to-completion
-section: organizing
+slug: suivre-un-ensemble
+section: organisation
 ---
 
 # Suivre un ensemble jusqu'à sa complétion

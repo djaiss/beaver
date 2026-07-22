@@ -1,8 +1,8 @@
 ---
 id: gettingStarted.quickStart
 title: Un démarrage rapide en cinq minutes
-slug: quick-start
-section: getting-started
+slug: demarrage-rapide
+section: demarrage
 ---
 
 # Un démarrage rapide en cinq minutes

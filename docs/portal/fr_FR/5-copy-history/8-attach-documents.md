@@ -1,8 +1,8 @@
 ---
 id: copies.attachDocuments
 title: Joindre des documents à un exemplaire
-slug: attach-documents
-section: copy-history
+slug: joindre-des-documents
+section: historique
 ---
 
 # Joindre des documents à un exemplaire

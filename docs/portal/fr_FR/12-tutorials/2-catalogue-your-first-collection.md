@@ -1,8 +1,8 @@
 ---
 id: tutorials.catalogueFirstCollection
 title: "Tutoriel : cataloguer votre première collection de bout en bout"
-slug: catalogue-your-first-collection
-section: tutorials
+slug: cataloguer-votre-premiere-collection
+section: tutoriels
 ---
 
 # Tutoriel : cataloguer votre première collection de bout en bout

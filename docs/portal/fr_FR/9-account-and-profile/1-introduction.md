@@ -1,8 +1,8 @@
 ---
 id: accountAndProfile.index
 title: Votre compte et votre profil
-slug: account-and-profile
-section: account-and-profile
+slug: compte-et-profil
+section: compte-et-profil
 ---
 
 # Votre compte et votre profil

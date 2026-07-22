@@ -1,7 +1,7 @@
 ---
 id: reference.emailsSent
 title: Emails envoyés par KolleK
-slug: emails-kollek-sends
+slug: emails-envoyes-par-kollek
 section: reference
 ---
 

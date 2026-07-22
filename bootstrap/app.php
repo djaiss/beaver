@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\EnsureEditorAccess;
 use App\Http\Middleware\EnsureInstanceAdministrator;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\SetMarketingLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'editor' => EnsureEditorAccess::class,
             'instance.admin' => EnsureInstanceAdministrator::class,
             'marketing' => CheckMarketing::class,
+            'marketing.locale' => SetMarketingLocale::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

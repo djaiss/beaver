@@ -3,12 +3,15 @@
         ['label' => __('Features'), 'url' => route('marketing.index') . '#features'],
         ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
         ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
-        ['label' => __('Docs'), 'url' => route('marketing.docs.portal.index')],
+        ['label' => __('Docs'), 'url' => route('marketing.docs.portal.home.show')],
         ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
     ];
 @endphp
 
-<div x-data="{ mobileMenuOpen: false }">
+{{-- display:contents so the sticky nav below resolves against the page container,
+     not this short wrapper. Otherwise the nav can only stick within the wrapper's
+     own height (announcement bar + nav) and unsticks as soon as you scroll past it. --}}
+<div x-data="{ mobileMenuOpen: false }" class="contents">
   <div class="flex flex-col items-center justify-center gap-2 bg-[#101010] px-4 py-2 text-center text-[13px] font-medium sm:h-10 sm:flex-row sm:py-0">
     <div class="flex items-center gap-2">
       <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold tracking-wide text-badge-emerald">v0.9</span>

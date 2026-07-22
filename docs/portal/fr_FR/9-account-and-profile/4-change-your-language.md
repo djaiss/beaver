@@ -1,8 +1,8 @@
 ---
 id: profile.changeLanguage
 title: Changer votre langue
-slug: change-your-language
-section: account-and-profile
+slug: changer-votre-langue
+section: compte-et-profil
 ---
 
 # Changer votre langue

@@ -1,8 +1,8 @@
 ---
 id: copyHistory.concept
 title: L'historique d'un exemplaire
-slug: copy-history
-section: core-concepts
+slug: historique-dun-exemplaire
+section: concepts-fondamentaux
 ---
 
 # L'historique d'un exemplaire

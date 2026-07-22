@@ -1,8 +1,8 @@
 ---
 id: gettingStarted.index
 title: Démarrage
-slug: getting-started
-section: getting-started
+slug: demarrage
+section: demarrage
 ---
 
 # Démarrage

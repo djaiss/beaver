@@ -1,8 +1,8 @@
 ---
 id: insights.index
 title: Statistiques
-slug: insights
-section: insights
+slug: statistiques
+section: statistiques
 ---
 
 # Statistiques

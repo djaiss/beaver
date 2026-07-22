@@ -1,8 +1,8 @@
 ---
 id: tutorials.index
 title: Tutoriels
-slug: tutorials
-section: tutorials
+slug: tutoriels
+section: tutoriels
 ---
 
 # Tutoriels

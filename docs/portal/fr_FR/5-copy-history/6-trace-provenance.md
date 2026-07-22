@@ -1,8 +1,8 @@
 ---
 id: copies.traceProvenance
 title: Retracer la provenance d'un exemplaire
-slug: trace-provenance
-section: copy-history
+slug: provenance
+section: historique
 ---
 
 # Retracer la provenance d'un exemplaire

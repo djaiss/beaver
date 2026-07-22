@@ -1,8 +1,8 @@
 ---
 id: selfHosting.backupAndRestore
 title: Sauvegarder et restaurer votre instance
-slug: back-up-and-restore
-section: self-hosting
+slug: sauvegarder-et-restaurer
+section: auto-hebergement
 ---
 
 # Sauvegarder et restaurer votre instance

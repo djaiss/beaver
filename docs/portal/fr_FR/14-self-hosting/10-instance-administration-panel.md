@@ -1,8 +1,8 @@
 ---
 id: instanceAdmin.panel
 title: Le panneau d'administration de l'instance
-slug: instance-administration-panel
-section: self-hosting
+slug: panneau-dadministration
+section: auto-hebergement
 ---
 
 # Le panneau d'administration de l'instance

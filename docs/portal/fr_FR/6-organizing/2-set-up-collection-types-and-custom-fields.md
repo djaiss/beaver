@@ -1,8 +1,8 @@
 ---
 id: collectionTypes.setup
 title: Configurer les types de collection et les champs personnalisés
-slug: set-up-collection-types-and-custom-fields
-section: organizing
+slug: configurer-types-et-champs
+section: organisation
 ---
 
 # Configurer les types de collection et les champs personnalisés

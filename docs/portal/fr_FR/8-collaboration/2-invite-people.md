@@ -1,7 +1,7 @@
 ---
 id: collaboration.invitePeople
 title: Inviter des personnes dans votre compte
-slug: invite-people
+slug: inviter-des-personnes
 section: collaboration
 ---
 

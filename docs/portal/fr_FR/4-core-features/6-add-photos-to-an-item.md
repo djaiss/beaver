@@ -1,8 +1,8 @@
 ---
 id: items.addPhotos
 title: Ajouter des photos à un objet
-slug: add-photos-to-an-item
-section: core-features
+slug: ajouter-des-photos
+section: fonctionnalites
 ---
 
 # Ajouter des photos à un objet

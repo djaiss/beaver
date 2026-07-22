@@ -1,8 +1,8 @@
 ---
 id: insights.dashboard
 title: Le tableau de bord
-slug: the-dashboard
-section: insights
+slug: tableau-de-bord
+section: statistiques
 ---
 
 # Le tableau de bord

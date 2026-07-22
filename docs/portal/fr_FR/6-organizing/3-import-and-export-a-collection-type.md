@@ -1,8 +1,8 @@
 ---
 id: collectionTypes.importExport
 title: Importer et exporter un type de collection
-slug: import-and-export-a-collection-type
-section: organizing
+slug: importer-et-exporter-un-type
+section: organisation
 ---
 
 # Importer et exporter un type de collection

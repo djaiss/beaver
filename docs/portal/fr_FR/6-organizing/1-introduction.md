@@ -1,8 +1,8 @@
 ---
 id: organizing.index
 title: Organiser votre catalogue
-slug: organizing
-section: organizing
+slug: organisation
+section: organisation
 ---
 
 # Organiser votre catalogue

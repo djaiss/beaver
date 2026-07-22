@@ -1,8 +1,8 @@
 ---
 id: instanceAdmin.grantAccess
 title: Accorder l'accès administrateur de l'instance
-slug: grant-instance-administrator-access
-section: self-hosting
+slug: acces-administrateur
+section: auto-hebergement
 ---
 
 # Accorder l'accès administrateur de l'instance

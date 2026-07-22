@@ -1,8 +1,8 @@
 ---
 id: copies.recordPaymentsAndValue
 title: Enregistrer ce que vous avez payé et ce que ça vaut
-slug: record-payments-and-value
-section: copy-history
+slug: paiements-et-valeur
+section: historique
 ---
 
 # Enregistrer ce que vous avez payé et ce que ça vaut

@@ -1,8 +1,8 @@
 ---
 id: security.recoveryCodes
 title: Enregistrez et utilisez vos codes de récupération
-slug: recovery-codes
-section: security
+slug: codes-de-recuperation
+section: securite
 ---
 
 # Enregistrez et utilisez vos codes de récupération

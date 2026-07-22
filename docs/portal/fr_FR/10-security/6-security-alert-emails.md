@@ -1,8 +1,8 @@
 ---
 id: security.alertEmails
 title: Emails d'alerte de connexion et de sécurité
-slug: security-alert-emails
-section: security
+slug: emails-dalerte-de-securite
+section: securite
 ---
 
 # Emails d'alerte de connexion et de sécurité

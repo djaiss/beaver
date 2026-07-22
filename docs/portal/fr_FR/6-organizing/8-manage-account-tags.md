@@ -1,8 +1,8 @@
 ---
 id: tags.manageAccount
 title: Gérer les étiquettes du compte
-slug: manage-account-tags
-section: organizing
+slug: gerer-les-etiquettes
+section: organisation
 ---
 
 # Gérer les étiquettes du compte

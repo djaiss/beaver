@@ -1,7 +1,7 @@
 ---
 id: reference.fieldAndStatus
 title: Référence des champs et statuts
-slug: field-and-status-reference
+slug: champs-et-statuts
 section: reference
 ---
 

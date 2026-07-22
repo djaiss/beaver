@@ -1,8 +1,8 @@
 ---
 id: accounts.create
 title: Créer votre compte
-slug: create-your-account
-section: getting-started
+slug: creer-votre-compte
+section: demarrage
 ---
 
 # Créer votre compte

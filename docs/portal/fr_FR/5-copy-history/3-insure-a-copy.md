@@ -1,8 +1,8 @@
 ---
 id: copies.insure
 title: Assurer un exemplaire
-slug: insure-a-copy
-section: copy-history
+slug: assurer-un-exemplaire
+section: historique
 ---
 
 # Assurer un exemplaire
