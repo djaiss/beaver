@@ -137,6 +137,31 @@ it('closes a conversation', function () {
     expect($fresh->closed_at)->not->toBeNull();
 });
 
+it('shows a team reply as Support in the thread', function () {
+    $user = $this->createUser();
+    $ticket = SupportTicket::factory()->answered()->create(['user_id' => $user->id]);
+    SupportMessage::factory()->fromTeam()->create([
+        'support_ticket_id' => $ticket->id,
+        'body' => 'Here is the fix, Ross.',
+    ]);
+
+    $response = $this->actingAs($user)->get(route('support.tickets.show', $ticket));
+
+    $response->assertOk();
+    $response->assertSee('Here is the fix, Ross.');
+    $response->assertSee('Support');
+});
+
+it('lets the user reply while the team has answered', function () {
+    $user = $this->createUser();
+    $ticket = SupportTicket::factory()->answered()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->get(route('support.tickets.show', $ticket));
+
+    $response->assertOk();
+    $response->assertSee('Write a reply…');
+});
+
 it('shows who closed the conversation in the thread', function () {
     $user = $this->createUser();
     $ticket = SupportTicket::factory()->closed(SupportTicketCloser::Team)->create([

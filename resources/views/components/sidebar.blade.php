@@ -33,17 +33,19 @@
     </div>
 
     @if ($isInstance)
+        {{-- The instance administration panel is English only and never translated,
+             so its labels are plain strings rather than __() calls. --}}
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
             @svg('lucide-arrow-left', 'size-4')
-            {{ __('Back to app') }}
+            Back to app
         </a>
 
         <nav class="flex flex-col gap-0.5">
-            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Manage') }}</p>
-            <x-sidebar-link :href="route('instanceAdmin.index')" :active="request()->routeIs('instanceAdmin.index')" icon="layout-grid">{{ __('Overview') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('instanceAdmin.accounts.index')" :active="request()->routeIs('instanceAdmin.accounts.*')" icon="users">{{ __('Accounts & users') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('instanceAdmin.support.index')" :active="request()->routeIs('instanceAdmin.support.*')" icon="message-square">{{ __('Support tickets') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('instanceAdmin.reviews.index')" :active="request()->routeIs('instanceAdmin.reviews.*')" icon="star">{{ __('User reviews') }}</x-sidebar-link>
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">Manage</p>
+            <x-sidebar-link :href="route('instanceAdmin.index')" :active="request()->routeIs('instanceAdmin.index')" icon="layout-grid">Overview</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.accounts.index')" :active="request()->routeIs('instanceAdmin.accounts.*')" icon="users">Accounts & users</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.support.index')" :active="request()->routeIs('instanceAdmin.support.*')" icon="message-square">Support tickets</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.reviews.index')" :active="request()->routeIs('instanceAdmin.reviews.*')" icon="star">User reviews</x-sidebar-link>
         </nav>
     @elseif ($isProfile)
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">

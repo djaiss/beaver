@@ -93,6 +93,7 @@
 - Place the HTTP verb first, followed by other options.
 - Route parameters use camelCase.
 - Don't start routes with `/` except for the root path `/`.
+- Carry navigational state in the path, not the query string. Which tab is open, which record is selected, which sub view is shown: each of these is its own path segment and its own URL (for example `support/open` and `support/open/42`, never `support?tab=open&ticket=42`). A query string is reserved for the few genuinely free-form inputs where it is the conventional tool: a search box (`?search=`) and pagination (`?page=`). If you reach for a query parameter to remember a choice the user made by clicking, model it as a route instead.
 
 ## API Routing
 

@@ -98,7 +98,7 @@ class AccountController extends Controller
         )->execute();
 
         return to_route('instanceAdmin.accounts.index')
-            ->with('status', __('Account deleted successfully'))
-            ->with('status_description', __('The account and everything it contained are gone.'));
+            ->with('status', 'Account deleted successfully')
+            ->with('status_description', 'The account and everything it contained are gone.');
     }
 }

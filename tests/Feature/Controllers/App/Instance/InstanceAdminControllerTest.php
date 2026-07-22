@@ -101,10 +101,9 @@ it('shows an account to an instance administrator', function () {
     $response->assertViewIs('app.instance.accounts.show');
 });
 
-it('says that support tickets and reviews are not built yet', function () {
+it('says that reviews are not built yet', function () {
     $monica = $this->createUser(['is_instance_administrator' => true]);
 
-    $this->actingAs($monica)->get('instance-admin/support')->assertOk()->assertSee('Soon');
     $this->actingAs($monica)->get('instance-admin/reviews')->assertOk()->assertSee('Soon');
 });
 

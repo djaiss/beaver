@@ -55,6 +55,21 @@ it('reopens a closed conversation when replying', function () {
     expect($fresh->closed_at)->toBeNull();
 });
 
+it('moves an answered conversation back to open when the user replies', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $ticket = SupportTicket::factory()->answered()->create(['user_id' => $user->id]);
+
+    new CreateSupportMessage(
+        user: $user,
+        ticket: $ticket,
+        body: 'Thanks, but one more question…',
+    )->execute();
+
+    expect($ticket->fresh()->status)->toBe(SupportTicketStatus::Open);
+});
+
 it('strips html from the reply', function () {
     Queue::fake();
 

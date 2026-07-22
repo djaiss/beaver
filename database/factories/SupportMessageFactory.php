@@ -26,7 +26,18 @@ class SupportMessageFactory extends Factory
         return [
             'support_ticket_id' => SupportTicket::factory(),
             'user_id' => User::factory(),
+            'is_from_team' => false,
             'body' => $this->faker->paragraph(),
         ];
+    }
+
+    /**
+     * Indicate that the message was written by the instance team.
+     */
+    public function fromTeam(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_from_team' => true,
+        ]);
     }
 }

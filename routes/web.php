@@ -24,6 +24,7 @@ use App\Http\Controllers\App\Instance\AccountController as InstanceAccountContro
 use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
 use App\Http\Controllers\App\Instance\ReviewController as InstanceReviewController;
 use App\Http\Controllers\App\Instance\SupportController as InstanceSupportController;
+use App\Http\Controllers\App\Instance\SupportMessageController as InstanceSupportMessageController;
 use App\Http\Controllers\App\Instance\UserController as InstanceUserController;
 use App\Http\Controllers\App\InsuranceRecordController;
 use App\Http\Controllers\App\ItemActivitiesController;
@@ -325,8 +326,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::delete('users/{user}', [InstanceUserController::class, 'destroy'])->where('user', '[1-9][0-9]*')->name('users.destroy');
         Route::put('users/{user}/administrator', [InstanceUserController::class, 'update'])->where('user', '[1-9][0-9]*')->name('users.administrator.update');
 
-        // not built yet, these pages say so
-        Route::get('support', [InstanceSupportController::class, 'index'])->name('support.index');
+        // the support inbox, spanning every account. Both the tab and the open
+        // conversation live in the path (no query string), so each bucket and each
+        // selected ticket is its own URL, and a bare /support lands on the open one.
+        Route::get('support/{status?}/{ticket?}', [InstanceSupportController::class, 'index'])->where('status', 'open|all|closed')->where('ticket', '[1-9][0-9]*')->name('support.index');
+        Route::post('support/{supportTicket}/messages', [InstanceSupportMessageController::class, 'create'])->where('supportTicket', '[1-9][0-9]*')->name('support.messages.create');
+        Route::put('support/{supportTicket}', [InstanceSupportController::class, 'update'])->where('supportTicket', '[1-9][0-9]*')->name('support.update');
+
+        // not built yet, this page says so
         Route::get('reviews', [InstanceReviewController::class, 'index'])->name('reviews.index');
     });
 });
