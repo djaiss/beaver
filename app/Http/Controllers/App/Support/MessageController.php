@@ -28,6 +28,6 @@ class MessageController extends Controller
         )->execute();
 
         return to_route('support.tickets.show', $ticket)
-            ->with('status', trans('Reply sent'));
+            ->with('reply_sent', true);
     }
 }
