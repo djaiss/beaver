@@ -23,6 +23,18 @@ it('lists the members for an owner', function () {
     $response->assertViewIs('app.settings.members.index');
 });
 
+it('renders the section title help popovers on the members page', function () {
+    $owner = $this->createUser();
+    $account = $this->createAccount();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $response = $this->actingAs($owner)->get('settings/members');
+
+    $response->assertOk();
+    $response->assertSee('role that decides what they can do here');
+    $response->assertSee('Brings someone new into this account');
+});
+
 it('forbids a non owner from listing the members', function () {
     $user = $this->createUser();
     $account = $this->createAccount();

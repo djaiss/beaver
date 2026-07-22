@@ -49,7 +49,10 @@
       </div>
 
       <div>
-        <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Import a collection type') }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Import a collection type') }}</h1>
+          <x-help id="settings.import_collection_type" />
+        </div>
         <p class="mt-1.5 max-w-2xl text-[15px] text-muted">{{ __('Paste a type schema exported from Beaver to recreate it here. Importing creates a brand new type, it never overwrites an existing one.') }}</p>
       </div>
 

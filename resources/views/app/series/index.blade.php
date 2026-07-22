@@ -31,6 +31,7 @@
         <div>
           <div class="flex items-center gap-2.5">
             <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Series') }}</h1>
+            <x-help id="series.list" />
             <span class="rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-brand uppercase">{{ __('Account-wide') }}</span>
           </div>
           <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('A series links related items into a broader franchise or body of work, like Harry Potter or Marvel, regardless of type or collection. Unlike sets, a series has no target and no completion.') }}</p>

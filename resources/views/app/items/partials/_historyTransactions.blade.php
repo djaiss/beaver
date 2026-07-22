@@ -14,7 +14,10 @@
 <div x-data="{ adding: false }">
   <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Transactions') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Transactions') }}</p>
+        <x-help id="history.transactions" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Financial and ownership exchanges. The source of truth for prices, fees and totals.') }}</p>
     </div>
 
@@ -54,7 +57,11 @@
         ];
       @endphp
 
-      <div class="overflow-hidden rounded-xl border border-hairline" x-data="{ editing: false }" data-test="transaction-{{ $transaction->id }}">
+      {{-- No overflow-hidden: a help popover opened from the edit form below needs
+           to escape this card instead of being clipped at its edge. Nothing here
+           carries a background flush to the bottom edge, so the rounded corners
+           still read fine without it. --}}
+      <div class="rounded-xl border border-hairline" x-data="{ editing: false }" data-test="transaction-{{ $transaction->id }}">
         <div class="flex flex-wrap items-start justify-between gap-3 px-4 py-3.5">
           <div class="min-w-0">
             <x-badge data-test="transaction-type-{{ $transaction->id }}">{{ $transaction->type->label() }}</x-badge>
@@ -118,7 +125,7 @@
         </div>
       </div>
     @empty
-      <div class="rounded-xl border border-hairline">
+      <div x-show="! adding" class="rounded-xl border border-hairline">
         <x-empty-state data-test="no-transactions-{{ $selectedCopy->id }}">
           <x-slot:icon>
             <x-lucide-receipt class="size-6 text-muted" />

@@ -58,7 +58,10 @@
       <input type="hidden" id="photos-view-endpoint" value="{{ route('settings.photos.view.update') }}" />
 
       <div>
-        <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Photos') }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Photos') }}</h1>
+          <x-help id="settings.photos" />
+        </div>
         <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('Every image uploaded across the account. Manage the library in one place and see exactly which item each photo belongs to.') }}</p>
       </div>
 

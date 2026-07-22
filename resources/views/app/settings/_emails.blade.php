@@ -1,4 +1,4 @@
-<x-box padding="p-0">
+<x-box padding="p-0" helpId="profile.emails_sent">
   <x-slot:title>{{ __('Emails sent') }}</x-slot>
 
   @forelse ($emails as $emailSent)

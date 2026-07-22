@@ -10,7 +10,10 @@
   <div class="px-6 py-8 lg:px-12 lg:py-10">
     <div class="mx-auto w-full max-w-3xl space-y-8">
       <div>
-        <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Members') }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[22px] font-semibold tracking-tight text-ink">{{ __('Members') }}</h1>
+          <x-help id="settings.members" />
+        </div>
         <p class="mt-1 text-sm text-muted">{{ __('People who have access to :account.', ['account' => $account->name]) }}</p>
       </div>
 
@@ -40,7 +43,7 @@
       </x-box>
 
       {{-- Invite --}}
-      <x-box title="{{ __('Invite a member') }}">
+      <x-box title="{{ __('Invite a member') }}" helpId="settings.invite_member">
         <x-form method="post" :action="route('settings.members.create')" x-target="members" class="space-y-4">
           <x-input id="email" name="email" :label="__('Email')" :error="$errors->get('email')" required placeholder="ross@friends.com" />
           <x-select id="role" :label="__('Role')" :options="$roleOptions" :selected="'viewer'" :error="$errors->get('role')" required />

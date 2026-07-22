@@ -18,6 +18,15 @@ it('lists the account tags', function () {
     $response->assertSee('Signed');
 });
 
+it('renders the tags title help popover', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/settings/tags');
+
+    $response->assertOk();
+    $response->assertSee('Free form labels shared across the whole account');
+});
+
 it('does not list another accounts tags', function () {
     $user = $this->createUser();
     Tag::factory()->create(['name' => 'Foreign Tag']);

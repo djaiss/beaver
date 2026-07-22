@@ -31,7 +31,10 @@
 
       <div class="mb-2 flex items-start justify-between gap-4">
         <div>
-          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Sets') }}</h1>
+          <div class="flex items-center gap-2">
+            <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Sets') }}</h1>
+            <x-help id="sets.list" />
+          </div>
           <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('A set is a checklist of the items that belong together: a full run, a series, a want list. Beaver tracks which ones you own and how close you are to complete.') }}</p>
         </div>
 
@@ -58,7 +61,7 @@
               </div>
 
               <div class="w-[120px]">
-                <x-input id="target_count" type="number" min="1" :label="__('Target')" placeholder="10" :error="$errors->get('target_count')" />
+                <x-input id="target_count" type="number" min="1" :label="__('Target')" helpId="sets.target" helpAlign="right" placeholder="10" :error="$errors->get('target_count')" />
               </div>
             </div>
 

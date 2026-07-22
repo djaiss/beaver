@@ -21,7 +21,10 @@
 <div x-data="{ adding: false }">
   <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Valuations') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Valuations') }}</p>
+        <x-help id="history.valuations" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Append-only value estimates over time. The latest is shown as the current estimated value.') }}</p>
     </div>
 
@@ -66,7 +69,9 @@
   @endif
 
   @if ($valuations->isNotEmpty())
-    <div class="overflow-hidden rounded-xl border border-hairline">
+    {{-- No overflow-hidden: a help popover opened from a row's edit form needs to
+         escape this card instead of being clipped at its edge. --}}
+    <div class="rounded-xl border border-hairline">
       @foreach ($valuations as $valuation)
         @php
           $percent = $maxAmount > 0 ? round(($valuation->amount / $maxAmount) * 100) : 0;
@@ -155,7 +160,7 @@
       @endforeach
     </div>
   @else
-    <div class="rounded-xl border border-hairline">
+    <div x-show="! adding" class="rounded-xl border border-hairline">
       <x-empty-state data-test="no-valuations-{{ $selectedCopy->id }}">
         <x-slot:icon>
           <x-lucide-clock class="size-6 text-muted" />

@@ -1,4 +1,4 @@
-<x-box padding="p-0">
+<x-box padding="p-0" helpId="profile.auto_delete">
   <x-slot:title>
     {{ __('Auto delete account') }}
   </x-slot>

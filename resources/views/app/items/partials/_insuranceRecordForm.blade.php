@@ -122,8 +122,8 @@
         <span class="absolute top-0.5 size-[18px] rounded-full bg-white shadow transition-all" x-bind:style="scheduled ? 'left: 18px' : 'left: 2px'"></span>
       </span>
       <span class="min-w-0">
-        <span class="block text-[13.5px] font-semibold text-ink">{{ __('Individually scheduled item') }}</span>
-        <span class="block text-xs text-muted-soft">{{ __('This copy is listed on the policy by name, not under blanket contents.') }}</span>
+        <span class="block text-[13.5px] font-semibold text-ink">{{ __('Listed individually on the policy') }}</span>
+        <span class="block text-xs text-muted-soft">{{ __('This item is specifically named on your insurance policy rather than covered under your general contents coverage.') }}</span>
       </span>
     </button>
 

@@ -24,6 +24,18 @@ it('lists the categories of a collection, nested', function () {
         ->assertSee('1 subcategory');
 });
 
+it('renders the categories title and parent category field help popovers', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    Category::factory()->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/categories');
+
+    $response->assertOk()
+        ->assertSee('Files items inside this collection into a browsable structure')
+        ->assertSee('Nests this category under another one, to any depth');
+});
+
 it('counts the items filed under a category', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);

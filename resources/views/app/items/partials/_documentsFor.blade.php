@@ -152,7 +152,7 @@
         @endif
       </div>
     @empty
-      <p class="rounded-lg border border-dashed border-hairline px-4 py-3 text-[12.5px] text-muted-soft" data-test="no-documents-{{ $scope }}">
+      <p x-show="! adding" class="rounded-lg border border-dashed border-hairline px-4 py-3 text-[12.5px] text-muted-soft" data-test="no-documents-{{ $scope }}">
         {{ __('No documents attached yet.') }}
       </p>
     @endforelse

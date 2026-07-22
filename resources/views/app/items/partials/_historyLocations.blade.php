@@ -15,7 +15,10 @@
 <div x-data="{ moving: false }">
   <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
-      <p class="text-lg font-semibold text-ink">{{ __('Locations') }}</p>
+      <div class="flex items-center gap-2">
+        <p class="text-lg font-semibold text-ink">{{ __('Locations') }}</p>
+        <x-help id="history.locations" />
+      </div>
       <p class="mt-1 max-w-xl text-[13px] leading-relaxed text-muted">{{ __('Where this copy has been stored, and for how long. Move it to open a new record and close the last.') }}</p>
     </div>
 
@@ -111,7 +114,7 @@
         @endif
       </div>
     @empty
-      <div class="rounded-xl border border-hairline">
+      <div x-show="! moving" class="rounded-xl border border-hairline">
         <x-empty-state data-test="no-location-{{ $selectedCopy->id }}">
           <x-slot:icon>
             <x-lucide-map-pin class="size-6 text-muted" />

@@ -24,6 +24,18 @@ it('lists the sets of a collection', function () {
         ->assertSee('2 sets');
 });
 
+it('renders the sets title and target field help popovers', function () {
+    $user = $this->createUser();
+    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
+    Set::factory()->create(['collection_id' => $collection->id]);
+
+    $response = $this->actingAs($user)->get('/collections/'.$collection->id.'/sets');
+
+    $response->assertOk()
+        ->assertSee('A finite list you are working to complete within this collection')
+        ->assertSee('The number of items that make this set complete');
+});
+
 it('shows how far a set is from complete', function () {
     $user = $this->createUser();
     $collection = Collection::factory()->create(['account_id' => $user->account_id]);

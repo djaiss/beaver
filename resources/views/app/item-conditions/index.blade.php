@@ -25,7 +25,10 @@
       }"
     >
       <div>
-        <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Item conditions') }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Item conditions') }}</h1>
+          <x-help id="settings.item_conditions" />
+        </div>
         <p class="mt-1 max-w-lg text-[15px] text-muted">{{ __('The condition levels an item\'s copies can be in, e.g. "New", "Used", or "Damaged". Shared across every collection in this account.') }}</p>
       </div>
 

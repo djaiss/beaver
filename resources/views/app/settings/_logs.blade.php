@@ -1,4 +1,4 @@
-<x-box padding="p-0">
+<x-box padding="p-0" helpId="profile.logs">
   <x-slot:title>{{ __('Logs') }}</x-slot>
   <x-slot:description>
     <p>{{ __('All actions performed on your account are logged here.') }}</p>

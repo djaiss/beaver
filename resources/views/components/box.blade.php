@@ -1,5 +1,6 @@
 @props([
   'title' => null,
+  'helpId' => null,
   'padding' => 'p-4',
   'description' => null,
   'additionalInfo' => null,
@@ -9,7 +10,12 @@
   @isset($title)
     <div class="flex items-center justify-between">
       @isset($title)
-        <h2 class="mb-1 text-lg font-semibold text-ink">{{ $title }}</h2>
+        <div class="mb-1 flex items-center gap-2">
+          <h2 class="text-lg font-semibold text-ink">{{ $title }}</h2>
+          @if ($helpId)
+            <x-help :id="$helpId" />
+          @endif
+        </div>
       @endisset
 
       @isset($actions)

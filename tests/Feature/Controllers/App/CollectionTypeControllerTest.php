@@ -22,6 +22,15 @@ it('lists the account collection types', function () {
     $response->assertSee('Publisher');
 });
 
+it('renders the collection types title help popover', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/settings/types');
+
+    $response->assertOk();
+    $response->assertSee('reused by any number of collections');
+});
+
 it('keeps the actions menu out of the morph', function () {
     $user = $this->createUser();
     $type = CollectionType::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);

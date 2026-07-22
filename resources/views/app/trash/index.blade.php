@@ -30,7 +30,10 @@
       }"
     >
       <div>
-        <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Trash') }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Trash') }}</h1>
+          <x-help id="settings.trash" />
+        </div>
         <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('Deleted objects are kept here for :count days, then permanently removed. Restore anything before its timer runs out.', ['count' => $retentionDays]) }}</p>
       </div>
 

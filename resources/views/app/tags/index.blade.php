@@ -25,7 +25,10 @@
       }"
     >
       <div>
-        <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Tags') }}</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Tags') }}</h1>
+          <x-help id="settings.tags" />
+        </div>
         <p class="mt-1 max-w-lg text-[15px] text-muted">{{ __('Free-form labels items can carry, e.g. "Signed" or "First Issue". Shared across every collection in this account.') }}</p>
       </div>
 

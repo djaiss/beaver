@@ -22,7 +22,7 @@
       </x-box>
 
       {{-- Getting started --}}
-      <x-box title="{{ __('Getting started screen') }}">
+      <x-box title="{{ __('Getting started screen') }}" helpId="settings.getting_started">
         <p class="mb-4 text-sm text-muted">{{ __('The welcome screen and setup checklist new accounts land on. Turn it back on to bring it into the sidebar, for everyone in the account.') }}</p>
 
         <x-form id="getting-started-form" x-target="getting-started-form" method="put" :action="route('settings.gettingStarted.update')" class="space-y-4">
@@ -38,7 +38,7 @@
       </x-box>
 
       {{-- Danger zone --}}
-      <x-box title="{{ __('Delete account') }}">
+      <x-box title="{{ __('Delete account') }}" helpId="settings.delete_account">
         <p class="mb-4 text-sm text-muted">{{ __('Permanently delete this account, all of its members, and everything it contains. This cannot be undone.') }}</p>
         <x-form method="delete" :action="route('settings.destroy')" onsubmit="return confirm('{{ __('Are you absolutely sure? This action cannot be undone.') }}')">
           <x-button.secondary type="submit">{{ __('Delete account') }}</x-button.secondary>

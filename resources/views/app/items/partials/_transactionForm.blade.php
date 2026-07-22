@@ -63,7 +63,10 @@
     </div>
 
     <div>
-      <label for="{{ $formId }}-counterparty" class="{{ $labelClasses }}">{{ __('Counterparty') }}</label>
+      <div class="flex items-center gap-1.5">
+        <label for="{{ $formId }}-counterparty" class="{{ $labelClasses }}">{{ __('Counterparty') }}</label>
+        <x-help id="history.transactions.counterparty" align="right" />
+      </div>
       <input id="{{ $formId }}-counterparty" name="counterparty" value="{{ $transaction?->counterparty }}" placeholder="{{ __('e.g. Central Perk Comics') }}" class="{{ $inputClasses }}" />
       <x-error :messages="$errors->get('counterparty')" class="mt-2" />
     </div>

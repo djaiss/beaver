@@ -61,7 +61,10 @@
     </div>
 
     <div>
-      <label for="{{ $formId }}-confidence" class="{{ $labelClasses }}">{{ __('Confidence') }}</label>
+      <div class="flex items-center gap-1.5">
+        <label for="{{ $formId }}-confidence" class="{{ $labelClasses }}">{{ __('Confidence') }}</label>
+        <x-help id="history.valuations.confidence" />
+      </div>
       <div class="relative">
         <select id="{{ $formId }}-confidence" name="confidence" class="{{ $selectClasses }}">
           @foreach (ValuationConfidence::options() as $value => $label)
