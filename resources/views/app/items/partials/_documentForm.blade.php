@@ -18,6 +18,8 @@
 @php
     $isEdit = $document !== null;
     $accept = implode(',', config('documents.allowed_mime_types'));
+    $maxKb = (int) config('documents.max_size_in_kilobytes');
+    $maxMb = (int) ($maxKb / 1024);
 
     $labelClasses = 'block text-[11px] font-semibold tracking-wide text-muted-soft uppercase';
     $inputClasses = 'mt-1.5 h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink placeholder-muted-soft';
@@ -44,7 +46,27 @@
       <input type="hidden" name="documentable_type" value="{{ $documentableType }}" />
       <input type="hidden" name="documentable_id" value="{{ $documentableId }}" />
 
-      <div x-data="{ source: 'file', filename: '', over: false }" class="mb-3.5">
+      <div
+        x-data="{
+          source: 'file',
+          filename: '',
+          over: false,
+          sizeError: '',
+          pick(files) {
+            this.sizeError = ''
+            // Reject an oversized file in the browser and clear the input, so the
+            // request never carries it and never bounces off the server limit.
+            if (window.oversizedFiles(files, {{ $maxKb }}).length) {
+              this.sizeError = @js(__('The file must be under :size MB.', ['size' => $maxMb]))
+              this.$refs.file.value = ''
+              this.filename = ''
+              return
+            }
+            this.filename = files[0]?.name ?? ''
+          },
+        }"
+        class="mb-3.5"
+      >
         <div class="mb-2.5 inline-flex rounded-md border border-hairline p-0.5">
           <button type="button" x-on:click="source = 'file'" x-bind:class="source === 'file' ? 'bg-card text-ink' : 'text-muted'" class="rounded px-3 py-1.5 text-[13px] font-semibold" data-test="{{ $formId }}-source-file">{{ __('Upload a file') }}</button>
           <button type="button" x-on:click="source = 'url'" x-bind:class="source === 'url' ? 'bg-card text-ink' : 'text-muted'" class="rounded px-3 py-1.5 text-[13px] font-semibold" data-test="{{ $formId }}-source-url">{{ __('Link to a file') }}</button>
@@ -55,17 +77,19 @@
           x-show="source === 'file'"
           x-on:dragover.prevent="over = true"
           x-on:dragleave.prevent="over = false"
-          x-on:drop.prevent="over = false; $refs.file.files = $event.dataTransfer.files; filename = $refs.file.files[0]?.name ?? ''"
+          x-on:drop.prevent="over = false; $refs.file.files = $event.dataTransfer.files; pick($refs.file.files)"
           x-bind:class="over ? 'border-ink bg-card/60' : 'border-hairline'"
           class="rounded-md border border-dashed px-4 py-6 text-center transition-colors"
         >
-          <input type="file" name="file" x-ref="file" accept="{{ $accept }}" id="{{ $formId }}-file" class="hidden" x-on:change="filename = $refs.file.files[0]?.name ?? ''" data-test="{{ $formId }}-file" />
+          <input type="file" name="file" x-ref="file" accept="{{ $accept }}" id="{{ $formId }}-file" class="hidden" x-on:change="pick($refs.file.files)" data-test="{{ $formId }}-file" />
           <label for="{{ $formId }}-file" class="flex cursor-pointer flex-col items-center gap-2">
             <x-lucide-upload class="size-6 text-muted" />
             <span class="text-[13px] font-semibold text-ink" x-text="filename || '{{ __('Drop a file here, or click to choose') }}'"></span>
-            <span class="text-xs text-muted-soft">{{ __('PDF, image, document or spreadsheet, up to :size MB.', ['size' => (int) (config('documents.max_size_in_kilobytes') / 1024)]) }}</span>
+            <span class="text-xs text-muted-soft">{{ __('PDF, image, document or spreadsheet, up to :size MB.', ['size' => $maxMb]) }}</span>
           </label>
         </div>
+
+        <p x-show="sizeError" x-cloak x-text="sizeError" class="mt-2 text-sm text-error"></p>
 
         {{-- Link: a plain URL to a file held elsewhere. --}}
         <div x-show="source === 'url'" x-cloak>

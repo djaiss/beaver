@@ -26,7 +26,7 @@ Adjunta el documento en el lugar más específico posible. Un recibo adjunto a s
 
 Un documento es o bien un **archivo subido** o bien un **enlace externo**.
 
-Las subidas aceptan PDF, formatos de imagen habituales (incluidas fotos HEIC de un teléfono), archivos de Word y Excel, CSV y texto plano, hasta 20 MB por archivo. Los archivos guardados son privados: solo se sirven a los miembros de tu cuenta que hayan iniciado sesión, nunca desde una dirección pública.
+Las subidas aceptan PDF, formatos de imagen habituales (incluidas fotos HEIC de un teléfono), archivos de Word y Excel, CSV y texto plano, hasta 12 MB por archivo. Los archivos guardados son privados: solo se sirven a los miembros de tu cuenta que hayan iniciado sesión, nunca desde una dirección pública.
 
 Un enlace externo apunta a algo que vive en otro sitio, como un anuncio de subasta o una entrada del archivo de un fabricante. KolleK guarda la dirección, no una copia de la página.
 

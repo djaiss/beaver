@@ -13,9 +13,13 @@ return [
     | rejected before it reaches the disk. External URL documents carry no file,
     | so this limit does not apply to them.
     |
+    | Keep this at or below PHP's upload_max_filesize (12M in docker/php/php.ini),
+    | otherwise a file between the two limits is killed by PHP before validation
+    | runs and the user sees a raw server error instead of a friendly message.
+    |
     */
 
-    'max_size_in_kilobytes' => 20480,
+    'max_size_in_kilobytes' => 12288,
 
     /*
     |--------------------------------------------------------------------------

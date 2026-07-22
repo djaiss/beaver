@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\EnsureEditorAccess;
 use App\Http\Middleware\EnsureInstanceAdministrator;
 use App\Http\Middleware\EnsureSupportEnabled;
+use App\Http\Middleware\HandleOversizedUpload;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SetMarketingLocale;
 use Illuminate\Foundation\Application;
@@ -22,6 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Runs before CSRF verification: a body over post_max_size arrives without
+        // its token, so this must catch it before the token mismatch fires.
+        $middleware->web(prepend: [HandleOversizedUpload::class]);
+
         $middleware->alias([
             'set.locale' => SetLocale::class,
             'owner' => EnsureAccountOwner::class,

@@ -70,7 +70,7 @@ En la valoración, adjunta el informe del tasador como documento de tipo **Appra
 :::
 ::::
 
-Un documento puede ser un archivo subido (PDF, imágenes, Word, Excel, CSV o texto plano, hasta 20 MB) o un enlace externo si la documentación vive en otro sitio. Adjuntar cada documento al registro que prueba, en lugar de dejarlo suelto en el ejemplar, es lo que hace que la historia sea auditable más adelante.
+Un documento puede ser un archivo subido (PDF, imágenes, Word, Excel, CSV o texto plano, hasta 12 MB) o un enlace externo si la documentación vive en otro sitio. Adjuntar cada documento al registro que prueba, en lugar de dejarlo suelto en el ejemplar, es lo que hace que la historia sea auditable más adelante.
 
 ## Paso 6: Préstalo para una exposición, y recupéralo
 

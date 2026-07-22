@@ -70,7 +70,7 @@ No registro de avaliação, ela anexa o laudo do avaliador como um documento do 
 :::
 ::::
 
-Um documento pode ser um arquivo enviado (PDF, imagens, Word, Excel, CSV ou texto simples, até 20 MB) ou um link externo, se a documentação estiver em outro lugar. Anexar cada documento ao registro que ele comprova, em vez de vinculá-lo solto ao exemplar, é o que torna a história auditável depois.
+Um documento pode ser um arquivo enviado (PDF, imagens, Word, Excel, CSV ou texto simples, até 12 MB) ou um link externo, se a documentação estiver em outro lugar. Anexar cada documento ao registro que ele comprova, em vez de vinculá-lo solto ao exemplar, é o que torna a história auditável depois.
 
 ## Passo 6: Empreste para uma exposição, e receba de volta
 

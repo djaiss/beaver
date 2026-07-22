@@ -70,7 +70,7 @@ Bei der Wertermittlung hängt sie den Bericht des Gutachters als Dokument vom Ty
 :::
 ::::
 
-Ein Dokument kann eine hochgeladene Datei sein (PDF, Bilder, Word, Excel, CSV oder reiner Text, bis zu 20 MB) oder ein externer Link, falls die Unterlagen anderswo liegen. Jedes Dokument an den Eintrag anzuhängen, den es belegt, statt lose an das Exemplar, ist es, was die Geschichte später überprüfbar macht.
+Ein Dokument kann eine hochgeladene Datei sein (PDF, Bilder, Word, Excel, CSV oder reiner Text, bis zu 12 MB) oder ein externer Link, falls die Unterlagen anderswo liegen. Jedes Dokument an den Eintrag anzuhängen, den es belegt, statt lose an das Exemplar, ist es, was die Geschichte später überprüfbar macht.
 
 ## Schritt 6: Die Uhr an eine Ausstellung verleihen und zurückbekommen
 
