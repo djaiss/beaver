@@ -23,7 +23,7 @@
   {{-- Main nav --}}
   <div class="sticky top-0 z-50 border-b border-hairline bg-page/85 backdrop-blur-md">
     <nav class="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5 sm:px-8">
-      <a href="{{ route('marketing.index') }}" class="group flex shrink-0 items-center gap-x-2.5">
+      <a href="{{ route('marketing.index') }}" data-turbo="true" class="group flex shrink-0 items-center gap-x-2.5">
         <div class="transition-all duration-400 group-hover:-translate-y-0.5 group-hover:-rotate-3">
           <x-logo size="30" aria-hidden="true" />
         </div>
@@ -33,7 +33,7 @@
       {{-- Desktop navigation --}}
       <div class="hidden items-center gap-x-1 lg:flex">
         @foreach ($navigation as $link)
-          <a href="{{ $link['url'] }}" class="rounded-md px-3 py-2 text-sm font-medium text-body transition-colors hover:bg-sidebar hover:text-ink">{{ $link['label'] }}</a>
+          <a href="{{ $link['url'] }}" data-turbo="true" class="rounded-md px-3 py-2 text-sm font-medium text-body transition-colors hover:bg-sidebar hover:text-ink">{{ $link['label'] }}</a>
         @endforeach
       </div>
 
@@ -44,9 +44,9 @@
         </a>
 
         @auth
-          <a href="{{ route('dashboard.index') }}" class="flex h-10 items-center rounded-md bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Go to your account') }}</a>
+          <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex h-10 items-center rounded-md bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Go to your account') }}</a>
         @else
-          <a href="{{ route('register') }}" class="flex h-10 items-center rounded-md bg-primary px-4.5 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Get started') }}</a>
+          <a href="{{ route('register') }}" data-turbo="true" class="flex h-10 items-center rounded-md bg-primary px-4.5 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Get started') }}</a>
         @endauth
 
         {{-- Mobile menu button --}}
@@ -72,12 +72,12 @@
 
       <div class="flex flex-col">
         @foreach ($navigation as $link)
-          <a href="{{ $link['url'] }}" @click="mobileMenuOpen = false" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ $link['label'] }}</a>
+          <a href="{{ $link['url'] }}" data-turbo="true" @click="mobileMenuOpen = false" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ $link['label'] }}</a>
         @endforeach
         <a href="{{ config('marketing.github_url') }}" target="_blank" rel="noopener" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ __('GitHub') }}</a>
 
         @guest
-          <a href="{{ route('login') }}" class="py-3.5 text-base font-semibold text-ink">{{ __('Sign in') }}</a>
+          <a href="{{ route('login') }}" data-turbo="true" class="py-3.5 text-base font-semibold text-ink">{{ __('Sign in') }}</a>
         @endguest
       </div>
     </div>

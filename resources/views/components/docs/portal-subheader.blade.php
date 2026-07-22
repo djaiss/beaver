@@ -6,7 +6,7 @@
 
 <div class="sticky top-16 z-40 border-b border-gray-200 bg-white">
   <div class="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-5 sm:px-8">
-    <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $urlLocale]) }}" class="flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-900">
+    <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $urlLocale]) }}" data-turbo="true" class="flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-900">
       <x-lucide-book-open class="h-4 w-4" />
       {{ __('Documentation') }}
     </a>
@@ -42,6 +42,7 @@
         @foreach ($languageUrls as $language)
           <a
             href="{{ $language['url'] }}"
+            data-turbo="true"
             class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-gray-900 hover:bg-gray-50 {{ $language['current'] ? 'bg-gray-50' : '' }}"
           >
             <span class="w-6 font-mono text-[11px] font-semibold text-gray-500">{{ $language['code'] }}</span>
