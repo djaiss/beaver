@@ -21,15 +21,17 @@ class DocsPortalHomeController extends Controller
     ) {}
 
     /**
-     * The locale home page, rendered from the top level Markdown file.
+     * The locale home page, rendered from the top level Markdown file. The
+     * locale is resolved from the URL prefix by the marketing.locale
+     * middleware, so it reads it from the app locale.
      */
-    public function show(string $locale): View
+    public function show(): View
     {
-        $locale = $this->resolveLocale($locale);
+        $locale = app()->getLocale();
 
         $resolved = $this->portal->home($locale);
 
-        if ($resolved === null) {
+        if ($resolved === null || $resolved['fallback']) {
             throw new NotFoundHttpException;
         }
 

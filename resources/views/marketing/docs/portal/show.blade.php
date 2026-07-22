@@ -27,10 +27,6 @@
 
       <x-docs.portal-subheader :locale="$locale" :urlLocale="$urlLocale" :languageUrls="$languageUrls" />
 
-      @if ($fallback)
-        <x-docs.portal-fallback-banner :locale="$locale" />
-      @endif
-
       <div class="mx-auto flex max-w-[1440px]">
         <x-docs.portal-sidebar :navigation="$navigation" :locale="$locale" :currentId="$page['id']" />
 

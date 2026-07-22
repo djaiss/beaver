@@ -19,9 +19,11 @@ class ApiDocsMarkdownController extends Controller
     }
 
     /**
-     * Get one section of the API reference as markdown.
+     * Get one section of the API reference as markdown. The {locale} URL prefix
+     * is absorbed by the parameter of the same name; the API reference itself is
+     * not translated.
      */
-    public function show(ApiDocumentation $documentation, string $section): Response
+    public function show(ApiDocumentation $documentation, string $locale, string $section): Response
     {
         $sectionData = $documentation->section($section);
 

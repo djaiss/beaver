@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Marketing\Docs\Concerns;
 
 use Illuminate\View\View;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Shared by the documentation portal controllers, which all resolve a page
- * and render it inside the same three panel shell.
+ * and render it inside the same three panel shell. The app locale is already
+ * set from the URL prefix by the marketing.locale middleware.
  */
 trait RendersDocumentationPage
 {
@@ -18,10 +18,6 @@ trait RendersDocumentationPage
      */
     private function renderPage(string $locale, array $resolved): View
     {
-        // Render the whole page (content and chrome) in the documentation
-        // locale, so a French page reads French end to end.
-        app()->setLocale($locale);
-
         $page = $resolved['page'];
         $parts = $this->parser->split(file_get_contents($page['path']));
         $rendered = $this->parser->render($parts['body'], $locale);
@@ -34,7 +30,6 @@ trait RendersDocumentationPage
             'page' => $page,
             'content' => $rendered['html'],
             'toc' => $rendered['toc'],
-            'fallback' => $resolved['fallback'],
             'languageUrls' => $this->languageUrls($locale, $page),
         ]);
     }
@@ -74,20 +69,5 @@ trait RendersDocumentationPage
     private function pageExistsIn(string $locale, array $page): bool
     {
         return collect($this->portal->pagesFor($locale))->contains('id', $page['id']);
-    }
-
-    /**
-     * Translate the URL language prefix (fr) into the internal locale key
-     * (fr_FR), 404ing when the prefix is unknown or not yet available.
-     */
-    private function resolveLocale(string $urlLocale): string
-    {
-        $locale = $this->portal->localeForUrl($urlLocale);
-
-        if ($locale === null || ! $this->portal->hasLocale($locale)) {
-            throw new NotFoundHttpException;
-        }
-
-        return $locale;
     }
 }

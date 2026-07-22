@@ -23,7 +23,7 @@
               [
                   'title' => __('Resources'),
                   'links' => [
-                      ['label' => __('Documentation'), 'url' => route('marketing.docs.portal.index')],
+                      ['label' => __('Documentation'), 'url' => route('marketing.docs.portal.home.show')],
                       ['label' => __('API reference'), 'url' => route('marketing.docs.api.index')],
                       ['label' => __('FAQ'), 'url' => route('marketing.index') . '#faq'],
                       ['label' => __('Changelog'), 'url' => $github . '/releases'],

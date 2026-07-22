@@ -75,8 +75,8 @@ set `RUN_MIGRATIONS=false` and run `docker compose exec app php artisan migrate
 --force` when you choose.
 
 Every container also runs `php artisan docs:cache` on boot, which builds the
-documentation portal index (served at `/{locale}`, e.g. `/en`) from the
-Markdown files so pages render without scanning the disk on each request.
+documentation portal index (served at `/{locale}/docs`, e.g. `/en/docs`) from
+the Markdown files so pages render without scanning the disk on each request.
 
 ### One-off step after upgrading to the photos screen
 

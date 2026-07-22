@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use App\Models\Valuation;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,21 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->registerAuthorMacro();
         $this->registerMorphMap();
+        $this->registerDefaultUrlLocale();
+    }
+
+    /**
+     * Every public URL carries a language prefix (getkollek.com/en/...), so the
+     * {locale} route parameter needs a value even when a URL is generated
+     * outside a localized request, such as a "back to the site" link on an auth
+     * page. Default it to the default locale's prefix; the marketing locale
+     * middleware overrides it per request to the locale actually being viewed.
+     */
+    private function registerDefaultUrlLocale(): void
+    {
+        $default = config('docs.default_locale');
+
+        URL::defaults(['locale' => config("docs.locales.{$default}.url", $default)]);
     }
 
     /**
