@@ -18,7 +18,7 @@ function instanceAdminPages(): array
         'instance-admin',
         'instance-admin/accounts',
         'instance-admin/support',
-        'instance-admin/reviews',
+        'instance-admin/marketing/testimonials',
     ];
 }
 
@@ -101,10 +101,10 @@ it('shows an account to an instance administrator', function () {
     $response->assertViewIs('app.instance.accounts.show');
 });
 
-it('says that reviews are not built yet', function () {
+it('opens the marketing testimonials moderation screen', function () {
     $monica = $this->createUser(['is_instance_administrator' => true]);
 
-    $this->actingAs($monica)->get('instance-admin/reviews')->assertOk()->assertSee('Soon');
+    $this->actingAs($monica)->get('instance-admin/marketing/testimonials')->assertOk()->assertSee('Testimonials');
 });
 
 it('hides every page from a user who does not administer the instance', function () {

@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CollectionSeeder::class,
+            TestimonialSeeder::class,
         ]);
 
         $this->displayLoginInfo();

@@ -101,6 +101,10 @@ enum UserActionEnum: string
     case InstanceAccountDeletion = 'instance_account_deleted';
     case InstanceUserDeletion = 'instance_user_deleted';
     case InstanceAdministratorUpdate = 'instance_administrator_updated';
+    case TestimonialSubmitted = 'testimonial_submitted';
+    case TestimonialWithdrawn = 'testimonial_withdrawn';
+    case TestimonialPublished = 'testimonial_published';
+    case TestimonialRejected = 'testimonial_rejected';
 
     public function translationKey(): string
     {
@@ -200,6 +204,10 @@ enum UserActionEnum: string
             self::InstanceAccountDeletion => 'Deleted the account called :name from the instance administration',
             self::InstanceUserDeletion => 'Deleted the user :email from the instance administration',
             self::InstanceAdministratorUpdate => 'Instance administration :status for :email',
+            self::TestimonialSubmitted => 'Submitted a testimonial for the marketing site',
+            self::TestimonialWithdrawn => 'Withdrew their testimonial from the marketing site',
+            self::TestimonialPublished => 'Published the testimonial by :name on the marketing site',
+            self::TestimonialRejected => 'Rejected the testimonial by :name',
         };
     }
 }

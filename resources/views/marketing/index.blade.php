@@ -394,6 +394,36 @@
     </div>
   </section>
 
+  @if ($testimonialCount > 0)
+  {{-- TESTIMONIALS. Sourced from the database (the one section on this otherwise
+       hardcoded page that is), and hidden entirely when nothing is published. --}}
+  <section id="testimonials" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
+    <div class="mx-auto max-w-[560px] text-center">
+      <p class="mb-3.5 text-[13px] font-semibold tracking-[0.6px] text-muted-soft uppercase">{{ __('Loved by collectors') }}</p>
+      <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">{{ __('Straight from the wall.') }}</h2>
+      <p class="mx-auto mt-4.5 max-w-[520px] text-[17px] text-muted">{{ __('Real notes from people who catalog their world in :name.', ['name' => config('app.name')]) }}</p>
+    </div>
+
+    {{-- A masonry-ish wall of notes. Each card tilts a touch, cycling through a
+         small set of angles so the wall reads as pinned-up rather than gridded. --}}
+    <div class="mt-12 gap-5 sm:columns-2 lg:columns-3">
+      @php
+        $tilts = ['-rotate-2', 'rotate-1', '-rotate-1', 'rotate-2', '-rotate-1', 'rotate-1'];
+      @endphp
+      @foreach ($testimonials as $testimonial)
+        <x-marketing.testimonial-note :testimonial="$testimonial" :tilt="$tilts[$loop->index % count($tilts)]" />
+      @endforeach
+    </div>
+
+    <div class="mt-8 flex justify-center">
+      <a href="{{ route('marketing.testimonials.index') }}" data-turbo="true" class="inline-flex h-12 items-center gap-x-2 rounded-md border border-hairline bg-canvas px-6 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">
+        {{ __('Read all :count testimonials', ['count' => number_format($testimonialCount)]) }}
+        @svg('lucide-arrow-right', 'size-4')
+      </a>
+    </div>
+  </section>
+  @endif
+
   {{-- OPEN SOURCE --}}
   <section id="opensource" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="rounded-xl bg-[#101010] p-6 text-white sm:p-12 lg:p-16">

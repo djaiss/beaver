@@ -8,6 +8,7 @@ use App\Http\Controllers\Marketing\Docs\DocsPortalController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
 use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\PricingController;
+use App\Http\Controllers\Marketing\TestimonialsController;
 use Illuminate\Support\Facades\Route;
 
 // The whole public site lives behind a language prefix (getkollek.com/en/...),
@@ -33,6 +34,8 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
         Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
 
         Route::get('pricing', [PricingController::class, 'index'])->name('marketing.pricing.index');
+
+        Route::get('testimonials', [TestimonialsController::class, 'index'])->name('marketing.testimonials.index');
 
         Route::get('docs/api', [ApiDocsController::class, 'index'])->name('marketing.docs.api.index');
         Route::get('docs/api.md', [ApiDocsMarkdownController::class, 'index'])->name('marketing.docs.api.markdown.index');

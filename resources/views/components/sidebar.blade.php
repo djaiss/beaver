@@ -45,7 +45,14 @@
             <x-sidebar-link :href="route('instanceAdmin.index')" :active="request()->routeIs('instanceAdmin.index')" icon="layout-grid">Overview</x-sidebar-link>
             <x-sidebar-link :href="route('instanceAdmin.accounts.index')" :active="request()->routeIs('instanceAdmin.accounts.*')" icon="users">Accounts & users</x-sidebar-link>
             <x-sidebar-link :href="route('instanceAdmin.support.index')" :active="request()->routeIs('instanceAdmin.support.*')" icon="message-square">Support tickets</x-sidebar-link>
-            <x-sidebar-link :href="route('instanceAdmin.reviews.index')" :active="request()->routeIs('instanceAdmin.reviews.*')" icon="star">User reviews</x-sidebar-link>
+        </nav>
+
+        @php
+            $pendingTestimonials = \App\Models\Testimonial::query()->where('status', \App\Enums\TestimonialStatus::InReview)->count();
+        @endphp
+        <nav class="-mt-2 flex flex-col gap-0.5">
+            <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">Marketing</p>
+            <x-sidebar-link :href="route('instanceAdmin.marketing.testimonials.index')" :active="request()->routeIs('instanceAdmin.marketing.testimonials.*')" icon="quote" :count="$pendingTestimonials > 0 ? $pendingTestimonials : null">Testimonials</x-sidebar-link>
         </nav>
     @elseif ($isProfile)
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
@@ -82,6 +89,13 @@
             <x-sidebar-link :href="route('settings.itemConditions.index')" :active="request()->routeIs('settings.itemConditions.*')" icon="gauge">{{ __('Item conditions') }}</x-sidebar-link>
             <x-sidebar-link :href="route('settings.photos.index')" :active="request()->routeIs('settings.photos.*')" icon="image">{{ __('Photos') }}</x-sidebar-link>
         </nav>
+
+        @if (config('marketing.show'))
+            <nav class="-mt-2 flex flex-col gap-0.5">
+                <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Marketing') }}</p>
+                <x-sidebar-link :href="route('settings.testimonials.index')" :active="request()->routeIs('settings.testimonials.*')" icon="quote">{{ __('Testimonials') }}</x-sidebar-link>
+            </nav>
+        @endif
     @elseif ($isSupport)
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">
             @svg('lucide-arrow-left', 'size-4')
