@@ -70,7 +70,7 @@ On the valuation, she attaches the appraiser's report as a document of type **Ap
 :::
 ::::
 
-A document can be an uploaded file (PDF, images, Word, Excel, CSV, or plain text, up to 20 MB) or an external link if the paperwork lives elsewhere. Attaching each document to the record it proves, rather than loosely to the copy, is what makes the story auditable later.
+A document can be an uploaded file (PDF, images, Word, Excel, CSV, or plain text, up to 12 MB) or an external link if the paperwork lives elsewhere. Attaching each document to the record it proves, rather than loosely to the copy, is what makes the story auditable later.
 
 ## Step 6: Lend it to an exhibition, and get it back
 

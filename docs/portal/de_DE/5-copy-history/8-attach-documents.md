@@ -26,7 +26,7 @@ Hänge es am spezifischsten Ort an. Ein an seiner Kauf-Transaktion angehängter 
 
 Ein Dokument ist entweder eine **hochgeladene Datei** oder ein **externer Link**.
 
-Uploads akzeptieren PDFs, gängige Bildformate (einschließlich HEIC-Fotos vom Handy), Word- und Excel-Dateien, CSV und reinen Text, bis zu 20 MB pro Datei. Gespeicherte Dateien sind privat: Sie werden nur an angemeldete Mitglieder deines Kontos ausgeliefert, nie über eine öffentliche Adresse.
+Uploads akzeptieren PDFs, gängige Bildformate (einschließlich HEIC-Fotos vom Handy), Word- und Excel-Dateien, CSV und reinen Text, bis zu 12 MB pro Datei. Gespeicherte Dateien sind privat: Sie werden nur an angemeldete Mitglieder deines Kontos ausgeliefert, nie über eine öffentliche Adresse.
 
 Ein externer Link verweist auf etwas, das anderswo lebt, etwa ein Auktionsangebot oder einen Archiveintrag eines Herstellers. KolleK speichert die Adresse, nicht eine Kopie der Seite.
 
