@@ -9,6 +9,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
   <body class="min-h-screen bg-page font-sans text-body antialiased">
+    @php($isInstance = request()->routeIs('instanceAdmin.*'))
+
     {{-- When a page supplies a `topNav` slot (e.g. the collection detail's table view), the
          chrome flips: the left sidebar is dropped and the slot renders as a full-width top bar. --}}
     <div x-data="{ sidebarOpen: false }" class="min-h-screen lg:flex">
@@ -29,6 +31,11 @@
       <div class="flex min-w-0 flex-1 flex-col">
         @isset($topNav)
           {{ $topNav }}
+        @elseif ($isInstance)
+          {{-- The instance admin panel carries its own top bar across every screen,
+               and it folds in the mobile menu trigger, so it stands in for the plain
+               mobile bar here. --}}
+          <x-instance.top-bar />
         @else
           {{-- Mobile top bar --}}
           <div class="flex items-center gap-3 border-b border-hairline bg-page px-4 py-3 lg:hidden">
