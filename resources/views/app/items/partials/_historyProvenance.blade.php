@@ -134,7 +134,7 @@
       </div>
     </div>
   @empty
-    <div class="rounded-xl border border-hairline">
+    <div x-show="! addingEvent" class="rounded-xl border border-hairline">
       <x-empty-state data-test="no-provenance-{{ $selectedCopy->id }}">
         <x-slot:icon>
           <x-lucide-scroll-text class="size-6 text-muted" />

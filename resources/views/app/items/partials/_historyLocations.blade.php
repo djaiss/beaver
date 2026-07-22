@@ -114,7 +114,7 @@
         @endif
       </div>
     @empty
-      <div class="rounded-xl border border-hairline">
+      <div x-show="! moving" class="rounded-xl border border-hairline">
         <x-empty-state data-test="no-location-{{ $selectedCopy->id }}">
           <x-slot:icon>
             <x-lucide-map-pin class="size-6 text-muted" />

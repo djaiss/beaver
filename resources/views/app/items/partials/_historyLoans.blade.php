@@ -153,7 +153,7 @@
         </div>
       </div>
     @empty
-      <div class="rounded-xl border border-hairline">
+      <div x-show="! adding" class="rounded-xl border border-hairline">
         <x-empty-state data-test="no-loans-{{ $selectedCopy->id }}">
           <x-slot:icon>
             <x-lucide-arrow-left-right class="size-6 text-muted" />
