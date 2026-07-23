@@ -19,10 +19,27 @@ it('shows the features hub with every feature area', function () {
 });
 
 it('shows a single feature page for a known slug', function () {
+    $this->get(route('marketing.features.show', 'photos-and-browsing'))
+        ->assertOk()
+        ->assertSee('Photos & browsing')
+        ->assertSee('Manage covers, photo libraries, and visual browsing.');
+});
+
+it('renders the dedicated data-ownership page with its own copy', function () {
     $this->get(route('marketing.features.show', 'data-ownership'))
         ->assertOk()
-        ->assertSee('Data ownership')
-        ->assertSee('Self-host, encrypt, back up, and keep ownership of your data.');
+        ->assertSee('Keep your collection where you can point at it.')
+        ->assertSee('Sensitive details are not stored as plain text.')
+        ->assertSee('Backups are real, not a decorative button.')
+        // The real volume/env names an operator backs up.
+        ->assertSee('db-data')
+        ->assertSee('storage-data')
+        ->assertSee('APP_KEY')
+        // The claim boundary: no end-to-end encryption, no in-app backup button.
+        ->assertSee('You need end-to-end encryption where the operator cannot access application data.')
+        ->assertSee('You expect an automated in-app backup button.')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated copy-history page with its own copy', function () {
