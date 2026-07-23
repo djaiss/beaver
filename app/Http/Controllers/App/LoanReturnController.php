@@ -45,6 +45,12 @@ class LoanReturnController extends Controller
             itemConditionInId: $this->toId($validated['item_condition_in_id'] ?? null),
         )->execute();
 
+        if ($request->input('from') === 'loans') {
+            return to_route('loans.detail', ['direction' => $loanModel->direction->slug(), 'tab' => 'all', 'loan' => $loanModel->id])
+                ->with('status', __('Loan marked as returned'))
+                ->with('status_description', __('The copy is back in your custody.'));
+        }
+
         return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
             ->with('status', __('Loan marked as returned'))
             ->with('status_description', __('The copy is back in your custody.'));

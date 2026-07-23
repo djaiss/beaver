@@ -182,6 +182,22 @@ class Loan extends Model
     }
 
     /**
+     * Whether the loan is out and past its due date, whether or not the scheduled
+     * overdue check has run yet. A loan carrying the stored Overdue status counts,
+     * and so does one still out whose due date slipped past between checks.
+     */
+    public function isEffectivelyOverdue(): bool
+    {
+        if ($this->status === LoanStatus::Overdue) {
+            return true;
+        }
+
+        return $this->status->hasLeftCustody()
+            && $this->due_at !== null
+            && $this->due_at->isBefore(Carbon::today());
+    }
+
+    /**
      * Whether the loan is still open but has no due date, so it never surfaces on
      * a due-date view and can quietly drift out of sight.
      */

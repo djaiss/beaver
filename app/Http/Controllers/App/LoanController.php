@@ -39,7 +39,7 @@ class LoanController extends Controller
 
         $validated = $request->validate($this->rules());
 
-        new CreateLoan(
+        $loan = new CreateLoan(
             user: $request->user(),
             copy: $copyModel,
             direction: LoanDirection::from($validated['direction']),
@@ -56,9 +56,10 @@ class LoanController extends Controller
             includeInProvenance: $request->boolean('include_in_provenance'),
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
-            ->with('status', __('Loan recorded'))
-            ->with('status_description', __('The loan was logged in the history of this copy.'));
+        return $this->redirectToLoansSection($request, $loan, __('Loan recorded'), __('The loan was logged in the history of this copy.'))
+            ?? to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
+                ->with('status', __('Loan recorded'))
+                ->with('status_description', __('The loan was logged in the history of this copy.'));
     }
 
     public function update(Request $request, int $collection, int $item, int $copy, int $loan): RedirectResponse
@@ -87,9 +88,10 @@ class LoanController extends Controller
             includeInProvenance: $request->boolean('include_in_provenance'),
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
-            ->with('status', __('Loan updated'))
-            ->with('status_description', __('Your changes to the loan were saved.'));
+        return $this->redirectToLoansSection($request, $loanModel->refresh(), __('Loan updated'), __('Your changes to the loan were saved.'))
+            ?? to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
+                ->with('status', __('Loan updated'))
+                ->with('status_description', __('Your changes to the loan were saved.'));
     }
 
     public function destroy(Request $request, int $collection, int $item, int $copy, int $loan): RedirectResponse
@@ -99,14 +101,37 @@ class LoanController extends Controller
         $copyModel = $this->findCopy($itemModel, $copy);
         $loanModel = $this->findLoan($copyModel, $loan);
 
+        $direction = $loanModel->direction;
+
         new DestroyLoan(
             user: $request->user(),
             loan: $loanModel,
         )->execute();
 
+        if ($request->input('from') === 'loans') {
+            return to_route('loans.show', ['direction' => $direction->slug(), 'tab' => 'all'])
+                ->with('status', __('Loan deleted'))
+                ->with('status_description', __('The loan was removed from the history of this copy.'));
+        }
+
         return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
             ->with('status', __('Loan deleted'))
             ->with('status_description', __('The loan was removed from the history of this copy.'));
+    }
+
+    /**
+     * When a loan form is submitted from the Loans section rather than the copy's
+     * history tab, send the user back to that loan's drawer instead of the item.
+     */
+    private function redirectToLoansSection(Request $request, Loan $loan, string $status, string $description): ?RedirectResponse
+    {
+        if ($request->input('from') !== 'loans') {
+            return null;
+        }
+
+        return to_route('loans.detail', ['direction' => $loan->direction->slug(), 'tab' => 'all', 'loan' => $loan->id])
+            ->with('status', $status)
+            ->with('status_description', $description);
     }
 
     private function findCopy(Item $item, int $copy): Copy

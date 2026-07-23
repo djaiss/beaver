@@ -234,7 +234,7 @@ class LoanDashboard
      */
     private function overdue(): Collection
     {
-        return $this->loans->filter(fn (Loan $loan): bool => $this->isEffectivelyOverdue($loan));
+        return $this->loans->filter(fn (Loan $loan): bool => $loan->isEffectivelyOverdue());
     }
 
     /**
@@ -291,6 +291,7 @@ class LoanDashboard
         return match ($status) {
             'overdue' => $loans->filter(fn (Loan $loan): bool => $this->isEffectivelyOverdue($loan)),
             'due-soon' => $this->dueSoon(),
+            'open' => $loans->filter(fn (Loan $loan): bool => $loan->status->isOpen()),
             default => $loans->filter(fn (Loan $loan): bool => $loan->status->value === $status),
         };
     }

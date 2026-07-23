@@ -25,6 +25,30 @@ enum LoanDirection: string
     }
 
     /**
+     * The kebab-case slug that carries the direction in a URL path, keeping the
+     * loans section navigable without query strings.
+     */
+    public function slug(): string
+    {
+        return match ($this) {
+            self::Outgoing => 'lent-out',
+            self::Incoming => 'borrowed-in',
+        };
+    }
+
+    /**
+     * Resolve a direction from its URL slug.
+     */
+    public static function fromSlug(string $slug): self
+    {
+        return match ($slug) {
+            'lent-out' => self::Outgoing,
+            'borrowed-in' => self::Incoming,
+            default => throw new \ValueError("Unknown loan direction slug [{$slug}]."),
+        };
+    }
+
+    /**
      * @return array<string, string>
      */
     public static function options(): array

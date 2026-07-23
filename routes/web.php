@@ -37,6 +37,7 @@ use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LoanController;
 use App\Http\Controllers\App\LoanReturnController;
+use App\Http\Controllers\App\LoansController;
 use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\LocationHistoryController;
 use App\Http\Controllers\App\MaintenanceRecordController;
@@ -114,6 +115,18 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('series', [SeriesController::class, 'index'])->name('series.index');
     Route::get('series/{series}', [SeriesController::class, 'show'])->where('series', '[1-9][0-9]*')->name('series.show');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
+
+    // loans — the account-wide custody dashboard. Reading it is open to any role;
+    // the create, return, edit and delete forms post to the copy-scoped routes
+    // below, which gate on the owner or editor role. Direction, the open tab and
+    // the selected loan all live in the path so every view has its own url; only
+    // the filter bar and search use the query string.
+    Route::get('loans', [LoansController::class, 'index'])->name('loans.index');
+    Route::get('loans/{direction}/new', [LoansController::class, 'new'])->where('direction', 'lent-out|borrowed-in')->name('loans.new');
+    Route::get('loans/{direction}/export', [LoansController::class, 'export'])->where('direction', 'lent-out|borrowed-in')->name('loans.export');
+    Route::get('loans/{direction}/{tab}/{loan}', [LoansController::class, 'detail'])->where(['direction' => 'lent-out|borrowed-in', 'tab' => 'all|due|risk|by-party|deposits|timeline', 'loan' => '[1-9][0-9]*'])->name('loans.detail');
+    Route::get('loans/{direction}/{tab?}', [LoansController::class, 'show'])->where(['direction' => 'lent-out|borrowed-in', 'tab' => 'all|due|risk|by-party|deposits|timeline'])->name('loans.show');
+
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 
     // collections — owners and editors may create new collections
