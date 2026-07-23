@@ -42,6 +42,13 @@ class LoanResource extends JsonResource
                 'created_at' => $this->created_at->timestamp,
                 'updated_at' => $this->updated_at?->timestamp,
             ],
+            // The object a loan is about, filled in only when the caller asked for
+            // the account-wide list and the relations were eager loaded.
+            'context' => [
+                'item_name' => $this->relationLoaded('copy') && $this->copy->relationLoaded('item') ? $this->copy->item->name : null,
+                'copy_identifier' => $this->relationLoaded('copy') ? $this->copy->identifier : null,
+                'collection_name' => $this->relationLoaded('copy') && $this->copy->relationLoaded('item') && $this->copy->item->relationLoaded('collection') ? $this->copy->item->collection->name : null,
+            ],
             'links' => [
                 'self' => route('api.copies.loans.show', [$this->copy_id, $this->id]),
             ],

@@ -33,6 +33,34 @@ class LoanController extends Controller
         return LoanResource::collection($loans);
     }
 
+    /**
+     * Every loan in the account, across all copies, newest first. Optional
+     * `direction` and `status` filters narrow the list. The web app's Loans
+     * section reads the same data.
+     */
+    public function all(Request $request): AnonymousResourceCollection
+    {
+        $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
+
+        $query = Loan::query()
+            ->forAccount($request->user()->account)
+            ->with(['copy.item.collection', 'itemConditionOut', 'itemConditionIn', 'documents'])
+            ->orderByDesc('loaned_at')
+            ->orderByDesc('id');
+
+        $direction = $request->query('direction');
+        if (is_string($direction) && in_array($direction, array_column(LoanDirection::cases(), 'value'), true)) {
+            $query->where('direction', $direction);
+        }
+
+        $status = $request->query('status');
+        if (is_string($status) && in_array($status, array_column(LoanStatus::cases(), 'value'), true)) {
+            $query->where('status', $status);
+        }
+
+        return LoanResource::collection($query->paginate($perPage));
+    }
+
     public function show(Request $request): JsonResponse
     {
         $loan = $this->findLoan($request);
