@@ -4,7 +4,6 @@
     // out of this list.
     $navigation = [
         ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
-        ['label' => __('Roadmap'), 'url' => route('marketing.index') . '#roadmap'],
         ['label' => __('Docs'), 'url' => route('marketing.docs.portal.home.show')],
         ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
     ];

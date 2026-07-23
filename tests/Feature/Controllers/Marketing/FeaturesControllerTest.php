@@ -25,6 +25,28 @@ it('shows a single feature page for a known slug', function () {
         ->assertSee('Distinguish, locate, and understand every physical item you own.');
 });
 
+it('renders the dedicated collaboration page with its own copy', function () {
+    $this->get(route('marketing.features.show', 'collaboration'))
+        ->assertOk()
+        ->assertSee('Everyone can help. Not everyone needs the big red button.')
+        ->assertSee('Three roles. No interpretive dance.')
+        ->assertSee('Who changed it, and when.')
+        // The transparency footer keeps the candid caveat about public links.
+        ->assertSee('Visibility settings exist, but public links do not yet.')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
+});
+
+it('reflects the real role gates in the permissions matrix', function () {
+    $response = $this->get(route('marketing.features.show', 'collaboration'))->assertOk();
+
+    // Inviting members is owner only; deleting collections is open to editors too.
+    $response->assertSee('Invite & manage members')
+        ->assertSee('Create & delete collections')
+        // Billing is not shipped, so the page claims account settings instead.
+        ->assertDontSee('Billing');
+});
+
 it('returns not found for an unknown feature slug', function () {
     $this->get(route('marketing.features.show', 'not-a-real-feature'))->assertNotFound();
 });
