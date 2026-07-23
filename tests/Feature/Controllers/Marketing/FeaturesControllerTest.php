@@ -25,6 +25,22 @@ it('shows a single feature page for a known slug', function () {
         ->assertSee('Self-host, encrypt, back up, and keep ownership of your data.');
 });
 
+it('renders the dedicated self-hosting page with its own copy', function () {
+    $this->get(route('marketing.features.show', 'self-hosting'))
+        ->assertOk()
+        ->assertSee('Your own collection app. On your own terms.')
+        ->assertSee('The supported path is Docker.')
+        ->assertSee('Five parts. That is the whole cast.')
+        // The architecture is grounded in the real compose stack.
+        ->assertSee('db-data → /var/lib/mysql')
+        ->assertSee('storage-data → /var/www/html/storage')
+        // No automated backup command is claimed, because none ships.
+        ->assertSee('No automated backup command ships yet.', escape: false)
+        ->assertDontSee('backup:run')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
+});
+
 it('renders the dedicated collection-insights page with its own copy', function () {
     $this->get(route('marketing.features.show', 'collection-insights'))
         ->assertOk()
