@@ -19,10 +19,27 @@ it('shows the features hub with every feature area', function () {
 });
 
 it('shows a single feature page for a known slug', function () {
+    $this->get(route('marketing.features.show', 'security'))
+        ->assertOk()
+        ->assertSee('Security')
+        ->assertSee('Encryption at rest, 2FA, magic links, recovery codes, and alerts.');
+});
+
+it('renders the dedicated api page with its own copy', function () {
     $this->get(route('marketing.features.show', 'api'))
         ->assertOk()
-        ->assertSee('API')
-        ->assertSee('Build on your catalogue with the complete JSON API and personal keys.');
+        ->assertSee('Your collection can leave the app. Politely.')
+        ->assertSee('Documentation that comes from the product.')
+        ->assertSee('An escape hatch, on purpose.')
+        // The real API conventions are shown, not the design placeholders.
+        ->assertSee('/api/items')
+        ->assertSee('60 requests / min per user')
+        ->assertSee('Bearer-token authentication')
+        // The claim boundary: webhooks register and sign, but do not deliver yet.
+        ->assertSee('Webhooks: honest status report.')
+        ->assertSee('You need event-driven webhooks today.')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated protection-and-care page with its own copy', function () {
