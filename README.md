@@ -4,6 +4,13 @@
 
 **The open source home for everything you collect.**
 
+<p align="center">
+ <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/github/app_dark_mode.png.png">
+  <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="docs/github/app_light_mode.png">
+</picture>
+</p>
+
 KolleK is a self hostable web application for cataloguing collections of any kind, from comics and vinyl records to coins, watches, and wine. Organize your items, track every physical copy you own, record what you paid and what it is worth, and keep the whole history in one private, encrypted place.
 
 [![Tests](https://github.com/djaiss/beaver/actions/workflows/tests.yml/badge.svg)](https://github.com/djaiss/beaver/actions/workflows/tests.yml)
