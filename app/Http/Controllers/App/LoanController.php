@@ -129,7 +129,7 @@ class LoanController extends Controller
             return null;
         }
 
-        return to_route('loans.detail', ['direction' => $loan->direction->slug(), 'tab' => 'all', 'loan' => $loan->id])
+        return to_route('loans.show', ['direction' => $loan->direction->slug(), 'tab' => 'all', 'loan' => $loan->id])
             ->with('status', $status)
             ->with('status_description', $description);
     }

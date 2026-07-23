@@ -23,7 +23,10 @@ class ItemConditionFactory extends Factory
         return [
             'account_id' => Account::factory(),
             'name' => fake()->randomElement(['New', 'Like new', 'Used', 'Worn', 'Damaged']),
-            'position' => fake()->numberBetween(1, 5),
+            // Zero by default so factory-made conditions keep their insertion order
+            // (the relationship falls back to id); tests that exercise ranking set
+            // an explicit position.
+            'position' => 0,
         ];
     }
 

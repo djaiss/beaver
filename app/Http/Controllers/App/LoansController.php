@@ -15,7 +15,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * The account-wide Loans section: an operational dashboard over custody workflows.
@@ -45,21 +44,17 @@ class LoansController extends Controller
     }
 
     /**
-     * Show a direction and tab, with no drawer open.
+     * Show a direction and tab. A loan id opens its detail drawer over the tab,
+     * so the drawer is a real url rather than client state.
      */
-    public function show(Request $request, string $direction, string $tab = 'all'): View
-    {
-        return $this->render($request, LoanDirection::fromSlug($direction), $tab);
-    }
-
-    /**
-     * Show a direction and tab with a loan's detail drawer open over it.
-     */
-    public function detail(Request $request, string $direction, string $tab, int $loan): View
+    public function show(Request $request, string $direction, ?string $tab = null, ?int $loan = null): View
     {
         $loanDirection = LoanDirection::fromSlug($direction);
+        $tab ??= 'all';
 
-        return $this->render($request, $loanDirection, $tab, $this->findLoan($request, $loanDirection, $loan));
+        $selectedLoan = $loan === null ? null : $this->findLoan($request, $loanDirection, $loan);
+
+        return $this->render($request, $loanDirection, $tab, $selectedLoan);
     }
 
     /**
@@ -68,40 +63,6 @@ class LoansController extends Controller
     public function new(Request $request, string $direction): View
     {
         return $this->render($request, LoanDirection::fromSlug($direction), 'all', showCreate: true);
-    }
-
-    /**
-     * Download a "what is currently out" report for the direction as CSV.
-     */
-    public function export(Request $request, string $direction): StreamedResponse
-    {
-        $loanDirection = LoanDirection::fromSlug($direction);
-        $dashboard = new LoanDashboard($request->user()->account, $loanDirection);
-
-        $rows = $dashboard->filtered(status: 'open');
-
-        $filename = 'loans-'.$loanDirection->slug().'-'.now()->format('Y-m-d').'.csv';
-
-        return response()->streamDownload(function () use ($rows): void {
-            $handle = fopen('php://output', 'wb');
-
-            fputcsv($handle, ['Item', 'Copy', 'Collection', 'Party', 'Status', 'Loaned on', 'Due', 'Condition out']);
-
-            foreach ($rows as $loan) {
-                fputcsv($handle, [
-                    $loan->copy->item->name,
-                    $loan->copy->identifier ?? '',
-                    $loan->copy->item->collection->name,
-                    $loan->party,
-                    $loan->status->label(),
-                    $loan->loaned_at?->format('Y-m-d') ?? '',
-                    $loan->due_at?->format('Y-m-d') ?? '',
-                    $loan->itemConditionOut?->name ?? '',
-                ]);
-            }
-
-            fclose($handle);
-        }, $filename, ['Content-Type' => 'text/csv']);
     }
 
     /**

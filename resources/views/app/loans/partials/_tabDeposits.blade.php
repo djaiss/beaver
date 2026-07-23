@@ -29,7 +29,7 @@
 
 <div class="overflow-hidden rounded-xl border border-hairline bg-canvas">
   @forelse ($tabData['loans'] as $loan)
-    <a href="{{ route('loans.detail', ['direction' => $direction->slug(), 'tab' => $tab, 'loan' => $loan->id]) }}" data-turbo="true" class="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-canvas">
+    <a href="{{ route('loans.show', ['direction' => $direction->slug(), 'tab' => $tab, 'loan' => $loan->id]) }}" data-turbo="true" class="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-canvas">
       <div class="min-w-0 flex-1">
         <div class="truncate text-sm font-medium text-ink">{{ $loan->copy->item->name }}</div>
         <div class="truncate text-[12px] text-muted">{{ $loan->party }}</div>

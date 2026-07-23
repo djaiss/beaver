@@ -1,5 +1,5 @@
 {{--
-  The loan detail drawer, opened by its own url (loans.detail) and closed by
+  The loan detail drawer, opened by its own url (loans.show) and closed by
   linking back to the list. Custody, not ownership: it lays out who has the copy,
   the dates, the condition it left and came back in, any deposit, its documents and
   provenance, and the dedicated return flow. Editing and deleting run through the

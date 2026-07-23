@@ -49,7 +49,7 @@ it('shows a loan in the detail drawer', function () {
     $loan = Loan::factory()->create(['copy_id' => webLoanCopy($user->account_id)->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active, 'party' => 'The Whitney Museum']);
 
     $this->actingAs($user)
-        ->get(route('loans.detail', ['direction' => 'lent-out', 'tab' => 'all', 'loan' => $loan->id]))
+        ->get(route('loans.show', ['direction' => 'lent-out', 'tab' => 'all', 'loan' => $loan->id]))
         ->assertOk()
         ->assertSee('The Whitney Museum');
 });
@@ -60,7 +60,7 @@ it('does not show another account\'s loan', function () {
     $loan = Loan::factory()->create(['copy_id' => webLoanCopy($other->id)->id, 'direction' => LoanDirection::Outgoing]);
 
     $this->actingAs($user)
-        ->get(route('loans.detail', ['direction' => 'lent-out', 'tab' => 'all', 'loan' => $loan->id]))
+        ->get(route('loans.show', ['direction' => 'lent-out', 'tab' => 'all', 'loan' => $loan->id]))
         ->assertNotFound();
 });
 
@@ -98,7 +98,7 @@ it('exports the open loans as csv', function () {
     $user = $this->createUser();
     Loan::factory()->create(['copy_id' => webLoanCopy($user->account_id)->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
 
-    $response = $this->actingAs($user)->get(route('loans.export', ['direction' => 'lent-out']));
+    $response = $this->actingAs($user)->get(route('loans.export.show', ['direction' => 'lent-out']));
 
     $response->assertOk();
     expect($response->headers->get('content-type'))->toContain('text/csv');

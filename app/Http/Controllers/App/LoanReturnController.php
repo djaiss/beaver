@@ -46,7 +46,7 @@ class LoanReturnController extends Controller
         )->execute();
 
         if ($request->input('from') === 'loans') {
-            return to_route('loans.detail', ['direction' => $loanModel->direction->slug(), 'tab' => 'all', 'loan' => $loanModel->id])
+            return to_route('loans.show', ['direction' => $loanModel->direction->slug(), 'tab' => 'all', 'loan' => $loanModel->id])
                 ->with('status', __('Loan marked as returned'))
                 ->with('status_description', __('The copy is back in your custody.'));
         }

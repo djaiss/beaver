@@ -36,6 +36,7 @@ use App\Http\Controllers\App\ItemPhotoController;
 use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LoanController;
+use App\Http\Controllers\App\LoanExportController;
 use App\Http\Controllers\App\LoanReturnController;
 use App\Http\Controllers\App\LoansController;
 use App\Http\Controllers\App\LocationController;
@@ -123,9 +124,8 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // the filter bar and search use the query string.
     Route::get('loans', [LoansController::class, 'index'])->name('loans.index');
     Route::get('loans/{direction}/new', [LoansController::class, 'new'])->where('direction', 'lent-out|borrowed-in')->name('loans.new');
-    Route::get('loans/{direction}/export', [LoansController::class, 'export'])->where('direction', 'lent-out|borrowed-in')->name('loans.export');
-    Route::get('loans/{direction}/{tab}/{loan}', [LoansController::class, 'detail'])->where(['direction' => 'lent-out|borrowed-in', 'tab' => 'all|due|risk|by-party|deposits|timeline', 'loan' => '[1-9][0-9]*'])->name('loans.detail');
-    Route::get('loans/{direction}/{tab?}', [LoansController::class, 'show'])->where(['direction' => 'lent-out|borrowed-in', 'tab' => 'all|due|risk|by-party|deposits|timeline'])->name('loans.show');
+    Route::get('loans/{direction}/export', [LoanExportController::class, 'show'])->where('direction', 'lent-out|borrowed-in')->name('loans.export.show');
+    Route::get('loans/{direction}/{tab?}/{loan?}', [LoansController::class, 'show'])->where(['direction' => 'lent-out|borrowed-in', 'tab' => 'all|due|risk|by-party|deposits|timeline', 'loan' => '[1-9][0-9]*'])->name('loans.show');
 
     Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
 

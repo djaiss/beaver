@@ -57,7 +57,7 @@
         </div>
 
         <div class="flex items-center gap-2.5">
-          <x-button.secondary :href="route('loans.export', ['direction' => $slug])" data-turbo="false">
+          <x-button.secondary :href="route('loans.export.show', ['direction' => $slug])" data-turbo="false">
             <x-slot:icon>
               <x-lucide-download class="size-4" />
             </x-slot>

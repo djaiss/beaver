@@ -1,7 +1,7 @@
 {{--
   One loan as a clickable row that opens its detail drawer. Custody, not ownership:
   the row shows which exact copy is out, with whom, in what condition it left, and
-  when it is due. Opening the drawer is a real url (loans.detail), so the row is a
+  when it is due. Opening the drawer is a real url (loans.show), so the row is a
   plain link and needs no client state.
 --}}
 @props(['loan', 'direction', 'tab', 'compact' => false])
@@ -29,7 +29,7 @@
 @endphp
 
 <a
-  href="{{ route('loans.detail', ['direction' => $direction->slug(), 'tab' => $tab, 'loan' => $loan->id]) }}"
+  href="{{ route('loans.show', ['direction' => $direction->slug(), 'tab' => $tab, 'loan' => $loan->id]) }}"
   data-turbo="true"
   class="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-canvas"
   data-test="loan-row-{{ $loan->id }}"
