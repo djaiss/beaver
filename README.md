@@ -6,7 +6,7 @@
 
 <p align="center">
  <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/github/app_dark_mode.png.png">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/github/app_dark_mode.png">
   <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="docs/github/app_light_mode.png">
 </picture>
 </p>
