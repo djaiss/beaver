@@ -25,6 +25,24 @@ it('shows a single feature page for a known slug', function () {
         ->assertSee('Self-host, encrypt, back up, and keep ownership of your data.');
 });
 
+it('renders the dedicated copy-history page with its own copy', function () {
+    $this->get(route('marketing.features.show', 'copy-history'))
+        ->assertOk()
+        ->assertSee('Keep the good story. Lose the paper chase.')
+        ->assertSee('Read the big moments, or every last correction.')
+        // Every record type that merges into the timeline is present.
+        ->assertSee('Provenance')
+        ->assertSee('Insurance')
+        ->assertSee('Service')
+        ->assertSee('Loan')
+        ->assertSee('Move')
+        // The interactive control offers both timeline views.
+        ->assertSee('Meaningful')
+        ->assertSee('Complete')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
+});
+
 it('renders the dedicated custom-catalogues page with its own copy', function () {
     $this->get(route('marketing.features.show', 'custom-catalogues'))
         ->assertOk()
