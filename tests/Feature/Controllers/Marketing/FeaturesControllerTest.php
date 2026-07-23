@@ -19,10 +19,26 @@ it('shows the features hub with every feature area', function () {
 });
 
 it('shows a single feature page for a known slug', function () {
+    $this->get(route('marketing.features.show', 'organization'))
+        ->assertOk()
+        ->assertSee('Organization')
+        ->assertSee('Browse visually or compare precisely with tools that scale.');
+});
+
+it('renders the dedicated copy-tracking page with its own copy', function () {
     $this->get(route('marketing.features.show', 'copy-tracking'))
         ->assertOk()
-        ->assertSee('Copy tracking')
-        ->assertSee('Distinguish, locate, and understand every physical item you own.');
+        ->assertSee('Yes, the duplicate is a different creature.')
+        ->assertSee('One clean record. Every real object underneath.')
+        ->assertSee('Choose a copy. The details follow the object.')
+        // Each copy carries its own status, so all three tones appear.
+        ->assertSee('On display')
+        ->assertSee('Stored')
+        ->assertSee('Reading copy')
+        // The transparency footer keeps the candid caveat about title-only lists.
+        ->assertSee('You only need a list of titles.')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated collaboration page with its own copy', function () {
