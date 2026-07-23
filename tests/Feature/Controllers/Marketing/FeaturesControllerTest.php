@@ -18,11 +18,22 @@ it('shows the features hub with every feature area', function () {
         ->assertSee('Security');
 });
 
-it('shows a single feature page for a known slug', function () {
+it('renders the dedicated security page with its own copy', function () {
     $this->get(route('marketing.features.show', 'security'))
         ->assertOk()
-        ->assertSee('Security')
-        ->assertSee('Encryption at rest, 2FA, magic links, recovery codes, and alerts.');
+        ->assertSee('Keep the keys to the collection in good hands.')
+        ->assertSee('A stolen password stops being enough.')
+        ->assertSee('The first hint should come from us.')
+        // The shipped protections.
+        ->assertSee('Two-factor authentication')
+        ->assertSee('Recovery codes')
+        ->assertSee('Magic-link sign-in')
+        ->assertSee('Breached-password check')
+        // The claim boundary: no end-to-end encryption is implied.
+        ->assertSee('You need end-to-end encryption.')
+        ->assertSee('this is not end-to-end encryption')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated api page with its own copy', function () {
