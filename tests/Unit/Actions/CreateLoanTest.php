@@ -17,6 +17,7 @@ use App\Models\ProvenanceEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Validation\ValidationException;
 
 uses(RefreshDatabase::class);
 
@@ -158,4 +159,58 @@ it('logs the creation', function () {
     new CreateLoan(user: $user, copy: $copy, direction: LoanDirection::Outgoing, party: 'A gallery', loanedAt: '2024-01-01')->execute();
 
     Queue::assertPushed(LogUserAction::class, fn (LogUserAction $job): bool => $job->action === UserActionEnum::LoanCreation);
+});
+
+it('blocks a second open outgoing loan on the same copy', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $copy = copyForLoan($user->account_id);
+    Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
+
+    expect(fn () => new CreateLoan(
+        user: $user,
+        copy: $copy,
+        direction: LoanDirection::Outgoing,
+        party: 'The Whitney Museum',
+        loanedAt: '2024-02-01',
+    )->execute())->toThrow(ValidationException::class);
+
+    expect($copy->loans()->count())->toBe(1);
+});
+
+it('allows a new outgoing loan once the previous one is returned', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $copy = copyForLoan($user->account_id);
+    Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Returned]);
+
+    $loan = new CreateLoan(
+        user: $user,
+        copy: $copy,
+        direction: LoanDirection::Outgoing,
+        party: 'A friend',
+        loanedAt: '2024-02-01',
+    )->execute();
+
+    expect($loan)->toBeInstanceOf(Loan::class);
+});
+
+it('allows an incoming loan even when the copy has an open outgoing one', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $copy = copyForLoan($user->account_id);
+    Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
+
+    $loan = new CreateLoan(
+        user: $user,
+        copy: $copy,
+        direction: LoanDirection::Incoming,
+        party: 'A friend',
+        loanedAt: '2024-02-01',
+    )->execute();
+
+    expect($loan)->toBeInstanceOf(Loan::class);
 });

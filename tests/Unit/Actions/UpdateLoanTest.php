@@ -13,6 +13,7 @@ use App\Models\ProvenanceEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Validation\ValidationException;
 
 uses(RefreshDatabase::class);
 
@@ -147,4 +148,41 @@ it('forbids a user who cannot manage the account', function () {
         party: 'A gallery',
         loanedAt: '2024-01-01',
     )->execute())->toThrow(ModelNotFoundException::class);
+});
+
+it('blocks reopening a loan when the copy already has another open outgoing loan', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $copy = copyForLoan($user->account_id);
+    Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
+    $returned = Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Returned]);
+
+    expect(fn () => new UpdateLoan(
+        user: $user,
+        loan: $returned,
+        direction: LoanDirection::Outgoing,
+        status: LoanStatus::Active,
+        party: 'A gallery',
+        loanedAt: '2024-01-01',
+    )->execute())->toThrow(ValidationException::class);
+});
+
+it('lets the same open outgoing loan be saved without clashing with itself', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $copy = copyForLoan($user->account_id);
+    $loan = Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
+
+    $updated = new UpdateLoan(
+        user: $user,
+        loan: $loan,
+        direction: LoanDirection::Outgoing,
+        status: LoanStatus::Active,
+        party: 'A gallery',
+        loanedAt: '2024-01-01',
+    )->execute();
+
+    expect($updated->party)->toBe('A gallery');
 });
