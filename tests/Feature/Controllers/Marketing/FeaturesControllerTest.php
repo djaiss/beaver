@@ -19,10 +19,28 @@ it('shows the features hub with every feature area', function () {
 });
 
 it('shows a single feature page for a known slug', function () {
+    $this->get(route('marketing.features.show', 'api'))
+        ->assertOk()
+        ->assertSee('API')
+        ->assertSee('Build on your catalogue with the complete JSON API and personal keys.');
+});
+
+it('renders the dedicated protection-and-care page with its own copy', function () {
     $this->get(route('marketing.features.show', 'protection-and-care'))
         ->assertOk()
-        ->assertSee('Protection &amp; care', escape: false)
-        ->assertSee('Record insurance, service, condition, and storage context.');
+        ->assertSee('Keep the important details close. Very close.')
+        ->assertSee('Keep cover and value together.')
+        ->assertSee('Know where it went, and whether it came back.')
+        // The record types that live beside the copy.
+        ->assertSee('Insurance')
+        ->assertSee('Maintenance')
+        ->assertSee('Loans')
+        ->assertSee('Provenance &amp; locations', escape: false)
+        // A before/after service record.
+        ->assertSee('Condition before')
+        ->assertSee('Condition after')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated photos-and-browsing page with its own copy', function () {
