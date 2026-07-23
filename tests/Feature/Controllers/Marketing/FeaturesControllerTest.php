@@ -25,6 +25,21 @@ it('shows a single feature page for a known slug', function () {
         ->assertSee('Self-host, encrypt, back up, and keep ownership of your data.');
 });
 
+it('renders the dedicated collection-insights page with its own copy', function () {
+    $this->get(route('marketing.features.show', 'collection-insights'))
+        ->assertOk()
+        ->assertSee('Finally, numbers that know what they are talking about.')
+        ->assertSee('Cost and value are two different numbers.')
+        ->assertSee('Value over time, and everything that shapes it.')
+        // The claim boundary: figures are derived from records, never a live market feed.
+        ->assertSee('Built from your recorded valuations')
+        ->assertSee('You need live market prices supplied automatically.')
+        // An unvalued copy is not a worthless one.
+        ->assertSee('unvalued', escape: false)
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
+});
+
 it('renders the dedicated organization page with its own copy', function () {
     $this->get(route('marketing.features.show', 'organization'))
         ->assertOk()
