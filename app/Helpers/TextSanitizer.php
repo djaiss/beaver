@@ -17,12 +17,16 @@ class TextSanitizer
     /**
      * Remove all HTML and return plain text only.
      * Uses HTMLPurifier with no allowed tags instead of strip_tags.
+     * The purifier HTML-encodes its output, so decode entities to store
+     * real plain text; Blade escapes it again at render time.
      */
     public static function plainText(string $value): string
     {
         $stripped = Purify::config(['HTML.Allowed' => ''])->clean($value);
 
-        return mb_trim($stripped);
+        $decoded = html_entity_decode($stripped, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return mb_trim($decoded);
     }
 
     /**
