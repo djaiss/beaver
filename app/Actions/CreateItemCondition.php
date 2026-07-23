@@ -50,9 +50,15 @@ class CreateItemCondition
 
     private function create(): void
     {
+        // A new condition is appended after the account's existing ones. The
+        // order (best to worst) is what lets a return be flagged as worse than
+        // the copy left in, so a fresh condition starts at the bottom.
+        $position = (int) $this->account->itemConditions()->max('position') + 1;
+
         $this->itemCondition = ItemCondition::query()->create([
             'account_id' => $this->account->id,
             'name' => $this->name,
+            'position' => $position,
         ]);
     }
 

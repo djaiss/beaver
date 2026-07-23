@@ -63,6 +63,16 @@ enum LoanStatus: string
     }
 
     /**
+     * The statuses that count as open, for querying loans still in flight.
+     *
+     * @return list<self>
+     */
+    public static function openCases(): array
+    {
+        return [self::Planned, self::Active, self::Overdue];
+    }
+
+    /**
      * Whether the object has actually left custody under this status.
      *
      * A planned loan has not moved the object yet, so it does not count. Active

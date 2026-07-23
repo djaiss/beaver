@@ -112,12 +112,13 @@ class Account extends Model
 
     /**
      * Get the conditions that belong to the account, excluding the system defaults.
+     * Ordered best to worst so a return can be compared against how the copy left.
      *
      * @return HasMany<ItemCondition, $this>
      */
     public function itemConditions(): HasMany
     {
-        return $this->hasMany(ItemCondition::class);
+        return $this->hasMany(ItemCondition::class)->orderBy('position')->orderBy('id');
     }
 
     /**

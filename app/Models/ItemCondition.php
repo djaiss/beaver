@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property int|null $account_id
  * @property string $name
+ * @property int $position
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -46,6 +47,7 @@ class ItemCondition extends Model
     protected $fillable = [
         'account_id',
         'name',
+        'position',
     ];
 
     /**
@@ -57,6 +59,7 @@ class ItemCondition extends Model
     {
         return [
             'name' => 'encrypted',
+            'position' => 'integer',
         ];
     }
 
@@ -86,5 +89,15 @@ class ItemCondition extends Model
     public function isSystemDefault(): bool
     {
         return $this->account_id === null;
+    }
+
+    /**
+     * Whether this condition ranks worse than another. Conditions are ordered
+     * best to worst by position, so a higher position is a worse state. Used to
+     * flag a copy that came back from a loan in worse shape than it left.
+     */
+    public function isWorseThan(ItemCondition $other): bool
+    {
+        return $this->position > $other->position;
     }
 }

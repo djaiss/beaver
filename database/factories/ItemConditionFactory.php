@@ -23,6 +23,7 @@ class ItemConditionFactory extends Factory
         return [
             'account_id' => Account::factory(),
             'name' => fake()->randomElement(['New', 'Like new', 'Used', 'Worn', 'Damaged']),
+            'position' => fake()->numberBetween(1, 5),
         ];
     }
 

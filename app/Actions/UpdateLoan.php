@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class UpdateLoan
 {
     use GuardsLoanConditions;
+    use GuardsOverlappingLoans;
     use SyncsLoanState;
 
     /**
@@ -74,6 +75,7 @@ class UpdateLoan
         }
 
         $this->guardConditionsBelongToAccount($account, $this->itemConditionOutId, $this->itemConditionInId);
+        $this->guardAgainstOverlappingLoan($this->loan->copy, $this->direction, $this->status, $this->loan->id);
     }
 
     /**
