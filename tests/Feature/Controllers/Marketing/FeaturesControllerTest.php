@@ -19,10 +19,26 @@ it('shows the features hub with every feature area', function () {
 });
 
 it('shows a single feature page for a known slug', function () {
+    $this->get(route('marketing.features.show', 'protection-and-care'))
+        ->assertOk()
+        ->assertSee('Protection &amp; care', escape: false)
+        ->assertSee('Record insurance, service, condition, and storage context.');
+});
+
+it('renders the dedicated photos-and-browsing page with its own copy', function () {
     $this->get(route('marketing.features.show', 'photos-and-browsing'))
         ->assertOk()
-        ->assertSee('Photos & browsing')
-        ->assertSee('Manage covers, photo libraries, and visual browsing.');
+        ->assertSee('A collection should look this good on screen, too.')
+        ->assertSee('One library for every image.')
+        ->assertSee('The details are there when you need them.')
+        // The photo library toolbar offers the cover/extra filters and size sort.
+        ->assertSee('Covers')
+        ->assertSee('Extras')
+        ->assertSee('Largest file')
+        // A photo without an item shows as unassigned.
+        ->assertSee('Unassigned')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated data-ownership page with its own copy', function () {
