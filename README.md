@@ -4,6 +4,13 @@
 
 **The open source home for everything you collect.**
 
+<p align="center">
+ <picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/github/app_dark_mode.png.png">
+  <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="docs/github/app_light_mode.png">
+</picture>
+</p>
+
 KolleK is a self hostable web application for cataloguing collections of any kind, from comics and vinyl records to coins, watches, and wine. Organize your items, track every physical copy you own, record what you paid and what it is worth, and keep the whole history in one private, encrypted place.
 
 [![Tests](https://github.com/djaiss/beaver/actions/workflows/tests.yml/badge.svg)](https://github.com/djaiss/beaver/actions/workflows/tests.yml)
@@ -22,7 +29,6 @@ KolleK is a self hostable web application for cataloguing collections of any kin
 ## Table of contents
 
 - [Overview](#overview)
-- [Screenshots](#screenshots)
 - [Features](#features)
 - [Tech stack](#tech-stack)
 - [Quick start with Docker](#quick-start-with-docker)
@@ -45,17 +51,6 @@ Most collectors end up juggling spreadsheets, notes apps, and their own memory. 
 Every account is a private, multi user workspace. You create collections, describe the kinds of things they hold with your own custom fields, and add items with photos, tags, and physical copies. KolleK tracks the condition, storage location, and value of each copy, keeps a full audit trail of who changed what, and exposes everything through a documented JSON API. Sensitive data is encrypted at rest.
 
 It is built to be run by anyone: a single collector on a small server, or a group sharing a catalogue with fine grained roles.
-
-## Screenshots
-
-> Screenshots live in `docs/screenshots`. Add your dashboard, collection, and item views there, then reference them here.
-
-<!--
-<p align="center">
-  <img src="docs/screenshots/dashboard.png" width="49%" alt="Dashboard" />
-  <img src="docs/screenshots/collection.png" width="49%" alt="Collection view" />
-</p>
--->
 
 ## Features
 

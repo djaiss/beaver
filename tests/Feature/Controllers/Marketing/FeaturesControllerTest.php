@@ -19,10 +19,24 @@ it('shows the features hub with every feature area', function () {
 });
 
 it('shows a single feature page for a known slug', function () {
+    $this->get(route('marketing.features.show', 'data-ownership'))
+        ->assertOk()
+        ->assertSee('Data ownership')
+        ->assertSee('Self-host, encrypt, back up, and keep ownership of your data.');
+});
+
+it('renders the dedicated organization page with its own copy', function () {
     $this->get(route('marketing.features.show', 'organization'))
         ->assertOk()
-        ->assertSee('Organization')
-        ->assertSee('Browse visually or compare precisely with tools that scale.');
+        ->assertSee('Organize it your way. Then find it again.')
+        ->assertSee('Browse the way your brain works.')
+        ->assertSee('Give things a place.')
+        ->assertSee('Keep an eye on the missing pieces.')
+        // The claim boundary: the filter is never sold as account-wide search.
+        ->assertSee('In-collection · not account-wide search')
+        ->assertSee('You need global search across every collection today.')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
 });
 
 it('renders the dedicated copy-tracking page with its own copy', function () {
