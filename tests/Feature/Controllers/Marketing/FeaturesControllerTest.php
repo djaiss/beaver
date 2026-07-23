@@ -25,6 +25,21 @@ it('shows a single feature page for a known slug', function () {
         ->assertSee('Self-host, encrypt, back up, and keep ownership of your data.');
 });
 
+it('renders the dedicated custom-catalogues page with its own copy', function () {
+    $this->get(route('marketing.features.show', 'custom-catalogues'))
+        ->assertOk()
+        ->assertSee('Your hobby has jargon. We came prepared.')
+        ->assertSee('The fields your hobby actually uses.')
+        ->assertSee('The same item page, speaking your hobby.')
+        // Both proof vocabularies appear side by side.
+        ->assertSee('Amazing Spider-Man #300')
+        ->assertSee('Barolo Monfortino 2015')
+        // The transparency footer keeps the candid caveat about fixed databases.
+        ->assertSee('You want a massive public reference database maintained for you.')
+        // The sibling selector marks the current feature.
+        ->assertSee('CURRENT');
+});
+
 it('renders the dedicated self-hosting page with its own copy', function () {
     $this->get(route('marketing.features.show', 'self-hosting'))
         ->assertOk()
