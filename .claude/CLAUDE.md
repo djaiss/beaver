@@ -23,7 +23,8 @@ Do not excessively use emojis.
 ## Application structure
 
 - `app/Actions`: one class per user action, holding the business logic. Controllers stay thin and delegate here. Most of the app lives in this folder.
-- `app/Models`: Eloquent models. `app/Models/Concerns` holds shared model traits, such as `HasAuthor`.
+- `app/Models`: Eloquent models.
+- `app/Traits`: shared traits used across the app, such as `HasAuthor` (mixed into models) or `GuardsOverlappingLoans` (mixed into actions).
 - `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs). `app/Http/Controllers/Concerns` holds shared controller traits, such as `FindsItems`.
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
 - `app/Jobs`: queued jobs. `app/Mail`: mailables. `app/Enums`: enums. `app/Helpers`: helpers.

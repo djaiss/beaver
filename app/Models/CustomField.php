@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\FieldTypeEnum;
-use App\Models\Concerns\HasAuthor;
+use App\Traits\HasAuthor;
 use Carbon\Carbon;
 use Database\Factories\CustomFieldFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

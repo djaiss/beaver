@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasAuthor;
+use App\Traits\HasAuthor;
 use Carbon\Carbon;
 use Database\Factories\CustomFieldGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

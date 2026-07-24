@@ -6,8 +6,8 @@ namespace App\Models;
 
 use App\Enums\ItemViewEnum;
 use App\Enums\VisibilityEnum;
-use App\Models\Concerns\HasAuthor;
-use App\Models\Concerns\HasDeleter;
+use App\Traits\HasAuthor;
+use App\Traits\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\CollectionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

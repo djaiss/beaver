@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Enums\DatePrecision;
 use App\Enums\TimelineSource;
-use App\Models\Concerns\HasAuthor;
+use App\Traits\HasAuthor;
 use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\LocationHistoryFactory;

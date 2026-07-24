@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasAuthor;
-use App\Models\Concerns\HasDeleter;
+use App\Traits\HasAuthor;
+use App\Traits\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
