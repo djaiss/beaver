@@ -6,7 +6,7 @@ use App\Enums\DocumentType;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Document;
 use App\Models\Item;
@@ -22,8 +22,8 @@ uses(RefreshDatabase::class);
 if (! function_exists('copyForDocument')) {
     function copyForDocument(int $accountId): Copy
     {
-        $collection = Collection::factory()->create(['account_id' => $accountId]);
-        $item = Item::factory()->create(['collection_id' => $collection->id]);
+        $catalog = Catalog::factory()->create(['account_id' => $accountId]);
+        $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
         return Copy::factory()->create(['item_id' => $item->id]);
     }

@@ -19,7 +19,7 @@
 
     $stats = [
       'Members' => $members->count(),
-      'Collections' => $collectionCount,
+      'Collections' => $catalogCount,
       'Items tracked' => $itemCount,
     ];
   @endphp

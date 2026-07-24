@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasAuthor;
+use App\Traits\HasAuthor;
 use Carbon\Carbon;
 use Database\Factories\ItemPhotoFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -111,8 +111,8 @@ class ItemPhoto extends Model
     protected function ofAccount(Builder $query, Account $account): Builder
     {
         return $query->whereHas(
-            'item.collection',
-            fn (Builder $collection): Builder => $collection->where('account_id', $account->id),
+            'item.catalog',
+            fn (Builder $catalog): Builder => $catalog->where('account_id', $account->id),
         );
     }
 

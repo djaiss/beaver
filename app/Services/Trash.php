@@ -6,8 +6,8 @@ namespace App\Services;
 
 use App\Enums\TrashableEnum;
 use App\Models\Account;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection as CollectionModel;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Set;
@@ -22,7 +22,7 @@ use Illuminate\Support\Collection;
  * Deleting a parent does not stamp its children, so this only ever surfaces the
  * rows a user deleted on purpose.
  *
- * @phpstan-type TrashedModel Category|CollectionModel|Copy|Item|Set
+ * @phpstan-type TrashedModel Category|Catalog|Copy|Item|Set
  */
 class Trash
 {
@@ -60,20 +60,20 @@ class Trash
         $query = $modelClass::onlyTrashed();
 
         return match ($type) {
-            TrashableEnum::Collection => $query->where('account_id', $this->account->id),
+            TrashableEnum::Catalog => $query->where('account_id', $this->account->id),
 
             // A set hangs off a collection that may itself be trashed, so look through the
             // trashed collections too.
             TrashableEnum::Item, TrashableEnum::Category, TrashableEnum::Set => $query->whereIn(
-                'collection_id',
-                CollectionModel::withTrashed()->where('account_id', $this->account->id)->select('id'),
+                'catalog_id',
+                Catalog::withTrashed()->where('account_id', $this->account->id)->select('id'),
             ),
 
             TrashableEnum::Copy => $query->whereIn(
                 'item_id',
                 Item::withTrashed()->whereIn(
-                    'collection_id',
-                    CollectionModel::withTrashed()->where('account_id', $this->account->id)->select('id'),
+                    'catalog_id',
+                    Catalog::withTrashed()->where('account_id', $this->account->id)->select('id'),
                 )->select('id'),
             ),
         };
@@ -126,24 +126,24 @@ class Trash
     private function subtitle(Model $model): string
     {
         return match (true) {
-            $model instanceof Item => $this->parentCollectionName($model),
+            $model instanceof Item => $this->parentCatalogName($model),
             $model instanceof Copy => $this->copyItemName($model),
             default => $this->itemCount($model),
         };
     }
 
-    private function itemCount(Category|CollectionModel|Set $model): string
+    private function itemCount(Category|Catalog|Set $model): string
     {
         $count = $model->items()->count();
 
         return trans_choice(':count item|:count items', $count, ['count' => $count]);
     }
 
-    private function parentCollectionName(Item $item): string
+    private function parentCatalogName(Item $item): string
     {
-        $collection = CollectionModel::withTrashed()->find($item->collection_id);
+        $catalog = Catalog::withTrashed()->find($item->catalog_id);
 
-        return $collection === null ? '' : __('in :name', ['name' => $collection->name]);
+        return $catalog === null ? '' : __('in :name', ['name' => $catalog->name]);
     }
 
     private function copyItemName(Copy $copy): string

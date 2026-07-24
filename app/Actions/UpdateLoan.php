@@ -13,6 +13,9 @@ use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Loan;
 use App\Models\User;
+use App\Traits\GuardsLoanConditions;
+use App\Traits\GuardsOverlappingLoans;
+use App\Traits\SyncsLoanState;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -68,7 +71,7 @@ class UpdateLoan
 
     private function validate(): void
     {
-        $account = $this->loan->copy->item->collection->account;
+        $account = $this->loan->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -127,7 +130,7 @@ class UpdateLoan
             'deposit_amount' => $this->depositAmount,
             'deposit_currency_code' => $this->depositAmount === null
                 ? null
-                : ($this->depositCurrencyCode ?? $this->loan->deposit_currency_code ?? $this->loan->copy->item->collection->currency),
+                : ($this->depositCurrencyCode ?? $this->loan->deposit_currency_code ?? $this->loan->copy->item->catalog->currency),
             'include_in_provenance' => $this->includeInProvenance,
         ]);
         $this->loan->updated_by_id = $this->user->id;

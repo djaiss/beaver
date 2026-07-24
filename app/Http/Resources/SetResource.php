@@ -24,7 +24,7 @@ class SetResource extends JsonResource
             'type' => 'set',
             'id' => (string) $this->id,
             'attributes' => [
-                'collection_id' => $this->collection_id,
+                'catalog_id' => $this->catalog_id,
                 'name' => $this->name,
                 'description' => $this->description,
                 'target_count' => $this->target_count,

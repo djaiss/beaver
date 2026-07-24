@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
-use App\Models\CollectionType;
+use App\Models\Catalog;
+use App\Models\CatalogType;
 use App\Models\Invitation;
 use App\Models\Location;
 use App\Models\Tag;
@@ -27,7 +27,7 @@ it('does not count the seeded collection types as configured', function () {
     $account = $this->createAccount();
 
     // PopulateAccount creates the defaults without an author, the way the seeding job does.
-    CollectionType::factory()->count(3)->create(['account_id' => $account->id, 'created_by_id' => null]);
+    CatalogType::factory()->count(3)->create(['account_id' => $account->id, 'created_by_id' => null]);
 
     expect(new GettingStarted($account)->steps()->firstWhere('key', 'types')['done'])->toBeFalse();
 });
@@ -37,8 +37,8 @@ it('counts a collection type the user made themselves', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    CollectionType::factory()->create(['account_id' => $account->id, 'created_by_id' => null]);
-    CollectionType::factory()->create(['account_id' => $account->id, 'created_by_id' => $owner->id]);
+    CatalogType::factory()->create(['account_id' => $account->id, 'created_by_id' => null]);
+    CatalogType::factory()->create(['account_id' => $account->id, 'created_by_id' => $owner->id]);
 
     expect(new GettingStarted($account)->steps()->firstWhere('key', 'types')['done'])->toBeTrue();
 });
@@ -109,7 +109,7 @@ it('counts the collection step once the account has one', function () {
 
     expect(new GettingStarted($account)->steps()->firstWhere('key', 'collection')['done'])->toBeFalse();
 
-    Collection::factory()->create(['account_id' => $account->id]);
+    Catalog::factory()->create(['account_id' => $account->id]);
 
     expect(new GettingStarted($account)->steps()->firstWhere('key', 'collection')['done'])->toBeTrue();
 });
@@ -119,7 +119,7 @@ it('ignores the data of another account', function () {
     $other = $this->createAccount('Other');
 
     Tag::factory()->create(['account_id' => $other->id]);
-    Collection::factory()->create(['account_id' => $other->id]);
+    Catalog::factory()->create(['account_id' => $other->id]);
 
     expect(new GettingStarted($account)->doneCount())->toBe(0);
 });
@@ -128,7 +128,7 @@ it('counts how many steps are behind the user', function () {
     $account = $this->createAccount();
 
     Tag::factory()->create(['account_id' => $account->id]);
-    Collection::factory()->create(['account_id' => $account->id]);
+    Catalog::factory()->create(['account_id' => $account->id]);
 
     expect(new GettingStarted($account)->doneCount())->toBe(2);
 });

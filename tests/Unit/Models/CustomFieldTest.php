@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\FieldTypeEnum;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\DB;
 uses(RefreshDatabase::class);
 
 it('belongs to a collection type', function () {
-    $collectionType = CollectionType::factory()->create();
-    $customField = CustomField::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create();
+    $customField = CustomField::factory()->create(['type_id' => $catalogType->id]);
 
-    expect($customField->collectionType)->toBeInstanceOf(CollectionType::class);
-    expect($customField->collectionType->id)->toBe($collectionType->id);
+    expect($customField->catalogType)->toBeInstanceOf(CatalogType::class);
+    expect($customField->catalogType->id)->toBe($catalogType->id);
 });
 
 it('casts the field type to an enum', function () {

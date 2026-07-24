@@ -5,7 +5,7 @@ use App\Actions\EmptyTrash;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Set;
@@ -22,14 +22,14 @@ it('permanently deletes everything in the trash', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $set = Set::factory()->forAccount($account->id)->create();
 
     $copy->delete();
     $item->delete();
-    $collection->delete();
+    $catalog->delete();
     $set->delete();
 
     $deleted = new EmptyTrash(
@@ -40,7 +40,7 @@ it('permanently deletes everything in the trash', function () {
     expect($deleted)->toBe(4);
     $this->assertDatabaseMissing('copies', ['id' => $copy->id]);
     $this->assertDatabaseMissing('items', ['id' => $item->id]);
-    $this->assertDatabaseMissing('collections', ['id' => $collection->id]);
+    $this->assertDatabaseMissing('catalogs', ['id' => $catalog->id]);
     $this->assertDatabaseMissing('sets', ['id' => $set->id]);
 
     Queue::assertPushedOn(
@@ -57,8 +57,8 @@ it('leaves objects that are not in the trash alone', function () {
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
 
-    $kept = Collection::factory()->create(['account_id' => $account->id]);
-    $trashed = Collection::factory()->create(['account_id' => $account->id]);
+    $kept = Catalog::factory()->create(['account_id' => $account->id]);
+    $trashed = Catalog::factory()->create(['account_id' => $account->id]);
     $trashed->delete();
 
     $deleted = new EmptyTrash(
@@ -67,8 +67,8 @@ it('leaves objects that are not in the trash alone', function () {
     )->execute();
 
     expect($deleted)->toBe(1);
-    $this->assertDatabaseHas('collections', ['id' => $kept->id]);
-    $this->assertDatabaseMissing('collections', ['id' => $trashed->id]);
+    $this->assertDatabaseHas('catalogs', ['id' => $kept->id]);
+    $this->assertDatabaseMissing('catalogs', ['id' => $trashed->id]);
 });
 
 it('leaves another account trash alone', function () {
@@ -79,8 +79,8 @@ it('leaves another account trash alone', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
     $otherAccount = $this->createAccount('Moondance Diner');
-    $otherCollection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $otherCollection->delete();
+    $otherCatalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $otherCatalog->delete();
 
     $deleted = new EmptyTrash(
         user: $owner,
@@ -88,7 +88,7 @@ it('leaves another account trash alone', function () {
     )->execute();
 
     expect($deleted)->toBe(0);
-    $this->assertDatabaseHas('collections', ['id' => $otherCollection->id]);
+    $this->assertDatabaseHas('catalogs', ['id' => $otherCatalog->id]);
 });
 
 it('throws when the user is only a viewer', function () {

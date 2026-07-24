@@ -13,7 +13,7 @@ it('populates the account with the default collection types', function () {
 
     new PopulateAccount($account)->handle();
 
-    $types = $account->collectionTypes()->get();
+    $types = $account->catalogTypes()->get();
 
     expect($types)->toHaveCount(12);
     expect($types->map->name->all())->toContain('Comics', 'Vinyl Records', 'CD', 'DVD', 'Wine');
@@ -24,7 +24,7 @@ it('populates each type with its field groups in order', function () {
 
     new PopulateAccount($account)->handle();
 
-    $comics = $account->collectionTypes()->get()->firstWhere('name', 'Comics');
+    $comics = $account->catalogTypes()->get()->firstWhere('name', 'Comics');
 
     $groups = $comics->customFieldGroups()->orderBy('position')->get();
 
@@ -38,7 +38,7 @@ it('populates each group with its custom fields in order', function () {
 
     new PopulateAccount($account)->handle();
 
-    $comics = $account->collectionTypes()->get()->firstWhere('name', 'Comics');
+    $comics = $account->catalogTypes()->get()->firstWhere('name', 'Comics');
     $group = $comics->customFieldGroups()->get()->firstWhere('name', 'Publishing info');
 
     $fields = $group->customFields()->orderBy('position')->get();
@@ -64,7 +64,7 @@ it('leaves a type with no groups holding every field as standalone', function ()
     new PopulateAccount($account)->handle();
 
     // Wine mixes the two: Bottle Size and My Rating sit outside of any group.
-    $wine = $account->collectionTypes()->get()->firstWhere('name', 'Wine');
+    $wine = $account->catalogTypes()->get()->firstWhere('name', 'Wine');
 
     expect($wine->ungroupedCustomFields()->get()->map->name->all())->toBe(['Bottle Size', 'My Rating']);
     expect($wine->customFieldGroups()->get()->map->name->all())->toBe(['Origin']);
@@ -76,13 +76,13 @@ it('stores the options and field type of a select field', function () {
 
     new PopulateAccount($account)->handle();
 
-    $comics = $account->collectionTypes()->get()->firstWhere('name', 'Comics');
+    $comics = $account->catalogTypes()->get()->firstWhere('name', 'Comics');
     $publisher = $comics->customFields()->get()->firstWhere('name', 'Publisher');
 
     expect($publisher->field_type)->toBe(FieldTypeEnum::Select);
     expect($publisher->options)->toBe(['Marvel', 'DC', 'Image', 'Dark Horse', 'Independent']);
 
-    $coins = $account->collectionTypes()->get()->firstWhere('name', 'Coins');
+    $coins = $account->catalogTypes()->get()->firstWhere('name', 'Coins');
     $grade = $coins->customFields()->get()->firstWhere('name', 'Grade');
 
     expect($grade->options)->toContain('MS-70', 'PR-1');
@@ -93,7 +93,7 @@ it('seeds a rating field on the types where a personal rating makes sense', func
 
     new PopulateAccount($account)->handle();
 
-    $types = $account->collectionTypes()->get();
+    $types = $account->catalogTypes()->get();
 
     foreach (['Comics', 'Vinyl Records', 'CD', 'DVD', 'Books', 'Video Games', 'Wine'] as $name) {
         $rating = $types->firstWhere('name', $name)->customFields()->get()->firstWhere('name', 'My Rating');
@@ -108,7 +108,7 @@ it('encrypts the type and field names at rest', function () {
 
     new PopulateAccount($account)->handle();
 
-    $type = $account->collectionTypes()->first();
+    $type = $account->catalogTypes()->first();
 
     $this->assertDatabaseMissing('types', ['name' => 'Comics']);
     $this->assertDatabaseMissing('custom_fields', ['name' => 'Issue #']);

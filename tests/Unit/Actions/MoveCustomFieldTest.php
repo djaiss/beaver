@@ -5,7 +5,7 @@ use App\Actions\MoveCustomField;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,7 +21,7 @@ it('moves a field down by swapping positions with its neighbour', function () {
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
 
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
     $first = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
     $second = CustomField::factory()->create(['type_id' => $type->id, 'position' => 2]);
 
@@ -44,7 +44,7 @@ it('does nothing when moving the first field up', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
     $first = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
     $second = CustomField::factory()->create(['type_id' => $type->id, 'position' => 2]);
 
@@ -62,7 +62,7 @@ it('throws when a viewer tries to move a field', function () {
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
 
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
 
     new MoveCustomField(user: $viewer, customField: $field, direction: 'up')->execute();
@@ -75,7 +75,7 @@ it('swaps within the group rather than stealing a field from a neighbouring grou
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
     $publishing = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'position' => 1]);
     $grading = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'position' => 2]);
 
@@ -106,7 +106,7 @@ it('does not swap a standalone field with a grouped one', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
     $group = CustomFieldGroup::factory()->create(['type_id' => $type->id]);
 
     $standalone = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => null, 'position' => 1]);

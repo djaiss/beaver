@@ -8,7 +8,7 @@ use App\Enums\FieldTypeEnum;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use App\Models\User;
@@ -29,7 +29,7 @@ class CreateCustomField
      */
     public function __construct(
         private readonly User $user,
-        private readonly CollectionType $collectionType,
+        private readonly CatalogType $catalogType,
         private string $name,
         private string $fieldType = FieldTypeEnum::Text->value,
         private ?array $options = null,
@@ -49,7 +49,7 @@ class CreateCustomField
 
     private function validate(): void
     {
-        if (! $this->collectionType->account->allowsManagementBy($this->user)) {
+        if (! $this->catalogType->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
 
@@ -57,7 +57,7 @@ class CreateCustomField
             throw ValidationException::withMessages(['field_type' => 'Invalid field type']);
         }
 
-        if ($this->group instanceof CustomFieldGroup && $this->group->type_id !== $this->collectionType->id) {
+        if ($this->group instanceof CustomFieldGroup && $this->group->type_id !== $this->catalogType->id) {
             throw ValidationException::withMessages(['group_id' => 'The group belongs to another type']);
         }
     }
@@ -70,7 +70,7 @@ class CreateCustomField
     private function create(): void
     {
         $this->customField = CustomField::query()->create([
-            'type_id' => $this->collectionType->id,
+            'type_id' => $this->catalogType->id,
             'group_id' => $this->group?->id,
             'name' => $this->name,
             'field_type' => $this->fieldType,
@@ -85,7 +85,7 @@ class CreateCustomField
      */
     private function nextPosition(): int
     {
-        return (int) $this->collectionType->customFields()
+        return (int) $this->catalogType->customFields()
             ->where('group_id', $this->group?->id)
             ->max('position') + 1;
     }

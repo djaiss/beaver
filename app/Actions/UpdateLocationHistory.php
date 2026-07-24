@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Models\Location;
 use App\Models\LocationHistory;
 use App\Models\User;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -42,7 +43,7 @@ class UpdateLocationHistory
 
     private function validate(): void
     {
-        $account = $this->record->copy->item->collection->account;
+        $account = $this->record->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

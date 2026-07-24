@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -13,7 +13,7 @@ it('adds a blank field to the type', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
 
     $response = $this->actingAs($user)->post('/settings/types/'.$type->id.'/fields');
 
@@ -25,7 +25,7 @@ it('updates a field and stores the options of a select', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'position' => 1]);
 
     $response = $this->actingAs($user)->put('/settings/types/'.$type->id.'/fields/'.$field->id, [
@@ -47,7 +47,7 @@ it('filters out the blank trailing option when saving a select', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => 'select', 'position' => 1]);
 
     // The editor always submits an empty trailing "add option" input, which the
@@ -66,7 +66,7 @@ it('clears the options when the field is no longer a select', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $field = CustomField::factory()->create([
         'type_id' => $type->id,
         'field_type' => 'select',
@@ -85,7 +85,7 @@ it('clears the options when the field is no longer a select', function () {
 
 it('validates the field type', function () {
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $field = CustomField::factory()->create(['type_id' => $type->id]);
 
     $this->actingAs($user)->put('/settings/types/'.$type->id.'/fields/'.$field->id, [
@@ -97,7 +97,7 @@ it('removes a field', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $field = CustomField::factory()->create(['type_id' => $type->id]);
 
     $this->actingAs($user)->delete('/settings/types/'.$type->id.'/fields/'.$field->id)
@@ -110,7 +110,7 @@ it('cannot touch a field of another accounts type', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $foreignType = CollectionType::factory()->create();
+    $foreignType = CatalogType::factory()->create();
     $foreignField = CustomField::factory()->create(['type_id' => $foreignType->id]);
 
     $this->actingAs($user)->delete('/settings/types/'.$foreignType->id.'/fields/'.$foreignField->id)->assertNotFound();
@@ -123,7 +123,7 @@ it('forbids a viewer from adding a field', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
 
     $this->actingAs($viewer)->post('/settings/types/'.$type->id.'/fields')->assertNotFound();
     expect($type->customFields()->count())->toBe(0);

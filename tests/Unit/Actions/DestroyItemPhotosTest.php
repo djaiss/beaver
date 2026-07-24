@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Actions\DestroyItemPhotos;
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -31,8 +31,8 @@ it('deletes every photo it is given', function () {
     Queue::fake();
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $first = storedPhoto($item, isMain: true, position: 1);
     $second = storedPhoto($item, position: 2);
 
@@ -51,8 +51,8 @@ it('removes the files from the disk too', function () {
     Queue::fake();
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $photo = storedPhoto($item);
 
     new DestroyItemPhotos(user: $user, account: $user->account, photoIds: [$photo->id])->execute();
@@ -64,8 +64,8 @@ it('promotes the next photo when the cover is among those deleted', function () 
     Queue::fake();
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $cover = storedPhoto($item, isMain: true, position: 1);
     $other = storedPhoto($item, position: 2);
 
@@ -95,8 +95,8 @@ it('refuses a viewer', function () {
     Storage::fake(config('filesystems.default'));
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount(user: $this->createUser(), account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $photo = storedPhoto($item);
 
     expect(fn () => new DestroyItemPhotos(
@@ -112,8 +112,8 @@ it('deletes nothing at all when one of the photos is not the accounts', function
     Queue::fake();
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $mine = storedPhoto(Item::factory()->create(['collection_id' => $collection->id]));
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $mine = storedPhoto(Item::factory()->create(['catalog_id' => $catalog->id]));
     $foreign = storedPhoto(Item::factory()->create());
 
     expect(fn () => new DestroyItemPhotos(

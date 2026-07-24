@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use App\Models\User;
@@ -15,8 +15,8 @@ uses(RefreshDatabase::class);
 
 function selectablePhoto(User $user): ItemPhoto
 {
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $path = "items/{$item->id}/".Str::uuid()->toString().'.jpg';
     Storage::disk(config('filesystems.default'))->put($path, 'binary-image-bytes');
 

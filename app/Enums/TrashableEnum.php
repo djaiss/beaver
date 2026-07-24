@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Set;
@@ -16,19 +16,19 @@ use App\Models\Set;
  */
 enum TrashableEnum: string
 {
-    case Collection = 'collection';
+    case Catalog = 'collection';
     case Item = 'item';
     case Copy = 'copy';
     case Category = 'category';
     case Set = 'set';
 
     /**
-     * @return class-string<Category|Collection|Copy|Item|Set>
+     * @return class-string<Category|Catalog|Copy|Item|Set>
      */
     public function modelClass(): string
     {
         return match ($this) {
-            self::Collection => Collection::class,
+            self::Catalog => Catalog::class,
             self::Item => Item::class,
             self::Copy => Copy::class,
             self::Category => Category::class,
@@ -39,7 +39,7 @@ enum TrashableEnum: string
     public function label(): string
     {
         return match ($this) {
-            self::Collection => __('Collection'),
+            self::Catalog => __('Catalog'),
             self::Item => __('Item'),
             self::Copy => __('Copy'),
             self::Category => __('Category'),
@@ -50,7 +50,7 @@ enum TrashableEnum: string
     public function pluralLabel(): string
     {
         return match ($this) {
-            self::Collection => __('Collections'),
+            self::Catalog => __('Collections'),
             self::Item => __('Items'),
             self::Copy => __('Copies'),
             self::Category => __('Categories'),
@@ -61,7 +61,7 @@ enum TrashableEnum: string
     public function icon(): string
     {
         return match ($this) {
-            self::Collection => 'folder',
+            self::Catalog => 'folder',
             self::Item => 'package',
             self::Copy => 'copy',
             self::Category => 'layout-grid',
@@ -75,7 +75,7 @@ enum TrashableEnum: string
     public function badgeClasses(): string
     {
         return match ($this) {
-            self::Collection => 'bg-badge-violet/15 text-badge-violet',
+            self::Catalog => 'bg-badge-violet/15 text-badge-violet',
             self::Item => 'bg-badge-emerald/15 text-badge-emerald',
             self::Copy => 'bg-badge-orange/15 text-badge-orange',
             self::Category => 'bg-brand/15 text-brand',

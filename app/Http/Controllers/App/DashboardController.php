@@ -20,7 +20,7 @@ class DashboardController extends Controller
         // Every route out of authentication lands here, so this is the one place that has to
         // know an empty account belongs on the getting started screen instead. Once the account
         // holds a collection there is a dashboard worth showing, and the redirect stops.
-        if ($account->show_getting_started && ! $account->collections()->exists()) {
+        if ($account->show_getting_started && ! $account->catalogs()->exists()) {
             return to_route('gettingStarted.index');
         }
 

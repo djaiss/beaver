@@ -8,8 +8,8 @@ use App\Actions\CreateInsuranceRecord;
 use App\Actions\DestroyInsuranceRecord;
 use App\Actions\UpdateInsuranceRecord;
 use App\Enums\InsuranceStatus;
-use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\InsuranceRecord;
 use App\Models\Item;
@@ -27,19 +27,13 @@ use Illuminate\Validation\Rule;
  */
 class InsuranceRecordController extends Controller
 {
-    use FindsItems;
-
-    public function create(Request $request, int $collection, int $item, int $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-
         $validated = $request->validate($this->rules());
 
         new CreateInsuranceRecord(
             user: $request->user(),
-            copy: $copyModel,
+            copy: $copy,
             provider: $validated['provider'],
             insuredValue: (int) round((float) $validated['insured_value'] * 100),
             status: InsuranceStatus::from($validated['status']),
@@ -56,17 +50,14 @@ class InsuranceRecordController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'insurance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'insurance'])
             ->with('status', __('Insurance record added'))
             ->with('status_description', __('The coverage was added to the history of this copy.'));
     }
 
-    public function update(Request $request, int $collection, int $item, int $copy, int $insuranceRecord): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $insuranceRecord): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $recordModel = $this->findRecord($copyModel, $insuranceRecord);
+        $recordModel = $this->findRecord($copy, $insuranceRecord);
 
         $validated = $request->validate($this->rules());
 
@@ -89,35 +80,23 @@ class InsuranceRecordController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'insurance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'insurance'])
             ->with('status', __('Insurance record updated'))
             ->with('status_description', __('Your changes to the coverage were saved.'));
     }
 
-    public function destroy(Request $request, int $collection, int $item, int $copy, int $insuranceRecord): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $insuranceRecord): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $recordModel = $this->findRecord($copyModel, $insuranceRecord);
+        $recordModel = $this->findRecord($copy, $insuranceRecord);
 
         new DestroyInsuranceRecord(
             user: $request->user(),
             record: $recordModel,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'insurance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'insurance'])
             ->with('status', __('Insurance record deleted'))
             ->with('status_description', __('The coverage was removed from the history of this copy.'));
-    }
-
-    private function findCopy(Item $item, int $copy): Copy
-    {
-        try {
-            return $item->copies()->findOrFail($copy);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     private function findRecord(Copy $copy, int $insuranceRecord): InsuranceRecord

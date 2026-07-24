@@ -1,6 +1,6 @@
 @use('App\Helpers\Palette')
 
-@props(['collection' => null, 'categories' => null])
+@props(['catalog' => null, 'categories' => null])
 
 @php
     $user = auth()->user();
@@ -8,7 +8,7 @@
     $isAccount = request()->routeIs('settings.*');
     $isInstance = request()->routeIs('instanceAdmin.*');
     $isSupport = request()->routeIs('support.*');
-    $isCollection = $collection !== null;
+    $isCollection = $catalog !== null;
 @endphp
 
 {{-- The closed position is a static class rather than an x-cloak plus :class pair. x-cloak
@@ -120,10 +120,10 @@
         </a>
 
         <nav class="flex flex-col gap-0.5">
-            <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $collection->name }}</p>
-            <x-sidebar-link :href="route('collections.show', $collection)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" icon="library-big">{{ __('Items') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('sets.index', $collection)" :active="request()->routeIs('sets.*')" icon="radiation">{{ __('Sets') }}</x-sidebar-link>
-            <x-sidebar-link :href="route('statistics.index', $collection)" :active="request()->routeIs('statistics.*')" icon="chart-no-axes-combined">{{ __('Statistics') }}</x-sidebar-link>
+            <p class="truncate px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ $catalog->name }}</p>
+            <x-sidebar-link :href="route('collections.show', $catalog)" :active="request()->routeIs('collections.show') || request()->routeIs('items.*')" icon="library-big">{{ __('Items') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('sets.index', $catalog)" :active="request()->routeIs('sets.*')" icon="radiation">{{ __('Sets') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('statistics.index', $catalog)" :active="request()->routeIs('statistics.*')" icon="chart-no-axes-combined">{{ __('Statistics') }}</x-sidebar-link>
         </nav>
 
         {{-- The categories are the navigation of the collection, so they are listed here
@@ -134,7 +134,7 @@
                 <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Categories') }}</p>
                 @foreach ($categories as $category)
                     <x-sidebar-link
-                        :href="route('categories.show', [$collection, $category])"
+                        :href="route('categories.show', [$catalog, $category])"
                         :active="request()->routeIs('categories.show') && (int) request()->route('category') === $category->id"
                         :dot="Palette::forId($category->id)"
                         :count="$category->items_count"
@@ -146,7 +146,7 @@
 
         <nav class="flex flex-col gap-0.5">
             <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Manage collection') }}</p>
-            <x-sidebar-link :href="route('categories.index', $collection)" :active="request()->routeIs('categories.index')" icon="folder-tree">{{ __('Manage categories') }}</x-sidebar-link>
+            <x-sidebar-link :href="route('categories.index', $catalog)" :active="request()->routeIs('categories.index')" icon="folder-tree">{{ __('Manage categories') }}</x-sidebar-link>
         </nav>
     @else
         <nav class="flex flex-col gap-0.5">

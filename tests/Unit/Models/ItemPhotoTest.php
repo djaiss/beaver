@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use App\Models\ItemPhotoSearchToken;
@@ -96,8 +96,8 @@ it('copes with a mime type that has no subtype', function () {
 
 it('scopes to the photos of one account', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $mine = ItemPhoto::factory()->create(['item_id' => $item->id]);
     $theirs = ItemPhoto::factory()->create();
 

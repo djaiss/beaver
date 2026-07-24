@@ -6,7 +6,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\TrashableEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Set;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,18 +21,18 @@ it('restores a soft deleted collection', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
+    $catalog->delete();
 
     $restored = new RestoreFromTrash(
         user: $owner,
         account: $account,
-        type: TrashableEnum::Collection,
-        objectId: $collection->id,
+        type: TrashableEnum::Catalog,
+        objectId: $catalog->id,
     )->execute();
 
-    expect($restored)->toBeInstanceOf(Collection::class);
-    expect($collection->fresh()->deleted_at)->toBeNull();
+    expect($restored)->toBeInstanceOf(Catalog::class);
+    expect($catalog->fresh()->deleted_at)->toBeNull();
 
     Queue::assertPushedOn(
         queue: 'low',
@@ -71,8 +71,8 @@ it('restores an item reached through its collection', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     new RestoreFromTrash(
@@ -92,14 +92,14 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $catalog->delete();
 
     new RestoreFromTrash(
         user: $viewer,
         account: $account,
-        type: TrashableEnum::Collection,
-        objectId: $collection->id,
+        type: TrashableEnum::Catalog,
+        objectId: $catalog->id,
     )->execute();
 });
 
@@ -112,13 +112,13 @@ it('throws when the object belongs to another account', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
     $otherAccount = $this->createAccount('Moondance Diner');
-    $collection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $catalog->delete();
 
     new RestoreFromTrash(
         user: $owner,
         account: $account,
-        type: TrashableEnum::Collection,
-        objectId: $collection->id,
+        type: TrashableEnum::Catalog,
+        objectId: $catalog->id,
     )->execute();
 });

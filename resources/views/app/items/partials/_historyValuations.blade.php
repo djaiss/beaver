@@ -42,7 +42,7 @@
     <div x-show="adding" x-cloak class="mb-5">
       @include('app.items.partials._valuationForm', [
           'formId' => 'add-valuation-'.$selectedCopy->id,
-          'action' => route('valuations.create', [$collection, $item, $selectedCopy]),
+          'action' => route('valuations.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'adding',
           'submitLabel' => __('Add valuation'),
@@ -141,8 +141,8 @@
             <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
               @include('app.items.partials._valuationForm', [
                   'formId' => 'edit-valuation-'.$valuation->id,
-                  'action' => route('valuations.update', [$collection, $item, $selectedCopy, $valuation]),
-                  'deleteAction' => route('valuations.destroy', [$collection, $item, $selectedCopy, $valuation]),
+                  'action' => route('valuations.update', [$catalog, $item, $selectedCopy, $valuation]),
+                  'deleteAction' => route('valuations.destroy', [$catalog, $item, $selectedCopy, $valuation]),
                   'method' => 'put',
                   'openVar' => 'editing',
                   'submitLabel' => __('Save'),
@@ -154,7 +154,7 @@
 
           <div class="border-t border-hairline px-5 py-4">
             <p class="mb-2.5 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
-            @include('app.items.partials._documentsFor', ['documentable' => $valuation, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+            @include('app.items.partials._documentsFor', ['documentable' => $valuation, 'catalog' => $catalog, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
           </div>
         </div>
       @endforeach

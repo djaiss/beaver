@@ -13,9 +13,9 @@ use App\Enums\ValuationType;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
+use App\Models\Catalog;
+use App\Models\CatalogType;
 use App\Models\Category;
-use App\Models\Collection;
-use App\Models\CollectionType;
 use App\Models\Copy;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
@@ -25,6 +25,7 @@ use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Valuation;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
@@ -50,10 +51,10 @@ class CreateItem
      */
     public function __construct(
         private readonly User $user,
-        private readonly Collection $collection,
+        private readonly Catalog $catalog,
         private string $name,
         private ?string $description = null,
-        private readonly ?CollectionType $collectionType = null,
+        private readonly ?CatalogType $catalogType = null,
         private readonly ?Category $category = null,
         private readonly ?Set $set = null,
         private readonly ?Series $series = null,
@@ -85,25 +86,25 @@ class CreateItem
 
     private function validate(): void
     {
-        if (! $this->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
 
-        if ($this->collectionType instanceof CollectionType && ! $this->collection->collectionTypes()->whereKey($this->collectionType->id)->exists()) {
+        if ($this->catalogType instanceof CatalogType && ! $this->catalog->catalogTypes()->whereKey($this->catalogType->id)->exists()) {
             throw new ModelNotFoundException('Type not found');
         }
 
-        if ($this->category instanceof Category && $this->category->collection_id !== $this->collection->id) {
+        if ($this->category instanceof Category && $this->category->catalog_id !== $this->catalog->id) {
             throw new ModelNotFoundException('Category not found');
         }
 
-        if ($this->set instanceof Set && $this->set->collection_id !== $this->collection->id) {
+        if ($this->set instanceof Set && $this->set->catalog_id !== $this->catalog->id) {
             throw new ModelNotFoundException('Set not found');
         }
 
         // A series is account-wide, so it only has to share the account, not the collection.
         // That is the point of it: one series gathers items from several collections.
-        if ($this->series instanceof Series && $this->series->account_id !== $this->collection->account_id) {
+        if ($this->series instanceof Series && $this->series->account_id !== $this->catalog->account_id) {
             throw new ModelNotFoundException('Series not found');
         }
 
@@ -117,7 +118,7 @@ class CreateItem
             return;
         }
 
-        $ownedCount = $this->collection->account->tags()->whereKey($this->tagIds)->count();
+        $ownedCount = $this->catalog->account->tags()->whereKey($this->tagIds)->count();
 
         if ($ownedCount !== count(array_unique($this->tagIds))) {
             throw new ModelNotFoundException('Tag not found');
@@ -126,8 +127,8 @@ class CreateItem
 
     private function validateCopies(): void
     {
-        $conditionIds = $this->collection->account->itemConditions()->pluck('id')->all();
-        $locationIds = $this->collection->account->locations()->pluck('id')->all();
+        $conditionIds = $this->catalog->account->itemConditions()->pluck('id')->all();
+        $locationIds = $this->catalog->account->locations()->pluck('id')->all();
 
         foreach ($this->copies as $copy) {
             $conditionId = $copy['item_condition_id'] ?? null;
@@ -152,9 +153,9 @@ class CreateItem
     private function create(): void
     {
         $this->item = Item::query()->create([
-            'collection_id' => $this->collection->id,
+            'catalog_id' => $this->catalog->id,
             'category_id' => $this->category?->id,
-            'type_id' => $this->collectionType?->id,
+            'type_id' => $this->catalogType?->id,
             'set_id' => $this->set?->id,
             'series_id' => $this->series?->id,
             'name' => $this->name,
@@ -183,7 +184,7 @@ class CreateItem
             }
 
             $tag = Tag::query()->create([
-                'account_id' => $this->collection->account_id,
+                'account_id' => $this->catalog->account_id,
                 'name' => $name,
             ]);
             $this->stampAuthorOn($tag);
@@ -196,11 +197,11 @@ class CreateItem
 
     private function createCustomFieldValues(): void
     {
-        if (! $this->collectionType instanceof CollectionType) {
+        if (! $this->catalogType instanceof CatalogType) {
             return;
         }
 
-        $fields = $this->collectionType->customFields()->get()->keyBy('id');
+        $fields = $this->catalogType->customFields()->get()->keyBy('id');
 
         foreach ($this->customFieldValues as $fieldId => $value) {
             $field = $fields->get($fieldId);
@@ -283,7 +284,7 @@ class CreateItem
             'copy_id' => $copy->id,
             'type' => ValuationType::UserEstimate,
             'amount' => $estimatedValue,
-            'currency_code' => $this->collection->currency,
+            'currency_code' => $this->catalog->currency,
             'valued_at' => now()->toDateString(),
             'confidence' => ValuationConfidence::Unknown,
         ]);

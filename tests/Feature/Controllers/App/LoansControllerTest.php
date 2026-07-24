@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Loan;
@@ -16,8 +16,8 @@ uses(RefreshDatabase::class);
 if (! function_exists('webLoanCopy')) {
     function webLoanCopy(int $accountId): Copy
     {
-        $collection = Collection::factory()->create(['account_id' => $accountId]);
-        $item = Item::factory()->create(['collection_id' => $collection->id]);
+        $catalog = Catalog::factory()->create(['account_id' => $accountId]);
+        $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
         return Copy::factory()->create(['item_id' => $item->id]);
     }

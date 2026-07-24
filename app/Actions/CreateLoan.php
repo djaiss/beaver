@@ -13,6 +13,9 @@ use App\Jobs\LogUserAction;
 use App\Models\Copy;
 use App\Models\Loan;
 use App\Models\User;
+use App\Traits\GuardsLoanConditions;
+use App\Traits\GuardsOverlappingLoans;
+use App\Traits\SyncsLoanState;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -63,7 +66,7 @@ class CreateLoan
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -91,7 +94,7 @@ class CreateLoan
             // holds a deposit but does not say what it is in.
             'deposit_currency_code' => $this->depositAmount === null
                 ? null
-                : ($this->depositCurrencyCode ?? $this->copy->item->collection->currency),
+                : ($this->depositCurrencyCode ?? $this->copy->item->catalog->currency),
             'include_in_provenance' => $this->includeInProvenance,
         ]);
     }

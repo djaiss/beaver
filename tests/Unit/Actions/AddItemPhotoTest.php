@@ -5,7 +5,7 @@ use App\Actions\AddItemPhoto;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -24,8 +24,8 @@ beforeEach(function () {
     $this->account = $this->createAccount();
     $this->editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $this->editor, account: $this->account, role: PermissionEnum::Editor->value);
-    $this->collection = Collection::factory()->create(['account_id' => $this->account->id]);
-    $this->item = Item::factory()->create(['collection_id' => $this->collection->id, 'name' => 'Amazing Spider-Man #1']);
+    $this->catalog = Catalog::factory()->create(['account_id' => $this->account->id]);
+    $this->item = Item::factory()->create(['catalog_id' => $this->catalog->id, 'name' => 'Amazing Spider-Man #1']);
 });
 
 it('adds a photo, stores the file and stamps the author', function () {
@@ -98,7 +98,7 @@ it('increments the position for each photo of the item', function () {
 });
 
 it('scopes the position to the item, not to all the items', function () {
-    $otherItem = Item::factory()->create(['collection_id' => $this->collection->id, 'name' => 'The Incredible Hulk #1']);
+    $otherItem = Item::factory()->create(['catalog_id' => $this->catalog->id, 'name' => 'The Incredible Hulk #1']);
 
     new AddItemPhoto(user: $this->editor, item: $this->item, file: UploadedFile::fake()->image('rachel.jpg'))->execute();
     new AddItemPhoto(user: $this->editor, item: $this->item, file: UploadedFile::fake()->image('monica.jpg'))->execute();

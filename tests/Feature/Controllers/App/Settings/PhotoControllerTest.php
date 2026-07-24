@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Actions\IndexItemPhotoSearchTokens;
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use App\Models\User;
@@ -20,8 +20,8 @@ uses(RefreshDatabase::class);
  */
 function accountPhoto(User $user, string $filename, string $itemName, bool $isCover = false, int $size = 1000): ItemPhoto
 {
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => $itemName]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => $itemName]);
     $path = "items/{$item->id}/".Str::uuid()->toString().'.jpg';
     Storage::disk(config('filesystems.default'))->put($path, 'binary-image-bytes');
 
@@ -158,8 +158,8 @@ it('rejects a sort that does not exist', function () {
 it('paginates at a hundred photos a page', function () {
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     ItemPhoto::factory()->count(101)->create(['item_id' => $item->id]);
 
     $response = $this->actingAs($user)->get('/settings/photos')->assertOk();

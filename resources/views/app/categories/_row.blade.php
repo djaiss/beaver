@@ -68,7 +68,7 @@
           @svg('lucide-pencil', 'size-3.5')
         </button>
 
-        <x-form method="delete" :action="route('categories.destroy', [$collection->id, $category->id])" x-target="categories-panel notifications" x-on:ajax:before="confirm('{{ $hasChildren ? __('Delete this category? Its subcategories go too. Items keep their data but lose this grouping. This cannot be undone.') : __('Delete this category? Items keep their data but lose this grouping. This cannot be undone.') }}') || $event.preventDefault()">
+        <x-form method="delete" :action="route('categories.destroy', [$catalog->id, $category->id])" x-target="categories-panel notifications" x-on:ajax:before="confirm('{{ $hasChildren ? __('Delete this category? Its subcategories go too. Items keep their data but lose this grouping. This cannot be undone.') : __('Delete this category? Items keep their data but lose this grouping. This cannot be undone.') }}') || $event.preventDefault()">
           <button type="submit" class="flex size-8 items-center justify-center rounded-md border border-hairline text-muted hover:bg-card" aria-label="{{ __('Delete category') }}" data-test="delete-category-{{ $category->id }}">
             @svg('lucide-trash-2', 'size-3.5')
           </button>
@@ -79,7 +79,7 @@
 
   {{-- Inline edit form --}}
   <div x-show="editing" x-cloak class="border-t border-hairline-soft bg-card/40 p-4" style="padding-left: calc({{ 12 + $depth * 28 }}px + 30px)">
-    <x-form method="put" :action="route('categories.update', [$collection->id, $category->id])" data-test="edit-category-form-{{ $category->id }}" x-target="categories-panel notifications" x-on:ajax:after="editing = document.querySelector('[data-test=&quot;edit-category-form-{{ $category->id }}&quot;] .text-error') !== null">
+    <x-form method="put" :action="route('categories.update', [$catalog->id, $category->id])" data-test="edit-category-form-{{ $category->id }}" x-target="categories-panel notifications" x-on:ajax:after="editing = document.querySelector('[data-test=&quot;edit-category-form-{{ $category->id }}&quot;] .text-error') !== null">
       <div class="mb-3.5 flex flex-wrap gap-3.5">
         <div class="min-w-[180px] flex-1">
           <x-label>{{ __('Name') }}</x-label>
@@ -125,7 +125,7 @@
           'node' => $child,
           'depth' => $depth + 1,
           'parentOptions' => $parentOptions,
-          'collection' => $collection,
+          'catalog' => $catalog,
           'branchText' => $branchText,
       ])
     @endforeach

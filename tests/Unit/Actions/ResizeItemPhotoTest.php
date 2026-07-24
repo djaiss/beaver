@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Actions\AddItemPhoto;
 use App\Actions\ResizeItemPhoto;
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,8 +21,8 @@ beforeEach(function () {
     $this->account = $this->createAccount();
     $this->editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $this->editor, account: $this->account, role: PermissionEnum::Editor->value);
-    $this->collection = Collection::factory()->create(['account_id' => $this->account->id]);
-    $this->item = Item::factory()->create(['collection_id' => $this->collection->id, 'name' => 'Amazing Spider-Man #1']);
+    $this->catalog = Catalog::factory()->create(['account_id' => $this->account->id]);
+    $this->item = Item::factory()->create(['catalog_id' => $this->catalog->id, 'name' => 'Amazing Spider-Man #1']);
 });
 
 /**

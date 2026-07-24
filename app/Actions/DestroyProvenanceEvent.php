@@ -31,7 +31,7 @@ class DestroyProvenanceEvent
 
     private function validate(): void
     {
-        $account = $this->event->copy->item->collection->account;
+        $account = $this->event->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

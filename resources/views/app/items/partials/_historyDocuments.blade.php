@@ -20,7 +20,7 @@
 
   @include('app.items.partials._documentsFor', [
       'documentable' => $selectedCopy,
-      'collection' => $collection,
+      'catalog' => $catalog,
       'item' => $item,
       'selectedCopy' => $selectedCopy,
       'canManage' => $canManage,

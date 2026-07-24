@@ -14,6 +14,7 @@ use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\MaintenanceRecord;
 use App\Models\User;
+use App\Traits\GuardsMaintenanceConditions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -66,7 +67,7 @@ class UpdateMaintenanceRecord
 
     private function validate(): void
     {
-        $account = $this->record->copy->item->collection->account;
+        $account = $this->record->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -118,7 +119,7 @@ class UpdateMaintenanceRecord
             'cost_amount' => $this->costAmount,
             'cost_currency_code' => $this->costAmount === null
                 ? null
-                : ($this->costCurrencyCode ?? $this->record->cost_currency_code ?? $this->record->copy->item->collection->currency),
+                : ($this->costCurrencyCode ?? $this->record->cost_currency_code ?? $this->record->copy->item->catalog->currency),
             'item_condition_before_id' => $this->itemConditionBeforeId,
             'item_condition_after_id' => $this->itemConditionAfterId,
             'next_due_at' => $this->nextDueAt,

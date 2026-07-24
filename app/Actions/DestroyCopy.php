@@ -32,7 +32,7 @@ class DestroyCopy
 
     private function validate(): void
     {
-        if (! $this->copy->item->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->copy->item->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }

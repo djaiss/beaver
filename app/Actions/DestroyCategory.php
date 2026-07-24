@@ -31,7 +31,7 @@ class DestroyCategory
 
     private function validate(): void
     {
-        if (! $this->category->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->category->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Category not found');
         }
     }

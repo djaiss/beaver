@@ -7,7 +7,7 @@ use App\Enums\TransactionType;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Transaction;
@@ -23,11 +23,11 @@ uses(RefreshDatabase::class);
  */
 function transactionFor(User $user, array $attributes = []): Transaction
 {
-    $collection = Collection::factory()->create([
+    $catalog = Catalog::factory()->create([
         'account_id' => $user->account_id,
         'currency' => 'USD',
     ]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     return Transaction::factory()->create(['copy_id' => $copy->id, ...$attributes]);

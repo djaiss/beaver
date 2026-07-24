@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Jobs\PurgeTrash;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Set;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,19 +11,19 @@ uses(RefreshDatabase::class);
 
 it('permanently deletes what has sat in the trash past the retention window', function () {
     $account = $this->createAccount();
-    $expired = Collection::factory()->create(['account_id' => $account->id]);
+    $expired = Catalog::factory()->create(['account_id' => $account->id]);
     $expired->delete();
     $expired->forceFill(['deleted_at' => now()->subDays(31)])->saveQuietly();
 
     new PurgeTrash()->handle();
 
-    $this->assertDatabaseMissing('collections', ['id' => $expired->id]);
+    $this->assertDatabaseMissing('catalogs', ['id' => $expired->id]);
 });
 
 it('keeps what is still within the retention window', function () {
     $account = $this->createAccount();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $set = Set::factory()->forAccount($account->id)->create();
 
     $item->delete();
@@ -38,9 +38,9 @@ it('keeps what is still within the retention window', function () {
 
 it('leaves objects that were never deleted alone', function () {
     $account = $this->createAccount();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     new PurgeTrash()->handle();
 
-    $this->assertDatabaseHas('collections', ['id' => $collection->id]);
+    $this->assertDatabaseHas('catalogs', ['id' => $catalog->id]);
 });

@@ -5,7 +5,7 @@ use App\Actions\DestroyCustomField;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,8 +19,8 @@ it('deletes a custom field', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $customField = CustomField::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $customField = CustomField::factory()->create(['type_id' => $catalogType->id]);
 
     new DestroyCustomField(
         user: $owner,
@@ -43,8 +43,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $customField = CustomField::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $customField = CustomField::factory()->create(['type_id' => $catalogType->id]);
 
     new DestroyCustomField(
         user: $viewer,

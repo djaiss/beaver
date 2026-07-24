@@ -30,7 +30,7 @@ class CustomFieldGroupResource extends JsonResource
                 'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.collectionTypes.customFieldGroups.show', [
+                'self' => route('api.catalogTypes.customFieldGroups.show', [
                     'collectionType' => $this->type_id,
                     'group' => $this->id,
                 ]),

@@ -9,8 +9,8 @@ use App\Actions\DestroyValuation;
 use App\Actions\UpdateValuation;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
-use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Valuation;
@@ -27,19 +27,13 @@ use Illuminate\Validation\Rule;
  */
 class ValuationController extends Controller
 {
-    use FindsItems;
-
-    public function create(Request $request, int $collection, int $item, int $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-
         $validated = $request->validate($this->rules());
 
         new CreateValuation(
             user: $request->user(),
-            copy: $copyModel,
+            copy: $copy,
             type: ValuationType::from($validated['type']),
             amount: $this->toCents($validated['amount']),
             valuedAt: $validated['valued_at'],
@@ -52,17 +46,14 @@ class ValuationController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'section' => 'valuations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations'])
             ->with('status', __('Valuation recorded'))
             ->with('status_description', __('The valuation was added to the history of this copy.'));
     }
 
-    public function update(Request $request, int $collection, int $item, int $copy, int $valuation): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $valuation): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $valuationModel = $this->findValuation($copyModel, $valuation);
+        $valuationModel = $this->findValuation($copy, $valuation);
 
         $validated = $request->validate($this->rules());
 
@@ -81,35 +72,23 @@ class ValuationController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'section' => 'valuations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations'])
             ->with('status', __('Valuation updated'))
             ->with('status_description', __('Your changes to the valuation were saved.'));
     }
 
-    public function destroy(Request $request, int $collection, int $item, int $copy, int $valuation): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $valuation): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $valuationModel = $this->findValuation($copyModel, $valuation);
+        $valuationModel = $this->findValuation($copy, $valuation);
 
         new DestroyValuation(
             user: $request->user(),
             valuation: $valuationModel,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'section' => 'valuations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations'])
             ->with('status', __('Valuation deleted'))
             ->with('status_description', __('The valuation was removed from the history of this copy.'));
-    }
-
-    private function findCopy(Item $item, int $copy): Copy
-    {
-        try {
-            return $item->copies()->findOrFail($copy);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     private function findValuation(Copy $copy, int $valuation): Valuation

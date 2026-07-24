@@ -74,7 +74,7 @@
         <p class="min-w-0 flex-1 text-[13px] leading-relaxed text-muted">{{ $copy->note ?? __('No note on this copy.') }}</p>
 
         <a
-          href="{{ route('items.history.show', [$collection, $item, $copy]) }}"
+          href="{{ route('items.history.show', [$catalog, $item, $copy]) }}"
           data-turbo="true"
           class="shrink-0 text-[13px] font-semibold text-ink transition-opacity hover:opacity-75"
           data-test="copy-history-link"

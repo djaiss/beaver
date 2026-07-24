@@ -53,7 +53,7 @@ class CreateValuation
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -68,7 +68,7 @@ class CreateValuation
             'amount' => $this->amount,
             // The collection's currency is the sensible default when the caller
             // does not say what the amount is in.
-            'currency_code' => $this->currencyCode ?? $this->copy->item->collection->currency,
+            'currency_code' => $this->currencyCode ?? $this->copy->item->catalog->currency,
             'valued_at' => $this->valuedAt,
             'confidence' => $this->confidence,
             'valuer' => $this->valuer,

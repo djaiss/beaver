@@ -7,11 +7,10 @@ namespace App\Http\Controllers\App;
 use App\Actions\CreateCategory;
 use App\Actions\DestroyCategory;
 use App\Actions\UpdateCategory;
-use App\Http\Controllers\Concerns\FindsItems;
-use App\Http\Controllers\Concerns\ShowsCollectionItems;
 use App\Http\Controllers\Controller;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection as CollectionModel;
+use App\Traits\ShowsCatalogItems;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -20,17 +19,13 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    use FindsItems;
-    use ShowsCollectionItems;
+    use ShowsCatalogItems;
 
-    public function index(Request $request, int $collection): View
+    public function index(Request $request): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-
-        $categories = $collectionModel->categories()->withCount('items')->get();
+        $categories = $request->attributes->get('catalog')->categories()->withCount('items')->get();
 
         return view('app.categories.index', [
-            'collection' => $collectionModel,
             'tree' => $this->buildTree($categories),
             'parentOptions' => ['' => __('No parent (top level)')] + $categories->sortBy('name')->pluck('name', 'id')->all(),
             'totalCount' => $categories->count(),
@@ -42,17 +37,16 @@ class CategoryController extends Controller
      * The items of the collection, narrowed down to the ones filed under this
      * category. It is the collection screen, over a smaller set of items.
      */
-    public function show(Request $request, int $collection, int $category): View
+    public function show(Request $request, Catalog $catalog, int $category): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $collectionModel->load(['collectionTypes', 'categories']);
+        $catalog->load(['catalogTypes', 'categories']);
 
-        return $this->collectionItemsView($request, $collectionModel, $this->findCategory($collectionModel, $category));
+        return $this->catalogItemsView($request, $catalog, $this->findCategory($catalog, $category));
     }
 
-    public function create(Request $request, int $collection): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
+        $catalog = $request->attributes->get('catalog');
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -62,21 +56,20 @@ class CategoryController extends Controller
 
         new CreateCategory(
             user: $request->user(),
-            collection: $collectionModel,
+            catalog: $catalog,
             name: $validated['name'],
             parentId: isset($validated['parent_id']) ? (int) $validated['parent_id'] : null,
             description: $validated['description'] ?? null,
         )->execute();
 
-        return to_route('categories.index', $collectionModel->id)
+        return to_route('categories.index', $catalog->id)
             ->with('status', __('Category created'))
             ->with('status_description', __('Items in this collection can now be filed under it.'));
     }
 
-    public function update(Request $request, int $collection, int $category): RedirectResponse
+    public function update(Request $request, Catalog $catalog, int $category): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $categoryModel = $this->findCategory($collectionModel, $category);
+        $categoryModel = $this->findCategory($catalog, $category);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -92,30 +85,27 @@ class CategoryController extends Controller
             description: $validated['description'] ?? null,
         )->execute();
 
-        return to_route('categories.index', $collectionModel->id)
+        return to_route('categories.index', $catalog->id)
             ->with('status', __('Category updated'))
             ->with('status_description', __('Your changes to the category were saved.'));
     }
 
-    public function destroy(Request $request, int $collection, int $category): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, int $category): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $categoryModel = $this->findCategory($collectionModel, $category);
-
         new DestroyCategory(
             user: $request->user(),
-            category: $categoryModel,
+            category: $this->findCategory($catalog, $category),
         )->execute();
 
-        return to_route('categories.index', $collectionModel->id)
+        return to_route('categories.index', $catalog->id)
             ->with('status', __('Category deleted'))
             ->with('status_description', __('Items that were filed under it keep their data.'));
     }
 
-    private function findCategory(CollectionModel $collection, int $category): Category
+    private function findCategory(Catalog $catalog, int $category): Category
     {
         try {
-            return $collection->categories()->findOrFail($category);
+            return $catalog->categories()->findOrFail($category);
         } catch (ModelNotFoundException) {
             abort(404);
         }

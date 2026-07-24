@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Models\Account;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Series;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,14 +30,14 @@ it('gathers items from several collections of the account', function () {
     $account = Account::factory()->create();
     $series = Series::factory()->create(['account_id' => $account->id]);
 
-    $books = Collection::factory()->create(['account_id' => $account->id]);
-    $films = Collection::factory()->create(['account_id' => $account->id]);
+    $books = Catalog::factory()->create(['account_id' => $account->id]);
+    $films = Catalog::factory()->create(['account_id' => $account->id]);
 
-    $book = Item::factory()->create(['collection_id' => $books->id, 'series_id' => $series->id]);
-    $film = Item::factory()->create(['collection_id' => $films->id, 'series_id' => $series->id]);
+    $book = Item::factory()->create(['catalog_id' => $books->id, 'series_id' => $series->id]);
+    $film = Item::factory()->create(['catalog_id' => $films->id, 'series_id' => $series->id]);
 
     expect($series->items()->pluck('id'))->toContain($book->id, $film->id);
-    expect($series->items()->distinct()->count('collection_id'))->toBe(2);
+    expect($series->items()->distinct()->count('catalog_id'))->toBe(2);
 });
 
 it('encrypts the name and description at rest', function () {

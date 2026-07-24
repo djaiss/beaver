@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +21,7 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'collection_id' => Collection::factory(),
+            'catalog_id' => Catalog::factory(),
             'parent_id' => null,
             'name' => fake()->randomElement(['Spider-Man', 'X-Men', 'Avengers', 'Fantastic Four']),
             'description' => fake()->sentence(),

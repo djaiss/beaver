@@ -6,7 +6,7 @@ use App\Actions\DestroyItemPhoto;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -24,8 +24,8 @@ beforeEach(function () {
     $this->account = $this->createAccount();
     $this->editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $this->editor, account: $this->account, role: PermissionEnum::Editor->value);
-    $this->collection = Collection::factory()->create(['account_id' => $this->account->id]);
-    $this->item = Item::factory()->create(['collection_id' => $this->collection->id, 'name' => 'Amazing Spider-Man #1']);
+    $this->catalog = Catalog::factory()->create(['account_id' => $this->account->id]);
+    $this->item = Item::factory()->create(['catalog_id' => $this->catalog->id, 'name' => 'Amazing Spider-Man #1']);
 });
 
 it('deletes the photo and removes the file from the disk', function () {

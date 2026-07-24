@@ -8,7 +8,7 @@
   edited, and duplicate ids would point every label at the first form.
 
   Expects: $formId, $action, $method, $openVar, $submitLabel, $dataTest,
-  $transaction (null when adding), $currencies, $collection, $item, $selectedCopy.
+  $transaction (null when adding), $currencies, $catalog, $item, $selectedCopy.
   When editing, also $deleteAction.
 --}}
 
@@ -17,7 +17,7 @@
 @php
     $isEdit = $transaction !== null;
     $units = fn (?int $cents): string => $cents === null ? '' : number_format($cents / 100, 2, '.', '');
-    $selectedCurrency = $transaction?->currency_code ?? $collection->currency ?? array_key_first($currencies);
+    $selectedCurrency = $transaction?->currency_code ?? $catalog->currency ?? array_key_first($currencies);
 
     $deleteConfirm = $transaction?->provenanceEvent
         ? __('Delete this transaction? Its provenance event is kept and simply unlinked. This cannot be undone.')

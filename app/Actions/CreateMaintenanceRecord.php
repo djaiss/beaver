@@ -14,6 +14,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Copy;
 use App\Models\MaintenanceRecord;
 use App\Models\User;
+use App\Traits\GuardsMaintenanceConditions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -61,7 +62,7 @@ class CreateMaintenanceRecord
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -84,7 +85,7 @@ class CreateMaintenanceRecord
             // does not say what the cost is in.
             'cost_currency_code' => $this->costAmount === null
                 ? null
-                : ($this->costCurrencyCode ?? $this->copy->item->collection->currency),
+                : ($this->costCurrencyCode ?? $this->copy->item->catalog->currency),
             'item_condition_before_id' => $this->itemConditionBeforeId,
             'item_condition_after_id' => $this->itemConditionAfterId,
             'next_due_at' => $this->nextDueAt,

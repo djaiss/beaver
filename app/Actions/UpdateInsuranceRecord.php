@@ -12,6 +12,7 @@ use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\InsuranceRecord;
 use App\Models\User;
+use App\Traits\GuardsActiveInsuranceRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -63,7 +64,7 @@ class UpdateInsuranceRecord
 
     private function validate(): void
     {
-        $account = $this->record->copy->item->collection->account;
+        $account = $this->record->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

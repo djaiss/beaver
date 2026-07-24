@@ -6,7 +6,7 @@ namespace App\Http\Controllers\App\Instance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -19,7 +19,7 @@ class OverviewController extends Controller
         return view('app.instance.index', [
             'accountCount' => Account::query()->count(),
             'userCount' => User::query()->count(),
-            'collectionCount' => Collection::query()->count(),
+            'catalogCount' => Catalog::query()->count(),
             'itemCount' => Item::query()->count(),
             'accountsThisMonth' => Account::query()->where('created_at', '>=', Carbon::now()->startOfMonth())->count(),
             'activeThisMonth' => User::query()->where('last_activity_at', '>=', Carbon::now()->startOfMonth())->count(),

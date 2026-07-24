@@ -3,7 +3,7 @@
   pagination, so they ride in the query string while the tab and direction stay in
   the path. Submitting is a plain GET back to the same tab url.
 
-  Expects: $direction, $tab, $filters, $filterCollections. Optional: $withStatusSort.
+  Expects: $direction, $tab, $filters, $filterCatalogs. Optional: $withStatusSort.
 --}}
 @php($withStatusSort = $withStatusSort ?? false)
 
@@ -22,8 +22,8 @@
 
   <select name="collection" class="h-10 rounded-md border border-hairline bg-input px-3 text-sm text-ink" data-test="loans-collection-filter">
     <option value="">{{ __('All collections') }}</option>
-    @foreach ($filterCollections as $id => $name)
-      <option value="{{ $id }}" @selected($filters['collection'] === $id)>{{ $name }}</option>
+    @foreach ($filterCatalogs as $id => $name)
+      <option value="{{ $id }}" @selected($filters['catalog'] === $id)>{{ $name }}</option>
     @endforeach
   </select>
 

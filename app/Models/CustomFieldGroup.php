@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasAuthor;
+use App\Traits\HasAuthor;
 use Carbon\Carbon;
 use Database\Factories\CustomFieldGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -66,11 +66,11 @@ class CustomFieldGroup extends Model
     /**
      * Get the collection type the group belongs to.
      *
-     * @return BelongsTo<CollectionType, $this>
+     * @return BelongsTo<CatalogType, $this>
      */
-    public function collectionType(): BelongsTo
+    public function catalogType(): BelongsTo
     {
-        return $this->belongsTo(CollectionType::class, 'type_id');
+        return $this->belongsTo(CatalogType::class, 'type_id');
     }
 
     /**

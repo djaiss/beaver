@@ -5,7 +5,7 @@ use App\Actions\CreateSet;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Set;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,13 +17,13 @@ it('creates a set and stamps the author', function () {
     Queue::fake();
 
     $account = $this->createAccount();
-    $collection = $account->collections()->save(Collection::factory()->make());
+    $catalog = $account->catalogs()->save(Catalog::factory()->make());
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
 
     $set = new CreateSet(
         user: $editor,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1-10',
         description: 'The first ten issues.',
     )->execute();
@@ -31,11 +31,11 @@ it('creates a set and stamps the author', function () {
     expect($set)->toBeInstanceOf(Set::class);
     expect($set->name)->toBe('Amazing Spider-Man #1-10');
     expect($set->description)->toBe('The first ten issues.');
-    expect($set->collection_id)->toBe($collection->id);
+    expect($set->catalog_id)->toBe($catalog->id);
 
     $this->assertDatabaseHas('sets', [
         'id' => $set->id,
-        'collection_id' => $collection->id,
+        'catalog_id' => $catalog->id,
         'created_by_id' => $editor->id,
         'updated_by_id' => $editor->id,
     ]);
@@ -52,13 +52,13 @@ it('creates a set without a description', function () {
     Queue::fake();
 
     $account = $this->createAccount();
-    $collection = $account->collections()->save(Collection::factory()->make());
+    $catalog = $account->catalogs()->save(Catalog::factory()->make());
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
     $set = new CreateSet(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Vinyl classics',
     )->execute();
 
@@ -69,13 +69,13 @@ it('sanitizes the name', function () {
     Queue::fake();
 
     $account = $this->createAccount();
-    $collection = $account->collections()->save(Collection::factory()->make());
+    $catalog = $account->catalogs()->save(Catalog::factory()->make());
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
     $set = new CreateSet(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: '<strong>Vinyl classics</strong>',
     )->execute();
 
@@ -87,13 +87,13 @@ it('throws when the user is only a viewer', function () {
     $this->expectException(ModelNotFoundException::class);
 
     $account = $this->createAccount();
-    $collection = $account->collections()->save(Collection::factory()->make());
+    $catalog = $account->catalogs()->save(Catalog::factory()->make());
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
 
     new CreateSet(
         user: $viewer,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Vinyl classics',
     )->execute();
 });
@@ -103,12 +103,12 @@ it('throws when the user does not belong to the account', function () {
     $this->expectException(ModelNotFoundException::class);
 
     $account = $this->createAccount();
-    $collection = $account->collections()->save(Collection::factory()->make());
+    $catalog = $account->catalogs()->save(Catalog::factory()->make());
     $stranger = $this->createUser();
 
     new CreateSet(
         user: $stranger,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Vinyl classics',
     )->execute();
 });

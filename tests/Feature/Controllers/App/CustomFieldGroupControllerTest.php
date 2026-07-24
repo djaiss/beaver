@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +14,7 @@ it('adds a blank group to the type', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
 
     $response = $this->actingAs($user)->post('/settings/types/'.$type->id.'/groups');
 
@@ -26,7 +26,7 @@ it('renames a group', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $group = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'name' => 'Main']);
 
     $response = $this->actingAs($user)->put('/settings/types/'.$type->id.'/groups/'.$group->id, [
@@ -41,7 +41,7 @@ it('adds a field into a group', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $group = CustomFieldGroup::factory()->create(['type_id' => $type->id]);
 
     $response = $this->actingAs($user)->post('/settings/types/'.$type->id.'/groups/'.$group->id.'/fields');
@@ -55,7 +55,7 @@ it('removes a group but keeps its fields as standalone', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $group = CustomFieldGroup::factory()->create(['type_id' => $type->id]);
     $field = CustomField::factory()->create(['type_id' => $type->id, 'group_id' => $group->id]);
 
@@ -69,7 +69,7 @@ it('removes a group but keeps its fields as standalone', function () {
 
 it('renders the groups and the standalone fields on the edit page', function () {
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $group = CustomFieldGroup::factory()->create(['type_id' => $type->id, 'name' => 'Publishing info']);
     CustomField::factory()->create(['type_id' => $type->id, 'group_id' => $group->id, 'name' => 'Issue #']);
     CustomField::factory()->create(['type_id' => $type->id, 'group_id' => null, 'name' => 'Notes']);
@@ -85,7 +85,7 @@ it('renders the groups and the standalone fields on the edit page', function () 
 
 it('shows the empty states when the type has no groups', function () {
     $user = $this->createUser();
-    $type = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $type = CatalogType::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->get('/settings/types/'.$type->id.'/edit')
         ->assertOk()
@@ -96,7 +96,7 @@ it('cannot touch a group of another accounts type', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $foreignType = CollectionType::factory()->create();
+    $foreignType = CatalogType::factory()->create();
     $foreignGroup = CustomFieldGroup::factory()->create(['type_id' => $foreignType->id]);
 
     $this->actingAs($user)->delete('/settings/types/'.$foreignType->id.'/groups/'.$foreignGroup->id)->assertNotFound();
@@ -107,8 +107,8 @@ it('cannot touch a group belonging to another type of the same account', functio
     Queue::fake();
 
     $user = $this->createUser();
-    $comics = CollectionType::factory()->create(['account_id' => $user->account_id]);
-    $wine = CollectionType::factory()->create(['account_id' => $user->account_id]);
+    $comics = CatalogType::factory()->create(['account_id' => $user->account_id]);
+    $wine = CatalogType::factory()->create(['account_id' => $user->account_id]);
     $group = CustomFieldGroup::factory()->create(['type_id' => $wine->id]);
 
     $this->actingAs($user)->delete('/settings/types/'.$comics->id.'/groups/'.$group->id)->assertNotFound();
@@ -121,7 +121,7 @@ it('forbids a viewer from adding a group', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
 
     $this->actingAs($viewer)->post('/settings/types/'.$type->id.'/groups')->assertNotFound();
     expect($type->customFieldGroups()->count())->toBe(0);

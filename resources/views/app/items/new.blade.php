@@ -1,4 +1,4 @@
-<x-app-layout :collection="$collection">
+<x-app-layout :catalog="$catalog">
   <x-slot:title>
     {{ __('Add an item') }}
   </x-slot>

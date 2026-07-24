@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Account;
 
-use App\Http\Controllers\Concerns\EnsuresAccountOwner;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InvitationResource;
+use App\Traits\EnsuresAccountOwner;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
