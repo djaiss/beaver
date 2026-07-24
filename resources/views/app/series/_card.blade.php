@@ -4,9 +4,9 @@
   $dots = ['bg-badge-orange', 'bg-badge-violet', 'bg-badge-emerald', 'bg-brand', 'bg-badge-pink', 'bg-warning'];
 
   $breakdown = $series->items
-      ->groupBy('collection_id')
-      ->map(fn ($items): array => ['collection' => $items->first()->collection, 'count' => $items->count()])
-      ->sortBy(fn (array $group): string => Str::lower($group['collection']->name))
+      ->groupBy('catalog_id')
+      ->map(fn ($items): array => ['catalog' => $items->first()->catalog, 'count' => $items->count()])
+      ->sortBy(fn (array $group): string => Str::lower($group['catalog']->name))
       ->values();
 @endphp
 
@@ -44,8 +44,8 @@
         <div class="mt-3 flex flex-wrap items-center gap-2">
           @foreach ($breakdown as $group)
             <span class="inline-flex items-center gap-1.5 rounded-full bg-card px-2.5 py-1 text-xs font-medium text-ink">
-              <span class="size-[7px] shrink-0 rounded-full {{ $dots[$group['collection']->id % count($dots)] }}"></span>
-              <span class="max-w-[160px] truncate">{{ $group['collection']->name }}</span>
+              <span class="size-[7px] shrink-0 rounded-full {{ $dots[$group['catalog']->id % count($dots)] }}"></span>
+              <span class="max-w-[160px] truncate">{{ $group['catalog']->name }}</span>
               <span class="text-muted-soft">{{ $group['count'] }}</span>
             </span>
           @endforeach

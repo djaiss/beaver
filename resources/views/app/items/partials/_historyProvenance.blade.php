@@ -36,7 +36,7 @@
     <div x-show="addingEvent" x-cloak class="mb-4">
       @include('app.items.partials._provenanceEventForm', [
           'formId' => 'add-provenance-event-'.$selectedCopy->id,
-          'action' => route('provenanceEvents.create', [$collection, $item, $selectedCopy]),
+          'action' => route('provenanceEvents.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'addingEvent',
           'submitLabel' => __('Add event'),
@@ -115,8 +115,8 @@
           <div x-show="editingEvent" x-cloak class="mt-3 rounded-xl border border-hairline bg-card/40 p-4">
             @include('app.items.partials._provenanceEventForm', [
                 'formId' => 'edit-provenance-event-'.$event->id,
-                'action' => route('provenanceEvents.update', [$collection, $item, $selectedCopy, $event]),
-                'deleteAction' => route('provenanceEvents.destroy', [$collection, $item, $selectedCopy, $event]),
+                'action' => route('provenanceEvents.update', [$catalog, $item, $selectedCopy, $event]),
+                'deleteAction' => route('provenanceEvents.destroy', [$catalog, $item, $selectedCopy, $event]),
                 'method' => 'put',
                 'openVar' => 'editingEvent',
                 'submitLabel' => __('Save changes'),
@@ -129,7 +129,7 @@
 
         <div class="mt-3 border-t border-hairline pt-3">
           <p class="mb-2 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
-          @include('app.items.partials._documentsFor', ['documentable' => $event, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+          @include('app.items.partials._documentsFor', ['documentable' => $event, 'catalog' => $catalog, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
         </div>
       </div>
     </div>

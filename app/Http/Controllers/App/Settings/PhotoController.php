@@ -85,7 +85,7 @@ class PhotoController extends Controller
     {
         $query = ItemPhoto::query()
             ->ofAccount($account)
-            ->with(['item.collection', 'item.collectionType']);
+            ->with(['item.catalog', 'item.catalogType']);
 
         $this->applySearch($query, $search);
         $this->applyFilter($query, $filter);
@@ -174,7 +174,7 @@ class PhotoController extends Controller
                 'itemId' => $item->id,
                 'itemName' => $item->name,
                 'itemSub' => $this->itemSub($photo),
-                'itemUrl' => route('items.show', [$item->collection, $item]),
+                'itemUrl' => route('items.show', [$item->catalog, $item]),
                 'coverUrl' => route('settings.photos.cover.update', $photo->id),
                 'deleteUrl' => route('settings.photos.destroy', $photo->id),
             ];
@@ -187,13 +187,13 @@ class PhotoController extends Controller
      */
     private function itemSub(ItemPhoto $photo): string
     {
-        $type = $photo->item->collectionType?->name;
+        $type = $photo->item->catalogType?->name;
 
         if ($type === null) {
-            return $photo->item->collection->name;
+            return $photo->item->catalog->name;
         }
 
-        return $photo->item->collection->name.' · '.$type;
+        return $photo->item->catalog->name.' · '.$type;
     }
 
     /**

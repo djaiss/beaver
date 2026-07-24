@@ -32,7 +32,7 @@ class DocumentFactory extends Factory
                 $copy = Copy::find($attributes['documentable_id']);
 
                 return $copy instanceof Copy
-                    ? $copy->item->collection->account_id
+                    ? $copy->item->catalog->account_id
                     : Account::factory();
             },
             'type' => DocumentType::Receipt,

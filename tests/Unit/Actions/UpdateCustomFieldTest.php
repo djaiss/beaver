@@ -6,7 +6,7 @@ use App\Enums\FieldTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,9 +20,9 @@ it('updates a custom field including its position', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Chandler', 'last_name' => 'Bing']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
     $customField = CustomField::factory()->create([
-        'type_id' => $collectionType->id,
+        'type_id' => $catalogType->id,
         'name' => 'Old name',
         'field_type' => FieldTypeEnum::Text->value,
         'position' => 1,
@@ -58,8 +58,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $customField = CustomField::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $customField = CustomField::factory()->create(['type_id' => $catalogType->id]);
 
     new UpdateCustomField(
         user: $viewer,

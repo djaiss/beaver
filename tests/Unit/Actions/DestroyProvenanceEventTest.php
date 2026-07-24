@@ -6,7 +6,7 @@ use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\ProvenanceEvent;
@@ -23,8 +23,8 @@ uses(RefreshDatabase::class);
  */
 function provenanceEventToDestroy(User $user): ProvenanceEvent
 {
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     return ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);

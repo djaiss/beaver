@@ -36,7 +36,7 @@
     <div x-show="moving" x-cloak class="mb-5">
       @include('app.items.partials._locationMoveForm', [
           'formId' => 'add-location-'.$selectedCopy->id,
-          'action' => route('locationHistory.create', [$collection, $item, $selectedCopy]),
+          'action' => route('locationHistory.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'moving',
           'submitLabel' => __('Move copy'),
@@ -102,8 +102,8 @@
           <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._locationMoveForm', [
                 'formId' => 'edit-location-'.$record->id,
-                'action' => route('locationHistory.update', [$collection, $item, $selectedCopy, $record]),
-                'deleteAction' => route('locationHistory.destroy', [$collection, $item, $selectedCopy, $record]),
+                'action' => route('locationHistory.update', [$catalog, $item, $selectedCopy, $record]),
+                'deleteAction' => route('locationHistory.destroy', [$catalog, $item, $selectedCopy, $record]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save changes'),

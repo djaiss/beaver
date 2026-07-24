@@ -8,7 +8,7 @@ use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\User;
@@ -24,11 +24,11 @@ uses(RefreshDatabase::class);
  */
 function valuationToUpdate(User $user, array $attributes = []): Valuation
 {
-    $collection = Collection::factory()->create([
+    $catalog = Catalog::factory()->create([
         'account_id' => $user->account_id,
         'currency' => 'USD',
     ]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     return Valuation::factory()->create([...$attributes, 'copy_id' => $copy->id]);

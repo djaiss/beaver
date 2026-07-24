@@ -37,7 +37,7 @@
     <div x-show="adding" x-cloak class="mb-5">
       @include('app.items.partials._maintenanceRecordForm', [
           'formId' => 'add-maintenance-'.$selectedCopy->id,
-          'action' => route('maintenanceRecords.create', [$collection, $item, $selectedCopy]),
+          'action' => route('maintenanceRecords.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'adding',
           'submitLabel' => __('Add record'),
@@ -119,8 +119,8 @@
           <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._maintenanceRecordForm', [
                 'formId' => 'edit-maintenance-'.$record->id,
-                'action' => route('maintenanceRecords.update', [$collection, $item, $selectedCopy, $record]),
-                'deleteAction' => route('maintenanceRecords.destroy', [$collection, $item, $selectedCopy, $record]),
+                'action' => route('maintenanceRecords.update', [$catalog, $item, $selectedCopy, $record]),
+                'deleteAction' => route('maintenanceRecords.destroy', [$catalog, $item, $selectedCopy, $record]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save changes'),
@@ -132,7 +132,7 @@
 
         <div class="border-t border-hairline px-5 py-4">
           <p class="mb-2.5 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
-          @include('app.items.partials._documentsFor', ['documentable' => $record, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+          @include('app.items.partials._documentsFor', ['documentable' => $record, 'catalog' => $catalog, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
         </div>
       </div>
     @empty

@@ -33,8 +33,8 @@ it('builds the navigation with guides and resource groups', function () {
     expect($labels)->toContain('Collections');
     expect($labels)->toContain('Locations');
 
-    $collections = collect($navigation['resources'])->firstWhere('name', 'Collections');
-    expect($collections['items'][0])->toHaveKeys(['id', 'label', 'method']);
+    $catalogs = collect($navigation['resources'])->firstWhere('name', 'Collections');
+    expect($catalogs['items'][0])->toHaveKeys(['id', 'label', 'method']);
 });
 
 it('builds code samples for every language', function () {

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Actions\MoveCustomFieldGroup;
 use App\Enums\PermissionEnum;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,10 +17,10 @@ it('moves a group up', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
-    $first = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 1]);
-    $second = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 2]);
+    $first = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 1]);
+    $second = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 2]);
 
     new MoveCustomFieldGroup(user: $owner, customFieldGroup: $second, direction: 'up')->execute();
 
@@ -34,10 +34,10 @@ it('moves a group down', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
-    $first = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 1]);
-    $second = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 2]);
+    $first = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 1]);
+    $second = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 2]);
 
     new MoveCustomFieldGroup(user: $owner, customFieldGroup: $first, direction: 'down')->execute();
 
@@ -51,10 +51,10 @@ it('does nothing when the group is already at the top', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
-    $first = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 1]);
-    $second = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 2]);
+    $first = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 1]);
+    $second = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 2]);
 
     new MoveCustomFieldGroup(user: $owner, customFieldGroup: $first, direction: 'up')->execute();
 
@@ -68,8 +68,8 @@ it('does not swap with a group of another type', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $comics = CollectionType::factory()->create(['account_id' => $account->id]);
-    $wine = CollectionType::factory()->create(['account_id' => $account->id]);
+    $comics = CatalogType::factory()->create(['account_id' => $account->id]);
+    $wine = CatalogType::factory()->create(['account_id' => $account->id]);
 
     $mine = CustomFieldGroup::factory()->create(['type_id' => $comics->id, 'position' => 1]);
     $foreign = CustomFieldGroup::factory()->create(['type_id' => $wine->id, 'position' => 2]);
@@ -87,8 +87,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
     new MoveCustomFieldGroup(user: $viewer, customFieldGroup: $group, direction: 'up')->execute();
 });

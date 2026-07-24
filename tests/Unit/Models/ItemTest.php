@@ -1,8 +1,8 @@
 <?php
 
 declare(strict_types=1);
-use App\Models\Collection;
-use App\Models\CollectionType;
+use App\Models\Catalog;
+use App\Models\CatalogType;
 use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -10,25 +10,25 @@ use Illuminate\Support\Facades\DB;
 uses(RefreshDatabase::class);
 
 it('belongs to a collection', function () {
-    $collection = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
-    expect($item->collection)->toBeInstanceOf(Collection::class);
-    expect($item->collection->id)->toBe($collection->id);
+    expect($item->catalog)->toBeInstanceOf(Catalog::class);
+    expect($item->catalog->id)->toBe($catalog->id);
 });
 
 it('belongs to a collection type', function () {
-    $collectionType = CollectionType::factory()->create();
-    $item = Item::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create();
+    $item = Item::factory()->create(['type_id' => $catalogType->id]);
 
-    expect($item->collectionType)->toBeInstanceOf(CollectionType::class);
-    expect($item->collectionType->id)->toBe($collectionType->id);
+    expect($item->catalogType)->toBeInstanceOf(CatalogType::class);
+    expect($item->catalogType->id)->toBe($catalogType->id);
 });
 
 it('has no collection type when untyped', function () {
     $item = Item::factory()->create(['type_id' => null]);
 
-    expect($item->collectionType)->toBeNull();
+    expect($item->catalogType)->toBeNull();
 });
 
 it('encrypts the name at rest', function () {

@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\Account\AccountController;
-use App\Http\Controllers\Api\Account\CollectionType\CollectionTypeCollectionController;
-use App\Http\Controllers\Api\Account\CollectionType\CollectionTypeController;
-use App\Http\Controllers\Api\Account\CollectionType\CollectionTypeExportController;
-use App\Http\Controllers\Api\Account\CollectionType\CollectionTypeImportController;
-use App\Http\Controllers\Api\Account\CollectionType\CustomFieldController;
-use App\Http\Controllers\Api\Account\CollectionType\CustomFieldGroupController;
-use App\Http\Controllers\Api\Account\CollectionType\CustomFieldGroupOrderController;
-use App\Http\Controllers\Api\Account\CollectionType\CustomFieldOrderController;
+use App\Http\Controllers\Api\Account\CatalogType\CatalogTypeCatalogController;
+use App\Http\Controllers\Api\Account\CatalogType\CatalogTypeController;
+use App\Http\Controllers\Api\Account\CatalogType\CatalogTypeExportController;
+use App\Http\Controllers\Api\Account\CatalogType\CatalogTypeImportController;
+use App\Http\Controllers\Api\Account\CatalogType\CustomFieldController;
+use App\Http\Controllers\Api\Account\CatalogType\CustomFieldGroupController;
+use App\Http\Controllers\Api\Account\CatalogType\CustomFieldGroupOrderController;
+use App\Http\Controllers\Api\Account\CatalogType\CustomFieldOrderController;
 use App\Http\Controllers\Api\Account\InvitationController;
 use App\Http\Controllers\Api\Account\ItemConditionController;
 use App\Http\Controllers\Api\Account\LocationController;
@@ -23,26 +23,26 @@ use App\Http\Controllers\Api\Administration\EmailSentController;
 use App\Http\Controllers\Api\Administration\MeController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegistrationController;
-use App\Http\Controllers\Api\Collection\CategoryController;
-use App\Http\Controllers\Api\Collection\CollectionController;
-use App\Http\Controllers\Api\Collection\Copy\CopyController;
-use App\Http\Controllers\Api\Collection\Copy\CopyHistoryController;
-use App\Http\Controllers\Api\Collection\Copy\DocumentController;
-use App\Http\Controllers\Api\Collection\Copy\InsuranceRecordController;
-use App\Http\Controllers\Api\Collection\Copy\LoanController;
-use App\Http\Controllers\Api\Collection\Copy\LocationHistoryController;
-use App\Http\Controllers\Api\Collection\Copy\MaintenanceRecordController;
-use App\Http\Controllers\Api\Collection\Copy\ProvenanceEventController;
-use App\Http\Controllers\Api\Collection\Copy\TransactionController;
-use App\Http\Controllers\Api\Collection\Copy\ValuationController;
-use App\Http\Controllers\Api\Collection\ItemController;
-use App\Http\Controllers\Api\Collection\ItemLogController;
-use App\Http\Controllers\Api\Collection\ItemPhotoController;
-use App\Http\Controllers\Api\Collection\ItemPhotoSelectionController;
-use App\Http\Controllers\Api\Collection\ItemTagController;
-use App\Http\Controllers\Api\Collection\SetController;
-use App\Http\Controllers\Api\Collection\StatisticsController;
-use App\Http\Controllers\Api\Collection\TagController;
+use App\Http\Controllers\Api\Catalog\CatalogController;
+use App\Http\Controllers\Api\Catalog\CategoryController;
+use App\Http\Controllers\Api\Catalog\Copy\CopyController;
+use App\Http\Controllers\Api\Catalog\Copy\CopyHistoryController;
+use App\Http\Controllers\Api\Catalog\Copy\DocumentController;
+use App\Http\Controllers\Api\Catalog\Copy\InsuranceRecordController;
+use App\Http\Controllers\Api\Catalog\Copy\LoanController;
+use App\Http\Controllers\Api\Catalog\Copy\LocationHistoryController;
+use App\Http\Controllers\Api\Catalog\Copy\MaintenanceRecordController;
+use App\Http\Controllers\Api\Catalog\Copy\ProvenanceEventController;
+use App\Http\Controllers\Api\Catalog\Copy\TransactionController;
+use App\Http\Controllers\Api\Catalog\Copy\ValuationController;
+use App\Http\Controllers\Api\Catalog\ItemController;
+use App\Http\Controllers\Api\Catalog\ItemLogController;
+use App\Http\Controllers\Api\Catalog\ItemPhotoController;
+use App\Http\Controllers\Api\Catalog\ItemPhotoSelectionController;
+use App\Http\Controllers\Api\Catalog\ItemTagController;
+use App\Http\Controllers\Api\Catalog\SetController;
+use App\Http\Controllers\Api\Catalog\StatisticsController;
+use App\Http\Controllers\Api\Catalog\TagController;
 use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,11 +64,11 @@ Route::name('api.')->group(function (): void {
         Route::put('me', [MeController::class, 'update'])->name('me.update');
 
         // collections
-        Route::get('collections', [CollectionController::class, 'index'])->name('collections');
-        Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
-        Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
-        Route::put('collections/{collection}', [CollectionController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.update');
-        Route::delete('collections/{collection}', [CollectionController::class, 'destroy'])->where('collection', '[1-9][0-9]*')->name('collections.destroy');
+        Route::get('collections', [CatalogController::class, 'index'])->name('collections');
+        Route::get('collections/{collection}', [CatalogController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
+        Route::post('collections', [CatalogController::class, 'create'])->name('collections.create');
+        Route::put('collections/{collection}', [CatalogController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.update');
+        Route::delete('collections/{collection}', [CatalogController::class, 'destroy'])->where('collection', '[1-9][0-9]*')->name('collections.destroy');
 
         // the categories that group items within a collection
         Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('collections.categories');
@@ -88,40 +88,40 @@ Route::name('api.')->group(function (): void {
         Route::get('collections/{collection}/statistics', [StatisticsController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('collections.statistics');
 
         // collection types
-        Route::get('collection-types', [CollectionTypeController::class, 'index'])->name('collectionTypes');
-        Route::get('collection-types/{collectionType}', [CollectionTypeController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.show');
-        Route::post('collection-types', [CollectionTypeController::class, 'create'])->name('collectionTypes.create');
-        Route::put('collection-types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.update');
-        Route::delete('collection-types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.destroy');
+        Route::get('collection-types', [CatalogTypeController::class, 'index'])->name('catalogTypes');
+        Route::get('collection-types/{collectionType}', [CatalogTypeController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.show');
+        Route::post('collection-types', [CatalogTypeController::class, 'create'])->name('catalogTypes.create');
+        Route::put('collection-types/{collectionType}', [CatalogTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.update');
+        Route::delete('collection-types/{collectionType}', [CatalogTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.destroy');
 
         // the type's schema, as a portable JSON document
-        Route::get('collection-types/{collectionType}/export', [CollectionTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.export.show');
+        Route::get('collection-types/{collectionType}/export', [CatalogTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.export.show');
 
         // a type rebuilt from an exported JSON document
-        Route::post('collection-types/import', [CollectionTypeImportController::class, 'create'])->name('collectionTypes.import.create');
+        Route::post('collection-types/import', [CatalogTypeImportController::class, 'create'])->name('catalogTypes.import.create');
 
         // the collections a type applies to
-        Route::put('collection-types/{collectionType}/collections', [CollectionTypeCollectionController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.collections.update');
+        Route::put('collection-types/{collectionType}/collections', [CatalogTypeCatalogController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.collections.update');
 
         // the groups a type's custom fields can be organised into
-        Route::get('collection-types/{collectionType}/custom-field-groups', [CustomFieldGroupController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFieldGroups');
-        Route::get('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.show');
-        Route::post('collection-types/{collectionType}/custom-field-groups', [CustomFieldGroupController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFieldGroups.create');
-        Route::put('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.update');
-        Route::delete('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.destroy');
+        Route::get('collection-types/{collectionType}/custom-field-groups', [CustomFieldGroupController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.customFieldGroups');
+        Route::get('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('catalogTypes.customFieldGroups.show');
+        Route::post('collection-types/{collectionType}/custom-field-groups', [CustomFieldGroupController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.customFieldGroups.create');
+        Route::put('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('catalogTypes.customFieldGroups.update');
+        Route::delete('collection-types/{collectionType}/custom-field-groups/{group}', [CustomFieldGroupController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('catalogTypes.customFieldGroups.destroy');
 
         // where a group sits among the type's groups
-        Route::put('collection-types/{collectionType}/custom-field-groups/{group}/order', [CustomFieldGroupOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('collectionTypes.customFieldGroups.order.update');
+        Route::put('collection-types/{collectionType}/custom-field-groups/{group}/order', [CustomFieldGroupOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'group' => '[1-9][0-9]*'])->name('catalogTypes.customFieldGroups.order.update');
 
         // custom fields
-        Route::get('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields');
-        Route::get('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.show');
-        Route::post('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('collectionTypes.customFields.create');
-        Route::put('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.update');
-        Route::delete('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.destroy');
+        Route::get('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'index'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.customFields');
+        Route::get('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'show'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('catalogTypes.customFields.show');
+        Route::post('collection-types/{collectionType}/custom-fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('catalogTypes.customFields.create');
+        Route::put('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('catalogTypes.customFields.update');
+        Route::delete('collection-types/{collectionType}/custom-fields/{customField}', [CustomFieldController::class, 'destroy'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('catalogTypes.customFields.destroy');
 
         // where a field sits among its group's fields
-        Route::put('collection-types/{collectionType}/custom-fields/{customField}/order', [CustomFieldOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('collectionTypes.customFields.order.update');
+        Route::put('collection-types/{collectionType}/custom-fields/{customField}/order', [CustomFieldOrderController::class, 'update'])->where(['collectionType' => '[1-9][0-9]*', 'customField' => '[1-9][0-9]*'])->name('catalogTypes.customFields.order.update');
 
         // locations
         Route::get('locations', [LocationController::class, 'index'])->name('locations');

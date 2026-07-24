@@ -9,7 +9,7 @@ use App\Actions\DestroyInsuranceRecord;
 use App\Actions\UpdateInsuranceRecord;
 use App\Enums\InsuranceStatus;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\InsuranceRecord;
 use App\Models\Item;
@@ -27,7 +27,7 @@ use Illuminate\Validation\Rule;
  */
 class InsuranceRecordController extends Controller
 {
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -50,12 +50,12 @@ class InsuranceRecordController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'insurance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'insurance'])
             ->with('status', __('Insurance record added'))
             ->with('status_description', __('The coverage was added to the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $insuranceRecord): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $insuranceRecord): RedirectResponse
     {
         $recordModel = $this->findRecord($copy, $insuranceRecord);
 
@@ -80,12 +80,12 @@ class InsuranceRecordController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'insurance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'insurance'])
             ->with('status', __('Insurance record updated'))
             ->with('status_description', __('Your changes to the coverage were saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $insuranceRecord): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $insuranceRecord): RedirectResponse
     {
         $recordModel = $this->findRecord($copy, $insuranceRecord);
 
@@ -94,7 +94,7 @@ class InsuranceRecordController extends Controller
             record: $recordModel,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'insurance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'insurance'])
             ->with('status', __('Insurance record deleted'))
             ->with('status_description', __('The coverage was removed from the history of this copy.'));
     }

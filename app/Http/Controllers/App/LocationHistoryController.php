@@ -8,7 +8,7 @@ use App\Actions\DestroyLocationHistory;
 use App\Actions\MoveCopy;
 use App\Actions\UpdateLocationHistory;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
@@ -26,7 +26,7 @@ use Illuminate\Http\Request;
  */
 class LocationHistoryController extends Controller
 {
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -39,12 +39,12 @@ class LocationHistoryController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'locations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'locations'])
             ->with('status', __('Copy moved'))
             ->with('status_description', __('The move was added to the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $locationHistory): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $locationHistory): RedirectResponse
     {
         $recordModel = $this->findRecord($copy, $locationHistory);
 
@@ -60,12 +60,12 @@ class LocationHistoryController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'locations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'locations'])
             ->with('status', __('Location record updated'))
             ->with('status_description', __('Your correction to the move was saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $locationHistory): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $locationHistory): RedirectResponse
     {
         $recordModel = $this->findRecord($copy, $locationHistory);
 
@@ -74,7 +74,7 @@ class LocationHistoryController extends Controller
             record: $recordModel,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'locations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'locations'])
             ->with('status', __('Location record deleted'))
             ->with('status_description', __('The move was removed from the history of this copy.'));
     }
@@ -91,7 +91,7 @@ class LocationHistoryController extends Controller
     private function findLocation(Copy $copy, int $locationId): Location
     {
         try {
-            return $copy->item->collection->account->locations()->findOrFail($locationId);
+            return $copy->item->catalog->account->locations()->findOrFail($locationId);
         } catch (ModelNotFoundException) {
             abort(404);
         }

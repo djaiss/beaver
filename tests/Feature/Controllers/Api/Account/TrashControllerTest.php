@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -27,10 +27,10 @@ beforeEach(function () {
 
 it('lists the trashed objects of the account', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1']);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Amazing Spider-Man #1']);
     $item->delete();
-    $collection->delete();
+    $catalog->delete();
 
     Sanctum::actingAs($user);
 
@@ -49,8 +49,8 @@ it('lists the trashed objects of the account', function () {
 it('does not list the trashed objects of another account', function () {
     $user = $this->createUser();
     $otherAccount = $this->createAccount('Moondance Diner');
-    $collection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $catalog->delete();
 
     Sanctum::actingAs($user);
 
@@ -63,8 +63,8 @@ it('restores an object from the trash', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Amazing Spider-Man #1']);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Amazing Spider-Man #1']);
     $item->delete();
 
     Sanctum::actingAs($user);
@@ -106,8 +106,8 @@ it('returns not found when restoring an object of another account', function () 
 
     $user = $this->createUser();
     $otherAccount = $this->createAccount('Moondance Diner');
-    $collection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     Sanctum::actingAs($user);
@@ -126,8 +126,8 @@ it('restricts restoring an object to owners and editors', function () {
 
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     Sanctum::actingAs($viewer);
@@ -145,8 +145,8 @@ it('empties the trash', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     Sanctum::actingAs($user);
@@ -162,8 +162,8 @@ it('does not empty the trash of another account', function () {
 
     $user = $this->createUser();
     $otherAccount = $this->createAccount('Moondance Diner');
-    $collection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     Sanctum::actingAs($user);
@@ -179,8 +179,8 @@ it('restricts emptying the trash to owners and editors', function () {
 
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     Sanctum::actingAs($viewer);

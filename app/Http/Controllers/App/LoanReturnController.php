@@ -6,7 +6,7 @@ namespace App\Http\Controllers\App;
 
 use App\Actions\ReturnLoan;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Loan;
@@ -24,7 +24,7 @@ use Illuminate\Http\Request;
  */
 class LoanReturnController extends Controller
 {
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $loan): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $loan): RedirectResponse
     {
         $loanModel = $this->findLoan($copy, $loan);
 
@@ -46,7 +46,7 @@ class LoanReturnController extends Controller
                 ->with('status_description', __('The copy is back in your custody.'));
         }
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'loans'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'loans'])
             ->with('status', __('Loan marked as returned'))
             ->with('status_description', __('The copy is back in your custody.'));
     }

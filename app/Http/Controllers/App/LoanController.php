@@ -10,7 +10,7 @@ use App\Actions\UpdateLoan;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Loan;
@@ -29,7 +29,7 @@ use Illuminate\Validation\Rule;
  */
 class LoanController extends Controller
 {
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -51,12 +51,12 @@ class LoanController extends Controller
         )->execute();
 
         return $this->redirectToLoansSection($request, $loan, __('Loan recorded'), __('The loan was logged in the history of this copy.'))
-            ?? to_route('items.history.show', [$collection, $item, $copy, 'loans'])
+            ?? to_route('items.history.show', [$catalog, $item, $copy, 'loans'])
                 ->with('status', __('Loan recorded'))
                 ->with('status_description', __('The loan was logged in the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $loan): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $loan): RedirectResponse
     {
         $loanModel = $this->findLoan($copy, $loan);
 
@@ -80,12 +80,12 @@ class LoanController extends Controller
         )->execute();
 
         return $this->redirectToLoansSection($request, $loanModel->refresh(), __('Loan updated'), __('Your changes to the loan were saved.'))
-            ?? to_route('items.history.show', [$collection, $item, $copy, 'loans'])
+            ?? to_route('items.history.show', [$catalog, $item, $copy, 'loans'])
                 ->with('status', __('Loan updated'))
                 ->with('status_description', __('Your changes to the loan were saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $loan): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $loan): RedirectResponse
     {
         $loanModel = $this->findLoan($copy, $loan);
 
@@ -102,7 +102,7 @@ class LoanController extends Controller
                 ->with('status_description', __('The loan was removed from the history of this copy.'));
         }
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'loans'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'loans'])
             ->with('status', __('Loan deleted'))
             ->with('status_description', __('The loan was removed from the history of this copy.'));
     }

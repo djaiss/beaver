@@ -49,7 +49,7 @@ class ReturnLoan
 
     private function validate(): void
     {
-        $account = $this->loan->copy->item->collection->account;
+        $account = $this->loan->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

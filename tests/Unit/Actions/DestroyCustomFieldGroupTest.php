@@ -5,7 +5,7 @@ use App\Actions\DestroyCustomFieldGroup;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -20,8 +20,8 @@ it('deletes a group', function () {
     $account = $this->createAccount();
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
     new DestroyCustomFieldGroup(
         user: $editor,
@@ -43,11 +43,11 @@ it('keeps the fields of the group and drops them back to ungrouped', function ()
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
     $field = CustomField::factory()->create([
-        'type_id' => $collectionType->id,
+        'type_id' => $catalogType->id,
         'group_id' => $group->id,
         'name' => 'Grade',
     ]);
@@ -58,7 +58,7 @@ it('keeps the fields of the group and drops them back to ungrouped', function ()
     $this->assertModelExists($field);
     expect($field->fresh()->group_id)->toBeNull();
     expect($field->fresh()->name)->toBe('Grade');
-    expect($collectionType->ungroupedCustomFields()->get()->map->name->all())->toBe(['Grade']);
+    expect($catalogType->ungroupedCustomFields()->get()->map->name->all())->toBe(['Grade']);
 });
 
 it('leaves the fields of another group alone', function () {
@@ -67,11 +67,11 @@ it('leaves the fields of another group alone', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $doomed = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
-    $survivor = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $doomed = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
+    $survivor = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
-    $field = CustomField::factory()->create(['type_id' => $collectionType->id, 'group_id' => $survivor->id]);
+    $field = CustomField::factory()->create(['type_id' => $catalogType->id, 'group_id' => $survivor->id]);
 
     new DestroyCustomFieldGroup(user: $owner, customFieldGroup: $doomed)->execute();
 
@@ -85,8 +85,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
     new DestroyCustomFieldGroup(
         user: $viewer,

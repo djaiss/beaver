@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\FieldTypeEnum;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +22,7 @@ class CustomFieldFactory extends Factory
     public function definition(): array
     {
         return [
-            'type_id' => CollectionType::factory(),
+            'type_id' => CatalogType::factory(),
             'group_id' => null,
             'name' => fake()->randomElement(['Issue #', 'Vintage', 'Grade', 'Year', 'Publisher']),
             'field_type' => FieldTypeEnum::Text->value,

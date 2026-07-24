@@ -5,7 +5,7 @@ use App\Actions\DestroySeries;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Series;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -47,10 +47,10 @@ it('unlinks its items rather than deleting them', function () {
     $series = Series::factory()->create(['account_id' => $account->id]);
 
     // A series spans collections, so the unlinking has to reach across them too.
-    $books = Collection::factory()->create(['account_id' => $account->id]);
-    $films = Collection::factory()->create(['account_id' => $account->id]);
-    $book = Item::factory()->create(['collection_id' => $books->id, 'series_id' => $series->id]);
-    $film = Item::factory()->create(['collection_id' => $films->id, 'series_id' => $series->id]);
+    $books = Catalog::factory()->create(['account_id' => $account->id]);
+    $films = Catalog::factory()->create(['account_id' => $account->id]);
+    $book = Item::factory()->create(['catalog_id' => $books->id, 'series_id' => $series->id]);
+    $film = Item::factory()->create(['catalog_id' => $films->id, 'series_id' => $series->id]);
 
     new DestroySeries(
         user: $owner,
@@ -71,8 +71,8 @@ it('unlinks a trashed item too, so restoring it does not bring back a dangling s
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
     $series = Series::factory()->create(['account_id' => $account->id]);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'series_id' => $series->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'series_id' => $series->id]);
     $item->delete();
 
     new DestroySeries(

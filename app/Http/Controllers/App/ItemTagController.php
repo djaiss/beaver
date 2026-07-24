@@ -7,7 +7,7 @@ namespace App\Http\Controllers\App;
 use App\Actions\AttachTagToItem;
 use App\Actions\DetachTagFromItem;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Item;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +17,7 @@ class ItemTagController extends Controller
 {
     public function create(Request $request): RedirectResponse
     {
-        $collection = $request->attributes->get('collection');
+        $catalog = $request->attributes->get('catalog');
         $item = $request->attributes->get('item');
 
         $validated = $request->validate([
@@ -30,12 +30,12 @@ class ItemTagController extends Controller
             name: $validated['name'],
         )->execute();
 
-        return to_route('items.show', [$collection, $item])
+        return to_route('items.show', [$catalog, $item])
             ->with('status', __('Tag added'))
             ->with('status_description', __('The tag is now on this item.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, int $tag): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, int $tag): RedirectResponse
     {
         try {
             $tagModel = $request->user()->account->tags()->findOrFail($tag);
@@ -49,7 +49,7 @@ class ItemTagController extends Controller
             tag: $tagModel,
         )->execute();
 
-        return to_route('items.show', [$collection, $item])
+        return to_route('items.show', [$catalog, $item])
             ->with('status', __('Tag removed'))
             ->with('status_description', __('The tag is no longer on this item, and stays available for other items.'));
     }

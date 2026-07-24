@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use App\Models\Collection;
+use App\Models\Catalog;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Resolves the item every url under `items/{item}` carries. Runs after
- * CheckCollection, and looks the item up through the collection in the url, so
+ * CheckCatalog, and looks the item up through the collection in the url, so
  * an item of another collection is not found even within the same account.
  *
  * Nothing is eager loaded here: each screen loads the relations its own panel
@@ -26,13 +26,13 @@ class CheckItem
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $collection = $request->route()->parameter('collection');
-        abort_unless($collection instanceof Collection, 404);
+        $catalog = $request->route()->parameter('collection');
+        abort_unless($catalog instanceof Catalog, 404);
 
         $id = (int) $request->route()->parameter('item');
 
         try {
-            $item = $collection->items()->findOrFail($id);
+            $item = $catalog->items()->findOrFail($id);
         } catch (ModelNotFoundException) {
             abort(404);
         }

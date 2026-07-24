@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Series;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -164,8 +164,8 @@ it('deletes a series and unlinks its items', function () {
 
     $user = $this->createUser();
     $series = Series::factory()->create(['account_id' => $user->account_id]);
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'series_id' => $series->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'series_id' => $series->id]);
 
     Sanctum::actingAs($user);
 

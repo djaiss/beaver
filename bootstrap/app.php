@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Middleware\CheckCollection;
+use App\Http\Middleware\CheckCatalog;
 use App\Http\Middleware\CheckCopy;
 use App\Http\Middleware\CheckItem;
 use App\Http\Middleware\CheckMarketing;
@@ -33,7 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'set.locale' => SetLocale::class,
             // the collection domain resolves what the url names, outermost first
-            'collection' => CheckCollection::class,
+            'catalog' => CheckCatalog::class,
             'item' => CheckItem::class,
             'copy' => CheckCopy::class,
             'owner' => EnsureAccountOwner::class,

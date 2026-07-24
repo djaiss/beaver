@@ -130,10 +130,10 @@
   }"
 >
   <div class="mb-5 flex items-center gap-1.5 text-[13px]">
-    <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+    <a href="{{ route('collections.show', $catalog) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ $catalog->name }}</a>
     <span class="text-muted-soft">/</span>
     @if ($item)
-      <a href="{{ route('items.show', [$collection, $item]) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $item->name }}</a>
+      <a href="{{ route('items.show', [$catalog, $item]) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $item->name }}</a>
       <span class="text-muted-soft">/</span>
       <span class="font-medium text-ink">{{ __('Edit') }}</span>
     @else
@@ -148,7 +148,7 @@
 
   <x-form
     :method="$item ? 'put' : 'post'"
-    :action="$item ? route('items.update', [$collection, $item]) : route('items.create', $collection)"
+    :action="$item ? route('items.update', [$catalog, $item]) : route('items.create', $catalog)"
     :upload="true"
     data-turbo="true"
     data-test="{{ $item ? 'edit-item-form' : 'add-item-form' }}"
@@ -362,7 +362,7 @@
         @if ($categories === [])
           <p class="mt-2 text-[13px] text-muted-soft">
             {{ __('This collection has no categories yet.') }}
-            <a href="{{ route('categories.index', $collection->id) }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
+            <a href="{{ route('categories.index', $catalog->id) }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
           </p>
         @endif
       </div>
@@ -380,7 +380,7 @@
         @if ($sets->isEmpty())
           <p class="mt-2 text-[13px] text-muted-soft">
             {{ __('This collection has no sets yet.') }}
-            <a href="{{ route('sets.index', $collection->id) }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
+            <a href="{{ route('sets.index', $catalog->id) }}" class="font-medium text-ink underline underline-offset-2">{{ __('Create one') }}</a>
           </p>
         @endif
       </div>
@@ -544,7 +544,7 @@
     </button>
 
     <div class="flex items-center justify-end gap-3 pt-2">
-      <x-button.secondary href="{{ $item ? route('items.show', [$collection, $item]) : route('collections.show', $collection) }}" turbo="true">
+      <x-button.secondary href="{{ $item ? route('items.show', [$catalog, $item]) : route('collections.show', $catalog) }}" turbo="true">
         {{ __('Cancel') }}
       </x-button.secondary>
 

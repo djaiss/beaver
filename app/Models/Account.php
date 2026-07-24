@@ -83,21 +83,21 @@ class Account extends Model
     /**
      * Get the collections that belong to the account.
      *
-     * @return HasMany<Collection, $this>
+     * @return HasMany<Catalog, $this>
      */
-    public function collections(): HasMany
+    public function catalogs(): HasMany
     {
-        return $this->hasMany(Collection::class);
+        return $this->hasMany(Catalog::class);
     }
 
     /**
      * Get the collection types that belong to the account.
      *
-     * @return HasMany<CollectionType, $this>
+     * @return HasMany<CatalogType, $this>
      */
-    public function collectionTypes(): HasMany
+    public function catalogTypes(): HasMany
     {
-        return $this->hasMany(CollectionType::class);
+        return $this->hasMany(CatalogType::class);
     }
 
     /**
@@ -144,21 +144,21 @@ class Account extends Model
     /**
      * Get the sets that belong to the account, through the collections they live in.
      *
-     * @return HasManyThrough<Set, Collection, $this>
+     * @return HasManyThrough<Set, Catalog, $this>
      */
     public function sets(): HasManyThrough
     {
-        return $this->hasManyThrough(Set::class, Collection::class);
+        return $this->hasManyThrough(Set::class, Catalog::class);
     }
 
     /**
      * Get the items that belong to the account, through the collections they live in.
      *
-     * @return HasManyThrough<Item, Collection, $this>
+     * @return HasManyThrough<Item, Catalog, $this>
      */
     public function items(): HasManyThrough
     {
-        return $this->hasManyThrough(Item::class, Collection::class);
+        return $this->hasManyThrough(Item::class, Catalog::class);
     }
 
     /**

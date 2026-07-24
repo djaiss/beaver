@@ -13,10 +13,10 @@ use Illuminate\Validation\Rule;
 
 class CustomFieldGroupOrderController extends Controller
 {
-    public function update(Request $request, int $collectionType, int $group): RedirectResponse
+    public function update(Request $request, int $catalogType, int $group): RedirectResponse
     {
         try {
-            $type = $request->user()->account->collectionTypes()->findOrFail($collectionType);
+            $type = $request->user()->account->catalogTypes()->findOrFail($catalogType);
             $customFieldGroup = $type->customFieldGroups()->findOrFail($group);
         } catch (ModelNotFoundException) {
             abort(404);

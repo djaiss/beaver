@@ -37,7 +37,7 @@ class DestroyLocationHistory
 
     private function validate(): void
     {
-        $account = $this->record->copy->item->collection->account;
+        $account = $this->record->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

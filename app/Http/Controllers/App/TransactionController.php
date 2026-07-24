@@ -9,7 +9,7 @@ use App\Actions\DestroyTransaction;
 use App\Actions\UpdateTransaction;
 use App\Enums\TransactionType;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Transaction;
@@ -26,7 +26,7 @@ use Illuminate\Validation\Rule;
  */
 class TransactionController extends Controller
 {
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -47,12 +47,12 @@ class TransactionController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'transactions'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'transactions'])
             ->with('status', __('Transaction recorded'))
             ->with('status_description', __('The transaction was added to the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $transaction): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $transaction): RedirectResponse
     {
         $transactionModel = $this->findTransaction($copy, $transaction);
 
@@ -75,19 +75,19 @@ class TransactionController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'transactions'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'transactions'])
             ->with('status', __('Transaction updated'))
             ->with('status_description', __('Your changes to the transaction were saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $transaction): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $transaction): RedirectResponse
     {
         new DestroyTransaction(
             user: $request->user(),
             transaction: $this->findTransaction($copy, $transaction),
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'transactions'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'transactions'])
             ->with('status', __('Transaction deleted'))
             ->with('status_description', __('The transaction was removed from the history of this copy.'));
     }

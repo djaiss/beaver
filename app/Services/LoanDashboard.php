@@ -46,7 +46,7 @@ class LoanDashboard
             ->forAccount($account)
             ->where('direction', $direction)
             ->with([
-                'copy.item.collection',
+                'copy.item.catalog',
                 'copy.item.mainPhoto',
                 'itemConditionOut',
                 'itemConditionIn',
@@ -85,12 +85,12 @@ class LoanDashboard
      *
      * @return Collection<int, Loan>
      */
-    public function filtered(?string $search = null, ?int $collectionId = null, ?string $status = null, string $sort = 'due'): Collection
+    public function filtered(?string $search = null, ?int $catalogId = null, ?string $status = null, string $sort = 'due'): Collection
     {
         $loans = $this->loans;
 
-        if ($collectionId !== null) {
-            $loans = $loans->filter(fn (Loan $loan): bool => $loan->copy->item->collection->id === $collectionId);
+        if ($catalogId !== null) {
+            $loans = $loans->filter(fn (Loan $loan): bool => $loan->copy->item->catalog->id === $catalogId);
         }
 
         if ($status !== null) {
@@ -144,12 +144,12 @@ class LoanDashboard
      *
      * @return Collection<int, array{name: string, active: int, loans: Collection<int, Loan>}>
      */
-    public function parties(?string $search = null, ?int $collectionId = null): Collection
+    public function parties(?string $search = null, ?int $catalogId = null): Collection
     {
         $loans = $this->loans;
 
-        if ($collectionId !== null) {
-            $loans = $loans->filter(fn (Loan $loan): bool => $loan->copy->item->collection->id === $collectionId);
+        if ($catalogId !== null) {
+            $loans = $loans->filter(fn (Loan $loan): bool => $loan->copy->item->catalog->id === $catalogId);
         }
 
         if ($search !== null && trim($search) !== '') {
@@ -215,13 +215,13 @@ class LoanDashboard
      *
      * @return array<int, string>
      */
-    public function collections(): array
+    public function catalogs(): array
     {
         return $this->loans
-            ->map(fn (Loan $loan): object => $loan->copy->item->collection)
+            ->map(fn (Loan $loan): object => $loan->copy->item->catalog)
             ->unique('id')
             ->sortBy('name')
-            ->mapWithKeys(fn (object $collection): array => [$collection->id => $collection->name])
+            ->mapWithKeys(fn (object $catalog): array => [$catalog->id => $catalog->name])
             ->all();
     }
 

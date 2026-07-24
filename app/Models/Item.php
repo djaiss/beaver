@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * An item reaches its account through its collection.
  *
  * @property int $id
- * @property int $collection_id
+ * @property int $catalog_id
  * @property int|null $category_id
  * @property int|null $type_id
  * @property int|null $set_id
@@ -57,7 +57,7 @@ class Item extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'collection_id',
+        'catalog_id',
         'category_id',
         'type_id',
         'set_id',
@@ -82,21 +82,21 @@ class Item extends Model
     /**
      * Get the collection the item belongs to.
      *
-     * @return BelongsTo<Collection, $this>
+     * @return BelongsTo<Catalog, $this>
      */
-    public function collection(): BelongsTo
+    public function catalog(): BelongsTo
     {
-        return $this->belongsTo(Collection::class);
+        return $this->belongsTo(Catalog::class);
     }
 
     /**
      * Get the type of the item, if any.
      *
-     * @return BelongsTo<CollectionType, $this>
+     * @return BelongsTo<CatalogType, $this>
      */
-    public function collectionType(): BelongsTo
+    public function catalogType(): BelongsTo
     {
-        return $this->belongsTo(CollectionType::class, 'type_id');
+        return $this->belongsTo(CatalogType::class, 'type_id');
     }
 
     /**

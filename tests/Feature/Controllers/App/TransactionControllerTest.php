@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Enums\TransactionType;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Transaction;
@@ -16,11 +16,11 @@ it('records a transaction against a copy', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $response = $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $response = $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::Purchase->value,
         'occurred_at' => '2026-03-14',
         'counterparty' => 'Central Perk Comics',
@@ -33,7 +33,7 @@ it('records a transaction against a copy', function () {
         'note' => 'Bought the day Ross said we were on a break.',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'transactions']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'transactions']));
     $response->assertSessionHas('status', 'Transaction recorded');
 
     $transaction = Transaction::query()->first();
@@ -49,11 +49,11 @@ it('converts every amount from currency units to cents', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::Purchase->value,
         'occurred_at' => '2026-03-14',
         'amount' => '120.50',
@@ -75,11 +75,11 @@ it('leaves the amounts empty when none were given', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::GiftReceived->value,
         'occurred_at' => '2026-03-14',
     ]);
@@ -96,11 +96,11 @@ it('falls back to the currency of the collection', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'GBP']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'GBP']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::Purchase->value,
         'occurred_at' => '2026-03-14',
         'amount' => '10',
@@ -111,21 +111,21 @@ it('falls back to the currency of the collection', function () {
 
 it('validates the type and the date when recording a transaction', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [])
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [])
         ->assertSessionHasErrors(['type', 'occurred_at']);
 });
 
 it('rejects an unknown transaction type', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => 'bartering-for-a-monkey',
         'occurred_at' => '2026-03-14',
     ])->assertSessionHasErrors('type');
@@ -133,11 +133,11 @@ it('rejects an unknown transaction type', function () {
 
 it('rejects a negative amount and an unknown currency', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::Purchase->value,
         'occurred_at' => '2026-03-14',
         'amount' => '-5',
@@ -149,11 +149,11 @@ it('forbids a viewer from recording a transaction', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($viewer)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($viewer)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::Purchase->value,
         'occurred_at' => '2026-03-14',
     ])->assertNotFound();
@@ -161,8 +161,8 @@ it('forbids a viewer from recording a transaction', function () {
 
 it('does not record a transaction against a copy of another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $this->actingAs($user)->post(route('transactions.create', [$foreign, $item, $copy]), [
@@ -173,12 +173,12 @@ it('does not record a transaction against a copy of another account', function (
 
 it('does not record a transaction against a copy of another item', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $other = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+    $other = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $other->id]);
 
-    $this->actingAs($user)->post(route('transactions.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('transactions.create', [$catalog, $item, $copy]), [
         'type' => TransactionType::Purchase->value,
         'occurred_at' => '2026-03-14',
     ])->assertNotFound();
@@ -188,8 +188,8 @@ it('updates a transaction', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create([
         'copy_id' => $copy->id,
@@ -198,14 +198,14 @@ it('updates a transaction', function () {
         'occurred_at' => '2024-01-01',
     ]);
 
-    $response = $this->actingAs($user)->put(route('transactions.update', [$collection, $item, $copy, $transaction]), [
+    $response = $this->actingAs($user)->put(route('transactions.update', [$catalog, $item, $copy, $transaction]), [
         'type' => TransactionType::Sale->value,
         'occurred_at' => '2026-05-02',
         'counterparty' => 'Gunther',
         'amount' => '350',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'transactions']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'transactions']));
     $response->assertSessionHas('status', 'Transaction updated');
 
     $transaction->refresh();
@@ -217,12 +217,12 @@ it('updates a transaction', function () {
 
 it('validates the type and the date when updating a transaction', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->put(route('transactions.update', [$collection, $item, $copy, $transaction]), [])
+    $this->actingAs($user)->put(route('transactions.update', [$catalog, $item, $copy, $transaction]), [])
         ->assertSessionHasErrors(['type', 'occurred_at']);
 });
 
@@ -230,12 +230,12 @@ it('forbids a viewer from updating a transaction', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->put(route('transactions.update', [$collection, $item, $copy, $transaction]), [
+    $this->actingAs($viewer)->put(route('transactions.update', [$catalog, $item, $copy, $transaction]), [
         'type' => TransactionType::Sale->value,
         'occurred_at' => '2026-05-02',
     ])->assertNotFound();
@@ -243,8 +243,8 @@ it('forbids a viewer from updating a transaction', function () {
 
 it('does not update a transaction of another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
@@ -256,13 +256,13 @@ it('does not update a transaction of another account', function () {
 
 it('does not update a transaction that belongs to another copy', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $other = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $other->id]);
 
-    $this->actingAs($user)->put(route('transactions.update', [$collection, $item, $copy, $transaction]), [
+    $this->actingAs($user)->put(route('transactions.update', [$catalog, $item, $copy, $transaction]), [
         'type' => TransactionType::Sale->value,
         'occurred_at' => '2026-05-02',
     ])->assertNotFound();
@@ -272,14 +272,14 @@ it('deletes a transaction', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $response = $this->actingAs($user)->delete(route('transactions.destroy', [$collection, $item, $copy, $transaction]));
+    $response = $this->actingAs($user)->delete(route('transactions.destroy', [$catalog, $item, $copy, $transaction]));
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'transactions']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'transactions']));
     $response->assertSessionHas('status', 'Transaction deleted');
     $this->assertModelMissing($transaction);
 });
@@ -288,12 +288,12 @@ it('forbids a viewer from deleting a transaction', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->delete(route('transactions.destroy', [$collection, $item, $copy, $transaction]))
+    $this->actingAs($viewer)->delete(route('transactions.destroy', [$catalog, $item, $copy, $transaction]))
         ->assertNotFound();
 
     $this->assertModelExists($transaction);
@@ -301,8 +301,8 @@ it('forbids a viewer from deleting a transaction', function () {
 
 it('does not delete a transaction of another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 

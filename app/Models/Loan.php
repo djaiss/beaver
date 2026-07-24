@@ -228,7 +228,7 @@ class Loan extends Model
     #[Scope]
     protected function forAccount(Builder $query, Account $account): void
     {
-        $query->whereHas('copy.item.collection', function (Builder $subQuery) use ($account): void {
+        $query->whereHas('copy.item.catalog', function (Builder $subQuery) use ($account): void {
             $subQuery->where('account_id', $account->id);
         });
     }

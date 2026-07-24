@@ -15,7 +15,7 @@
 
         <x-form
           method="delete"
-          :action="route('items.tags.destroy', [$collection, $item, $tag])"
+          :action="route('items.tags.destroy', [$catalog, $item, $tag])"
           x-target="item-tags notifications"
           class="flex"
         >
@@ -37,7 +37,7 @@
   @if ($canManage)
     <x-form
       method="post"
-      :action="route('items.tags.create', [$collection, $item])"
+      :action="route('items.tags.create', [$catalog, $item])"
       x-target="item-tags notifications"
       x-on:ajax:success="$refs.tagInput.value = ''"
       data-test="add-tag-form"

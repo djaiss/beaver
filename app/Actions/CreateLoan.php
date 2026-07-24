@@ -66,7 +66,7 @@ class CreateLoan
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -94,7 +94,7 @@ class CreateLoan
             // holds a deposit but does not say what it is in.
             'deposit_currency_code' => $this->depositAmount === null
                 ? null
-                : ($this->depositCurrencyCode ?? $this->copy->item->collection->currency),
+                : ($this->depositCurrencyCode ?? $this->copy->item->catalog->currency),
             'include_in_provenance' => $this->includeInProvenance,
         ]);
     }

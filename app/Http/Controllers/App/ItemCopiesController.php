@@ -26,7 +26,7 @@ class ItemCopiesController extends Controller
             'copies.latestValuation',
             'copies.acquiringTransaction',
             'category',
-            'collectionType',
+            'catalogType',
         ]);
 
         return view('app.items.copies', [

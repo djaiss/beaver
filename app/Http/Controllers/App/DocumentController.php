@@ -9,7 +9,7 @@ use App\Actions\UpdateDocument;
 use App\Actions\UploadDocument;
 use App\Enums\DocumentType;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Document;
 use App\Models\Item;
@@ -32,7 +32,7 @@ class DocumentController extends Controller
 {
     use ResolvesDocumentables;
 
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -51,12 +51,12 @@ class DocumentController extends Controller
             referenceNumber: $validated['reference_number'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, $this->sectionForDocumentable($validated['documentable_type'])])
+        return to_route('items.history.show', [$catalog, $item, $copy, $this->sectionForDocumentable($validated['documentable_type'])])
             ->with('status', __('Document attached'))
             ->with('status_description', __('The document was added to the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $document): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $document): RedirectResponse
     {
         $documentModel = $this->findDocument($request, $document);
 
@@ -72,12 +72,12 @@ class DocumentController extends Controller
             referenceNumber: $validated['reference_number'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, $this->sectionForDocumentable($documentModel->documentable_type)])
+        return to_route('items.history.show', [$catalog, $item, $copy, $this->sectionForDocumentable($documentModel->documentable_type)])
             ->with('status', __('Document updated'))
             ->with('status_description', __('Your changes to the document were saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $document): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $document): RedirectResponse
     {
         $documentModel = $this->findDocument($request, $document);
 
@@ -88,7 +88,7 @@ class DocumentController extends Controller
             document: $documentModel,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, $section])
+        return to_route('items.history.show', [$catalog, $item, $copy, $section])
             ->with('status', __('Document deleted'))
             ->with('status_description', __('The document and its file were removed.'));
     }

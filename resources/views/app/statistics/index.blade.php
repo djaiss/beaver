@@ -1,7 +1,7 @@
 @php
   use App\Helpers\Money;
 
-  $money = fn (int $cents): string => Money::format($cents, $collection->currency);
+  $money = fn (int $cents): string => Money::format($cents, $catalog->currency);
 
   // The series colours cycle, so a chart never runs out of them however many
   // categories or locations it has to draw.
@@ -42,7 +42,7 @@
   $donut = $stops === [] ? 'var(--color-card)' : 'conic-gradient(' . implode(', ', $stops) . ')';
 @endphp
 
-<x-app-layout :collection="$collection">
+<x-app-layout :catalog="$catalog">
   <x-slot:title>
     {{ __('Statistics') }}
   </x-slot>
@@ -52,7 +52,7 @@
       <div class="mb-5 flex items-center gap-1.5 text-[13px]">
         <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
         <span class="text-muted-soft">/</span>
-        <a href="{{ route('collections.show', $collection->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+        <a href="{{ route('collections.show', $catalog->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $catalog->name }}</a>
         <span class="text-muted-soft">/</span>
         <span class="font-medium text-ink">{{ __('Statistics') }}</span>
       </div>
@@ -73,7 +73,7 @@
             {{ __('Add a few items, then record what each copy cost, the shape it is in and where you keep it. The charts fill themselves in from there.') }}
           </p>
 
-          <x-button :href="route('collections.show', $collection->id)" class="mt-7" data-test="add-first-item-button">
+          <x-button :href="route('collections.show', $catalog->id)" class="mt-7" data-test="add-first-item-button">
             {{ __('Go to the items') }}
           </x-button>
         </div>
@@ -250,7 +250,7 @@
                 <div class="text-base font-semibold text-ink">{{ __('Top items by value') }}</div>
                 <p class="mt-0.5 text-[13px] text-muted">{{ __('Your most valuable pieces.') }}</p>
               </div>
-              <a href="{{ route('collections.show', $collection->id) }}" data-turbo="true" class="shrink-0 text-[13px] font-semibold text-ink transition-colors hover:text-muted">{{ __('View all') }}</a>
+              <a href="{{ route('collections.show', $catalog->id) }}" data-turbo="true" class="shrink-0 text-[13px] font-semibold text-ink transition-colors hover:text-muted">{{ __('View all') }}</a>
             </div>
 
             @if ($topItems === [])
@@ -259,7 +259,7 @@
               <div class="flex flex-col">
                 @foreach ($topItems as $index => $row)
                   <a
-                    href="{{ route('items.show', [$collection->id, $row['item']->id]) }}"
+                    href="{{ route('items.show', [$catalog->id, $row['item']->id]) }}"
                     data-turbo="true"
                     class="flex items-center gap-3 border-b border-hairline-soft py-3 last:border-b-0"
                     data-test="top-item-{{ $row['item']->id }}"

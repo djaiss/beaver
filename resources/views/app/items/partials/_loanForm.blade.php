@@ -10,7 +10,7 @@
   than clearing them.
 
   Expects: $formId, $action, $method, $openVar, $submitLabel, $dataTest,
-  $loan (null when adding), $currencies, $conditions, $collection, $item,
+  $loan (null when adding), $currencies, $conditions, $catalog, $item,
   $selectedCopy. When editing, also $deleteAction.
 --}}
 
@@ -20,7 +20,7 @@
 @php
     $isEdit = $loan !== null;
     $units = fn (?int $cents): string => $cents === null ? '' : number_format($cents / 100, 2, '.', '');
-    $selectedCurrency = $loan?->deposit_currency_code ?? $collection->currency ?? array_key_first($currencies);
+    $selectedCurrency = $loan?->deposit_currency_code ?? $catalog->currency ?? array_key_first($currencies);
 
     $labelClasses = 'block text-[11px] font-semibold tracking-wide text-muted-soft uppercase';
     $inputClasses = 'mt-1.5 h-10 w-full rounded-md border border-hairline bg-input px-3 text-sm text-ink placeholder-muted-soft';

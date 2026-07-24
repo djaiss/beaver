@@ -5,7 +5,7 @@ use App\Enums\CopyStatus;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\ItemCondition;
@@ -19,11 +19,11 @@ it('records a loan against a copy', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id, 'status' => CopyStatus::Owned]);
 
-    $response = $this->actingAs($user)->post(route('loans.create', [$collection, $item, $copy]), [
+    $response = $this->actingAs($user)->post(route('loans.create', [$catalog, $item, $copy]), [
         'direction' => LoanDirection::Outgoing->value,
         'status' => LoanStatus::Active->value,
         'party' => 'The Whitney Museum',
@@ -33,7 +33,7 @@ it('records a loan against a copy', function () {
         'currency' => 'EUR',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'loans']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'loans']));
     $response->assertSessionHas('status', 'Loan recorded');
 
     $loan = Loan::query()->first();
@@ -46,11 +46,11 @@ it('records a loan against a copy', function () {
 
 it('requires a direction, a party and a loaned date', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('loans.create', [$collection, $item, $copy]), [])
+    $this->actingAs($user)->post(route('loans.create', [$catalog, $item, $copy]), [])
         ->assertSessionHasErrors(['direction', 'party', 'loaned_at']);
 });
 
@@ -58,18 +58,18 @@ it('marks a loan as returned', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id, 'status' => CopyStatus::Loaned]);
     $loan = Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
     $condition = ItemCondition::factory()->create(['account_id' => $user->account_id]);
 
-    $response = $this->actingAs($user)->put(route('loans.return.update', [$collection, $item, $copy, $loan]), [
+    $response = $this->actingAs($user)->put(route('loans.return.update', [$catalog, $item, $copy, $loan]), [
         'returned_at' => '2024-06-01',
         'item_condition_in_id' => (string) $condition->id,
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'loans']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'loans']));
     $response->assertSessionHas('status', 'Loan marked as returned');
 
     expect($loan->refresh()->status)->toBe(LoanStatus::Returned);
@@ -81,17 +81,17 @@ it('updates a loan', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $loan = Loan::factory()->create(['copy_id' => $copy->id, 'party' => 'Old party']);
 
-    $this->actingAs($user)->put(route('loans.update', [$collection, $item, $copy, $loan]), [
+    $this->actingAs($user)->put(route('loans.update', [$catalog, $item, $copy, $loan]), [
         'direction' => LoanDirection::Outgoing->value,
         'status' => LoanStatus::Active->value,
         'party' => 'The Tate',
         'loaned_at' => '2024-01-01',
-    ])->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'loans']));
+    ])->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'loans']));
 
     expect($loan->refresh()->party)->toBe('The Tate');
 });
@@ -100,24 +100,24 @@ it('deletes a loan', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $loan = Loan::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->delete(route('loans.destroy', [$collection, $item, $copy, $loan]))
-        ->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'loans']));
+    $this->actingAs($user)->delete(route('loans.destroy', [$catalog, $item, $copy, $loan]))
+        ->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'loans']));
 
     $this->assertModelMissing($loan);
 });
 
 it('does not record a loan against a copy of another account', function () {
     $user = $this->createUser();
-    $otherCollection = Collection::factory()->create(['account_id' => $this->createAccount()->id]);
-    $otherItem = Item::factory()->create(['collection_id' => $otherCollection->id]);
+    $otherCatalog = Catalog::factory()->create(['account_id' => $this->createAccount()->id]);
+    $otherItem = Item::factory()->create(['catalog_id' => $otherCatalog->id]);
     $otherCopy = Copy::factory()->create(['item_id' => $otherItem->id]);
 
-    $this->actingAs($user)->post(route('loans.create', [$otherCollection, $otherItem, $otherCopy]), [
+    $this->actingAs($user)->post(route('loans.create', [$otherCatalog, $otherItem, $otherCopy]), [
         'direction' => LoanDirection::Outgoing->value,
         'status' => LoanStatus::Active->value,
         'party' => 'A gallery',
@@ -128,11 +128,11 @@ it('does not record a loan against a copy of another account', function () {
 it('forbids a viewer from recording a loan', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($viewer)->post(route('loans.create', [$collection, $item, $copy]), [
+    $this->actingAs($viewer)->post(route('loans.create', [$catalog, $item, $copy]), [
         'direction' => LoanDirection::Outgoing->value,
         'status' => LoanStatus::Active->value,
         'party' => 'A gallery',

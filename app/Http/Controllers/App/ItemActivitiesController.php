@@ -24,7 +24,7 @@ class ItemActivitiesController extends Controller
             'tags',
             'copies',
             'category',
-            'collectionType',
+            'catalogType',
         ]);
 
         return view('app.items.activities', [

@@ -8,7 +8,7 @@ use App\Enums\LoanStatus;
 use App\Enums\ProvenanceEventType;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\ItemCondition;
@@ -24,8 +24,8 @@ uses(RefreshDatabase::class);
 if (! function_exists('copyForLoan')) {
     function copyForLoan(int $accountId, array $attributes = []): Copy
     {
-        $collection = Collection::factory()->create(array_merge(['account_id' => $accountId], $attributes['collection'] ?? []));
-        $item = Item::factory()->create(['collection_id' => $collection->id]);
+        $catalog = Catalog::factory()->create(array_merge(['account_id' => $accountId], $attributes['catalog'] ?? []));
+        $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
         return Copy::factory()->create(array_merge(['item_id' => $item->id], $attributes['copy'] ?? []));
     }
@@ -86,7 +86,7 @@ it('defaults the deposit currency to the collection currency', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $copy = copyForLoan($user->account_id, ['collection' => ['currency' => 'EUR']]);
+    $copy = copyForLoan($user->account_id, ['catalog' => ['currency' => 'EUR']]);
 
     $loan = new CreateLoan(
         user: $user,

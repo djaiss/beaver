@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-use App\Services\CollectionStatistics;
+use App\Services\CatalogStatistics;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -13,7 +13,7 @@ class StatisticsController extends Controller
 {
     public function index(Request $request): View
     {
-        $statistics = new CollectionStatistics(collection: $request->attributes->get('collection'));
+        $statistics = new CatalogStatistics(catalog: $request->attributes->get('catalog'));
 
         return view('app.statistics.index', [
             'totals' => $statistics->totals(),

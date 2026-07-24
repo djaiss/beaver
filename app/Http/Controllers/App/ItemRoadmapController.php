@@ -23,7 +23,7 @@ class ItemRoadmapController extends Controller
             'tags',
             'copies',
             'category',
-            'collectionType',
+            'catalogType',
         ]);
 
         return view('app.items.roadmap', [

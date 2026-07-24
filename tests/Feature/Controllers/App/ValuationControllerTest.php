@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Valuation;
@@ -17,11 +17,11 @@ it('records a valuation against a copy', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $response = $this->actingAs($user)->post(route('valuations.create', [$collection, $item, $copy]), [
+    $response = $this->actingAs($user)->post(route('valuations.create', [$catalog, $item, $copy]), [
         'type' => ValuationType::ProfessionalAppraisal->value,
         'amount' => '250.50',
         'valued_at' => '2026-03-14',
@@ -32,7 +32,7 @@ it('records a valuation against a copy', function () {
         'note' => 'Valued the day Ross said we were on a break.',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations']));
     $response->assertSessionHas('status', 'Valuation recorded');
 
     $valuation = Valuation::query()->first();
@@ -49,11 +49,11 @@ it('converts the amount from currency units to cents', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('valuations.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('valuations.create', [$catalog, $item, $copy]), [
         'type' => ValuationType::UserEstimate->value,
         'amount' => '120.50',
         'valued_at' => '2026-03-14',
@@ -65,21 +65,21 @@ it('converts the amount from currency units to cents', function () {
 
 it('requires a type, an amount, a date and a confidence', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('valuations.create', [$collection, $item, $copy]), [])
+    $this->actingAs($user)->post(route('valuations.create', [$catalog, $item, $copy]), [])
         ->assertSessionHasErrors(['type', 'amount', 'valued_at', 'confidence']);
 });
 
 it('does not record a valuation against a copy of another account', function () {
     $user = $this->createUser();
-    $otherCollection = Collection::factory()->create(['account_id' => $this->createAccount()->id]);
-    $otherItem = Item::factory()->create(['collection_id' => $otherCollection->id]);
+    $otherCatalog = Catalog::factory()->create(['account_id' => $this->createAccount()->id]);
+    $otherItem = Item::factory()->create(['catalog_id' => $otherCatalog->id]);
     $otherCopy = Copy::factory()->create(['item_id' => $otherItem->id]);
 
-    $this->actingAs($user)->post(route('valuations.create', [$otherCollection, $otherItem, $otherCopy]), [
+    $this->actingAs($user)->post(route('valuations.create', [$otherCatalog, $otherItem, $otherCopy]), [
         'type' => ValuationType::UserEstimate->value,
         'amount' => '100',
         'valued_at' => '2026-03-14',
@@ -90,11 +90,11 @@ it('does not record a valuation against a copy of another account', function () 
 it('forbids a viewer from recording a valuation', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($viewer)->post(route('valuations.create', [$collection, $item, $copy]), [
+    $this->actingAs($viewer)->post(route('valuations.create', [$catalog, $item, $copy]), [
         'type' => ValuationType::UserEstimate->value,
         'amount' => '100',
         'valued_at' => '2026-03-14',
@@ -106,8 +106,8 @@ it('updates a valuation', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create([
         'copy_id' => $copy->id,
@@ -115,14 +115,14 @@ it('updates a valuation', function () {
         'amount' => 10000,
     ]);
 
-    $response = $this->actingAs($user)->put(route('valuations.update', [$collection, $item, $copy, $valuation]), [
+    $response = $this->actingAs($user)->put(route('valuations.update', [$catalog, $item, $copy, $valuation]), [
         'type' => ValuationType::MarketEstimate->value,
         'amount' => '199.99',
         'valued_at' => '2026-06-15',
         'confidence' => ValuationConfidence::Medium->value,
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations']));
     $response->assertSessionHas('status', 'Valuation updated');
 
     $valuation->refresh();
@@ -133,13 +133,13 @@ it('updates a valuation', function () {
 
 it('does not update a valuation that belongs to another copy', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $otherCopy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create(['copy_id' => $otherCopy->id]);
 
-    $this->actingAs($user)->put(route('valuations.update', [$collection, $item, $copy, $valuation]), [
+    $this->actingAs($user)->put(route('valuations.update', [$catalog, $item, $copy, $valuation]), [
         'type' => ValuationType::UserEstimate->value,
         'amount' => '100',
         'valued_at' => '2026-06-15',
@@ -151,37 +151,37 @@ it('deletes a valuation', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id]);
 
-    $response = $this->actingAs($user)->delete(route('valuations.destroy', [$collection, $item, $copy, $valuation]));
+    $response = $this->actingAs($user)->delete(route('valuations.destroy', [$catalog, $item, $copy, $valuation]));
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations']));
     $this->assertModelMissing($valuation);
 });
 
 it('forbids a viewer from deleting a valuation', function () {
     $account = $this->createAccount();
     $viewer = $this->assignUserToAccount($this->createUser(), $account, PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->delete(route('valuations.destroy', [$collection, $item, $copy, $valuation]))->assertNotFound();
+    $this->actingAs($viewer)->delete(route('valuations.destroy', [$catalog, $item, $copy, $valuation]))->assertNotFound();
 });
 
 // The valuations section renders the panel with its list, chart and forms.
 it('shows the valuations of a copy on the history tab', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 25000]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations']))
         ->assertOk()
         ->assertSee('data-test="valuation-'.$valuation->id.'"', false)
         ->assertSee('data-test="new-valuation-'.$copy->id.'"', false);

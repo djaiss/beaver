@@ -8,7 +8,7 @@ use App\Actions\CreateCustomFieldGroup;
 use App\Actions\DestroyCustomFieldGroup;
 use App\Actions\UpdateCustomFieldGroup;
 use App\Http\Controllers\Controller;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -16,13 +16,13 @@ use Illuminate\Http\Request;
 
 class CustomFieldGroupController extends Controller
 {
-    public function create(Request $request, int $collectionType): RedirectResponse
+    public function create(Request $request, int $catalogType): RedirectResponse
     {
-        $type = $this->findType($request, $collectionType);
+        $type = $this->findType($request, $catalogType);
 
         new CreateCustomFieldGroup(
             user: $request->user(),
-            collectionType: $type,
+            catalogType: $type,
             name: '',
         )->execute();
 
@@ -31,9 +31,9 @@ class CustomFieldGroupController extends Controller
             ->with('status_description', __('A new field group was added to the type.'));
     }
 
-    public function update(Request $request, int $collectionType, int $group): RedirectResponse
+    public function update(Request $request, int $catalogType, int $group): RedirectResponse
     {
-        $type = $this->findType($request, $collectionType);
+        $type = $this->findType($request, $catalogType);
         $customFieldGroup = $this->findGroup($type, $group);
 
         $validated = $request->validate([
@@ -51,9 +51,9 @@ class CustomFieldGroupController extends Controller
             ->with('status_description', __('Your changes to the group were saved.'));
     }
 
-    public function destroy(Request $request, int $collectionType, int $group): RedirectResponse
+    public function destroy(Request $request, int $catalogType, int $group): RedirectResponse
     {
-        $type = $this->findType($request, $collectionType);
+        $type = $this->findType($request, $catalogType);
         $customFieldGroup = $this->findGroup($type, $group);
 
         new DestroyCustomFieldGroup(
@@ -66,16 +66,16 @@ class CustomFieldGroupController extends Controller
             ->with('status_description', __('The group was removed. Its fields are now standalone.'));
     }
 
-    private function findType(Request $request, int $collectionType): CollectionType
+    private function findType(Request $request, int $catalogType): CatalogType
     {
         try {
-            return $request->user()->account->collectionTypes()->findOrFail($collectionType);
+            return $request->user()->account->catalogTypes()->findOrFail($catalogType);
         } catch (ModelNotFoundException) {
             abort(404);
         }
     }
 
-    private function findGroup(CollectionType $type, int $group): CustomFieldGroup
+    private function findGroup(CatalogType $type, int $group): CustomFieldGroup
     {
         try {
             return $type->customFieldGroups()->findOrFail($group);

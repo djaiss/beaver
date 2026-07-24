@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\ItemCondition;
@@ -20,11 +20,11 @@ uses(RefreshDatabase::class);
  */
 function loanCopy(int $accountId, ?string $collectionName = null): Copy
 {
-    $collection = Collection::factory()->create(array_filter([
+    $catalog = Catalog::factory()->create(array_filter([
         'account_id' => $accountId,
         'name' => $collectionName,
     ]));
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     return Copy::factory()->create(['item_id' => $item->id]);
 }

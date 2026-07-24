@@ -9,7 +9,7 @@ use App\Actions\DestroyMaintenanceRecord;
 use App\Actions\UpdateMaintenanceRecord;
 use App\Enums\MaintenanceType;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\MaintenanceRecord;
@@ -26,7 +26,7 @@ use Illuminate\Validation\Rule;
  */
 class MaintenanceRecordController extends Controller
 {
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -46,12 +46,12 @@ class MaintenanceRecordController extends Controller
             includeInProvenance: $request->boolean('include_in_provenance'),
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'maintenance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'maintenance'])
             ->with('status', __('Maintenance record added'))
             ->with('status_description', __('The work was logged in the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $maintenanceRecord): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $maintenanceRecord): RedirectResponse
     {
         $recordModel = $this->findRecord($copy, $maintenanceRecord);
 
@@ -73,12 +73,12 @@ class MaintenanceRecordController extends Controller
             includeInProvenance: $request->boolean('include_in_provenance'),
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'maintenance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'maintenance'])
             ->with('status', __('Maintenance record updated'))
             ->with('status_description', __('Your changes to the work were saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $maintenanceRecord): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $maintenanceRecord): RedirectResponse
     {
         $recordModel = $this->findRecord($copy, $maintenanceRecord);
 
@@ -87,7 +87,7 @@ class MaintenanceRecordController extends Controller
             record: $recordModel,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'maintenance'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'maintenance'])
             ->with('status', __('Maintenance record deleted'))
             ->with('status_description', __('The work was removed from the history of this copy.'));
     }

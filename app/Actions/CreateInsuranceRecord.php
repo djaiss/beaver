@@ -61,7 +61,7 @@ class CreateInsuranceRecord
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -80,11 +80,11 @@ class CreateInsuranceRecord
             'insured_value' => $this->insuredValue,
             // The collection's currency is the sensible default when the caller
             // does not say what the amounts are in.
-            'currency_code' => $this->currencyCode ?? $this->copy->item->collection->currency,
+            'currency_code' => $this->currencyCode ?? $this->copy->item->catalog->currency,
             'deductible_amount' => $this->deductibleAmount,
             'deductible_currency_code' => $this->deductibleAmount === null
                 ? null
-                : ($this->deductibleCurrencyCode ?? $this->currencyCode ?? $this->copy->item->collection->currency),
+                : ($this->deductibleCurrencyCode ?? $this->currencyCode ?? $this->copy->item->catalog->currency),
             'starts_at' => $this->startsAt,
             'ends_at' => $this->endsAt,
             'status' => $this->status,

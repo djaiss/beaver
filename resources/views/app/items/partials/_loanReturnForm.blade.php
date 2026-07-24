@@ -4,7 +4,7 @@
   in, and nothing else: the action closes the loan, brings the copy back into
   custody, and takes the condition as the copy's current one.
 
-  Expects: $loan, $collection, $item, $selectedCopy, $conditions.
+  Expects: $loan, $catalog, $item, $selectedCopy, $conditions.
 --}}
 
 @php
@@ -17,7 +17,7 @@
 <x-history.inline-form
   :form-id="$formId"
   method="put"
-  :action="route('loans.return.update', [$collection, $item, $selectedCopy, $loan])"
+  :action="route('loans.return.update', [$catalog, $item, $selectedCopy, $loan])"
   open-var="returning"
   :submit-label="__('Mark as returned')"
   :title="__('Return this loan')"

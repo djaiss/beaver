@@ -111,8 +111,8 @@ class ItemPhoto extends Model
     protected function ofAccount(Builder $query, Account $account): Builder
     {
         return $query->whereHas(
-            'item.collection',
-            fn (Builder $collection): Builder => $collection->where('account_id', $account->id),
+            'item.catalog',
+            fn (Builder $catalog): Builder => $catalog->where('account_id', $account->id),
         );
     }
 

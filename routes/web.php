@@ -5,12 +5,12 @@ declare(strict_types=1);
 use App\Http\Controllers\App\Account\AccountController;
 use App\Http\Controllers\App\Account\InvitationController;
 use App\Http\Controllers\App\Account\MemberController;
+use App\Http\Controllers\App\CatalogController;
+use App\Http\Controllers\App\CatalogItemViewController;
+use App\Http\Controllers\App\CatalogTypeController;
+use App\Http\Controllers\App\CatalogTypeExportController;
+use App\Http\Controllers\App\CatalogTypeImportController;
 use App\Http\Controllers\App\CategoryController;
-use App\Http\Controllers\App\CollectionController;
-use App\Http\Controllers\App\CollectionItemViewController;
-use App\Http\Controllers\App\CollectionTypeController;
-use App\Http\Controllers\App\CollectionTypeExportController;
-use App\Http\Controllers\App\CollectionTypeImportController;
 use App\Http\Controllers\App\CustomFieldController;
 use App\Http\Controllers\App\CustomFieldGroupController;
 use App\Http\Controllers\App\CustomFieldGroupFieldController;
@@ -87,7 +87,7 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('getting-started', [GettingStartedController::class, 'index'])->name('gettingStarted.index');
 
     // placeholder sections for the future collection domain
-    Route::get('collections', [CollectionController::class, 'index'])->name('collections.index');
+    Route::get('collections', [CatalogController::class, 'index'])->name('collections.index');
 
     // Everything below a collection resolves it first. The `collection`
     // middleware answers 404 for anything outside the account, and hands the
@@ -98,10 +98,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     // Laravel's own binding is switched off here on purpose: it would see the
     // models these controllers type hint and resolve them itself, by id alone
     // and across every account, before our middleware ever ran.
-    Route::prefix('collections/{collection}')->whereNumber('collection')->withoutMiddleware(SubstituteBindings::class)->middleware(['collection'])->group(function (): void {
-        Route::get('', [CollectionController::class, 'show'])->name('collections.show');
+    Route::prefix('collections/{collection}')->whereNumber('collection')->withoutMiddleware(SubstituteBindings::class)->middleware(['catalog'])->group(function (): void {
+        Route::get('', [CatalogController::class, 'show'])->name('collections.show');
         // remembering which items view a member last opened is a private preference, so any role may set it
-        Route::put('item-view', [CollectionItemViewController::class, 'update'])->name('collections.item-view.update');
+        Route::put('item-view', [CatalogItemViewController::class, 'update'])->name('collections.item-view.update');
         // browsing the categories of a collection is read only, so any role may do it
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('categories/{category}', [CategoryController::class, 'show'])->whereNumber('category')->name('categories.show');
@@ -149,16 +149,16 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
     // collections — owners and editors may create new collections
     Route::middleware(['editor'])->group(function (): void {
-        Route::get('collections/new', [CollectionController::class, 'new'])->name('collections.new');
-        Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
+        Route::get('collections/new', [CatalogController::class, 'new'])->name('collections.new');
+        Route::post('collections', [CatalogController::class, 'create'])->name('collections.create');
     });
 
     // everything owners and editors may change inside a collection, under the
     // same resolution as the read only routes above
-    Route::prefix('collections/{collection}')->whereNumber('collection')->withoutMiddleware(SubstituteBindings::class)->middleware(['collection', 'editor'])->group(function (): void {
-        Route::get('edit', [CollectionController::class, 'edit'])->name('collections.edit');
-        Route::put('', [CollectionController::class, 'update'])->name('collections.update');
-        Route::delete('', [CollectionController::class, 'destroy'])->name('collections.destroy');
+    Route::prefix('collections/{collection}')->whereNumber('collection')->withoutMiddleware(SubstituteBindings::class)->middleware(['catalog', 'editor'])->group(function (): void {
+        Route::get('edit', [CatalogController::class, 'edit'])->name('collections.edit');
+        Route::put('', [CatalogController::class, 'update'])->name('collections.update');
+        Route::delete('', [CatalogController::class, 'destroy'])->name('collections.destroy');
 
         // categories — owners and editors may create, update and delete the categories of a collection
         Route::post('categories', [CategoryController::class, 'create'])->name('categories.create');
@@ -306,14 +306,14 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
     // account settings: collection types — owners and editors define the custom fields available on items
     Route::middleware(['editor'])->group(function (): void {
-        Route::get('settings/types', [CollectionTypeController::class, 'index'])->name('settings.types.index');
-        Route::post('settings/types', [CollectionTypeController::class, 'create'])->name('settings.types.create');
-        Route::get('settings/types/{collectionType}/edit', [CollectionTypeController::class, 'edit'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.edit');
-        Route::put('settings/types/{collectionType}', [CollectionTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.update');
-        Route::delete('settings/types/{collectionType}', [CollectionTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.destroy');
-        Route::get('settings/types/{collectionType}/export', [CollectionTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.export.show');
-        Route::get('settings/types/import', [CollectionTypeImportController::class, 'new'])->name('settings.types.import.new');
-        Route::post('settings/types/import', [CollectionTypeImportController::class, 'create'])->name('settings.types.import.create');
+        Route::get('settings/types', [CatalogTypeController::class, 'index'])->name('settings.types.index');
+        Route::post('settings/types', [CatalogTypeController::class, 'create'])->name('settings.types.create');
+        Route::get('settings/types/{collectionType}/edit', [CatalogTypeController::class, 'edit'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.edit');
+        Route::put('settings/types/{collectionType}', [CatalogTypeController::class, 'update'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.update');
+        Route::delete('settings/types/{collectionType}', [CatalogTypeController::class, 'destroy'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.destroy');
+        Route::get('settings/types/{collectionType}/export', [CatalogTypeExportController::class, 'show'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.export.show');
+        Route::get('settings/types/import', [CatalogTypeImportController::class, 'new'])->name('settings.types.import.new');
+        Route::post('settings/types/import', [CatalogTypeImportController::class, 'create'])->name('settings.types.import.create');
 
         // a type's custom fields and the collections that may use it (edited inline, saved as you go)
         Route::post('settings/types/{collectionType}/fields', [CustomFieldController::class, 'create'])->where('collectionType', '[1-9][0-9]*')->name('settings.types.fields.create');

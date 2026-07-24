@@ -35,7 +35,7 @@
     <div x-show="adding" x-cloak class="mb-4">
       @include('app.items.partials._transactionForm', [
           'formId' => 'add-transaction-'.$selectedCopy->id,
-          'action' => route('transactions.create', [$collection, $item, $selectedCopy]),
+          'action' => route('transactions.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'adding',
           'submitLabel' => __('Add transaction'),
@@ -108,8 +108,8 @@
           <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._transactionForm', [
                 'formId' => 'edit-transaction-'.$transaction->id,
-                'action' => route('transactions.update', [$collection, $item, $selectedCopy, $transaction]),
-                'deleteAction' => route('transactions.destroy', [$collection, $item, $selectedCopy, $transaction]),
+                'action' => route('transactions.update', [$catalog, $item, $selectedCopy, $transaction]),
+                'deleteAction' => route('transactions.destroy', [$catalog, $item, $selectedCopy, $transaction]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save'),
@@ -121,7 +121,7 @@
 
         <div class="border-t border-hairline px-5 py-4">
           <p class="mb-2.5 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
-          @include('app.items.partials._documentsFor', ['documentable' => $transaction, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+          @include('app.items.partials._documentsFor', ['documentable' => $transaction, 'catalog' => $catalog, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
         </div>
       </div>
     @empty

@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         // Run seeders in the correct order
         $this->call([
             UserSeeder::class,
-            CollectionSeeder::class,
+            CatalogSeeder::class,
             TestimonialSeeder::class,
         ]);
 

@@ -8,7 +8,7 @@ use App\Enums\MaintenanceType;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\MaintenanceRecord;
@@ -22,8 +22,8 @@ uses(RefreshDatabase::class);
 
 function copyToDestroyMaintenance(User $user): Copy
 {
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     return Copy::factory()->create(['item_id' => $item->id]);
 }

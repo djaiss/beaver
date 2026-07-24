@@ -42,7 +42,7 @@
         @svg('lucide-pencil', 'size-3.5')
       </button>
 
-      <x-form method="delete" :action="route('sets.destroy', [$collection->id, $set->id])" x-target="sets-panel notifications" x-on:ajax:before="confirm('{{ __('Delete this set? This removes the set and its completion tracking. The items themselves stay in your collection. This cannot be undone.') }}') || $event.preventDefault()">
+      <x-form method="delete" :action="route('sets.destroy', [$catalog->id, $set->id])" x-target="sets-panel notifications" x-on:ajax:before="confirm('{{ __('Delete this set? This removes the set and its completion tracking. The items themselves stay in your collection. This cannot be undone.') }}') || $event.preventDefault()">
         <button type="submit" class="flex size-8 items-center justify-center rounded-md border border-hairline text-muted hover:bg-card" aria-label="{{ __('Delete set') }}" data-test="delete-set-{{ $set->id }}">
           @svg('lucide-trash-2', 'size-3.5')
         </button>
@@ -74,7 +74,7 @@
 
   {{-- Inline edit form --}}
   <div x-show="editing" x-cloak class="mt-4 border-t border-hairline-soft pt-4">
-    <x-form method="put" :action="route('sets.update', [$collection->id, $set->id])" data-test="edit-set-form-{{ $set->id }}" x-target="sets-panel notifications" x-on:ajax:after="editing = document.querySelector('[data-test=&quot;edit-set-form-{{ $set->id }}&quot;] .text-error') !== null">
+    <x-form method="put" :action="route('sets.update', [$catalog->id, $set->id])" data-test="edit-set-form-{{ $set->id }}" x-target="sets-panel notifications" x-on:ajax:after="editing = document.querySelector('[data-test=&quot;edit-set-form-{{ $set->id }}&quot;] .text-error') !== null">
       <div class="mb-3.5 flex flex-wrap gap-3.5">
         <div class="min-w-[180px] flex-1">
           <x-label>{{ __('Name') }}</x-label>

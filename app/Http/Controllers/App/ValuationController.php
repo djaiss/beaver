@@ -10,7 +10,7 @@ use App\Actions\UpdateValuation;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Valuation;
@@ -27,7 +27,7 @@ use Illuminate\Validation\Rule;
  */
 class ValuationController extends Controller
 {
-    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
         $validated = $request->validate($this->rules());
 
@@ -46,12 +46,12 @@ class ValuationController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations'])
             ->with('status', __('Valuation recorded'))
             ->with('status_description', __('The valuation was added to the history of this copy.'));
     }
 
-    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $valuation): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $valuation): RedirectResponse
     {
         $valuationModel = $this->findValuation($copy, $valuation);
 
@@ -72,12 +72,12 @@ class ValuationController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations'])
             ->with('status', __('Valuation updated'))
             ->with('status_description', __('Your changes to the valuation were saved.'));
     }
 
-    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $valuation): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $valuation): RedirectResponse
     {
         $valuationModel = $this->findValuation($copy, $valuation);
 
@@ -86,7 +86,7 @@ class ValuationController extends Controller
             valuation: $valuationModel,
         )->execute();
 
-        return to_route('items.history.show', [$collection, $item, $copy, 'section' => 'valuations'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'section' => 'valuations'])
             ->with('status', __('Valuation deleted'))
             ->with('status_description', __('The valuation was removed from the history of this copy.'));
     }

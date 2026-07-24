@@ -6,7 +6,7 @@ namespace App\Http\Controllers\App;
 
 use App\Enums\TimelineSource;
 use App\Http\Controllers\Controller;
-use App\Models\Collection as CollectionModel;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Services\BuildCopyHistory;
@@ -38,7 +38,7 @@ class ItemHistoryController extends Controller
      * request, but they still stand in the url before the copy, so they are
      * declared here for the route parameters to line up.
      */
-    public function show(Request $request, CollectionModel $collection, Item $item, int $copy, ?string $section = null): View
+    public function show(Request $request, Catalog $catalog, Item $item, int $copy, ?string $section = null): View
     {
         return $this->render($request, $copy, $section);
     }
@@ -68,7 +68,7 @@ class ItemHistoryController extends Controller
             'copies.locationHistory.location',
             'copies.openLocationHistory.location',
             'category',
-            'collectionType',
+            'catalogType',
         ]);
 
         // The bare tab lands on the first copy. A copy named in the url has to be

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Models\Account;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Set;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,17 +14,17 @@ it('reaches its account through its collection', function () {
     $account = Account::factory()->create();
     $set = Set::factory()->forAccount($account->id)->create();
 
-    expect($set->collection->account)->toBeInstanceOf(Account::class);
-    expect($set->collection->account->id)->toBe($account->id);
+    expect($set->catalog->account)->toBeInstanceOf(Account::class);
+    expect($set->catalog->account->id)->toBe($account->id);
     expect($account->sets->pluck('id'))->toContain($set->id);
 });
 
 it('belongs to a collection', function () {
-    $collection = Collection::factory()->create();
-    $set = Set::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create();
+    $set = Set::factory()->create(['catalog_id' => $catalog->id]);
 
-    expect($set->collection)->toBeInstanceOf(Collection::class);
-    expect($set->collection->id)->toBe($collection->id);
+    expect($set->catalog)->toBeInstanceOf(Catalog::class);
+    expect($set->catalog->id)->toBe($catalog->id);
 });
 
 it('stores the target count as an integer', function () {

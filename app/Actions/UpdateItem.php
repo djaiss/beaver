@@ -14,8 +14,8 @@ use App\Helpers\TextSanitizer;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Jobs\ReindexItemPhotos;
+use App\Models\CatalogType;
 use App\Models\Category;
-use App\Models\CollectionType;
 use App\Models\Copy;
 use App\Models\CustomField;
 use App\Models\CustomFieldValue;
@@ -66,7 +66,7 @@ class UpdateItem
         private readonly Item $item,
         private string $name,
         private ?string $description = null,
-        private readonly ?CollectionType $collectionType = null,
+        private readonly ?CatalogType $catalogType = null,
         private readonly ?Category $category = null,
         private readonly ?Set $set = null,
         private readonly ?Series $series = null,
@@ -101,26 +101,26 @@ class UpdateItem
 
     private function validate(): void
     {
-        $collection = $this->item->collection;
+        $catalog = $this->item->catalog;
 
-        if (! $collection->account->allowsManagementBy($this->user)) {
+        if (! $catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
 
-        if ($this->collectionType instanceof CollectionType && ! $collection->collectionTypes()->whereKey($this->collectionType->id)->exists()) {
+        if ($this->catalogType instanceof CatalogType && ! $catalog->catalogTypes()->whereKey($this->catalogType->id)->exists()) {
             throw new ModelNotFoundException('Type not found');
         }
 
-        if ($this->category instanceof Category && $this->category->collection_id !== $collection->id) {
+        if ($this->category instanceof Category && $this->category->catalog_id !== $catalog->id) {
             throw new ModelNotFoundException('Category not found');
         }
 
-        if ($this->set instanceof Set && $this->set->collection_id !== $collection->id) {
+        if ($this->set instanceof Set && $this->set->catalog_id !== $catalog->id) {
             throw new ModelNotFoundException('Set not found');
         }
 
         // A series is account-wide, so it only has to share the account, not the collection.
-        if ($this->series instanceof Series && $this->series->account_id !== $collection->account_id) {
+        if ($this->series instanceof Series && $this->series->account_id !== $catalog->account_id) {
             throw new ModelNotFoundException('Series not found');
         }
 
@@ -134,7 +134,7 @@ class UpdateItem
             return;
         }
 
-        $ownedCount = $this->item->collection->account->tags()->whereKey($this->tagIds)->count();
+        $ownedCount = $this->item->catalog->account->tags()->whereKey($this->tagIds)->count();
 
         if ($ownedCount !== count(array_unique($this->tagIds))) {
             throw new ModelNotFoundException('Tag not found');
@@ -147,7 +147,7 @@ class UpdateItem
             return;
         }
 
-        $account = $this->item->collection->account;
+        $account = $this->item->catalog->account;
         $conditionIds = $account->itemConditions()->pluck('id')->all();
         $locationIds = $account->locations()->pluck('id')->all();
         $copyIds = $this->item->copies()->pluck('id')->all();
@@ -185,7 +185,7 @@ class UpdateItem
         $this->changes = array_values(array_filter([
             $this->change('Name', $this->item->name, $this->name),
             $this->describedChange(),
-            $this->change('Type', $this->item->collectionType?->name, $this->collectionType?->name),
+            $this->change('Type', $this->item->catalogType?->name, $this->catalogType?->name),
             $this->change('Category', $this->item->category?->name, $this->category?->name),
             $this->change('Set', $this->item->set?->name, $this->set?->name),
             $this->change('Series', $this->item->series?->name, $this->series?->name),
@@ -223,7 +223,7 @@ class UpdateItem
     {
         $this->item->name = $this->name;
         $this->item->description = $this->description;
-        $this->item->type_id = $this->collectionType?->id;
+        $this->item->type_id = $this->catalogType?->id;
         $this->item->category_id = $this->category?->id;
         $this->item->set_id = $this->set?->id;
         $this->item->series_id = $this->series?->id;
@@ -248,7 +248,7 @@ class UpdateItem
             }
 
             $tag = Tag::query()->create([
-                'account_id' => $this->item->collection->account_id,
+                'account_id' => $this->item->catalog->account_id,
                 'name' => $name,
             ]);
             $this->stampAuthorOn($tag);
@@ -270,7 +270,7 @@ class UpdateItem
             return;
         }
 
-        $fields = $this->collectionType?->customFields()->get()->keyBy('id') ?? collect();
+        $fields = $this->catalogType?->customFields()->get()->keyBy('id') ?? collect();
         $existing = $this->item->customFieldValues()->get()->keyBy('custom_field_id');
 
         foreach ($this->customFieldValues as $fieldId => $value) {
@@ -403,7 +403,7 @@ class UpdateItem
             'copy_id' => $copy->id,
             'type' => ValuationType::UserEstimate,
             'amount' => $estimatedValue,
-            'currency_code' => $this->item->collection->currency,
+            'currency_code' => $this->item->catalog->currency,
             'valued_at' => now()->toDateString(),
             'confidence' => ValuationConfidence::Unknown,
         ]);
