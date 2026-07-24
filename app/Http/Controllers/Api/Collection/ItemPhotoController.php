@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Collection;
 
 use App\Actions\AddItemPhoto;
 use App\Actions\DestroyItemPhoto;

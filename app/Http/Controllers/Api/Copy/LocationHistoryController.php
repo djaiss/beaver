@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Copy;
 
 use App\Actions\DestroyLocationHistory;
 use App\Actions\MoveCopy;
@@ -119,5 +119,4 @@ class LocationHistoryController extends Controller
 
         return response()->noContent(204);
     }
-
 }

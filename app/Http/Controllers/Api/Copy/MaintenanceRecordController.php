@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Copy;
 
 use App\Actions\CreateMaintenanceRecord;
 use App\Actions\DestroyMaintenanceRecord;
@@ -144,5 +144,4 @@ class MaintenanceRecordController extends Controller
 
         return response()->noContent(204);
     }
-
 }

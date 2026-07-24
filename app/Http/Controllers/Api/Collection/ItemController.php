@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Collection;
 
 use App\Actions\CreateItem;
 use App\Actions\DestroyItem;
@@ -124,5 +124,4 @@ class ItemController extends Controller
 
         return response()->noContent(204);
     }
-
 }

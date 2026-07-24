@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Copy;
 
 use App\Actions\CreateProvenanceEvent;
 use App\Actions\DestroyProvenanceEvent;

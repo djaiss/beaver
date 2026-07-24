@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Copy;
 
 use App\Actions\CreateTransaction;
 use App\Actions\DestroyTransaction;
@@ -148,5 +148,4 @@ class TransactionController extends Controller
 
         return response()->noContent(204);
     }
-
 }

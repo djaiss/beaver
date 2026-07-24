@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Copy;
 
 use App\Actions\CreateValuation;
 use App\Actions\DestroyValuation;
@@ -141,5 +141,4 @@ class ValuationController extends Controller
 
         return response()->noContent(204);
     }
-
 }

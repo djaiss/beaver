@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Copy;
 
 use App\Actions\CreateLoan;
 use App\Actions\DestroyLoan;
@@ -204,5 +204,4 @@ class LoanController extends Controller
 
         return response()->noContent(204);
     }
-
 }
