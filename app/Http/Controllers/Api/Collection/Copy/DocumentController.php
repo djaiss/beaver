@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\Copy;
+namespace App\Http\Controllers\Api\Collection\Copy;
 
 use App\Actions\DestroyDocument;
 use App\Actions\UpdateDocument;

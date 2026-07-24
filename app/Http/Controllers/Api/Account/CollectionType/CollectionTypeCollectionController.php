@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\CollectionType;
+namespace App\Http\Controllers\Api\Account\CollectionType;
 
 use App\Actions\SyncCollectionTypeCollections;
 use App\Http\Controllers\Controller;

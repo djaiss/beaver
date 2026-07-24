@@ -2,36 +2,36 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Api\CollectionType;
+namespace App\Http\Controllers\Api\Account\CollectionType;
 
-use App\Actions\MoveCustomFieldGroup;
+use App\Actions\MoveCustomField;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CustomFieldGroupResource;
+use App\Http\Resources\CustomFieldResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class CustomFieldGroupOrderController extends Controller
+class CustomFieldOrderController extends Controller
 {
     public function update(Request $request): JsonResponse
     {
         $collectionTypeId = $request->route()->parameter('collectionType');
-        $groupId = $request->route()->parameter('group');
+        $customFieldId = $request->route()->parameter('customField');
 
         $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
-        $group = $type->customFieldGroups()->findOrFail($groupId);
+        $field = $type->customFields()->findOrFail($customFieldId);
 
         $validated = $request->validate([
             'direction' => ['required', Rule::in(['up', 'down'])],
         ]);
 
-        new MoveCustomFieldGroup(
+        new MoveCustomField(
             user: $request->user(),
-            customFieldGroup: $group,
+            customField: $field,
             direction: $validated['direction'],
         )->execute();
 
-        return new CustomFieldGroupResource($group->refresh())
+        return new CustomFieldResource($field->refresh())
             ->response()
             ->setStatusCode(200);
     }
