@@ -11,7 +11,6 @@ use App\Enums\TransactionType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Copy;
-use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -22,7 +21,9 @@ class TransactionController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -33,7 +34,11 @@ class TransactionController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $transaction = $this->findTransaction($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $transactionId = $request->route()->parameter('transaction');
+        $transaction = $copy->transactions()->findOrFail($transactionId);
 
         return new TransactionResource($transaction)
             ->response()
@@ -42,9 +47,24 @@ class TransactionController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::enum(TransactionType::class)],
+            'occurred_at' => ['required', 'date'],
+            'counterparty' => ['nullable', 'string', 'max:255'],
+            'amount' => ['nullable', 'integer', 'min:0'],
+            'currency_code' => ['nullable', 'string', 'size:3'],
+            'tax_amount' => ['nullable', 'integer', 'min:0'],
+            'fee_amount' => ['nullable', 'integer', 'min:0'],
+            'shipping_amount' => ['nullable', 'integer', 'min:0'],
+            'total_amount' => ['nullable', 'integer', 'min:0'],
+            'reference_number' => ['nullable', 'string', 'max:255'],
+            'source_url' => ['nullable', 'string', 'url', 'max:2048'],
+            'note' => ['nullable', 'string'],
+        ]);
 
         $transaction = new CreateTransaction(
             user: $request->user(),
@@ -70,9 +90,26 @@ class TransactionController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $transaction = $this->findTransaction($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $transactionId = $request->route()->parameter('transaction');
+        $transaction = $copy->transactions()->findOrFail($transactionId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::enum(TransactionType::class)],
+            'occurred_at' => ['required', 'date'],
+            'counterparty' => ['nullable', 'string', 'max:255'],
+            'amount' => ['nullable', 'integer', 'min:0'],
+            'currency_code' => ['nullable', 'string', 'size:3'],
+            'tax_amount' => ['nullable', 'integer', 'min:0'],
+            'fee_amount' => ['nullable', 'integer', 'min:0'],
+            'shipping_amount' => ['nullable', 'integer', 'min:0'],
+            'total_amount' => ['nullable', 'integer', 'min:0'],
+            'reference_number' => ['nullable', 'string', 'max:255'],
+            'source_url' => ['nullable', 'string', 'url', 'max:2048'],
+            'note' => ['nullable', 'string'],
+        ]);
 
         $transaction = new UpdateTransaction(
             user: $request->user(),
@@ -98,7 +135,11 @@ class TransactionController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $transaction = $this->findTransaction($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $transactionId = $request->route()->parameter('transaction');
+        $transaction = $copy->transactions()->findOrFail($transactionId);
 
         new DestroyTransaction(
             user: $request->user(),
@@ -108,42 +149,4 @@ class TransactionController extends Controller
         return response()->noContent(204);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'type' => ['required', Rule::enum(TransactionType::class)],
-            'occurred_at' => ['required', 'date'],
-            'counterparty' => ['nullable', 'string', 'max:255'],
-            'amount' => ['nullable', 'integer', 'min:0'],
-            'currency_code' => ['nullable', 'string', 'size:3'],
-            'tax_amount' => ['nullable', 'integer', 'min:0'],
-            'fee_amount' => ['nullable', 'integer', 'min:0'],
-            'shipping_amount' => ['nullable', 'integer', 'min:0'],
-            'total_amount' => ['nullable', 'integer', 'min:0'],
-            'reference_number' => ['nullable', 'string', 'max:255'],
-            'source_url' => ['nullable', 'string', 'url', 'max:2048'],
-            'note' => ['nullable', 'string'],
-        ]);
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
-    }
-
-    private function findTransaction(Request $request): Transaction
-    {
-        $copy = $this->findCopy($request);
-        $transactionId = $request->route()->parameter('transaction');
-
-        return $copy->transactions()->findOrFail($transactionId);
-    }
 }

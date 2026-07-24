@@ -24,7 +24,9 @@ class LoanController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -63,7 +65,11 @@ class LoanController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $loan = $this->findLoan($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $loanId = $request->route()->parameter('loan');
+        $loan = $copy->loans()->findOrFail($loanId);
 
         return new LoanResource($loan)
             ->response()
@@ -72,9 +78,24 @@ class LoanController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'direction' => ['required', Rule::enum(LoanDirection::class)],
+            'status' => ['nullable', Rule::enum(LoanStatus::class)],
+            'party' => ['required', 'string', 'max:255'],
+            'purpose' => ['nullable', 'string'],
+            'loaned_at' => ['required', 'date'],
+            'due_at' => ['nullable', 'date'],
+            'returned_at' => ['nullable', 'date'],
+            'item_condition_out_id' => ['nullable', 'integer'],
+            'item_condition_in_id' => ['nullable', 'integer'],
+            'deposit_amount' => ['nullable', 'integer', 'min:0'],
+            'deposit_currency_code' => ['nullable', 'string', 'size:3'],
+            'include_in_provenance' => ['nullable', 'boolean'],
+        ]);
 
         $loan = new CreateLoan(
             user: $request->user(),
@@ -100,9 +121,26 @@ class LoanController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $loan = $this->findLoan($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $loanId = $request->route()->parameter('loan');
+        $loan = $copy->loans()->findOrFail($loanId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'direction' => ['required', Rule::enum(LoanDirection::class)],
+            'status' => ['nullable', Rule::enum(LoanStatus::class)],
+            'party' => ['required', 'string', 'max:255'],
+            'purpose' => ['nullable', 'string'],
+            'loaned_at' => ['required', 'date'],
+            'due_at' => ['nullable', 'date'],
+            'returned_at' => ['nullable', 'date'],
+            'item_condition_out_id' => ['nullable', 'integer'],
+            'item_condition_in_id' => ['nullable', 'integer'],
+            'deposit_amount' => ['nullable', 'integer', 'min:0'],
+            'deposit_currency_code' => ['nullable', 'string', 'size:3'],
+            'include_in_provenance' => ['nullable', 'boolean'],
+        ]);
 
         $loan = new UpdateLoan(
             user: $request->user(),
@@ -128,7 +166,11 @@ class LoanController extends Controller
 
     public function return(Request $request): JsonResponse
     {
-        $loan = $this->findLoan($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $loanId = $request->route()->parameter('loan');
+        $loan = $copy->loans()->findOrFail($loanId);
 
         $validated = $request->validate([
             'returned_at' => ['required', 'date'],
@@ -149,7 +191,11 @@ class LoanController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $loan = $this->findLoan($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $loanId = $request->route()->parameter('loan');
+        $loan = $copy->loans()->findOrFail($loanId);
 
         new DestroyLoan(
             user: $request->user(),
@@ -159,42 +205,4 @@ class LoanController extends Controller
         return response()->noContent(204);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'direction' => ['required', Rule::enum(LoanDirection::class)],
-            'status' => ['nullable', Rule::enum(LoanStatus::class)],
-            'party' => ['required', 'string', 'max:255'],
-            'purpose' => ['nullable', 'string'],
-            'loaned_at' => ['required', 'date'],
-            'due_at' => ['nullable', 'date'],
-            'returned_at' => ['nullable', 'date'],
-            'item_condition_out_id' => ['nullable', 'integer'],
-            'item_condition_in_id' => ['nullable', 'integer'],
-            'deposit_amount' => ['nullable', 'integer', 'min:0'],
-            'deposit_currency_code' => ['nullable', 'string', 'size:3'],
-            'include_in_provenance' => ['nullable', 'boolean'],
-        ]);
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
-    }
-
-    private function findLoan(Request $request): Loan
-    {
-        $copy = $this->findCopy($request);
-        $loanId = $request->route()->parameter('loan');
-
-        return $copy->loans()->findOrFail($loanId);
-    }
 }

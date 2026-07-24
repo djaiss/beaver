@@ -28,9 +28,7 @@ class CopyHistoryController extends Controller
     {
         $copyId = $request->route()->parameter('copy');
         $account = $request->user()->account;
-
-        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)
-            ->findOrFail($copyId);
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $meaningfulOnly = $request->query('view') !== 'complete';
 

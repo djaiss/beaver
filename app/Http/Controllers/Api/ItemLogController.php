@@ -6,7 +6,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ItemLogResource;
-use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,7 +18,9 @@ class ItemLogController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -33,7 +34,9 @@ class ItemLogController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
         $logId = $request->route()->parameter('log');
 
         $log = $item->logs()->with('user')->findOrFail($logId);
@@ -41,13 +44,5 @@ class ItemLogController extends Controller
         return new ItemLogResource($log)
             ->response()
             ->setStatusCode(200);
-    }
-
-    private function findItem(Request $request): Item
-    {
-        $itemId = $request->route()->parameter('item');
-        $account = $request->user()->account;
-
-        return $account->items()->findOrFail($itemId);
     }
 }

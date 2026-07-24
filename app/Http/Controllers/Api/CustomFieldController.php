@@ -10,7 +10,6 @@ use App\Actions\UpdateCustomField;
 use App\Enums\FieldTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomFieldResource;
-use App\Models\CollectionType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,7 +20,8 @@ class CustomFieldController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -35,7 +35,8 @@ class CustomFieldController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
         $customFieldId = $request->route()->parameter('customField');
 
         $field = $type->customFields()->findOrFail($customFieldId);
@@ -47,7 +48,8 @@ class CustomFieldController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
 
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
@@ -80,7 +82,8 @@ class CustomFieldController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
         $customFieldId = $request->route()->parameter('customField');
 
         $field = $type->customFields()->findOrFail($customFieldId);
@@ -109,7 +112,8 @@ class CustomFieldController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
         $customFieldId = $request->route()->parameter('customField');
 
         $field = $type->customFields()->findOrFail($customFieldId);
@@ -120,13 +124,6 @@ class CustomFieldController extends Controller
         )->execute();
 
         return response()->noContent(204);
-    }
-
-    private function findType(Request $request): CollectionType
-    {
-        $collectionTypeId = $request->route()->parameter('collectionType');
-
-        return $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
     }
 
     /**

@@ -11,7 +11,6 @@ use App\Enums\MaintenanceType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MaintenanceRecordResource;
 use App\Models\Copy;
-use App\Models\MaintenanceRecord;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -22,7 +21,9 @@ class MaintenanceRecordController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -33,7 +34,11 @@ class MaintenanceRecordController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $record = $this->findRecord($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $recordId = $request->route()->parameter('maintenanceRecord');
+        $record = $copy->maintenanceRecords()->findOrFail($recordId);
 
         return new MaintenanceRecordResource($record)
             ->response()
@@ -42,9 +47,23 @@ class MaintenanceRecordController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::enum(MaintenanceType::class)],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'performed_by' => ['nullable', 'string', 'max:255'],
+            'performed_at' => ['nullable', 'date'],
+            'cost_amount' => ['nullable', 'integer', 'min:0'],
+            'cost_currency_code' => ['nullable', 'string', 'size:3'],
+            'item_condition_before_id' => ['nullable', 'integer'],
+            'item_condition_after_id' => ['nullable', 'integer'],
+            'next_due_at' => ['nullable', 'date'],
+            'include_in_provenance' => ['nullable', 'boolean'],
+        ]);
 
         $record = new CreateMaintenanceRecord(
             user: $request->user(),
@@ -69,9 +88,25 @@ class MaintenanceRecordController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $record = $this->findRecord($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $recordId = $request->route()->parameter('maintenanceRecord');
+        $record = $copy->maintenanceRecords()->findOrFail($recordId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::enum(MaintenanceType::class)],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'performed_by' => ['nullable', 'string', 'max:255'],
+            'performed_at' => ['nullable', 'date'],
+            'cost_amount' => ['nullable', 'integer', 'min:0'],
+            'cost_currency_code' => ['nullable', 'string', 'size:3'],
+            'item_condition_before_id' => ['nullable', 'integer'],
+            'item_condition_after_id' => ['nullable', 'integer'],
+            'next_due_at' => ['nullable', 'date'],
+            'include_in_provenance' => ['nullable', 'boolean'],
+        ]);
 
         $record = new UpdateMaintenanceRecord(
             user: $request->user(),
@@ -96,7 +131,11 @@ class MaintenanceRecordController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $record = $this->findRecord($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $recordId = $request->route()->parameter('maintenanceRecord');
+        $record = $copy->maintenanceRecords()->findOrFail($recordId);
 
         new DestroyMaintenanceRecord(
             user: $request->user(),
@@ -106,41 +145,4 @@ class MaintenanceRecordController extends Controller
         return response()->noContent(204);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'type' => ['required', Rule::enum(MaintenanceType::class)],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'performed_by' => ['nullable', 'string', 'max:255'],
-            'performed_at' => ['nullable', 'date'],
-            'cost_amount' => ['nullable', 'integer', 'min:0'],
-            'cost_currency_code' => ['nullable', 'string', 'size:3'],
-            'item_condition_before_id' => ['nullable', 'integer'],
-            'item_condition_after_id' => ['nullable', 'integer'],
-            'next_due_at' => ['nullable', 'date'],
-            'include_in_provenance' => ['nullable', 'boolean'],
-        ]);
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
-    }
-
-    private function findRecord(Request $request): MaintenanceRecord
-    {
-        $copy = $this->findCopy($request);
-        $recordId = $request->route()->parameter('maintenanceRecord');
-
-        return $copy->maintenanceRecords()->findOrFail($recordId);
-    }
 }

@@ -8,7 +8,6 @@ use App\Actions\AttachTagToItem;
 use App\Actions\DetachTagFromItem;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TagResource;
-use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -18,14 +17,18 @@ class ItemTagController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
 
         return TagResource::collection($item->tags()->orderBy('id')->get());
     }
 
     public function create(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -44,10 +47,12 @@ class ItemTagController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
         $tagId = $request->route()->parameter('tag');
 
-        $tag = $request->user()->account->tags()->findOrFail($tagId);
+        $tag = $account->tags()->findOrFail($tagId);
 
         new DetachTagFromItem(
             user: $request->user(),
@@ -56,13 +61,5 @@ class ItemTagController extends Controller
         )->execute();
 
         return response()->noContent(204);
-    }
-
-    private function findItem(Request $request): Item
-    {
-        $itemId = $request->route()->parameter('item');
-        $account = $request->user()->account;
-
-        return $account->items()->findOrFail($itemId);
     }
 }

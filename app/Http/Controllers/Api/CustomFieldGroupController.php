@@ -9,7 +9,6 @@ use App\Actions\DestroyCustomFieldGroup;
 use App\Actions\UpdateCustomFieldGroup;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CustomFieldGroupResource;
-use App\Models\CollectionType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,7 +18,8 @@ class CustomFieldGroupController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -33,7 +33,8 @@ class CustomFieldGroupController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
         $groupId = $request->route()->parameter('group');
 
         $group = $type->customFieldGroups()->findOrFail($groupId);
@@ -45,7 +46,8 @@ class CustomFieldGroupController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
 
         $validated = $request->validate([
             'name' => ['nullable', 'string', 'max:255'],
@@ -64,7 +66,8 @@ class CustomFieldGroupController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
         $groupId = $request->route()->parameter('group');
 
         $group = $type->customFieldGroups()->findOrFail($groupId);
@@ -86,7 +89,8 @@ class CustomFieldGroupController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $type = $this->findType($request);
+        $collectionTypeId = $request->route()->parameter('collectionType');
+        $type = $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
         $groupId = $request->route()->parameter('group');
 
         $group = $type->customFieldGroups()->findOrFail($groupId);
@@ -99,10 +103,4 @@ class CustomFieldGroupController extends Controller
         return response()->noContent(204);
     }
 
-    private function findType(Request $request): CollectionType
-    {
-        $collectionTypeId = $request->route()->parameter('collectionType');
-
-        return $request->user()->account->collectionTypes()->findOrFail($collectionTypeId);
-    }
 }

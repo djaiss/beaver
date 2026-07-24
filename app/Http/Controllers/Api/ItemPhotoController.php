@@ -9,7 +9,6 @@ use App\Actions\DestroyItemPhoto;
 use App\Actions\SetMainItemPhoto;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ItemPhotoResource;
-use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,7 +18,9 @@ class ItemPhotoController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -30,7 +31,9 @@ class ItemPhotoController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
         $photoId = $request->route()->parameter('photo');
 
         $photo = $item->photos()->findOrFail($photoId);
@@ -42,7 +45,9 @@ class ItemPhotoController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
 
         $request->validate([
             'file' => ['required', 'image', 'max:10240'],
@@ -61,7 +66,9 @@ class ItemPhotoController extends Controller
 
     public function main(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
         $photoId = $request->route()->parameter('photo');
 
         $photo = $item->photos()->findOrFail($photoId);
@@ -78,7 +85,9 @@ class ItemPhotoController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $item = $this->findItem($request);
+        $itemId = $request->route()->parameter('item');
+        $account = $request->user()->account;
+        $item = $account->items()->findOrFail($itemId);
         $photoId = $request->route()->parameter('photo');
 
         $photo = $item->photos()->findOrFail($photoId);
@@ -89,13 +98,5 @@ class ItemPhotoController extends Controller
         )->execute();
 
         return response()->noContent(204);
-    }
-
-    private function findItem(Request $request): Item
-    {
-        $itemId = $request->route()->parameter('item');
-        $account = $request->user()->account;
-
-        return $account->items()->findOrFail($itemId);
     }
 }

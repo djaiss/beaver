@@ -11,7 +11,6 @@ use App\Enums\InsuranceStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\InsuranceRecordResource;
 use App\Models\Copy;
-use App\Models\InsuranceRecord;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -22,7 +21,9 @@ class InsuranceRecordController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -33,7 +34,11 @@ class InsuranceRecordController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $record = $this->findRecord($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $recordId = $request->route()->parameter('insuranceRecord');
+        $record = $copy->insuranceRecords()->findOrFail($recordId);
 
         return new InsuranceRecordResource($record)
             ->response()
@@ -42,9 +47,27 @@ class InsuranceRecordController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'provider' => ['required', 'string', 'max:255'],
+            'insured_value' => ['required', 'integer', 'min:0'],
+            'status' => ['nullable', Rule::enum(InsuranceStatus::class)],
+            'currency_code' => ['nullable', 'string', 'size:3'],
+            'policy_number' => ['nullable', 'string', 'max:255'],
+            'coverage_type' => ['nullable', 'string', 'max:255'],
+            'deductible_amount' => ['nullable', 'integer', 'min:0'],
+            'deductible_currency_code' => ['nullable', 'string', 'size:3'],
+            'starts_at' => ['nullable', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+            'is_scheduled_item' => ['nullable', 'boolean'],
+            'contact_name' => ['nullable', 'string', 'max:255'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
+            'contact_phone' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string'],
+        ]);
 
         $record = new CreateInsuranceRecord(
             user: $request->user(),
@@ -73,9 +96,29 @@ class InsuranceRecordController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $record = $this->findRecord($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $recordId = $request->route()->parameter('insuranceRecord');
+        $record = $copy->insuranceRecords()->findOrFail($recordId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'provider' => ['required', 'string', 'max:255'],
+            'insured_value' => ['required', 'integer', 'min:0'],
+            'status' => ['nullable', Rule::enum(InsuranceStatus::class)],
+            'currency_code' => ['nullable', 'string', 'size:3'],
+            'policy_number' => ['nullable', 'string', 'max:255'],
+            'coverage_type' => ['nullable', 'string', 'max:255'],
+            'deductible_amount' => ['nullable', 'integer', 'min:0'],
+            'deductible_currency_code' => ['nullable', 'string', 'size:3'],
+            'starts_at' => ['nullable', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+            'is_scheduled_item' => ['nullable', 'boolean'],
+            'contact_name' => ['nullable', 'string', 'max:255'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
+            'contact_phone' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string'],
+        ]);
 
         $record = new UpdateInsuranceRecord(
             user: $request->user(),
@@ -104,7 +147,11 @@ class InsuranceRecordController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $record = $this->findRecord($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $recordId = $request->route()->parameter('insuranceRecord');
+        $record = $copy->insuranceRecords()->findOrFail($recordId);
 
         new DestroyInsuranceRecord(
             user: $request->user(),
@@ -114,45 +161,4 @@ class InsuranceRecordController extends Controller
         return response()->noContent(204);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'provider' => ['required', 'string', 'max:255'],
-            'insured_value' => ['required', 'integer', 'min:0'],
-            'status' => ['nullable', Rule::enum(InsuranceStatus::class)],
-            'currency_code' => ['nullable', 'string', 'size:3'],
-            'policy_number' => ['nullable', 'string', 'max:255'],
-            'coverage_type' => ['nullable', 'string', 'max:255'],
-            'deductible_amount' => ['nullable', 'integer', 'min:0'],
-            'deductible_currency_code' => ['nullable', 'string', 'size:3'],
-            'starts_at' => ['nullable', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-            'is_scheduled_item' => ['nullable', 'boolean'],
-            'contact_name' => ['nullable', 'string', 'max:255'],
-            'contact_email' => ['nullable', 'email', 'max:255'],
-            'contact_phone' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string'],
-        ]);
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
-    }
-
-    private function findRecord(Request $request): InsuranceRecord
-    {
-        $copy = $this->findCopy($request);
-        $recordId = $request->route()->parameter('insuranceRecord');
-
-        return $copy->insuranceRecords()->findOrFail($recordId);
-    }
 }

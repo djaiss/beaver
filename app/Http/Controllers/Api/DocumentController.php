@@ -33,7 +33,9 @@ class DocumentController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -46,7 +48,9 @@ class DocumentController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $document = $this->findDocument($request);
+        $account = $request->user()->account;
+        $documentId = $request->route()->parameter('document');
+        $document = Document::query()->ofAccount($account)->findOrFail($documentId);
 
         return new DocumentResource($document)
             ->response()
@@ -55,9 +59,17 @@ class DocumentController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'documentable_type' => ['nullable', 'string', Rule::in(['copy', ...array_keys($this->documentableRelations())])],
+            'documentable_id' => ['nullable', 'integer'],
+            'file' => ['nullable', 'required_without:external_url', 'file', 'max:'.(int) config('documents.max_size_in_kilobytes'), 'mimetypes:'.implode(',', config('documents.allowed_mime_types'))],
+            'external_url' => ['nullable', 'required_without:file', 'url', 'max:2000'],
+            ...$this->metadataRules(),
+        ]);
 
         $documentable = $this->findDocumentable(
             $copy,
@@ -85,7 +97,9 @@ class DocumentController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $document = $this->findDocument($request);
+        $account = $request->user()->account;
+        $documentId = $request->route()->parameter('document');
+        $document = Document::query()->ofAccount($account)->findOrFail($documentId);
 
         $validated = $request->validate($this->metadataRules());
 
@@ -106,7 +120,9 @@ class DocumentController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $document = $this->findDocument($request);
+        $account = $request->user()->account;
+        $documentId = $request->route()->parameter('document');
+        $document = Document::query()->ofAccount($account)->findOrFail($documentId);
 
         new DestroyDocument(
             user: $request->user(),
@@ -147,20 +163,6 @@ class DocumentController extends Controller
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'documentable_type' => ['nullable', 'string', Rule::in(['copy', ...array_keys($this->documentableRelations())])],
-            'documentable_id' => ['nullable', 'integer'],
-            'file' => ['nullable', 'required_without:external_url', 'file', 'max:'.(int) config('documents.max_size_in_kilobytes'), 'mimetypes:'.implode(',', config('documents.allowed_mime_types'))],
-            'external_url' => ['nullable', 'required_without:file', 'url', 'max:2000'],
-            ...$this->metadataRules(),
-        ]);
-    }
-
-    /**
      * @return array<string, list<mixed>>
      */
     private function metadataRules(): array
@@ -172,23 +174,5 @@ class DocumentController extends Controller
             'issued_at' => ['nullable', 'date'],
             'reference_number' => ['nullable', 'string', 'max:255'],
         ];
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
-    }
-
-    private function findDocument(Request $request): Document
-    {
-        $account = $request->user()->account;
-        $documentId = $request->route()->parameter('document');
-
-        return Document::query()->ofAccount($account)->findOrFail($documentId);
     }
 }

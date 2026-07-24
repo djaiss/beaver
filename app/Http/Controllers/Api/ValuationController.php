@@ -12,7 +12,6 @@ use App\Enums\ValuationType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ValuationResource;
 use App\Models\Copy;
-use App\Models\Valuation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -23,7 +22,9 @@ class ValuationController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -34,7 +35,11 @@ class ValuationController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $valuation = $this->findValuation($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $valuationId = $request->route()->parameter('valuation');
+        $valuation = $copy->valuations()->findOrFail($valuationId);
 
         return new ValuationResource($valuation)
             ->response()
@@ -43,9 +48,22 @@ class ValuationController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::enum(ValuationType::class)],
+            'amount' => ['required', 'integer', 'min:0'],
+            'valued_at' => ['required', 'date'],
+            'currency_code' => ['nullable', 'string', 'size:3'],
+            'confidence' => ['nullable', Rule::enum(ValuationConfidence::class)],
+            'valuer' => ['nullable', 'string', 'max:255'],
+            'method' => ['nullable', 'string', 'max:255'],
+            'source_url' => ['nullable', 'string', 'url', 'max:2048'],
+            'reference_number' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string'],
+        ]);
 
         $valuation = new CreateValuation(
             user: $request->user(),
@@ -69,9 +87,24 @@ class ValuationController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $valuation = $this->findValuation($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $valuationId = $request->route()->parameter('valuation');
+        $valuation = $copy->valuations()->findOrFail($valuationId);
 
-        $validated = $this->validatePayload($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::enum(ValuationType::class)],
+            'amount' => ['required', 'integer', 'min:0'],
+            'valued_at' => ['required', 'date'],
+            'currency_code' => ['nullable', 'string', 'size:3'],
+            'confidence' => ['nullable', Rule::enum(ValuationConfidence::class)],
+            'valuer' => ['nullable', 'string', 'max:255'],
+            'method' => ['nullable', 'string', 'max:255'],
+            'source_url' => ['nullable', 'string', 'url', 'max:2048'],
+            'reference_number' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string'],
+        ]);
 
         $valuation = new UpdateValuation(
             user: $request->user(),
@@ -95,7 +128,11 @@ class ValuationController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $valuation = $this->findValuation($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)->findOrFail($copyId);
+        $valuationId = $request->route()->parameter('valuation');
+        $valuation = $copy->valuations()->findOrFail($valuationId);
 
         new DestroyValuation(
             user: $request->user(),
@@ -105,40 +142,4 @@ class ValuationController extends Controller
         return response()->noContent(204);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'type' => ['required', Rule::enum(ValuationType::class)],
-            'amount' => ['required', 'integer', 'min:0'],
-            'valued_at' => ['required', 'date'],
-            'currency_code' => ['nullable', 'string', 'size:3'],
-            'confidence' => ['nullable', Rule::enum(ValuationConfidence::class)],
-            'valuer' => ['nullable', 'string', 'max:255'],
-            'method' => ['nullable', 'string', 'max:255'],
-            'source_url' => ['nullable', 'string', 'url', 'max:2048'],
-            'reference_number' => ['nullable', 'string', 'max:255'],
-            'note' => ['nullable', 'string'],
-        ]);
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
-    }
-
-    private function findValuation(Request $request): Valuation
-    {
-        $copy = $this->findCopy($request);
-        $valuationId = $request->route()->parameter('valuation');
-
-        return $copy->valuations()->findOrFail($valuationId);
-    }
 }
