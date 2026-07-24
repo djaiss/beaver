@@ -26,7 +26,11 @@ class CopyHistoryController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $copy = $this->findCopy($request);
+        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
+
+        $copy = Copy::whereRelation('item.collection', 'account_id', $account->id)
+            ->findOrFail($copyId);
 
         $meaningfulOnly = $request->query('view') !== 'complete';
 
@@ -42,21 +46,9 @@ class CopyHistoryController extends Controller
      */
     private function selectedTypes(Request $request): array
     {
-        $valid = array_map(fn (TimelineSource $source): string => $source->value, TimelineSource::cases());
-
         return array_values(array_filter(
             (array) $request->query('type', []),
-            fn (mixed $type): bool => in_array($type, $valid, true),
+            fn (mixed $type): bool => is_string($type) && TimelineSource::tryFrom($type) !== null,
         ));
-    }
-
-    private function findCopy(Request $request): Copy
-    {
-        $copyId = $request->route()->parameter('copy');
-        $account = $request->user()->account;
-
-        return Copy::query()
-            ->whereHas('item.collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($copyId);
     }
 }

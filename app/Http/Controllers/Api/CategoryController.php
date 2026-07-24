@@ -9,7 +9,6 @@ use App\Actions\DestroyCategory;
 use App\Actions\UpdateCategory;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-use App\Models\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,7 +18,8 @@ class CategoryController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $collection = $this->findCollection($request);
+        $collectionId = $request->route()->parameter('collection');
+        $collection = $request->user()->account->collections()->findOrFail($collectionId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -32,7 +32,8 @@ class CategoryController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $collection = $this->findCollection($request);
+        $collectionId = $request->route()->parameter('collection');
+        $collection = $request->user()->account->collections()->findOrFail($collectionId);
         $categoryId = $request->route()->parameter('category');
 
         $category = $collection->categories()->findOrFail($categoryId);
@@ -44,7 +45,8 @@ class CategoryController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $collection = $this->findCollection($request);
+        $collectionId = $request->route()->parameter('collection');
+        $collection = $request->user()->account->collections()->findOrFail($collectionId);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -67,7 +69,8 @@ class CategoryController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $collection = $this->findCollection($request);
+        $collectionId = $request->route()->parameter('collection');
+        $collection = $request->user()->account->collections()->findOrFail($collectionId);
         $categoryId = $request->route()->parameter('category');
 
         $category = $collection->categories()->findOrFail($categoryId);
@@ -93,7 +96,8 @@ class CategoryController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $collection = $this->findCollection($request);
+        $collectionId = $request->route()->parameter('collection');
+        $collection = $request->user()->account->collections()->findOrFail($collectionId);
         $categoryId = $request->route()->parameter('category');
 
         $category = $collection->categories()->findOrFail($categoryId);
@@ -104,12 +108,5 @@ class CategoryController extends Controller
         )->execute();
 
         return response()->noContent(204);
-    }
-
-    private function findCollection(Request $request): Collection
-    {
-        $collectionId = $request->route()->parameter('collection');
-
-        return $request->user()->account->collections()->findOrFail($collectionId);
     }
 }

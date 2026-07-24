@@ -10,7 +10,6 @@ use App\Actions\UpdateCopy;
 use App\Enums\CopyStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CopyResource;
-use App\Models\Item;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,7 +20,10 @@ class CopyController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $item = $this->findItem($request);
+        $account = $request->user()->account;
+
+        $itemId = $request->route()->parameter('item');
+        $item = $account->items()->findOrFail($itemId);
 
         $perPage = max(1, min((int) $request->query('per_page', 10), config('app.maximum_items_per_page')));
 
@@ -37,9 +39,12 @@ class CopyController extends Controller
 
     public function show(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
-        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
 
+        $itemId = $request->route()->parameter('item');
+        $item = $account->items()->findOrFail($itemId);
+
+        $copyId = $request->route()->parameter('copy');
         $copy = $item->copies()->findOrFail($copyId);
 
         return new CopyResource($copy)
@@ -49,11 +54,23 @@ class CopyController extends Controller
 
     public function create(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
-
-        $validated = $this->validatePayload($request);
-
         $account = $request->user()->account;
+
+        $itemId = $request->route()->parameter('item');
+        $item = $account->items()->findOrFail($itemId);
+
+        // The estimated value is accepted but never stored on the copy: the
+        // action turns it into a valuation.
+        $validated = $request->validate([
+            'identifier' => ['nullable', 'string', 'max:255'],
+            'item_condition_id' => ['nullable', 'integer'],
+            'location_id' => ['nullable', 'integer'],
+            'status' => ['nullable', Rule::enum(CopyStatus::class)],
+            'quantity' => ['nullable', 'integer', 'min:1'],
+            'disposed_at' => ['nullable', 'date'],
+            'note' => ['nullable', 'string'],
+            'estimated_value' => ['nullable', 'integer', 'min:0'],
+        ]);
 
         $copy = new CreateCopy(
             user: $request->user(),
@@ -75,14 +92,26 @@ class CopyController extends Controller
 
     public function update(Request $request): JsonResponse
     {
-        $item = $this->findItem($request);
-        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
 
+        $itemId = $request->route()->parameter('item');
+        $item = $account->items()->findOrFail($itemId);
+
+        $copyId = $request->route()->parameter('copy');
         $copy = $item->copies()->findOrFail($copyId);
 
-        $validated = $this->validatePayload($request);
-
-        $account = $request->user()->account;
+        // The estimated value is accepted but never stored on the copy: the
+        // action turns it into a valuation.
+        $validated = $request->validate([
+            'identifier' => ['nullable', 'string', 'max:255'],
+            'item_condition_id' => ['nullable', 'integer'],
+            'location_id' => ['nullable', 'integer'],
+            'status' => ['nullable', Rule::enum(CopyStatus::class)],
+            'quantity' => ['nullable', 'integer', 'min:1'],
+            'disposed_at' => ['nullable', 'date'],
+            'note' => ['nullable', 'string'],
+            'estimated_value' => ['nullable', 'integer', 'min:0'],
+        ]);
 
         $copy = new UpdateCopy(
             user: $request->user(),
@@ -104,9 +133,12 @@ class CopyController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $item = $this->findItem($request);
-        $copyId = $request->route()->parameter('copy');
+        $account = $request->user()->account;
 
+        $itemId = $request->route()->parameter('item');
+        $item = $account->items()->findOrFail($itemId);
+
+        $copyId = $request->route()->parameter('copy');
         $copy = $item->copies()->findOrFail($copyId);
 
         new DestroyCopy(
@@ -115,35 +147,5 @@ class CopyController extends Controller
         )->execute();
 
         return response()->noContent(204);
-    }
-
-    /**
-     * The estimated value is accepted but never stored on the copy: the action
-     * turns it into a valuation.
-     *
-     * @return array<string, mixed>
-     */
-    private function validatePayload(Request $request): array
-    {
-        return $request->validate([
-            'identifier' => ['nullable', 'string', 'max:255'],
-            'item_condition_id' => ['nullable', 'integer'],
-            'location_id' => ['nullable', 'integer'],
-            'status' => ['nullable', Rule::enum(CopyStatus::class)],
-            'quantity' => ['nullable', 'integer', 'min:1'],
-            'disposed_at' => ['nullable', 'date'],
-            'note' => ['nullable', 'string'],
-            'estimated_value' => ['nullable', 'integer', 'min:0'],
-        ]);
-    }
-
-    private function findItem(Request $request): Item
-    {
-        $itemId = $request->route()->parameter('item');
-        $account = $request->user()->account;
-
-        return Item::query()
-            ->whereHas('collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($itemId);
     }
 }

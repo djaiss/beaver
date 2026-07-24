@@ -48,8 +48,6 @@ class ItemLogController extends Controller
         $itemId = $request->route()->parameter('item');
         $account = $request->user()->account;
 
-        return Item::query()
-            ->whereHas('collection', fn ($query) => $query->whereBelongsTo($account))
-            ->findOrFail($itemId);
+        return $account->items()->findOrFail($itemId);
     }
 }
