@@ -25,7 +25,7 @@ Do not excessively use emojis.
 
 - `app/Actions`: one class per user action, holding the business logic. Controllers stay thin and delegate here. Most of the app lives in this folder.
 - `app/Models`: Eloquent models.
-- `app/Traits`: shared traits used across the app, such as `HasAuthor` (mixed into models), `GuardsOverlappingLoans` (mixed into actions) or `FindsItems` (mixed into controllers).
+- `app/Traits`: shared traits used across the app, such as `HasAuthor` (mixed into models), `GuardsOverlappingLoans` (mixed into actions) or `SuggestsTags` (mixed into controllers).
 - `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs).
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
 - `app/Jobs`: queued jobs. `app/Mail`: mailables. `app/Enums`: enums. `app/Helpers`: helpers.
@@ -37,6 +37,56 @@ Do not excessively use emojis.
 - `database`: `migrations`, `factories`, `seeders`, plus `data` for seed files such as countries.
 - `lang`: one JSON file per locale.
 - `tests`: `Unit` (models, actions, jobs), `Feature` (controllers), `Browser` (Pest browser tests).
+
+## Resolving what the url names (web app)
+
+A web url under `collections/{collection}/items/{item}/copies/{copy}/...` names
+its models, and middleware resolves them before the controller runs. Never look
+one of them up again inside a controller, and never add a `findCollection()` or
+`findCopy()` style helper: that lookup lives in exactly one place per level.
+
+`CheckCollection`, `CheckItem` and `CheckCopy` (aliased `collection`, `item` and
+`copy`) each resolve their level through the one above it, so a collection
+outside the account, an item outside that collection, or a copy outside that item
+is not found. They answer 404 rather than 403, the same way the role gates do.
+Each one puts its model back on the route and into `$request->attributes`, and
+the collection and the item are also shared with the views, so a screen does not
+have to be handed what its url already says. A copy is never shared: those routes
+only ever redirect.
+
+Hang a new nested resource off the existing groups in `routes/web.php` so it
+inherits the middleware. Add a new `CheckX` only when a genuinely new level of
+nesting appears, and register it in `bootstrap/app.php`.
+
+In a controller, read the model either as a typed parameter or from the request:
+
+    public function create(Request $request): RedirectResponse
+    {
+        $collection = $request->attributes->get('collection');
+
+    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $loan): RedirectResponse
+
+Which one you use is decided by the url, not by taste. Laravel hands a controller
+its route parameters by position, so a method that needs a trailing id (the loan
+above) has to declare every segment before it, and those are declared as typed
+models. A method that needs nothing after its last resolved model declares
+nothing and reads the request instead.
+
+Two things follow, and both matter:
+
+Laravel's `SubstituteBindings` is switched off on these groups. It sees the models
+the controllers type hint and resolves them itself, by id alone and across every
+account, before our middleware would ever run. If you turn it back on while the
+type hints stay, tenant isolation silently moves from our lookup to an unscoped
+`find()`. `tests/Feature/Middleware/CheckCollectionTest.php` guards this.
+
+Eager loading is a page concern, not a lookup one. The middleware resolves bare
+models, so a screen that needs relations calls `$item->load([...])` itself.
+`ItemHistoryController` is the one place that resolves its own copy, out of the
+copies it has already loaded, and says so in a comment.
+
+None of this applies to the JSON API, which is tenant scoped in its own way
+(below) and resolves its parameters in its controllers.
 
 ## The API
 
