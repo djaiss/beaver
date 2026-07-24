@@ -200,6 +200,8 @@ Route::name('api.')->group(function (): void {
         Route::put('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.update');
         Route::delete('copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('copies.maintenanceRecords.destroy');
 
+        // the account-wide list of loans, across every copy; the Loans section reads the same data
+        Route::get('loans', [LoanController::class, 'all'])->name('loans.index');
         // the loans recorded against a copy; custody moving out or in, without ownership
         Route::get('copies/{copy}/loans', [LoanController::class, 'index'])->where('copy', '[1-9][0-9]*')->name('copies.loans');
         Route::get('copies/{copy}/loans/{loan}', [LoanController::class, 'show'])->where(['copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('copies.loans.show');

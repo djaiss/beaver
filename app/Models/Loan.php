@@ -13,6 +13,8 @@ use App\Models\Concerns\HasDocuments;
 use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\LoanFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -177,6 +179,58 @@ class Loan extends Model
     public function isOverdue(): bool
     {
         return $this->status === LoanStatus::Overdue;
+    }
+
+    /**
+     * Whether the loan is out and past its due date, whether or not the scheduled
+     * overdue check has run yet. A loan carrying the stored Overdue status counts,
+     * and so does one still out whose due date slipped past between checks.
+     */
+    public function isEffectivelyOverdue(): bool
+    {
+        if ($this->status === LoanStatus::Overdue) {
+            return true;
+        }
+
+        return $this->status->hasLeftCustody()
+            && $this->due_at !== null
+            && $this->due_at->isBefore(Carbon::today());
+    }
+
+    /**
+     * Whether the loan is still open but has no due date, so it never surfaces on
+     * a due-date view and can quietly drift out of sight.
+     */
+    public function isOpenEnded(): bool
+    {
+        return $this->status->isOpen() && $this->due_at === null;
+    }
+
+    /**
+     * Whether the copy came back in worse shape than it left. Only meaningful once
+     * both conditions are recorded; otherwise there is no baseline to compare.
+     */
+    public function returnedWorse(): bool
+    {
+        if ($this->itemConditionOut === null || $this->itemConditionIn === null) {
+            return false;
+        }
+
+        return $this->itemConditionIn->isWorseThan($this->itemConditionOut);
+    }
+
+    /**
+     * Scope the query to loans that belong to an account, reached through the
+     * copy, its item and its collection. Loans have no account column of their own.
+     *
+     * @param  Builder<Loan>  $query
+     */
+    #[Scope]
+    protected function forAccount(Builder $query, Account $account): void
+    {
+        $query->whereHas('copy.item.collection', function (Builder $subQuery) use ($account): void {
+            $subQuery->where('account_id', $account->id);
+        });
     }
 
     /**

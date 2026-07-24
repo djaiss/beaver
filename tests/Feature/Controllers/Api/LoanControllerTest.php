@@ -194,3 +194,54 @@ it('restricts writes to owners and editors', function () {
         'loaned_at' => '2024-01-01',
     ])->assertNotFound();
 });
+
+it('lists every loan in the account across copies', function () {
+    $user = $this->createUser();
+    Loan::factory()->create(['copy_id' => copyToLendForAccount($user->account_id)->id, 'direction' => LoanDirection::Outgoing]);
+    Loan::factory()->create(['copy_id' => copyToLendForAccount($user->account_id)->id, 'direction' => LoanDirection::Incoming]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', '/api/loans')
+        ->assertOk()
+        ->assertJsonCount(2, 'data')
+        ->assertJsonStructure(['data' => ['*' => $this->jsonStructure], 'links', 'meta']);
+});
+
+it('filters the account-wide loans by direction', function () {
+    $user = $this->createUser();
+    Loan::factory()->create(['copy_id' => copyToLendForAccount($user->account_id)->id, 'direction' => LoanDirection::Outgoing]);
+    Loan::factory()->create(['copy_id' => copyToLendForAccount($user->account_id)->id, 'direction' => LoanDirection::Incoming]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', '/api/loans?direction=outgoing')
+        ->assertOk()
+        ->assertJsonCount(1, 'data');
+});
+
+it('does not list another account\'s loans in the account-wide index', function () {
+    $user = $this->createUser();
+    Loan::factory()->create(['copy_id' => copyToLendForAccount($this->createAccount()->id)->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', '/api/loans')->assertOk()->assertJsonCount(0, 'data');
+});
+
+it('rejects a second open outgoing loan on the same copy', function () {
+    Queue::fake();
+
+    $user = $this->createUser();
+    $copy = copyToLendForAccount($user->account_id);
+    Loan::factory()->create(['copy_id' => $copy->id, 'direction' => LoanDirection::Outgoing, 'status' => LoanStatus::Active]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/copies/'.$copy->id.'/loans', [
+        'direction' => 'outgoing',
+        'status' => 'active',
+        'party' => 'The Whitney Museum',
+        'loaned_at' => '2024-02-01',
+    ])->assertUnprocessable()->assertJsonValidationErrors('copy');
+});

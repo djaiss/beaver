@@ -162,6 +162,8 @@
                  in the workspace nav rather than inside a collection. --}}
             <x-sidebar-link :href="route('series.index')" :active="request()->routeIs('series.*')" icon="library">{{ __('Series') }}</x-sidebar-link>
             <x-sidebar-link :href="route('locations.index')" :active="request()->routeIs('locations.*')" icon="map-pin">{{ __('Locations') }}</x-sidebar-link>
+            @php($overdueLoans = \App\Models\Loan::query()->forAccount($user->account)->where('status', \App\Enums\LoanStatus::Overdue)->count())
+            <x-sidebar-link :href="route('loans.index')" :active="request()->routeIs('loans.*')" icon="arrow-left-right" :count="$overdueLoans > 0 ? $overdueLoans : null">{{ __('Loans') }}</x-sidebar-link>
 
             <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Account management') }}</p>
             @if ($user->isOwner())

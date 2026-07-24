@@ -28,6 +28,11 @@ $loan = fn (string $id, string $direction, string $status, string $party): array
         'created_at' => 1752537600,
         'updated_at' => 1752537600,
     ],
+    'context' => [
+        'item_name' => 'Amazing Spider-Man #1',
+        'copy_identifier' => 'CBX-042',
+        'collection_name' => 'My Comics',
+    ],
     'links' => [
         'self' => $base.'/copies/1/loans/'.$id,
     ],
@@ -168,12 +173,46 @@ $returnParams = [
     ],
 ];
 
+$directionFilter = [
+    'name' => 'direction',
+    'type' => 'string',
+    'required' => false,
+    'description' => 'Narrow the list to one direction: outgoing (lent out) or incoming (borrowed in).',
+    'example' => 'outgoing',
+];
+
+$statusFilter = [
+    'name' => 'status',
+    'type' => 'string',
+    'required' => false,
+    'description' => 'Narrow the list to one status: planned, active, overdue, returned, cancelled or lost.',
+    'example' => 'active',
+];
+
 return [
     'name' => 'Loans',
     'sections' => [
         [
+            'id' => 'loans-index',
+            'title' => 'List all loans',
+            'method' => 'GET',
+            'path' => '/loans',
+            'examplePath' => '/loans',
+            'description' => 'Retrieve every loan in your account, across all copies, newest first. This is the account-wide view the Loans section is built on. Optional filters narrow the list by direction and status.',
+            'body' => [
+                'A loan moves custody without moving ownership. Each entry carries a context block with the object it is about (item name, copy identifier and collection), so a list is readable without a second request per loan.',
+            ],
+            'permissions' => 'Any member of the account.',
+            'queryParams' => [$directionFilter, $statusFilter, ...$pagination],
+            'returns' => 'A paginated list of loan objects.',
+            'response' => ApiDocumentation::paginated([
+                $loan('2', 'outgoing', 'active', 'The Whitney Museum'),
+                $loan('1', 'incoming', 'returned', 'A private collector'),
+            ], '/loans'),
+        ],
+        [
             'id' => 'loans-list',
-            'title' => 'List loans',
+            'title' => 'List loans of a copy',
             'method' => 'GET',
             'path' => '/copies/{copy}/loans',
             'examplePath' => '/copies/1/loans',

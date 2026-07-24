@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class CreateLoan
 {
     use GuardsLoanConditions;
+    use GuardsOverlappingLoans;
     use SyncsLoanState;
 
     private Loan $loan;
@@ -69,6 +70,7 @@ class CreateLoan
         }
 
         $this->guardConditionsBelongToAccount($account, $this->itemConditionOutId, $this->itemConditionInId);
+        $this->guardAgainstOverlappingLoan($this->copy, $this->direction, $this->status);
     }
 
     private function create(): void
