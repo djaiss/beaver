@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Models\Location;
 use App\Models\LocationHistory;
 use App\Models\User;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**

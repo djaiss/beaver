@@ -26,6 +26,7 @@ use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Valuation;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;

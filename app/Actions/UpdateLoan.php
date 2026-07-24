@@ -13,6 +13,9 @@ use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Loan;
 use App\Models\User;
+use App\Traits\GuardsLoanConditions;
+use App\Traits\GuardsOverlappingLoans;
+use App\Traits\SyncsLoanState;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**

@@ -17,6 +17,7 @@ use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\Valuation;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**

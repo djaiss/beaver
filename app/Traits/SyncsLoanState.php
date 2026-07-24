@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace App\Traits;
 
+use App\Actions\CreateProvenanceEvent;
 use App\Enums\CopyStatus;
 use App\Enums\DatePrecision;
 use App\Enums\LoanDirection;

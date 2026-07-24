@@ -14,6 +14,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Copy;
 use App\Models\MaintenanceRecord;
 use App\Models\User;
+use App\Traits\GuardsMaintenanceConditions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**

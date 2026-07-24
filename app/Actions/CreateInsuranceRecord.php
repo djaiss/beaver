@@ -12,6 +12,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Copy;
 use App\Models\InsuranceRecord;
 use App\Models\User;
+use App\Traits\GuardsActiveInsuranceRecord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**

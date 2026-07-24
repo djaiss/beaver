@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace App\Traits;
 
 use App\Enums\InsuranceStatus;
 use App\Models\Copy;

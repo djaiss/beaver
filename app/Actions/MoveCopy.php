@@ -11,6 +11,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Copy;
 use App\Models\Location;
 use App\Models\User;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
