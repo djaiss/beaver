@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\CheckCollection;
+use App\Http\Middleware\CheckCopy;
+use App\Http\Middleware\CheckItem;
 use App\Http\Middleware\CheckMarketing;
 use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\EnsureEditorAccess;
@@ -29,6 +32,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'set.locale' => SetLocale::class,
+            // the collection domain resolves what the url names, outermost first
+            'collection' => CheckCollection::class,
+            'item' => CheckItem::class,
+            'copy' => CheckCopy::class,
             'owner' => EnsureAccountOwner::class,
             'editor' => EnsureEditorAccess::class,
             'instance.admin' => EnsureInstanceAdministrator::class,

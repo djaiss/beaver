@@ -9,9 +9,7 @@ use App\Actions\DestroyCollection;
 use App\Actions\UpdateCollection;
 use App\Enums\VisibilityEnum;
 use App\Http\Controllers\Controller;
-use App\Models\Collection;
 use App\Traits\ShowsCollectionItems;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -33,19 +31,12 @@ class CollectionController extends Controller
         ]);
     }
 
-    public function show(Request $request, int $collection): View
+    public function show(Request $request): View
     {
-        $account = $request->user()->account;
+        $collection = $request->attributes->get('collection');
+        $collection->load(['collectionTypes', 'categories']);
 
-        try {
-            $collectionModel = $account->collections()
-                ->with(['collectionTypes', 'categories'])
-                ->findOrFail($collection);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
-
-        return $this->collectionItemsView($request, $collectionModel);
+        return $this->collectionItemsView($request, $collection);
     }
 
     public function new(Request $request): View
@@ -91,24 +82,23 @@ class CollectionController extends Controller
             ->with('status_description', __('Your new collection is ready for items.'));
     }
 
-    public function edit(Request $request, int $collection): View
+    public function edit(Request $request): View
     {
         $account = $request->user()->account;
-        $collectionModel = $this->findCollection($request, $collection);
+        $collection = $request->attributes->get('collection');
 
         return view('app.collections.edit', [
-            'collection' => $collectionModel,
             'types' => $account->collectionTypes()->get()->sortBy('name')->values(),
-            'selectedTypeIds' => $collectionModel->collectionTypes->pluck('id')->all(),
+            'selectedTypeIds' => $collection->collectionTypes->pluck('id')->all(),
             'currencies' => $this->currencyOptions(),
             'emojiOptions' => self::EMOJI_OPTIONS,
             'visibilityOptions' => $this->visibilityOptions(),
         ]);
     }
 
-    public function update(Request $request, int $collection): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
+        $collection = $request->attributes->get('collection');
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -122,7 +112,7 @@ class CollectionController extends Controller
 
         new UpdateCollection(
             user: $request->user(),
-            collection: $collectionModel,
+            collection: $collection,
             name: $validated['name'],
             description: $validated['description'] ?? null,
             emoji: $validated['emoji'] ?? null,
@@ -131,32 +121,21 @@ class CollectionController extends Controller
             collectionTypeIds: $validated['collection_type_ids'] ?? [],
         )->execute();
 
-        return to_route('collections.show', $collectionModel->id)
+        return to_route('collections.show', $collection->id)
             ->with('status', __('Collection updated'))
             ->with('status_description', __('Your changes to the collection were saved.'));
     }
 
-    public function destroy(Request $request, int $collection): RedirectResponse
+    public function destroy(Request $request): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-
         new DestroyCollection(
             user: $request->user(),
-            collection: $collectionModel,
+            collection: $request->attributes->get('collection'),
         )->execute();
 
         return to_route('collections.index')
             ->with('status', __('Collection deleted'))
             ->with('status_description', __('The collection and its items are no longer accessible.'));
-    }
-
-    private function findCollection(Request $request, int $collection): Collection
-    {
-        try {
-            return $request->user()->account->collections()->findOrFail($collection);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     /**

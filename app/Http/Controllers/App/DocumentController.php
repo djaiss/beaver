@@ -9,10 +9,10 @@ use App\Actions\UpdateDocument;
 use App\Actions\UploadDocument;
 use App\Enums\DocumentType;
 use App\Http\Controllers\Controller;
+use App\Models\Collection as CollectionModel;
 use App\Models\Copy;
 use App\Models\Document;
 use App\Models\Item;
-use App\Traits\FindsItems;
 use App\Traits\ResolvesDocumentables;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
@@ -30,22 +30,17 @@ use Illuminate\Validation\Rule;
  */
 class DocumentController extends Controller
 {
-    use FindsItems;
     use ResolvesDocumentables;
 
-    public function create(Request $request, int $collection, int $item, int $copy): RedirectResponse
+    public function create(Request $request, CollectionModel $collection, Item $item, Copy $copy): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-
         $validated = $request->validate($this->rules());
 
-        $documentable = $this->findDocumentable($copyModel, $validated['documentable_type'], (int) $validated['documentable_id']);
+        $documentable = $this->findDocumentable($copy, $validated['documentable_type'], (int) $validated['documentable_id']);
 
         new UploadDocument(
             user: $request->user(),
-            copy: $copyModel,
+            copy: $copy,
             documentable: $documentable,
             type: DocumentType::from($validated['type']),
             name: $validated['name'],
@@ -56,16 +51,13 @@ class DocumentController extends Controller
             referenceNumber: $validated['reference_number'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, $this->sectionForDocumentable($validated['documentable_type'])])
+        return to_route('items.history.show', [$collection, $item, $copy, $this->sectionForDocumentable($validated['documentable_type'])])
             ->with('status', __('Document attached'))
             ->with('status_description', __('The document was added to the history of this copy.'));
     }
 
-    public function update(Request $request, int $collection, int $item, int $copy, int $document): RedirectResponse
+    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $document): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
         $documentModel = $this->findDocument($request, $document);
 
         $validated = $request->validate($this->metadataRules());
@@ -80,16 +72,13 @@ class DocumentController extends Controller
             referenceNumber: $validated['reference_number'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, $this->sectionForDocumentable($documentModel->documentable_type)])
+        return to_route('items.history.show', [$collection, $item, $copy, $this->sectionForDocumentable($documentModel->documentable_type)])
             ->with('status', __('Document updated'))
             ->with('status_description', __('Your changes to the document were saved.'));
     }
 
-    public function destroy(Request $request, int $collection, int $item, int $copy, int $document): RedirectResponse
+    public function destroy(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $document): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
         $documentModel = $this->findDocument($request, $document);
 
         $section = $this->sectionForDocumentable($documentModel->documentable_type);
@@ -99,18 +88,9 @@ class DocumentController extends Controller
             document: $documentModel,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, $section])
+        return to_route('items.history.show', [$collection, $item, $copy, $section])
             ->with('status', __('Document deleted'))
             ->with('status_description', __('The document and its file were removed.'));
-    }
-
-    private function findCopy(Item $item, int $copy): Copy
-    {
-        try {
-            return $item->copies()->findOrFail($copy);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     private function findDocument(Request $request, int $document): Document

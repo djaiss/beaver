@@ -40,7 +40,6 @@ trait ShowsCollectionItems
             ->withQueryString();
 
         return view('app.collections.show', [
-            'collection' => $collection,
             'category' => $category,
             'view' => $collection->viewForUser($request->user()),
             'items' => $items,

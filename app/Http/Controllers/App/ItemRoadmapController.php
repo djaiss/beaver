@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-use App\Traits\FindsItems;
+use App\Traits\SuggestsTags;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -15,12 +15,11 @@ use Illuminate\View\View;
  */
 class ItemRoadmapController extends Controller
 {
-    use FindsItems;
+    use SuggestsTags;
 
-    public function index(Request $request, int $collection, int $item): View
+    public function index(Request $request): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, [
+        $request->attributes->get('item')->load([
             'tags',
             'copies',
             'category',
@@ -28,8 +27,6 @@ class ItemRoadmapController extends Controller
         ]);
 
         return view('app.items.roadmap', [
-            'collection' => $collectionModel,
-            'item' => $itemModel,
             'tags' => $this->accountTags($request),
         ]);
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
-use App\Traits\FindsItems;
+use App\Traits\SuggestsTags;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -15,12 +15,12 @@ use Illuminate\View\View;
  */
 class ItemActivitiesController extends Controller
 {
-    use FindsItems;
+    use SuggestsTags;
 
-    public function index(Request $request, int $collection, int $item): View
+    public function index(Request $request): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, [
+        $item = $request->attributes->get('item');
+        $item->load([
             'tags',
             'copies',
             'category',
@@ -28,12 +28,10 @@ class ItemActivitiesController extends Controller
         ]);
 
         return view('app.items.activities', [
-            'collection' => $collectionModel,
-            'item' => $itemModel,
             'tags' => $this->accountTags($request),
             // Newest first. The user is eager loaded because every entry reads
             // the current name of whoever performed the action.
-            'activity' => $itemModel->logs()->with('user')->latest()->get(),
+            'activity' => $item->logs()->with('user')->latest()->get(),
         ]);
     }
 }

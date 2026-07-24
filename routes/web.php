@@ -71,6 +71,7 @@ use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\App\TrashController;
 use App\Http\Controllers\App\ValuationController;
 use App\Http\Controllers\LocaleController;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/marketing.php';
@@ -87,30 +88,47 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
     // placeholder sections for the future collection domain
     Route::get('collections', [CollectionController::class, 'index'])->name('collections.index');
-    Route::get('collections/{collection}', [CollectionController::class, 'show'])->where('collection', '[1-9][0-9]*')->name('collections.show');
-    // remembering which items view a member last opened is a private preference, so any role may set it
-    Route::put('collections/{collection}/item-view', [CollectionItemViewController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.item-view.update');
-    // viewing an item is read only, so any role may do it
-    // each tab of an item is its own page, with overview living on the item's own url
-    Route::get('collections/{collection}/items/{item}', [ItemController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.show');
-    Route::get('collections/{collection}/items/{item}/copies', [ItemCopiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.copies.index');
-    // The history is read one copy at a time, so a copy lives in the url. The
-    // bare url lands on the first copy; each copy pill links to its own, and each
-    // section is its own url rather than a query parameter.
-    Route::get('collections/{collection}/items/{item}/history', [ItemHistoryController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.history.index');
-    Route::get('collections/{collection}/items/{item}/history/{copy}/{section?}', [ItemHistoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'section' => '[a-z]+'])->name('items.history.show');
-    Route::get('collections/{collection}/items/{item}/activities', [ItemActivitiesController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.activities.index');
-    Route::get('collections/{collection}/items/{item}/roadmap', [ItemRoadmapController::class, 'index'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.roadmap.index');
+
+    // Everything below a collection resolves it first. The `collection`
+    // middleware answers 404 for anything outside the account, and hands the
+    // model to the controllers and the views, so no screen looks it up again.
+    // The `item` and `copy` middleware do the same one and two levels down,
+    // each through the one above it.
+    //
+    // Laravel's own binding is switched off here on purpose: it would see the
+    // models these controllers type hint and resolve them itself, by id alone
+    // and across every account, before our middleware ever ran.
+    Route::prefix('collections/{collection}')->whereNumber('collection')->withoutMiddleware(SubstituteBindings::class)->middleware(['collection'])->group(function (): void {
+        Route::get('', [CollectionController::class, 'show'])->name('collections.show');
+        // remembering which items view a member last opened is a private preference, so any role may set it
+        Route::put('item-view', [CollectionItemViewController::class, 'update'])->name('collections.item-view.update');
+        // browsing the categories of a collection is read only, so any role may do it
+        Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('categories/{category}', [CategoryController::class, 'show'])->whereNumber('category')->name('categories.show');
+        // browsing the sets of a collection is read only, so any role may do it
+        Route::get('sets', [SetController::class, 'index'])->name('sets.index');
+        // the statistics of a collection are read only, so any role may see them
+        Route::get('statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+
+        // viewing an item is read only, so any role may do it
+        // each tab of an item is its own page, with overview living on the item's own url
+        Route::prefix('items/{item}')->whereNumber('item')->middleware(['item'])->group(function (): void {
+            Route::get('', [ItemController::class, 'show'])->name('items.show');
+            Route::get('copies', [ItemCopiesController::class, 'index'])->name('items.copies.index');
+            // The history is read one copy at a time, so a copy lives in the url. The
+            // bare url lands on the first copy; each copy pill links to its own, and each
+            // section is its own url rather than a query parameter. The copy is picked out
+            // of the ones already loaded on the item rather than resolved on its own.
+            Route::get('history', [ItemHistoryController::class, 'index'])->name('items.history.index');
+            Route::get('history/{copy}/{section?}', [ItemHistoryController::class, 'show'])->whereNumber('copy')->where('section', '[a-z]+')->name('items.history.show');
+            Route::get('activities', [ItemActivitiesController::class, 'index'])->name('items.activities.index');
+            Route::get('roadmap', [ItemRoadmapController::class, 'index'])->name('items.roadmap.index');
+        });
+    });
+
     Route::get('items/photos/{itemPhoto}', [ItemPhotoController::class, 'show'])->where('itemPhoto', '[1-9][0-9]*')->name('items.photos.show');
     // documents live on the private disk, so their files are streamed through here rather than served directly, and only to the account they belong to
     Route::get('documents/{document}', [DocumentDownloadController::class, 'show'])->where('document', '[1-9][0-9]*')->name('documents.show');
-    // browsing the categories of a collection is read only, so any role may do it
-    Route::get('collections/{collection}/categories', [CategoryController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('categories.index');
-    Route::get('collections/{collection}/categories/{category}', [CategoryController::class, 'show'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.show');
-    // browsing the sets of a collection is read only, so any role may do it
-    Route::get('collections/{collection}/sets', [SetController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('sets.index');
-    // the statistics of a collection are read only, so any role may see them
-    Route::get('collections/{collection}/statistics', [StatisticsController::class, 'index'])->where('collection', '[1-9][0-9]*')->name('statistics.index');
     // series are account-wide rather than per collection, so they hang off the dashboard
     // instead of a collection. Browsing them is read only, so any role may do it.
     Route::get('series', [SeriesController::class, 'index'])->name('series.index');
@@ -133,75 +151,82 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::middleware(['editor'])->group(function (): void {
         Route::get('collections/new', [CollectionController::class, 'new'])->name('collections.new');
         Route::post('collections', [CollectionController::class, 'create'])->name('collections.create');
-        Route::get('collections/{collection}/edit', [CollectionController::class, 'edit'])->where('collection', '[1-9][0-9]*')->name('collections.edit');
-        Route::put('collections/{collection}', [CollectionController::class, 'update'])->where('collection', '[1-9][0-9]*')->name('collections.update');
-        Route::delete('collections/{collection}', [CollectionController::class, 'destroy'])->where('collection', '[1-9][0-9]*')->name('collections.destroy');
+    });
+
+    // everything owners and editors may change inside a collection, under the
+    // same resolution as the read only routes above
+    Route::prefix('collections/{collection}')->whereNumber('collection')->withoutMiddleware(SubstituteBindings::class)->middleware(['collection', 'editor'])->group(function (): void {
+        Route::get('edit', [CollectionController::class, 'edit'])->name('collections.edit');
+        Route::put('', [CollectionController::class, 'update'])->name('collections.update');
+        Route::delete('', [CollectionController::class, 'destroy'])->name('collections.destroy');
+
+        // categories — owners and editors may create, update and delete the categories of a collection
+        Route::post('categories', [CategoryController::class, 'create'])->name('categories.create');
+        Route::put('categories/{category}', [CategoryController::class, 'update'])->whereNumber('category')->name('categories.update');
+        Route::delete('categories/{category}', [CategoryController::class, 'destroy'])->whereNumber('category')->name('categories.destroy');
+
+        // sets — owners and editors may create, update and delete the sets of a collection
+        Route::post('sets', [SetController::class, 'create'])->name('sets.create');
+        Route::put('sets/{set}', [SetController::class, 'update'])->whereNumber('set')->name('sets.update');
+        Route::delete('sets/{set}', [SetController::class, 'destroy'])->whereNumber('set')->name('sets.destroy');
 
         // items — owners and editors may add items to a collection and edit them
-        Route::get('collections/{collection}/items/new', [ItemController::class, 'new'])->where('collection', '[1-9][0-9]*')->name('items.new');
-        Route::post('collections/{collection}/items', [ItemController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('items.create');
-        Route::get('collections/{collection}/items/{item}/edit', [ItemController::class, 'edit'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.edit');
-        Route::put('collections/{collection}/items/{item}', [ItemController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.update');
-        Route::delete('collections/{collection}/items/{item}', [ItemController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.destroy');
+        Route::get('items/new', [ItemController::class, 'new'])->name('items.new');
+        Route::post('items', [ItemController::class, 'create'])->name('items.create');
 
-        // transactions — owners and editors record what a copy cost, sold for or was traded against
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/transactions', [TransactionController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('transactions.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/transactions/{transaction}', [TransactionController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('transactions.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/transactions/{transaction}', [TransactionController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'transaction' => '[1-9][0-9]*'])->name('transactions.destroy');
+        Route::prefix('items/{item}')->whereNumber('item')->middleware(['item'])->group(function (): void {
+            Route::get('edit', [ItemController::class, 'edit'])->name('items.edit');
+            Route::put('', [ItemController::class, 'update'])->name('items.update');
+            Route::delete('', [ItemController::class, 'destroy'])->name('items.destroy');
 
-        // provenance events — owners and editors record the story of a copy: who owned it, where it was shown, how it was authenticated
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/provenance-events', [ProvenanceEventController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('provenanceEvents.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('provenanceEvents.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'provenanceEvent' => '[1-9][0-9]*'])->name('provenanceEvents.destroy');
+            // tags are put on and taken off an item from the item screen itself, one at a time
+            Route::post('tags', [ItemTagController::class, 'create'])->name('items.tags.create');
+            Route::delete('tags/{tag}', [ItemTagController::class, 'destroy'])->whereNumber('tag')->name('items.tags.destroy');
 
-        // valuations — owners and editors record what a copy is reckoned to be worth over time
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/valuations', [ValuationController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('valuations.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/valuations/{valuation}', [ValuationController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('valuations.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/valuations/{valuation}', [ValuationController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'valuation' => '[1-9][0-9]*'])->name('valuations.destroy');
+            // everything that is recorded against a single copy rather than the item
+            Route::prefix('copies/{copy}')->whereNumber('copy')->middleware(['copy'])->group(function (): void {
+                // transactions — owners and editors record what a copy cost, sold for or was traded against
+                Route::post('transactions', [TransactionController::class, 'create'])->name('transactions.create');
+                Route::put('transactions/{transaction}', [TransactionController::class, 'update'])->whereNumber('transaction')->name('transactions.update');
+                Route::delete('transactions/{transaction}', [TransactionController::class, 'destroy'])->whereNumber('transaction')->name('transactions.destroy');
 
-        // insurance records — owners and editors record what a copy is insured for as policies and values change
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/insurance-records', [InsuranceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('insuranceRecords.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('insuranceRecords.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'insuranceRecord' => '[1-9][0-9]*'])->name('insuranceRecords.destroy');
+                // provenance events — owners and editors record the story of a copy: who owned it, where it was shown, how it was authenticated
+                Route::post('provenance-events', [ProvenanceEventController::class, 'create'])->name('provenanceEvents.create');
+                Route::put('provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'update'])->whereNumber('provenanceEvent')->name('provenanceEvents.update');
+                Route::delete('provenance-events/{provenanceEvent}', [ProvenanceEventController::class, 'destroy'])->whereNumber('provenanceEvent')->name('provenanceEvents.destroy');
 
-        // maintenance records — owners and editors log the work done on a copy, its condition before and after, and when it is next due
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/maintenance-records', [MaintenanceRecordController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('maintenanceRecords.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'maintenanceRecord' => '[1-9][0-9]*'])->name('maintenanceRecords.destroy');
+                // valuations — owners and editors record what a copy is reckoned to be worth over time
+                Route::post('valuations', [ValuationController::class, 'create'])->name('valuations.create');
+                Route::put('valuations/{valuation}', [ValuationController::class, 'update'])->whereNumber('valuation')->name('valuations.update');
+                Route::delete('valuations/{valuation}', [ValuationController::class, 'destroy'])->whereNumber('valuation')->name('valuations.destroy');
 
-        // loans — owners and editors record custody moving out or in, mark a loan as returned, and correct or remove one
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/loans', [LoanController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('loans.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}', [LoanController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.update');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}/return', [LoanReturnController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.return.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/loans/{loan}', [LoanController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'loan' => '[1-9][0-9]*'])->name('loans.destroy');
+                // insurance records — owners and editors record what a copy is insured for as policies and values change
+                Route::post('insurance-records', [InsuranceRecordController::class, 'create'])->name('insuranceRecords.create');
+                Route::put('insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'update'])->whereNumber('insuranceRecord')->name('insuranceRecords.update');
+                Route::delete('insurance-records/{insuranceRecord}', [InsuranceRecordController::class, 'destroy'])->whereNumber('insuranceRecord')->name('insuranceRecords.destroy');
 
-        // documents — owners and editors attach a file or an external link to a copy or one of its records, correct its details, and remove it
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/documents', [DocumentController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('documents.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/documents/{document}', [DocumentController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'document' => '[1-9][0-9]*'])->name('documents.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/documents/{document}', [DocumentController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'document' => '[1-9][0-9]*'])->name('documents.destroy');
+                // maintenance records — owners and editors log the work done on a copy, its condition before and after, and when it is next due
+                Route::post('maintenance-records', [MaintenanceRecordController::class, 'create'])->name('maintenanceRecords.create');
+                Route::put('maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'update'])->whereNumber('maintenanceRecord')->name('maintenanceRecords.update');
+                Route::delete('maintenance-records/{maintenanceRecord}', [MaintenanceRecordController::class, 'destroy'])->whereNumber('maintenanceRecord')->name('maintenanceRecords.destroy');
 
-        // location history — owners and editors move a copy between locations; creating a record is a move, update and destroy correct a past one
-        Route::post('collections/{collection}/items/{item}/copies/{copy}/location-history', [LocationHistoryController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*'])->name('locationHistory.create');
-        Route::put('collections/{collection}/items/{item}/copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('locationHistory.update');
-        Route::delete('collections/{collection}/items/{item}/copies/{copy}/location-history/{locationHistory}', [LocationHistoryController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'copy' => '[1-9][0-9]*', 'locationHistory' => '[1-9][0-9]*'])->name('locationHistory.destroy');
+                // loans — owners and editors record custody moving out or in, mark a loan as returned, and correct or remove one
+                Route::post('loans', [LoanController::class, 'create'])->name('loans.create');
+                Route::put('loans/{loan}', [LoanController::class, 'update'])->whereNumber('loan')->name('loans.update');
+                Route::put('loans/{loan}/return', [LoanReturnController::class, 'update'])->whereNumber('loan')->name('loans.return.update');
+                Route::delete('loans/{loan}', [LoanController::class, 'destroy'])->whereNumber('loan')->name('loans.destroy');
 
-        // tags are put on and taken off an item from the item screen itself, one at a time
-        Route::post('collections/{collection}/items/{item}/tags', [ItemTagController::class, 'create'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*'])->name('items.tags.create');
-        Route::delete('collections/{collection}/items/{item}/tags/{tag}', [ItemTagController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'item' => '[1-9][0-9]*', 'tag' => '[1-9][0-9]*'])->name('items.tags.destroy');
-    });
+                // documents — owners and editors attach a file or an external link to a copy or one of its records, correct its details, and remove it
+                Route::post('documents', [DocumentController::class, 'create'])->name('documents.create');
+                Route::put('documents/{document}', [DocumentController::class, 'update'])->whereNumber('document')->name('documents.update');
+                Route::delete('documents/{document}', [DocumentController::class, 'destroy'])->whereNumber('document')->name('documents.destroy');
 
-    // categories — owners and editors may create, update and delete the categories of a collection
-    Route::middleware(['editor'])->group(function (): void {
-        Route::post('collections/{collection}/categories', [CategoryController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('categories.create');
-        Route::put('collections/{collection}/categories/{category}', [CategoryController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.update');
-        Route::delete('collections/{collection}/categories/{category}', [CategoryController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'category' => '[1-9][0-9]*'])->name('categories.destroy');
-    });
-
-    // sets — owners and editors may create, update and delete the sets of a collection
-    Route::middleware(['editor'])->group(function (): void {
-        Route::post('collections/{collection}/sets', [SetController::class, 'create'])->where('collection', '[1-9][0-9]*')->name('sets.create');
-        Route::put('collections/{collection}/sets/{set}', [SetController::class, 'update'])->where(['collection' => '[1-9][0-9]*', 'set' => '[1-9][0-9]*'])->name('sets.update');
-        Route::delete('collections/{collection}/sets/{set}', [SetController::class, 'destroy'])->where(['collection' => '[1-9][0-9]*', 'set' => '[1-9][0-9]*'])->name('sets.destroy');
+                // location history — owners and editors move a copy between locations; creating a record is a move, update and destroy correct a past one
+                Route::post('location-history', [LocationHistoryController::class, 'create'])->name('locationHistory.create');
+                Route::put('location-history/{locationHistory}', [LocationHistoryController::class, 'update'])->whereNumber('locationHistory')->name('locationHistory.update');
+                Route::delete('location-history/{locationHistory}', [LocationHistoryController::class, 'destroy'])->whereNumber('locationHistory')->name('locationHistory.destroy');
+            });
+        });
     });
 
     // series — owners and editors may create, update and delete the series of the account

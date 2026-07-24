@@ -6,10 +6,10 @@ namespace App\Http\Controllers\App;
 
 use App\Actions\ReturnLoan;
 use App\Http\Controllers\Controller;
+use App\Models\Collection as CollectionModel;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Loan;
-use App\Traits\FindsItems;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,14 +24,9 @@ use Illuminate\Http\Request;
  */
 class LoanReturnController extends Controller
 {
-    use FindsItems;
-
-    public function update(Request $request, int $collection, int $item, int $copy, int $loan): RedirectResponse
+    public function update(Request $request, CollectionModel $collection, Item $item, Copy $copy, int $loan): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $loanModel = $this->findLoan($copyModel, $loan);
+        $loanModel = $this->findLoan($copy, $loan);
 
         $validated = $request->validate([
             'returned_at' => ['required', 'date'],
@@ -51,18 +46,9 @@ class LoanReturnController extends Controller
                 ->with('status_description', __('The copy is back in your custody.'));
         }
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'loans'])
+        return to_route('items.history.show', [$collection, $item, $copy, 'loans'])
             ->with('status', __('Loan marked as returned'))
             ->with('status_description', __('The copy is back in your custody.'));
-    }
-
-    private function findCopy(Item $item, int $copy): Copy
-    {
-        try {
-            return $item->copies()->findOrFail($copy);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     private function findLoan(Copy $copy, int $loan): Loan

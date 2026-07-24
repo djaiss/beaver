@@ -6,22 +6,16 @@ namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
 use App\Services\CollectionStatistics;
-use App\Traits\FindsItems;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class StatisticsController extends Controller
 {
-    use FindsItems;
-
-    public function index(Request $request, int $collection): View
+    public function index(Request $request): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-
-        $statistics = new CollectionStatistics(collection: $collectionModel);
+        $statistics = new CollectionStatistics(collection: $request->attributes->get('collection'));
 
         return view('app.statistics.index', [
-            'collection' => $collectionModel,
             'totals' => $statistics->totals(),
             'sets' => $statistics->setsCompletion(),
             'valueOverTime' => $statistics->valueOverTime(),

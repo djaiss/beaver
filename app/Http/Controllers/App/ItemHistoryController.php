@@ -6,9 +6,11 @@ namespace App\Http\Controllers\App;
 
 use App\Enums\TimelineSource;
 use App\Http\Controllers\Controller;
+use App\Models\Collection as CollectionModel;
 use App\Models\Copy;
+use App\Models\Item;
 use App\Services\BuildCopyHistory;
-use App\Traits\FindsItems;
+use App\Traits\SuggestsTags;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -24,22 +26,27 @@ use Illuminate\View\View;
  */
 class ItemHistoryController extends Controller
 {
-    use FindsItems;
+    use SuggestsTags;
 
-    public function index(Request $request, int $collection, int $item): View
+    public function index(Request $request): View
     {
-        return $this->render($request, $collection, $item, null, null);
+        return $this->render($request, null, null);
     }
 
-    public function show(Request $request, int $collection, int $item, int $copy, ?string $section = null): View
+    /**
+     * The collection and the item are resolved by the middleware and read off the
+     * request, but they still stand in the url before the copy, so they are
+     * declared here for the route parameters to line up.
+     */
+    public function show(Request $request, CollectionModel $collection, Item $item, int $copy, ?string $section = null): View
     {
-        return $this->render($request, $collection, $item, $copy, $section);
+        return $this->render($request, $copy, $section);
     }
 
-    private function render(Request $request, int $collection, int $item, ?int $copyId, ?string $section): View
+    private function render(Request $request, ?int $copyId, ?string $section): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, [
+        $item = $request->attributes->get('item');
+        $item->load([
             'tags',
             'copies.itemCondition',
             'copies.currentLocation',
@@ -68,8 +75,8 @@ class ItemHistoryController extends Controller
         // one of this item's own, or it is not found rather than silently
         // falling back to the first.
         $selectedCopy = $copyId === null
-            ? $itemModel->copies->first()
-            : $itemModel->copies->firstWhere('id', $copyId);
+            ? $item->copies->first()
+            : $item->copies->firstWhere('id', $copyId);
 
         if ($copyId !== null && ! $selectedCopy instanceof Copy) {
             abort(404);
@@ -92,8 +99,6 @@ class ItemHistoryController extends Controller
         }
 
         return view('app.items.history', [
-            'collection' => $collectionModel,
-            'item' => $itemModel,
             'tags' => $this->accountTags($request),
             'selectedCopy' => $selectedCopy,
             'section' => $this->section($section),
