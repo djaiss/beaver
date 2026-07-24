@@ -15,7 +15,10 @@ class ApiDocsMarkdownController extends Controller
      */
     public function index(ApiDocumentation $documentation): Response
     {
-        return $this->plainText($documentation->markdown());
+        return response($documentation->markdown(), 200, [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Disposition' => 'inline',
+        ]);
     }
 
     /**
@@ -31,12 +34,7 @@ class ApiDocsMarkdownController extends Controller
             abort(404);
         }
 
-        return $this->plainText($sectionData['markdown']);
-    }
-
-    private function plainText(string $markdown): Response
-    {
-        return response($markdown, 200, [
+        return response($sectionData['markdown'], 200, [
             'Content-Type' => 'text/plain; charset=UTF-8',
             'Content-Disposition' => 'inline',
         ]);

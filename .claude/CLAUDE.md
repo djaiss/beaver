@@ -7,6 +7,7 @@ Do not excessively use emojis.
 ## Coding instructions
 
 - Write code as simply as possible - do not over-engineer so anyone can understand it.
+- Do not extract a private method just because a few lines are repeated twice. If the repeated code is short and not business critical, repeat it inline rather than naming and hiding it behind a helper. Extract only when the logic is non-trivial, reused in several places, or its own concept worth naming.
 - Always follow the Laravel best practices and how we structure our codebase.
 - If you are unsure about a specific implementation, ask for clarification before proceeding.
 - When you write tests, read the testing rules in `rules/testing.md` and follow them.
@@ -24,8 +25,8 @@ Do not excessively use emojis.
 
 - `app/Actions`: one class per user action, holding the business logic. Controllers stay thin and delegate here. Most of the app lives in this folder.
 - `app/Models`: Eloquent models.
-- `app/Traits`: shared traits used across the app, such as `HasAuthor` (mixed into models) or `GuardsOverlappingLoans` (mixed into actions).
-- `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs). `app/Http/Controllers/Concerns` holds shared controller traits, such as `FindsItems`.
+- `app/Traits`: shared traits used across the app, such as `HasAuthor` (mixed into models), `GuardsOverlappingLoans` (mixed into actions) or `FindsItems` (mixed into controllers).
+- `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs).
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
 - `app/Jobs`: queued jobs. `app/Mail`: mailables. `app/Enums`: enums. `app/Helpers`: helpers.
 - `app/Services`: `ApiDocumentation` builds the API reference served at `/docs` from the endpoint definition files in `resources/docs/api`.

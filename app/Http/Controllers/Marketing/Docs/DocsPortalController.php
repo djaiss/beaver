@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Marketing\Docs;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Marketing\Docs\Concerns\RendersDocumentationPage;
 use App\Services\DocumentationParser;
 use App\Services\DocumentationPortal;
+use App\Traits\RendersDocumentationPage;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

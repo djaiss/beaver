@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Marketing\Docs\Concerns;
+namespace App\Traits;
 
 use Illuminate\View\View;
 

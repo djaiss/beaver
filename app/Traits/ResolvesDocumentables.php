@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Concerns;
+namespace App\Traits;
 
 use App\Models\Copy;
 use Illuminate\Database\Eloquent\Model;

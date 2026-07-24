@@ -13,7 +13,13 @@ namespace App\Helpers;
 class Palette
 {
     /** @var list<string> */
-    private const array COLOURS = ['#3b82f6', '#8b5cf6', '#34d399', '#fb923c', '#ec4899'];
+    private const array COLOURS = [
+        '#3b82f6',
+        '#8b5cf6',
+        '#34d399',
+        '#fb923c',
+        '#ec4899',
+    ];
 
     public static function forId(int $id): string
     {

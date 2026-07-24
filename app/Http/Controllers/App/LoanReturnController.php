@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App;
 
 use App\Actions\ReturnLoan;
-use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Loan;
+use App\Traits\FindsItems;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
