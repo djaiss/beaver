@@ -7,7 +7,7 @@ use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\InsuranceRecord;
 use App\Models\Item;
@@ -24,11 +24,11 @@ uses(RefreshDatabase::class);
  */
 function copyToInsure(User $user, ?string $currency = 'USD'): Copy
 {
-    $collection = Collection::factory()->create([
+    $catalog = Catalog::factory()->create([
         'account_id' => $user->account_id,
         'currency' => $currency,
     ]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     return Copy::factory()->create(['item_id' => $item->id]);
 }

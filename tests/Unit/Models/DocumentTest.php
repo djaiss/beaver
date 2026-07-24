@@ -47,7 +47,7 @@ it('reaches the item behind whatever it is attached to', function () {
     $onCopy = Document::factory()->for($copy, 'documentable')->create();
 
     $loan = Loan::factory()->create(['copy_id' => $copy->id]);
-    $onLoan = Document::factory()->for($loan, 'documentable')->create(['account_id' => $copy->item->collection->account_id]);
+    $onLoan = Document::factory()->for($loan, 'documentable')->create(['account_id' => $copy->item->catalog->account_id]);
 
     expect($onCopy->item()->id)->toBe($copy->item->id);
     expect($onLoan->item()->id)->toBe($copy->item->id);
@@ -97,7 +97,7 @@ it('purges the documents and their files when its record is permanently deleted'
     $loan = Loan::factory()->create(['copy_id' => $copy->id]);
     Storage::disk(config('filesystems.default'))->put('documents/x.pdf', 'data');
     $document = Document::factory()->for($loan, 'documentable')->create([
-        'account_id' => $copy->item->collection->account_id,
+        'account_id' => $copy->item->catalog->account_id,
         'path' => 'documents/x.pdf',
     ]);
 

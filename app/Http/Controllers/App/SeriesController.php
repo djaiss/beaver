@@ -8,7 +8,7 @@ use App\Actions\CreateSeries;
 use App\Actions\DestroySeries;
 use App\Actions\UpdateSeries;
 use App\Http\Controllers\Controller;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Series;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -26,7 +26,7 @@ class SeriesController extends Controller
         // The card shows which collections a series reaches into, so the items come along
         // with theirs. Names are encrypted, so both the sort and the grouping happen in memory.
         $series = $account->series()
-            ->with(['items.collection'])
+            ->with(['items.catalog'])
             ->get()
             ->sortBy(fn (Series $one): string => mb_strtolower($one->name))
             ->values();
@@ -40,15 +40,15 @@ class SeriesController extends Controller
 
     public function show(Request $request, int $series): View
     {
-        $seriesModel = $this->findSeries($request, $series, ['items.collection', 'items.collectionType']);
+        $seriesModel = $this->findSeries($request, $series, ['items.catalog', 'items.catalogType']);
 
-        $groups = $this->groupItemsByCollection($seriesModel);
+        $groups = $this->groupItemsByCatalog($seriesModel);
 
         return view('app.series.show', [
             'series' => $seriesModel,
             'groups' => $groups,
             'itemCount' => $seriesModel->items->count(),
-            'collectionCount' => $groups->count(),
+            'catalogCount' => $groups->count(),
         ]);
     }
 
@@ -106,31 +106,31 @@ class SeriesController extends Controller
      *
      * A bucket only exists because an item landed in it, so it is never empty.
      *
-     * @return SupportCollection<int, array{collection: Collection, items: non-empty-list<Item>}>
+     * @return SupportCollection<int, array{catalog: Catalog, items: non-empty-list<Item>}>
      */
-    private function groupItemsByCollection(Series $series): SupportCollection
+    private function groupItemsByCatalog(Series $series): SupportCollection
     {
         $groups = [];
 
         // Item and collection names are both encrypted, so neither order can come from the
         // database. Items are sorted on the way in, collections once the buckets are built.
         foreach ($series->items->sortBy(fn (Item $item): string => mb_strtolower($item->name)) as $item) {
-            $collection = $item->collection;
+            $catalog = $item->catalog;
 
             // An item always has a collection, but a series that outlives one has nowhere to
             // file its items, so they are left out rather than crashing the page.
-            if (! $collection instanceof Collection) {
+            if (! $catalog instanceof Catalog) {
                 continue;
             }
 
-            if (! isset($groups[$item->collection_id])) {
-                $groups[$item->collection_id] = ['collection' => $collection, 'items' => []];
+            if (! isset($groups[$item->catalog_id])) {
+                $groups[$item->catalog_id] = ['catalog' => $catalog, 'items' => []];
             }
 
-            $groups[$item->collection_id]['items'][] = $item;
+            $groups[$item->catalog_id]['items'][] = $item;
         }
 
-        uasort($groups, fn (array $a, array $b): int => mb_strtolower($a['collection']->name) <=> mb_strtolower($b['collection']->name));
+        uasort($groups, fn (array $a, array $b): int => mb_strtolower($a['catalog']->name) <=> mb_strtolower($b['catalog']->name));
 
         return new SupportCollection(array_values($groups));
     }

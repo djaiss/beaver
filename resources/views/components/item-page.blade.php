@@ -1,22 +1,22 @@
-@props(['collection', 'item', 'tags', 'tab'])
+@props(['catalog', 'item', 'tags', 'tab'])
 
 @php
     $user = auth()->user();
     $canManage = $user->account->allowsManagementBy($user);
-    $type = $item->collectionType;
+    $type = $item->catalogType;
 
     // Every tab is its own page, so the active one is decided here rather than
     // in the browser. Overview is the item's own url, the rest hang off it.
     $navigation = [
-        ['overview', __('Overview'), null, route('items.show', [$collection, $item])],
-        ['copies', __('Copies'), $item->copies->count(), route('items.copies.index', [$collection, $item])],
-        ['history', __('History'), null, route('items.history.index', [$collection, $item])],
-        ['activities', __('Activity'), null, route('items.activities.index', [$collection, $item])],
-        ['roadmap', __('Roadmap'), null, route('items.roadmap.index', [$collection, $item])],
+        ['overview', __('Overview'), null, route('items.show', [$catalog, $item])],
+        ['copies', __('Copies'), $item->copies->count(), route('items.copies.index', [$catalog, $item])],
+        ['history', __('History'), null, route('items.history.index', [$catalog, $item])],
+        ['activities', __('Activity'), null, route('items.activities.index', [$catalog, $item])],
+        ['roadmap', __('Roadmap'), null, route('items.roadmap.index', [$catalog, $item])],
     ];
 @endphp
 
-<x-app-layout :collection="$collection">
+<x-app-layout :catalog="$catalog">
   <x-slot:title>
     {{ $item->name }}
   </x-slot>
@@ -27,10 +27,10 @@
       <div class="mb-5 flex flex-wrap items-center gap-1.5 text-[13px]">
         <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
         <span class="text-muted-soft">/</span>
-        <a href="{{ route('collections.show', $collection) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+        <a href="{{ route('collections.show', $catalog) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ $catalog->name }}</a>
         @if ($item->category)
           <span class="text-muted-soft">/</span>
-          <a href="{{ route('categories.show', [$collection, $item->category]) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink" data-test="breadcrumb-category">{{ $item->category->name }}</a>
+          <a href="{{ route('categories.show', [$catalog, $item->category]) }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink" data-test="breadcrumb-category">{{ $item->category->name }}</a>
         @endif
         <span class="text-muted-soft">/</span>
         <span class="truncate font-medium text-ink">{{ $item->name }}</span>
@@ -59,9 +59,9 @@
         <div class="flex shrink-0 flex-wrap items-center gap-2">
           @if ($canManage)
             {{-- The delete button sits inside the menu, so its form lives outside and is reached with form=. --}}
-            <x-form method="delete" :action="route('items.destroy', [$collection, $item])" id="delete-item-form" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete :name? The item and all of its copies will no longer be accessible.', ['name' => $item->name]) }}')"></x-form>
+            <x-form method="delete" :action="route('items.destroy', [$catalog, $item])" id="delete-item-form" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete :name? The item and all of its copies will no longer be accessible.', ['name' => $item->name]) }}')"></x-form>
 
-            <x-button.split :href="route('items.edit', [$collection, $item])" :label="__('Edit')" turbo data-test="edit-item-button">
+            <x-button.split :href="route('items.edit', [$catalog, $item])" :label="__('Edit')" turbo data-test="edit-item-button">
               <x-slot:icon>@svg('lucide-pencil', 'size-4')</x-slot>
 
               <x-menu-item type="submit" form="delete-item-form" danger data-test="delete-item-button">

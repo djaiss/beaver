@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->unsignedBigInteger('collection_id')->comment('collection the category belongs to');
+            $table->unsignedBigInteger('catalog_id')->comment('collection the category belongs to');
             $table->unsignedBigInteger('parent_id')->nullable()->comment('parent category, null when top level');
             $table->text('name')->comment('name of the category, e.g. Spider-Man');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the category');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes()->comment('null unless the category has been soft deleted');
 
-            $table->foreign('collection_id')->references('id')->on('collections')->cascadeOnDelete();
+            $table->foreign('catalog_id')->references('id')->on('catalogs')->cascadeOnDelete();
 
             // Deleting a parent category leaves its children as top-level ones.
             $table->foreign('parent_id')->references('id')->on('categories')->nullOnDelete();

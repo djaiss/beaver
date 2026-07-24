@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('items', function (Blueprint $table): void {
-            $table->unsignedBigInteger('category_id')->nullable()->after('collection_id')->comment('category the item sits in, null when uncategorized');
+            $table->unsignedBigInteger('category_id')->nullable()->after('catalog_id')->comment('category the item sits in, null when uncategorized');
             $table->unsignedBigInteger('set_id')->nullable()->after('type_id')->comment('set the item is part of, null when it belongs to no set');
 
             // Deleting a category or set leaves its items alone: they drop back to none.

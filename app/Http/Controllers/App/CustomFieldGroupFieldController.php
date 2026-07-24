@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 
 class CustomFieldGroupFieldController extends Controller
 {
-    public function create(Request $request, int $collectionType, int $group): RedirectResponse
+    public function create(Request $request, int $catalogType, int $group): RedirectResponse
     {
         try {
-            $type = $request->user()->account->collectionTypes()->findOrFail($collectionType);
+            $type = $request->user()->account->catalogTypes()->findOrFail($catalogType);
             $customFieldGroup = $type->customFieldGroups()->findOrFail($group);
         } catch (ModelNotFoundException) {
             abort(404);
@@ -23,7 +23,7 @@ class CustomFieldGroupFieldController extends Controller
 
         new CreateCustomField(
             user: $request->user(),
-            collectionType: $type,
+            catalogType: $type,
             name: '',
             group: $customFieldGroup,
         )->execute();

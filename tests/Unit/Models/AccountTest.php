@@ -3,8 +3,8 @@
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Models\Account;
-use App\Models\Collection;
-use App\Models\CollectionType;
+use App\Models\Catalog;
+use App\Models\CatalogType;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -37,18 +37,18 @@ it('has many invitations', function () {
 
 it('has many collections', function () {
     $account = $this->createAccount();
-    Collection::factory()->create(['account_id' => $account->id]);
+    Catalog::factory()->create(['account_id' => $account->id]);
 
-    expect($account->collections()->exists())->toBeTrue();
-    expect($account->collections()->first())->toBeInstanceOf(Collection::class);
+    expect($account->catalogs()->exists())->toBeTrue();
+    expect($account->catalogs()->first())->toBeInstanceOf(Catalog::class);
 });
 
 it('has many collection types', function () {
     $account = $this->createAccount();
-    CollectionType::factory()->create(['account_id' => $account->id]);
+    CatalogType::factory()->create(['account_id' => $account->id]);
 
-    expect($account->collectionTypes()->exists())->toBeTrue();
-    expect($account->collectionTypes()->first())->toBeInstanceOf(CollectionType::class);
+    expect($account->catalogTypes()->exists())->toBeTrue();
+    expect($account->catalogTypes()->first())->toBeInstanceOf(CatalogType::class);
 });
 
 it('lists only owners as administrators', function () {

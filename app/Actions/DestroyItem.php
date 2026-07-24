@@ -29,7 +29,7 @@ class DestroyItem
 
     private function validate(): void
     {
-        if (! $this->item->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->item->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }

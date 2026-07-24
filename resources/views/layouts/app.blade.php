@@ -25,7 +25,7 @@
           class="fixed inset-0 z-30 bg-black/40 lg:hidden"
         ></div>
 
-        <x-sidebar :collection="$collection" :categories="$categories()" />
+        <x-sidebar :catalog="$catalog" :categories="$categories()" />
       @endempty
 
       <div class="flex min-w-0 flex-1 flex-col">

@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Enums\DatePrecision;
 use App\Enums\PermissionEnum;
 use App\Enums\ProvenanceEventType;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\ProvenanceEvent;
@@ -18,11 +18,11 @@ it('records a provenance event against a copy', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $response = $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $response = $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Acquisition->value,
         'title' => 'Bought at the Central Perk auction',
         'description' => 'Ross outbid Gunther by a dollar.',
@@ -37,7 +37,7 @@ it('records a provenance event against a copy', function () {
         'verification_note' => 'Checked against the auction catalogue.',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'provenance']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'provenance']));
     $response->assertSessionHas('status', 'Provenance event recorded');
 
     $event = ProvenanceEvent::query()->first();
@@ -60,11 +60,11 @@ it('keeps no date when the precision is unknown', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Origin->value,
         'title' => 'Made in a factory nobody wrote down',
         'occurred_at' => '1987-06-02',
@@ -81,12 +81,12 @@ it('links a provenance event to a transaction of the same copy', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Acquisition->value,
         'title' => 'Bought at the Central Perk auction',
         'occurred_at' => '1987-06-02',
@@ -101,13 +101,13 @@ it('does not link a provenance event to a transaction of another copy', function
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $other = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $other->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Acquisition->value,
         'title' => 'Bought at the Central Perk auction',
         'occurred_at' => '1987-06-02',
@@ -122,11 +122,11 @@ it('leaves a provenance event unlinked when no transaction was chosen', function
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Gift->value,
         'title' => 'Given by Phoebe',
         'occurred_at' => '1998-11-02',
@@ -142,11 +142,11 @@ it('drops the verification note when the event is not verified', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Authentication->value,
         'title' => 'Looked at by a specialist',
         'occurred_at' => '2001-04-01',
@@ -162,21 +162,21 @@ it('drops the verification note when the event is not verified', function () {
 
 it('validates the type, the title and the precision when recording a provenance event', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [])
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [])
         ->assertSessionHasErrors(['type', 'title', 'occurred_at_precision']);
 });
 
 it('rejects an unknown provenance event type and an unknown precision', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => 'bartering-for-a-monkey',
         'title' => 'Marcel',
         'occurred_at_precision' => 'roughly-the-nineties',
@@ -185,11 +185,11 @@ it('rejects an unknown provenance event type and an unknown precision', function
 
 it('rejects a bad date and a bad source link on a provenance event', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Sale->value,
         'title' => 'Sold to Gunther',
         'occurred_at' => 'the day Ross said we were on a break',
@@ -202,11 +202,11 @@ it('forbids a viewer from recording a provenance event', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($viewer)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($viewer)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Acquisition->value,
         'title' => 'Bought at the Central Perk auction',
         'occurred_at_precision' => DatePrecision::Exact->value,
@@ -215,8 +215,8 @@ it('forbids a viewer from recording a provenance event', function () {
 
 it('does not record a provenance event against a copy of another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $this->actingAs($user)->post(route('provenanceEvents.create', [$foreign, $item, $copy]), [
@@ -228,12 +228,12 @@ it('does not record a provenance event against a copy of another account', funct
 
 it('does not record a provenance event against a copy of another item', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $other = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+    $other = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $other->id]);
 
-    $this->actingAs($user)->post(route('provenanceEvents.create', [$collection, $item, $copy]), [
+    $this->actingAs($user)->post(route('provenanceEvents.create', [$catalog, $item, $copy]), [
         'type' => ProvenanceEventType::Acquisition->value,
         'title' => 'Bought at the Central Perk auction',
         'occurred_at_precision' => DatePrecision::Exact->value,
@@ -244,8 +244,8 @@ it('updates a provenance event', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create([
         'copy_id' => $copy->id,
@@ -255,7 +255,7 @@ it('updates a provenance event', function () {
         'occurred_at_precision' => DatePrecision::Exact,
     ]);
 
-    $response = $this->actingAs($user)->put(route('provenanceEvents.update', [$collection, $item, $copy, $event]), [
+    $response = $this->actingAs($user)->put(route('provenanceEvents.update', [$catalog, $item, $copy, $event]), [
         'type' => ProvenanceEventType::Exhibition->value,
         'title' => 'Shown at the museum',
         'occurred_at' => '1994-01-01',
@@ -263,7 +263,7 @@ it('updates a provenance event', function () {
         'to_party' => 'The Natural History Museum',
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'provenance']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'provenance']));
     $response->assertSessionHas('status', 'Provenance event updated');
 
     $event->refresh();
@@ -278,8 +278,8 @@ it('unlinks a provenance event from its transaction when the link is cleared', f
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
     $event = ProvenanceEvent::factory()->create([
@@ -287,7 +287,7 @@ it('unlinks a provenance event from its transaction when the link is cleared', f
         'transaction_id' => $transaction->id,
     ]);
 
-    $this->actingAs($user)->put(route('provenanceEvents.update', [$collection, $item, $copy, $event]), [
+    $this->actingAs($user)->put(route('provenanceEvents.update', [$catalog, $item, $copy, $event]), [
         'type' => ProvenanceEventType::Acquisition->value,
         'title' => 'Bought somewhere',
         'occurred_at_precision' => DatePrecision::Exact->value,
@@ -299,12 +299,12 @@ it('unlinks a provenance event from its transaction when the link is cleared', f
 
 it('validates the title when updating a provenance event', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->put(route('provenanceEvents.update', [$collection, $item, $copy, $event]), [])
+    $this->actingAs($user)->put(route('provenanceEvents.update', [$catalog, $item, $copy, $event]), [])
         ->assertSessionHasErrors(['type', 'title', 'occurred_at_precision']);
 });
 
@@ -312,12 +312,12 @@ it('forbids a viewer from updating a provenance event', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->put(route('provenanceEvents.update', [$collection, $item, $copy, $event]), [
+    $this->actingAs($viewer)->put(route('provenanceEvents.update', [$catalog, $item, $copy, $event]), [
         'type' => ProvenanceEventType::Sale->value,
         'title' => 'Sold to Gunther',
         'occurred_at_precision' => DatePrecision::Exact->value,
@@ -326,8 +326,8 @@ it('forbids a viewer from updating a provenance event', function () {
 
 it('does not update a provenance event of another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
@@ -340,13 +340,13 @@ it('does not update a provenance event of another account', function () {
 
 it('does not update a provenance event that belongs to another copy', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $other = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $other->id]);
 
-    $this->actingAs($user)->put(route('provenanceEvents.update', [$collection, $item, $copy, $event]), [
+    $this->actingAs($user)->put(route('provenanceEvents.update', [$catalog, $item, $copy, $event]), [
         'type' => ProvenanceEventType::Sale->value,
         'title' => 'Sold to Gunther',
         'occurred_at_precision' => DatePrecision::Exact->value,
@@ -357,14 +357,14 @@ it('deletes a provenance event', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $response = $this->actingAs($user)->delete(route('provenanceEvents.destroy', [$collection, $item, $copy, $event]));
+    $response = $this->actingAs($user)->delete(route('provenanceEvents.destroy', [$catalog, $item, $copy, $event]));
 
-    $response->assertRedirect(route('items.history.show', [$collection, $item, $copy, 'provenance']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $item, $copy, 'provenance']));
     $response->assertSessionHas('status', 'Provenance event deleted');
     $this->assertModelMissing($event);
 });
@@ -373,12 +373,12 @@ it('forbids a viewer from deleting a provenance event', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->delete(route('provenanceEvents.destroy', [$collection, $item, $copy, $event]))
+    $this->actingAs($viewer)->delete(route('provenanceEvents.destroy', [$catalog, $item, $copy, $event]))
         ->assertNotFound();
 
     $this->assertModelExists($event);
@@ -386,8 +386,8 @@ it('forbids a viewer from deleting a provenance event', function () {
 
 it('does not delete a provenance event of another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 

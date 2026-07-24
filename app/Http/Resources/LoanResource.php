@@ -47,7 +47,7 @@ class LoanResource extends JsonResource
             'context' => [
                 'item_name' => $this->relationLoaded('copy') && $this->copy->relationLoaded('item') ? $this->copy->item->name : null,
                 'copy_identifier' => $this->relationLoaded('copy') ? $this->copy->identifier : null,
-                'collection_name' => $this->relationLoaded('copy') && $this->copy->relationLoaded('item') && $this->copy->item->relationLoaded('collection') ? $this->copy->item->collection->name : null,
+                'collection_name' => $this->relationLoaded('copy') && $this->copy->relationLoaded('item') && $this->copy->item->relationLoaded('catalog') ? $this->copy->item->catalog->name : null,
             ],
             'links' => [
                 'self' => route('api.copies.loans.show', [$this->copy_id, $this->id]),

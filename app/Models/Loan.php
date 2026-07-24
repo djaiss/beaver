@@ -8,8 +8,8 @@ use App\Enums\DatePrecision;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Enums\TimelineSource;
-use App\Models\Concerns\HasAuthor;
-use App\Models\Concerns\HasDocuments;
+use App\Traits\HasAuthor;
+use App\Traits\HasDocuments;
 use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\LoanFactory;
@@ -228,7 +228,7 @@ class Loan extends Model
     #[Scope]
     protected function forAccount(Builder $query, Account $account): void
     {
-        $query->whereHas('copy.item.collection', function (Builder $subQuery) use ($account): void {
+        $query->whereHas('copy.item.catalog', function (Builder $subQuery) use ($account): void {
             $subQuery->where('account_id', $account->id);
         });
     }

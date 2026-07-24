@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\FieldTypeEnum;
-use App\Models\Concerns\HasAuthor;
+use App\Traits\HasAuthor;
 use Carbon\Carbon;
 use Database\Factories\CustomFieldFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -70,11 +70,11 @@ class CustomField extends Model
     /**
      * Get the collection type the field is attached to.
      *
-     * @return BelongsTo<CollectionType, $this>
+     * @return BelongsTo<CatalogType, $this>
      */
-    public function collectionType(): BelongsTo
+    public function catalogType(): BelongsTo
     {
-        return $this->belongsTo(CollectionType::class, 'type_id');
+        return $this->belongsTo(CatalogType::class, 'type_id');
     }
 
     /**

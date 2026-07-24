@@ -9,7 +9,7 @@
   $searchTexts = collect($tree)->map(fn (array $node): string => Str::lower($branchText($node)))->values()->all();
 @endphp
 
-<x-app-layout :collection="$collection">
+<x-app-layout :catalog="$catalog">
   <x-slot:title>
     {{ __('Categories') }}
   </x-slot>
@@ -32,7 +32,7 @@
       <div class="mb-5 flex items-center gap-1.5 text-[13px]">
         <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
         <span class="text-muted-soft">/</span>
-        <a href="{{ route('collections.show', $collection->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+        <a href="{{ route('collections.show', $catalog->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $catalog->name }}</a>
         <span class="text-muted-soft">/</span>
         <span class="font-medium text-ink">{{ __('Categories') }}</span>
       </div>
@@ -64,7 +64,7 @@
           <span x-show="addParentId === ''">{{ __('Adding a top-level category.') }}</span>
         </p>
 
-        <x-form method="post" :action="route('categories.create', $collection->id)" data-test="create-category-form" x-target="categories-panel add-category-fields notifications" x-on:ajax:after="showAddForm = document.querySelector('#add-category-fields .text-error') !== null">
+        <x-form method="post" :action="route('categories.create', $catalog->id)" data-test="create-category-form" x-target="categories-panel add-category-fields notifications" x-on:ajax:after="showAddForm = document.querySelector('#add-category-fields .text-error') !== null">
           <div id="add-category-fields">
             <div class="mb-5 flex flex-wrap gap-3.5">
               <div class="min-w-[200px] flex-1">
@@ -172,7 +172,7 @@
                   'node' => $node,
                   'depth' => 0,
                   'parentOptions' => $parentOptions,
-                  'collection' => $collection,
+                  'catalog' => $catalog,
                   'branchText' => $branchText,
               ])
             @endforeach

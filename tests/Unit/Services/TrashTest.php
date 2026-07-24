@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 use App\Enums\TrashableEnum;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Set;
@@ -14,13 +14,13 @@ uses(RefreshDatabase::class);
 
 it('lists every kind of soft deleted object belonging to the account', function () {
     $account = $this->createAccount();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
-    $category = Category::factory()->create(['collection_id' => $collection->id]);
+    $category = Category::factory()->create(['catalog_id' => $catalog->id]);
     $set = Set::factory()->forAccount($account->id)->create();
 
-    $collection->delete();
+    $catalog->delete();
     $item->delete();
     $copy->delete();
     $category->delete();
@@ -35,24 +35,24 @@ it('lists every kind of soft deleted object belonging to the account', function 
 
 it('leaves out objects that are not deleted', function () {
     $account = $this->createAccount();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     Set::factory()->forAccount($account->id)->create();
 
-    $collection->delete();
+    $catalog->delete();
 
     $entries = new Trash(account: $account)->entries();
 
     expect($entries)->toHaveCount(1);
-    expect($entries->first()['type'])->toBe(TrashableEnum::Collection);
+    expect($entries->first()['type'])->toBe(TrashableEnum::Catalog);
 });
 
 it('leaves out objects belonging to another account', function () {
     $account = $this->createAccount();
     $otherAccount = $this->createAccount('Moondance Diner');
 
-    $collection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+    $catalog->delete();
     $item->delete();
 
     expect(new Trash(account: $account)->entries())->toHaveCount(0);
@@ -76,8 +76,8 @@ it('sorts the most urgent rows first', function () {
 
 it('describes an item by the collection it sat in', function () {
     $account = $this->createAccount();
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Kind of Blue']);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Kind of Blue']);
     $item->delete();
 
     $entry = new Trash(account: $account)->entries()->first();

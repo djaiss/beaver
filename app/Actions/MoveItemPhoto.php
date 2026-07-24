@@ -37,7 +37,7 @@ class MoveItemPhoto
 
     private function validate(): void
     {
-        if (! $this->itemPhoto->item->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->itemPhoto->item->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }

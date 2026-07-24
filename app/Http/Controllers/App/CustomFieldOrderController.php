@@ -13,10 +13,10 @@ use Illuminate\Validation\Rule;
 
 class CustomFieldOrderController extends Controller
 {
-    public function update(Request $request, int $collectionType, int $customField): RedirectResponse
+    public function update(Request $request, int $catalogType, int $customField): RedirectResponse
     {
         try {
-            $type = $request->user()->account->collectionTypes()->findOrFail($collectionType);
+            $type = $request->user()->account->catalogTypes()->findOrFail($catalogType);
             $field = $type->customFields()->findOrFail($customField);
         } catch (ModelNotFoundException) {
             abort(404);

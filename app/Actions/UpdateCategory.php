@@ -38,7 +38,7 @@ class UpdateCategory
 
     private function validate(): void
     {
-        if (! $this->category->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->category->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Category not found');
         }
 
@@ -50,7 +50,7 @@ class UpdateCategory
             throw ValidationException::withMessages(['parent_id' => 'A category cannot be its own parent']);
         }
 
-        $parent = $this->category->collection->categories()->find($this->parentId);
+        $parent = $this->category->catalog->categories()->find($this->parentId);
 
         if ($parent === null) {
             throw ValidationException::withMessages(['parent_id' => 'Invalid parent category']);

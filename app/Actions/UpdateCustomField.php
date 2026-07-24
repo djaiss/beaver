@@ -43,7 +43,7 @@ class UpdateCustomField
 
     private function validate(): void
     {
-        if (! $this->customField->collectionType->account->allowsManagementBy($this->user)) {
+        if (! $this->customField->catalogType->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasAuthor;
-use App\Models\Concerns\HasDeleter;
+use App\Traits\HasAuthor;
+use App\Traits\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\SetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * still needed.
  *
  * @property int $id
- * @property int $collection_id
+ * @property int $catalog_id
  * @property string $name
  * @property string|null $description
  * @property int|null $target_count
@@ -54,7 +54,7 @@ class Set extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'collection_id',
+        'catalog_id',
         'name',
         'description',
         'target_count',
@@ -77,11 +77,11 @@ class Set extends Model
     /**
      * Get the collection the set belongs to.
      *
-     * @return BelongsTo<Collection, $this>
+     * @return BelongsTo<Catalog, $this>
      */
-    public function collection(): BelongsTo
+    public function catalog(): BelongsTo
     {
-        return $this->belongsTo(Collection::class);
+        return $this->belongsTo(Catalog::class);
     }
 
     /**

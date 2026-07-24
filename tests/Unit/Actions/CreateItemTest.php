@@ -9,9 +9,9 @@ use App\Enums\UserActionEnum;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Jobs\LogUserAction;
+use App\Models\Catalog;
+use App\Models\CatalogType;
 use App\Models\Category;
-use App\Models\Collection;
-use App\Models\CollectionType;
 use App\Models\CustomField;
 use App\Models\Item;
 use App\Models\ItemCondition;
@@ -33,11 +33,11 @@ it('creates an item and stamps the author', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $editor,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         description: 'The one Joey wants.',
     )->execute();
@@ -45,12 +45,12 @@ it('creates an item and stamps the author', function () {
     expect($item)->toBeInstanceOf(Item::class);
     expect($item->name)->toBe('Amazing Spider-Man #1');
     expect($item->description)->toBe('The one Joey wants.');
-    expect($item->collection_id)->toBe($collection->id);
+    expect($item->catalog_id)->toBe($catalog->id);
     expect($item->type_id)->toBeNull();
 
     $this->assertDatabaseHas('items', [
         'id' => $item->id,
-        'collection_id' => $collection->id,
+        'catalog_id' => $catalog->id,
         'created_by_id' => $editor->id,
         'updated_by_id' => $editor->id,
     ]);
@@ -69,18 +69,18 @@ it('creates an item with a type linked to the collection', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $collection->collectionTypes()->attach($collectionType);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $catalog->catalogTypes()->attach($catalogType);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
-        collectionType: $collectionType,
+        catalogType: $catalogType,
     )->execute();
 
-    expect($item->type_id)->toBe($collectionType->id);
+    expect($item->type_id)->toBe($catalogType->id);
 });
 
 it('throws when the type is not linked to the collection', function () {
@@ -90,14 +90,14 @@ it('throws when the type is not linked to the collection', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $unlinkedType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $unlinkedType = CatalogType::factory()->create(['account_id' => $account->id]);
 
     new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
-        collectionType: $unlinkedType,
+        catalogType: $unlinkedType,
     )->execute();
 });
 
@@ -107,11 +107,11 @@ it('sanitizes the name and the description', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: '<strong>Amazing Spider-Man #1</strong>',
         description: '<em>The one Joey wants.</em>',
     )->execute();
@@ -127,11 +127,11 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     new CreateItem(
         user: $viewer,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
     )->execute();
 });
@@ -142,11 +142,11 @@ it('throws when the user does not belong to the account', function () {
 
     $account = $this->createAccount();
     $stranger = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     new CreateItem(
         user: $stranger,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
     )->execute();
 });
@@ -157,13 +157,13 @@ it('creates the copies along with the item', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
     $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         copies: [
             [
@@ -208,11 +208,11 @@ it('records the estimated value of a copy as a valuation', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         copies: [['estimated_value' => 42000]],
     )->execute();
@@ -237,11 +237,11 @@ it('leaves a copy without any valuation when no estimated value is given', funct
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         copies: [['item_condition_id' => null]],
     )->execute();
@@ -257,12 +257,12 @@ it('throws when a copy condition belongs to another account', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     $foreignCondition = ItemCondition::factory()->create();
 
     new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         copies: [['item_condition_id' => $foreignCondition->id]],
     )->execute();
@@ -276,12 +276,12 @@ it('attaches existing tags and creates new ones', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     $signed = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         tagIds: [$signed->id],
         newTagNames: ['First Issue'],
@@ -298,16 +298,16 @@ it('records custom field values for the selected type', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
-    $collection->collectionTypes()->attach($type);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
+    $catalog->catalogTypes()->attach($type);
     $issue = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Number]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
-        collectionType: $type,
+        catalogType: $type,
         customFieldValues: [$issue->id => '300'],
     )->execute();
 
@@ -322,16 +322,16 @@ it('records a rating custom field value', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
-    $collection->collectionTypes()->attach($type);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
+    $catalog->catalogTypes()->attach($type);
     $rating = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Rating]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'The One With The Embryos',
-        collectionType: $type,
+        catalogType: $type,
         customFieldValues: [$rating->id => '4'],
     )->execute();
 
@@ -345,16 +345,16 @@ it('drops a rating that falls outside the one to five scale', function (string $
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
-    $collection->collectionTypes()->attach($type);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
+    $catalog->catalogTypes()->attach($type);
     $rating = CustomField::factory()->create(['type_id' => $type->id, 'field_type' => FieldTypeEnum::Rating]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'The One With The Embryos',
-        collectionType: $type,
+        catalogType: $type,
         customFieldValues: [$rating->id => $value],
     )->execute();
 
@@ -367,16 +367,16 @@ it('ignores custom field values that do not belong to the type', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $type = CollectionType::factory()->create(['account_id' => $account->id]);
-    $collection->collectionTypes()->attach($type);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $type = CatalogType::factory()->create(['account_id' => $account->id]);
+    $catalog->catalogTypes()->attach($type);
     $foreignField = CustomField::factory()->create();
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
-        collectionType: $type,
+        catalogType: $type,
         customFieldValues: [$foreignField->id => '300'],
     )->execute();
 
@@ -389,13 +389,13 @@ it('links the item to a category and a set', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $category = Category::factory()->create(['collection_id' => $collection->id]);
-    $set = Set::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $category = Category::factory()->create(['catalog_id' => $catalog->id]);
+    $set = Set::factory()->create(['catalog_id' => $catalog->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         category: $category,
         set: $set,
@@ -412,12 +412,12 @@ it('throws when the category belongs to another collection', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     $foreignCategory = Category::factory()->create();
 
     new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         category: $foreignCategory,
     )->execute();
@@ -430,11 +430,11 @@ it('adds several photos to a new item, the first becoming the cover', function (
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
         photos: [
             UploadedFile::fake()->image('front.jpg'),
@@ -455,11 +455,11 @@ it('creates an item without any photo', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Amazing Spider-Man #1',
     )->execute();
 
@@ -476,12 +476,12 @@ it('links the item to a series from another collection of the account', function
 
     // The series was born in the books collection but the item lands in the films one.
     // A series is account-wide, so that is allowed where a set would not be.
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     $series = Series::factory()->create(['account_id' => $account->id]);
 
     $item = new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'The Empire Strikes Back (4K)',
         series: $series,
     )->execute();
@@ -496,12 +496,12 @@ it('refuses a series from another account', function () {
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     $series = Series::factory()->create();
 
     new CreateItem(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Millennium Falcon 75192',
         series: $series,
     )->execute();

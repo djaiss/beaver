@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Enums\TrashableEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -14,8 +14,8 @@ it('shows the trash screen', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'name' => 'Vintage Vinyl']);
+    $catalog->delete();
 
     $response = $this->actingAs($owner)->get(route('settings.trash.index'));
 
@@ -53,8 +53,8 @@ it('restores an object', function () {
     $account = $this->createAccount();
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
 
     $response = $this->actingAs($editor)->put(route('settings.trash.update'), [
@@ -86,12 +86,12 @@ it('returns not found when the object belongs to another account', function () {
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
 
     $otherAccount = $this->createAccount('Moondance Diner');
-    $collection = Collection::factory()->create(['account_id' => $otherAccount->id]);
-    $collection->delete();
+    $catalog = Catalog::factory()->create(['account_id' => $otherAccount->id]);
+    $catalog->delete();
 
     $response = $this->actingAs($owner)->put(route('settings.trash.update'), [
-        'type' => TrashableEnum::Collection->value,
-        'id' => $collection->id,
+        'type' => TrashableEnum::Catalog->value,
+        'id' => $catalog->id,
     ]);
 
     $response->assertNotFound();
@@ -103,17 +103,17 @@ it('empties the trash', function () {
     $account = $this->createAccount();
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $item->delete();
-    $collection->delete();
+    $catalog->delete();
 
     $response = $this->actingAs($editor)->delete(route('settings.trash.destroy'));
 
     $response->assertRedirect(route('settings.trash.index'));
     $response->assertSessionHas('status', 'Trash emptied');
     $this->assertDatabaseMissing('items', ['id' => $item->id]);
-    $this->assertDatabaseMissing('collections', ['id' => $collection->id]);
+    $this->assertDatabaseMissing('catalogs', ['id' => $catalog->id]);
 });
 
 it('returns not found when a viewer empties the trash', function () {

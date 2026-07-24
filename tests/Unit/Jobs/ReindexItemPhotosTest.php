@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Actions\IndexItemPhotoSearchTokens;
 use App\Jobs\ReindexItemPhotos;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use App\Services\BlindIndex;
@@ -12,8 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('reindexes every photo of the item under the new name', function () {
-    $collection = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Barista']);
+    $catalog = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Barista']);
     $first = ItemPhoto::factory()->create(['item_id' => $item->id, 'filename' => 'one.jpg']);
     $second = ItemPhoto::factory()->create(['item_id' => $item->id, 'filename' => 'two.jpg']);
     new IndexItemPhotoSearchTokens(itemPhoto: $first)->execute();
@@ -35,9 +35,9 @@ it('reindexes every photo of the item under the new name', function () {
 });
 
 it('leaves the photos of another item alone', function () {
-    $collection = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Barista']);
-    $other = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Chef']);
+    $catalog = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Barista']);
+    $other = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Chef']);
     $photo = ItemPhoto::factory()->create(['item_id' => $other->id, 'filename' => 'chef.jpg']);
     new IndexItemPhotoSearchTokens(itemPhoto: $photo)->execute();
 

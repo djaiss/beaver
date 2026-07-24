@@ -11,6 +11,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Copy;
 use App\Models\Location;
 use App\Models\User;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -47,7 +48,7 @@ class MoveCopy
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

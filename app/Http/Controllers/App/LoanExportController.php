@@ -35,7 +35,7 @@ class LoanExportController extends Controller
                 fputcsv($handle, [
                     $loan->copy->item->name,
                     $loan->copy->identifier ?? '',
-                    $loan->copy->item->collection->name,
+                    $loan->copy->item->catalog->name,
                     $loan->party,
                     $loan->status->label(),
                     $loan->loaned_at?->format('Y-m-d') ?? '',

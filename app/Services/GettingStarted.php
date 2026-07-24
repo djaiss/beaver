@@ -38,7 +38,7 @@ class GettingStarted
             [
                 'key' => 'types',
                 'route' => route('settings.types.index'),
-                'done' => $this->account->collectionTypes()->whereNotNull('created_by_id')->exists(),
+                'done' => $this->account->catalogTypes()->whereNotNull('created_by_id')->exists(),
             ],
             [
                 'key' => 'tags',
@@ -58,7 +58,7 @@ class GettingStarted
             [
                 'key' => 'collection',
                 'route' => route('collections.new'),
-                'done' => $this->account->collections()->exists(),
+                'done' => $this->account->catalogs()->exists(),
             ],
         ]);
     }

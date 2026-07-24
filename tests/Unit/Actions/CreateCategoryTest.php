@@ -5,8 +5,8 @@ use App\Actions\CreateCategory;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -21,22 +21,22 @@ it('creates a category and stamps the author', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $category = new CreateCategory(
         user: $editor,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Marvel',
     )->execute();
 
     expect($category)->toBeInstanceOf(Category::class);
     expect($category->name)->toBe('Marvel');
-    expect($category->collection_id)->toBe($collection->id);
+    expect($category->catalog_id)->toBe($catalog->id);
     expect($category->parent_id)->toBeNull();
 
     $this->assertDatabaseHas('categories', [
         'id' => $category->id,
-        'collection_id' => $collection->id,
+        'catalog_id' => $catalog->id,
         'created_by_id' => $editor->id,
         'updated_by_id' => $editor->id,
     ]);
@@ -55,12 +55,12 @@ it('creates a nested category', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $parent = Category::factory()->create(['collection_id' => $collection->id, 'name' => 'Marvel']);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $parent = Category::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Marvel']);
 
     $child = new CreateCategory(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Spider-Man',
         parentId: $parent->id,
     )->execute();
@@ -74,11 +74,11 @@ it('sanitizes the name', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $category = new CreateCategory(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: '<strong>Marvel</strong>',
     )->execute();
 
@@ -91,11 +91,11 @@ it('stores and sanitizes the description', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $category = new CreateCategory(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Marvel',
         description: '<strong>Key issues from the 1990s.</strong>',
     )->execute();
@@ -112,11 +112,11 @@ it('leaves the description empty when none is given', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     $category = new CreateCategory(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Marvel',
     )->execute();
 
@@ -130,12 +130,12 @@ it('throws when the parent belongs to another collection', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
     $foreignCategory = Category::factory()->create();
 
     new CreateCategory(
         user: $owner,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Spider-Man',
         parentId: $foreignCategory->id,
     )->execute();
@@ -148,11 +148,11 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
 
     new CreateCategory(
         user: $viewer,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Marvel',
     )->execute();
 });
@@ -161,12 +161,12 @@ it('throws when the user does not belong to the account', function () {
     Queue::fake();
     $this->expectException(ModelNotFoundException::class);
 
-    $collection = Collection::factory()->create();
+    $catalog = Catalog::factory()->create();
     $stranger = $this->createUser();
 
     new CreateCategory(
         user: $stranger,
-        collection: $collection,
+        catalog: $catalog,
         name: 'Marvel',
     )->execute();
 });

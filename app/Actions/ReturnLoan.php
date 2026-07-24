@@ -11,6 +11,8 @@ use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
 use App\Models\Loan;
 use App\Models\User;
+use App\Traits\GuardsLoanConditions;
+use App\Traits\SyncsLoanState;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -47,7 +49,7 @@ class ReturnLoan
 
     private function validate(): void
     {
-        $account = $this->loan->copy->item->collection->account;
+        $account = $this->loan->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');

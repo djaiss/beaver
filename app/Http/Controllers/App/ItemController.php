@@ -8,10 +8,10 @@ use App\Actions\CreateItem;
 use App\Actions\DestroyItem;
 use App\Actions\UpdateItem;
 use App\Enums\CopyStatus;
-use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection as CollectionModel;
+use App\Traits\SuggestsTags;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,48 +21,44 @@ use Illuminate\View\View;
 
 class ItemController extends Controller
 {
-    use FindsItems;
+    use SuggestsTags;
 
-    public function show(Request $request, int $collection, int $item): View
+    public function show(Request $request): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, [
+        $item = $request->attributes->get('item');
+        $item->load([
             'photos',
             'copies',
             'tags',
             'category.parent',
             'set',
             'series',
-            'collectionType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
-            'collectionType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
-            'collectionType.ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'catalogType.customFieldGroups' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'catalogType.customFieldGroups.customFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
+            'catalogType.ungroupedCustomFields' => fn ($query) => $query->orderBy('position')->orderBy('id'),
             'customFieldValues',
         ]);
 
         return view('app.items.show', [
-            'collection' => $collectionModel,
-            'item' => $itemModel,
             'tags' => $this->accountTags($request),
             // The set counts what is owned. How many entries a set should hold
             // is not tracked yet, so completion cannot be worked out.
-            'setItemCount' => $itemModel->set?->items()->count() ?? 0,
+            'setItemCount' => $item->set?->items()->count() ?? 0,
             // The series card reports its reach, which is the whole point of a series.
-            'seriesItemCount' => $itemModel->series?->items()->count() ?? 0,
-            'seriesCollectionCount' => $itemModel->series?->items()->distinct()->count('collection_id') ?? 0,
+            'seriesItemCount' => $item->series?->items()->count() ?? 0,
+            'seriesCatalogCount' => $item->series?->items()->distinct()->count('catalog_id') ?? 0,
         ]);
     }
 
-    public function new(Request $request, int $collection): View
+    public function new(Request $request): View
     {
         $account = $request->user()->account;
-
-        $collectionModel = $this->findCollection($request, $collection);
+        $catalog = $request->attributes->get('catalog');
 
         return view('app.items.new', [
-            'collection' => $collectionModel,
-            'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
-            'categories' => $this->categoryOptions($collectionModel),
-            'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
+            'types' => $catalog->catalogTypes()->with('customFields')->orderBy('name')->get(),
+            'categories' => $this->categoryOptions($catalog),
+            'sets' => $catalog->sets()->get()->sortBy('name')->values(),
             'series' => $account->series()->get()->sortBy(fn ($one): string => mb_strtolower($one->name))->values(),
             'conditions' => $account->itemConditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
@@ -70,19 +66,17 @@ class ItemController extends Controller
         ]);
     }
 
-    public function edit(Request $request, int $collection, int $item): View
+    public function edit(Request $request): View
     {
         $account = $request->user()->account;
+        $catalog = $request->attributes->get('catalog');
 
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item);
+        $request->attributes->get('item')->load(['tags', 'copies', 'customFieldValues', 'photos', 'mainPhoto']);
 
         return view('app.items.edit', [
-            'collection' => $collectionModel,
-            'item' => $itemModel,
-            'types' => $collectionModel->collectionTypes()->with('customFields')->orderBy('name')->get(),
-            'categories' => $this->categoryOptions($collectionModel),
-            'sets' => $collectionModel->sets()->get()->sortBy('name')->values(),
+            'types' => $catalog->catalogTypes()->with('customFields')->orderBy('name')->get(),
+            'categories' => $this->categoryOptions($catalog),
+            'sets' => $catalog->sets()->get()->sortBy('name')->values(),
             'series' => $account->series()->get()->sortBy(fn ($one): string => mb_strtolower($one->name))->values(),
             'conditions' => $account->itemConditions()->orderBy('name')->get(),
             'locations' => $account->locations()->orderBy('name')->get(),
@@ -90,28 +84,27 @@ class ItemController extends Controller
         ]);
     }
 
-    public function update(Request $request, int $collection, int $item): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
         $account = $request->user()->account;
-
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item);
+        $catalog = $request->attributes->get('catalog');
+        $item = $request->attributes->get('item');
 
         $validated = $this->validateItem($request);
 
         new UpdateItem(
             user: $request->user(),
-            item: $itemModel,
+            item: $item,
             name: $validated['name'],
             description: $validated['description'] ?? null,
-            collectionType: isset($validated['type_id'])
-                ? $account->collectionTypes()->find($validated['type_id'])
+            catalogType: isset($validated['type_id'])
+                ? $account->catalogTypes()->find($validated['type_id'])
                 : null,
             category: isset($validated['category_id'])
-                ? $collectionModel->categories()->find($validated['category_id'])
+                ? $catalog->categories()->find($validated['category_id'])
                 : null,
             set: isset($validated['set_id'])
-                ? $collectionModel->sets()->find($validated['set_id'])
+                ? $catalog->sets()->find($validated['set_id'])
                 : null,
             series: isset($validated['series_id'])
                 ? $account->series()->find($validated['series_id'])
@@ -125,44 +118,40 @@ class ItemController extends Controller
             mainPhotoId: isset($validated['main_photo_id']) ? (int) $validated['main_photo_id'] : null,
         )->execute();
 
-        return to_route('items.show', [$collectionModel->id, $itemModel->id])
+        return to_route('items.show', [$catalog->id, $item->id])
             ->with('status', __('Item updated'))
             ->with('status_description', __('Your changes to the item were saved.'));
     }
 
-    public function destroy(Request $request, int $collection, int $item): RedirectResponse
+    public function destroy(Request $request): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item);
-
         new DestroyItem(
             user: $request->user(),
-            item: $itemModel,
+            item: $request->attributes->get('item'),
         )->execute();
 
-        return to_route('collections.show', $collectionModel->id)
+        return to_route('collections.show', $request->attributes->get('catalog')->id)
             ->with('status', __('Item deleted'))
             ->with('status_description', __('The item was removed from the collection.'));
     }
 
-    public function create(Request $request, int $collection): RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
         $account = $request->user()->account;
-
-        $collectionModel = $this->findCollection($request, $collection);
+        $catalog = $request->attributes->get('catalog');
 
         $validated = $this->validateItem($request);
 
         $type = isset($validated['type_id'])
-            ? $account->collectionTypes()->find($validated['type_id'])
+            ? $account->catalogTypes()->find($validated['type_id'])
             : null;
 
         $category = isset($validated['category_id'])
-            ? $collectionModel->categories()->find($validated['category_id'])
+            ? $catalog->categories()->find($validated['category_id'])
             : null;
 
         $set = isset($validated['set_id'])
-            ? $collectionModel->sets()->find($validated['set_id'])
+            ? $catalog->sets()->find($validated['set_id'])
             : null;
 
         $series = isset($validated['series_id'])
@@ -171,10 +160,10 @@ class ItemController extends Controller
 
         new CreateItem(
             user: $request->user(),
-            collection: $collectionModel,
+            catalog: $catalog,
             name: $validated['name'],
             description: $validated['description'] ?? null,
-            collectionType: $type,
+            catalogType: $type,
             category: $category,
             set: $set,
             series: $series,
@@ -185,7 +174,7 @@ class ItemController extends Controller
             photos: $this->photos($request),
         )->execute();
 
-        return to_route('collections.show', $collectionModel->id)
+        return to_route('collections.show', $catalog->id)
             ->with('status', __('Item added'))
             ->with('status_description', __('Your new item is now in the collection.'));
     }
@@ -287,9 +276,9 @@ class ItemController extends Controller
      *
      * @return list<array{id: int, name: string, depth: int}>
      */
-    private function categoryOptions(CollectionModel $collection): array
+    private function categoryOptions(Catalog $catalog): array
     {
-        return $this->flattenCategories($collection->categories()->get());
+        return $this->flattenCategories($catalog->categories()->get());
     }
 
     /**

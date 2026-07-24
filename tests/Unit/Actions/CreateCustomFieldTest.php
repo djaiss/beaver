@@ -6,7 +6,7 @@ use App\Enums\FieldTypeEnum;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomField;
 use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,11 +22,11 @@ it('creates a custom field and stamps the author', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
     $customField = new CreateCustomField(
         user: $editor,
-        collectionType: $collectionType,
+        catalogType: $catalogType,
         name: 'Grade',
         fieldType: FieldTypeEnum::Select->value,
         options: ['Mint', 'Near Mint'],
@@ -36,7 +36,7 @@ it('creates a custom field and stamps the author', function () {
     expect($customField->name)->toBe('Grade');
     expect($customField->field_type)->toBe(FieldTypeEnum::Select);
     expect($customField->options)->toBe(['Mint', 'Near Mint']);
-    expect($customField->type_id)->toBe($collectionType->id);
+    expect($customField->type_id)->toBe($catalogType->id);
     expect($customField->created_by_name)->toBe('Ross Geller');
 
     Queue::assertPushedOn(
@@ -52,10 +52,10 @@ it('auto-increments the position within the collection type', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
-    $first = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Issue #')->execute();
-    $second = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Publisher')->execute();
+    $first = new CreateCustomField(user: $owner, catalogType: $catalogType, name: 'Issue #')->execute();
+    $second = new CreateCustomField(user: $owner, catalogType: $catalogType, name: 'Publisher')->execute();
 
     expect($first->position)->toBe(1);
     expect($second->position)->toBe(2);
@@ -68,11 +68,11 @@ it('throws when the field type is invalid', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
     new CreateCustomField(
         user: $owner,
-        collectionType: $collectionType,
+        catalogType: $catalogType,
         name: 'Grade',
         fieldType: 'hologram',
     )->execute();
@@ -85,11 +85,11 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
 
     new CreateCustomField(
         user: $viewer,
-        collectionType: $collectionType,
+        catalogType: $catalogType,
         name: 'Grade',
     )->execute();
 });
@@ -100,18 +100,18 @@ it('creates a field inside a group', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
     $customField = new CreateCustomField(
         user: $owner,
-        collectionType: $collectionType,
+        catalogType: $catalogType,
         name: 'Grade',
         group: $group,
     )->execute();
 
     expect($customField->group_id)->toBe($group->id);
-    expect($customField->type_id)->toBe($collectionType->id);
+    expect($customField->type_id)->toBe($catalogType->id);
 });
 
 it('counts the positions of each group separately from the standalone fields', function () {
@@ -120,14 +120,14 @@ it('counts the positions of each group separately from the standalone fields', f
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
-    $other = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
+    $other = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
-    $standalone = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Notes')->execute();
-    $firstOfGroup = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Issue #', group: $group)->execute();
-    $secondOfGroup = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Publisher', group: $group)->execute();
-    $firstOfOther = new CreateCustomField(user: $owner, collectionType: $collectionType, name: 'Grade', group: $other)->execute();
+    $standalone = new CreateCustomField(user: $owner, catalogType: $catalogType, name: 'Notes')->execute();
+    $firstOfGroup = new CreateCustomField(user: $owner, catalogType: $catalogType, name: 'Issue #', group: $group)->execute();
+    $secondOfGroup = new CreateCustomField(user: $owner, catalogType: $catalogType, name: 'Publisher', group: $group)->execute();
+    $firstOfOther = new CreateCustomField(user: $owner, catalogType: $catalogType, name: 'Grade', group: $other)->execute();
 
     // A position orders a field within its group, so every list restarts at 1.
     expect($standalone->position)->toBe(1);
@@ -143,13 +143,13 @@ it('throws when the group belongs to another type', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $comics = CollectionType::factory()->create(['account_id' => $account->id]);
-    $wine = CollectionType::factory()->create(['account_id' => $account->id]);
+    $comics = CatalogType::factory()->create(['account_id' => $account->id]);
+    $wine = CatalogType::factory()->create(['account_id' => $account->id]);
     $foreignGroup = CustomFieldGroup::factory()->create(['type_id' => $wine->id]);
 
     new CreateCustomField(
         user: $owner,
-        collectionType: $comics,
+        catalogType: $comics,
         name: 'Grade',
         group: $foreignGroup,
     )->execute();

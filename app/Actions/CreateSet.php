@@ -7,7 +7,7 @@ namespace App\Actions;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Set;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -21,7 +21,7 @@ class CreateSet
 
     public function __construct(
         private readonly User $user,
-        private readonly Collection $collection,
+        private readonly Catalog $catalog,
         private string $name,
         private ?string $description = null,
         private readonly ?int $targetCount = null,
@@ -40,8 +40,8 @@ class CreateSet
 
     private function validate(): void
     {
-        if (! $this->collection->account->allowsManagementBy($this->user)) {
-            throw new ModelNotFoundException('Collection not found');
+        if (! $this->catalog->account->allowsManagementBy($this->user)) {
+            throw new ModelNotFoundException('Catalog not found');
         }
     }
 
@@ -54,7 +54,7 @@ class CreateSet
     private function create(): void
     {
         $this->set = Set::query()->create([
-            'collection_id' => $this->collection->id,
+            'catalog_id' => $this->catalog->id,
             'name' => $this->name,
             'description' => $this->description,
             'target_count' => $this->targetCount,

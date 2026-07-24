@@ -9,7 +9,7 @@
     $tiles = [
       ['label' => 'Accounts', 'value' => $accountCount, 'hint' => $accountsThisMonth.' created this month'],
       ['label' => 'Users', 'value' => $userCount, 'hint' => $activeThisMonth.' active this month'],
-      ['label' => 'Collections', 'value' => $collectionCount, 'hint' => null],
+      ['label' => 'Collections', 'value' => $catalogCount, 'hint' => null],
       ['label' => 'Items tracked', 'value' => $itemCount, 'hint' => null],
     ];
   @endphp

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Actions\DestroyLocationHistory;
 use App\Actions\MoveCopy;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Location;
@@ -16,8 +16,8 @@ uses(RefreshDatabase::class);
 
 function copyWithTwoMoves(User $user, Location $first, Location $second): Copy
 {
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     new MoveCopy(user: $user, copy: $copy, location: $first, movedAt: '2024-01-01')->execute();

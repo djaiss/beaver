@@ -8,7 +8,7 @@ use App\Enums\UserActionEnum;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\ItemCondition;
@@ -26,8 +26,8 @@ it('creates a copy and stamps the author', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $condition = ItemCondition::factory()->create(['account_id' => $account->id]);
     $location = Location::factory()->create(['account_id' => $account->id]);
 
@@ -76,8 +76,8 @@ it('creates a copy with only an item', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     $copy = new CreateCopy(
         user: $owner,
@@ -102,8 +102,8 @@ it('records the estimated value as a valuation rather than a column', function (
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     $copy = new CreateCopy(
         user: $owner,
@@ -130,8 +130,8 @@ it('throws when the condition belongs to another account', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $foreignCondition = ItemCondition::factory()->create();
 
     new CreateCopy(
@@ -148,8 +148,8 @@ it('throws when the location belongs to another account', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $foreignLocation = Location::factory()->create();
 
     new CreateCopy(
@@ -166,8 +166,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     new CreateCopy(
         user: $viewer,
@@ -181,8 +181,8 @@ it('throws when the user does not belong to the account', function () {
 
     $account = $this->createAccount();
     $stranger = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     new CreateCopy(
         user: $stranger,
@@ -196,8 +196,8 @@ it('opens the copy first location record when created somewhere', function () {
     Queue::fake();
 
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $location = Location::factory()->create(['account_id' => $user->account_id]);
 
     $copy = new CreateCopy(user: $user, item: $item, location: $location)->execute();

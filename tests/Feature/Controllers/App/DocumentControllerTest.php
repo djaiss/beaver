@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Enums\DocumentType;
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Document;
 use App\Models\Item;
@@ -17,8 +17,8 @@ uses(RefreshDatabase::class);
 
 function copyForDocumentController(int $accountId): Copy
 {
-    $collection = Collection::factory()->create(['account_id' => $accountId]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $accountId]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
     return Copy::factory()->create(['item_id' => $item->id]);
 }
@@ -29,7 +29,7 @@ it('shows the documents section of a copy', function () {
     Document::factory()->for($copy, 'documentable')->create(['account_id' => $user->account_id, 'name' => 'Provenance file']);
 
     $this->actingAs($user)
-        ->get(route('items.history.show', [$copy->item->collection, $copy->item, $copy, 'documents']))
+        ->get(route('items.history.show', [$copy->item->catalog, $copy->item, $copy, 'documents']))
         ->assertOk()
         ->assertSee('Provenance file');
 });
@@ -40,9 +40,9 @@ it('attaches an uploaded file to a copy', function () {
 
     $user = $this->createUser();
     $copy = copyForDocumentController($user->account_id);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $response = $this->actingAs($user)->post(route('documents.create', [$collection, $copy->item, $copy]), [
+    $response = $this->actingAs($user)->post(route('documents.create', [$catalog, $copy->item, $copy]), [
         'documentable_type' => 'copy',
         'documentable_id' => (string) $copy->id,
         'type' => DocumentType::Receipt->value,
@@ -50,7 +50,7 @@ it('attaches an uploaded file to a copy', function () {
         'file' => UploadedFile::fake()->create('receipt.pdf', 100, 'application/pdf'),
     ]);
 
-    $response->assertRedirect(route('items.history.show', [$collection, $copy->item, $copy, 'documents']));
+    $response->assertRedirect(route('items.history.show', [$catalog, $copy->item, $copy, 'documents']));
     $response->assertSessionHas('status', 'Document attached');
 
     $document = Document::query()->first();
@@ -65,15 +65,15 @@ it('attaches an external url to a record on the copy', function () {
     $user = $this->createUser();
     $copy = copyForDocumentController($user->account_id);
     $loan = Loan::factory()->create(['copy_id' => $copy->id]);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($user)->post(route('documents.create', [$collection, $copy->item, $copy]), [
+    $this->actingAs($user)->post(route('documents.create', [$catalog, $copy->item, $copy]), [
         'documentable_type' => 'loan',
         'documentable_id' => (string) $loan->id,
         'type' => DocumentType::Correspondence->value,
         'name' => 'Loan agreement',
         'external_url' => 'https://example.com/loan.pdf',
-    ])->assertRedirect(route('items.history.show', [$collection, $copy->item, $copy, 'loans']));
+    ])->assertRedirect(route('items.history.show', [$catalog, $copy->item, $copy, 'loans']));
 
     $document = Document::query()->first();
     expect($document->documentable_type)->toBe('loan');
@@ -83,9 +83,9 @@ it('attaches an external url to a record on the copy', function () {
 it('requires a name and either a file or a url', function () {
     $user = $this->createUser();
     $copy = copyForDocumentController($user->account_id);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($user)->post(route('documents.create', [$collection, $copy->item, $copy]), [
+    $this->actingAs($user)->post(route('documents.create', [$catalog, $copy->item, $copy]), [
         'documentable_type' => 'copy',
         'documentable_id' => (string) $copy->id,
         'type' => DocumentType::Receipt->value,
@@ -97,9 +97,9 @@ it('does not attach a document to a record from another copy', function () {
     $copy = copyForDocumentController($user->account_id);
     $otherCopy = copyForDocumentController($user->account_id);
     $loan = Loan::factory()->create(['copy_id' => $otherCopy->id]);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($user)->post(route('documents.create', [$collection, $copy->item, $copy]), [
+    $this->actingAs($user)->post(route('documents.create', [$catalog, $copy->item, $copy]), [
         'documentable_type' => 'loan',
         'documentable_id' => (string) $loan->id,
         'type' => DocumentType::Receipt->value,
@@ -114,12 +114,12 @@ it('updates a document', function () {
     $user = $this->createUser();
     $copy = copyForDocumentController($user->account_id);
     $document = Document::factory()->for($copy, 'documentable')->create(['account_id' => $user->account_id]);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($user)->put(route('documents.update', [$collection, $copy->item, $copy, $document]), [
+    $this->actingAs($user)->put(route('documents.update', [$catalog, $copy->item, $copy, $document]), [
         'type' => DocumentType::Appraisal->value,
         'name' => 'Appraisal report',
-    ])->assertRedirect(route('items.history.show', [$collection, $copy->item, $copy, 'documents']));
+    ])->assertRedirect(route('items.history.show', [$catalog, $copy->item, $copy, 'documents']));
 
     expect($document->refresh()->name)->toBe('Appraisal report');
     expect($document->type)->toBe(DocumentType::Appraisal);
@@ -131,10 +131,10 @@ it('deletes a document', function () {
     $user = $this->createUser();
     $copy = copyForDocumentController($user->account_id);
     $document = Document::factory()->external()->for($copy, 'documentable')->create(['account_id' => $user->account_id]);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($user)->delete(route('documents.destroy', [$collection, $copy->item, $copy, $document]))
-        ->assertRedirect(route('items.history.show', [$collection, $copy->item, $copy, 'documents']));
+    $this->actingAs($user)->delete(route('documents.destroy', [$catalog, $copy->item, $copy, $document]))
+        ->assertRedirect(route('items.history.show', [$catalog, $copy->item, $copy, 'documents']));
 
     $this->assertModelMissing($document);
 });
@@ -143,10 +143,10 @@ it('does not update a document from another account', function () {
     $user = $this->createUser();
     $copy = copyForDocumentController($user->account_id);
     $foreignCopy = copyForDocumentController($this->createAccount()->id);
-    $foreignDocument = Document::factory()->for($foreignCopy, 'documentable')->create(['account_id' => $foreignCopy->item->collection->account_id]);
-    $collection = $copy->item->collection;
+    $foreignDocument = Document::factory()->for($foreignCopy, 'documentable')->create(['account_id' => $foreignCopy->item->catalog->account_id]);
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($user)->put(route('documents.update', [$collection, $copy->item, $copy, $foreignDocument]), [
+    $this->actingAs($user)->put(route('documents.update', [$catalog, $copy->item, $copy, $foreignDocument]), [
         'type' => DocumentType::Other->value,
         'name' => 'Hijacked',
     ])->assertNotFound();
@@ -157,9 +157,9 @@ it('forbids a viewer from attaching a document', function () {
     $viewer = $this->createUser();
     $this->assignUserToAccount($viewer, $owner->account, PermissionEnum::Viewer->value);
     $copy = copyForDocumentController($owner->account_id);
-    $collection = $copy->item->collection;
+    $catalog = $copy->item->catalog;
 
-    $this->actingAs($viewer)->post(route('documents.create', [$collection, $copy->item, $copy]), [
+    $this->actingAs($viewer)->post(route('documents.create', [$catalog, $copy->item, $copy]), [
         'documentable_type' => 'copy',
         'documentable_id' => (string) $copy->id,
         'type' => DocumentType::Receipt->value,
@@ -189,7 +189,7 @@ it('does not stream a document from another account', function () {
     $user = $this->createUser();
     $foreignCopy = copyForDocumentController($this->createAccount()->id);
     $document = Document::factory()->for($foreignCopy, 'documentable')->create([
-        'account_id' => $foreignCopy->item->collection->account_id,
+        'account_id' => $foreignCopy->item->catalog->account_id,
         'path' => 'documents/file.pdf',
     ]);
 

@@ -84,7 +84,7 @@ class LoansController extends Controller
             'tab' => $tab,
             'stats' => $stats,
             'filters' => $filters,
-            'filterCollections' => $dashboard->collections(),
+            'filterCatalogs' => $dashboard->catalogs(),
             'tabData' => $this->tabData($dashboard, $tab, $filters),
             'selectedLoan' => $selectedLoan,
             'showCreate' => $showCreate,
@@ -98,7 +98,7 @@ class LoansController extends Controller
      * The data the active tab needs, so the view only asks the dashboard for what
      * it renders.
      *
-     * @param  array{search: ?string, collection: ?int, status: ?string, sort: string}  $filters
+     * @param  array{search: ?string, catalog: ?int, status: ?string, sort: string}  $filters
      * @return array<string, mixed>
      */
     private function tabData(LoanDashboard $dashboard, string $tab, array $filters): array
@@ -106,10 +106,10 @@ class LoansController extends Controller
         return match ($tab) {
             'due' => $dashboard->dueGroups(),
             'risk' => $dashboard->riskGroups(),
-            'by-party' => ['parties' => $dashboard->parties($filters['search'], $filters['collection'])],
+            'by-party' => ['parties' => $dashboard->parties($filters['search'], $filters['catalog'])],
             'deposits' => $dashboard->depositsData(),
             'timeline' => $dashboard->timelineData(),
-            default => ['loans' => $dashboard->filtered($filters['search'], $filters['collection'], $filters['status'], $filters['sort'])],
+            default => ['loans' => $dashboard->filtered($filters['search'], $filters['catalog'], $filters['status'], $filters['sort'])],
         };
     }
 
@@ -118,16 +118,16 @@ class LoansController extends Controller
      * like search and pagination, so they belong in the query string rather than
      * the path.
      *
-     * @return array{search: ?string, collection: ?int, status: ?string, sort: string}
+     * @return array{search: ?string, catalog: ?int, status: ?string, sort: string}
      */
     private function filters(Request $request): array
     {
-        $collection = $request->query('collection');
+        $catalog = $request->query('collection');
         $status = $request->query('status');
 
         return [
             'search' => $request->query('search'),
-            'collection' => is_numeric($collection) ? (int) $collection : null,
+            'catalog' => is_numeric($catalog) ? (int) $catalog : null,
             'status' => is_string($status) && $status !== '' ? $status : null,
             'sort' => is_string($request->query('sort')) ? $request->query('sort') : 'due',
         ];
@@ -144,7 +144,7 @@ class LoansController extends Controller
                 ->forAccount($request->user()->account)
                 ->where('direction', $direction)
                 ->with([
-                    'copy.item.collection',
+                    'copy.item.catalog',
                     'copy.item.mainPhoto',
                     'itemConditionOut',
                     'itemConditionIn',
@@ -167,15 +167,15 @@ class LoansController extends Controller
      */
     private function createCatalog(Account $account): array
     {
-        $collections = $account->collections()
+        $catalogs = $account->catalogs()
             ->with(['items.copies' => fn ($query) => $query->with(['itemCondition', 'loans' => fn ($loans) => $loans->where('direction', LoanDirection::Outgoing)->whereIn('status', LoanStatus::openCases())])])
             ->orderBy('name')
             ->get();
 
-        return $collections->map(fn ($collection): array => [
-            'id' => $collection->id,
-            'name' => $collection->name,
-            'items' => $collection->items->map(fn ($item): array => [
+        return $catalogs->map(fn ($catalog): array => [
+            'id' => $catalog->id,
+            'name' => $catalog->name,
+            'items' => $catalog->items->map(fn ($item): array => [
                 'id' => $item->id,
                 'name' => $item->name,
                 'copies' => $item->copies->map(fn ($copy): array => [

@@ -7,7 +7,7 @@
   per copy and one per record being corrected.
 
   Expects: $formId, $action, $method, $openVar, $submitLabel, $dataTest,
-  $record (null when moving), $locations, $collection, $item, $selectedCopy.
+  $record (null when moving), $locations, $catalog, $item, $selectedCopy.
   When editing, also $deleteAction.
 --}}
 

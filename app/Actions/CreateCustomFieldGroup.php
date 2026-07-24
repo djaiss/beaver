@@ -7,7 +7,7 @@ namespace App\Actions;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomFieldGroup;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,7 +22,7 @@ class CreateCustomFieldGroup
 
     public function __construct(
         private readonly User $user,
-        private readonly CollectionType $collectionType,
+        private readonly CatalogType $catalogType,
         private string $name,
     ) {}
 
@@ -39,7 +39,7 @@ class CreateCustomFieldGroup
 
     private function validate(): void
     {
-        if (! $this->collectionType->account->allowsManagementBy($this->user)) {
+        if (! $this->catalogType->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }
@@ -52,7 +52,7 @@ class CreateCustomFieldGroup
     private function create(): void
     {
         $this->customFieldGroup = CustomFieldGroup::query()->create([
-            'type_id' => $this->collectionType->id,
+            'type_id' => $this->catalogType->id,
             'name' => $this->name,
             'position' => $this->nextPosition(),
         ]);
@@ -60,7 +60,7 @@ class CreateCustomFieldGroup
 
     private function nextPosition(): int
     {
-        return (int) $this->collectionType->customFieldGroups()->max('position') + 1;
+        return (int) $this->catalogType->customFieldGroups()->max('position') + 1;
     }
 
     private function stampAuthor(): void

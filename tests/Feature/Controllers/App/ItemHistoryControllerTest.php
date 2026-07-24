@@ -10,7 +10,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\ProvenanceEventType;
 use App\Enums\TransactionType;
 use App\Enums\ValuationType;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Document;
 use App\Models\InsuranceRecord;
@@ -28,15 +28,15 @@ uses(RefreshDatabase::class);
 
 it('lands on the first copy and shows its summary', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create([
         'item_id' => $item->id,
         'identifier' => 'CENTRAL-PERK-01',
         'status' => CopyStatus::Loaned,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-copy-'.$copy->id.'"', false)
         ->assertSee('data-test="history-summary"', false)
@@ -48,12 +48,12 @@ it('lands on the first copy and shows its summary', function () {
 // one is marked current.
 it('offers a pill for every copy and marks the selected one', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $first = Copy::factory()->create(['item_id' => $item->id]);
     $second = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $second]))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $second]))
         ->assertOk()
         ->assertSee('data-test="history-copy-pill-'.$first->id.'"', false)
         ->assertSee('data-test="history-copy-pill-'.$second->id.'"', false)
@@ -64,10 +64,10 @@ it('offers a pill for every copy and marks the selected one', function () {
 
 it('marks the history tab as the current page', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="item-tab-history"', false)
         ->assertSee('aria-current="page"', false);
@@ -77,11 +77,11 @@ it('marks the history tab as the current page', function () {
 // of the screen says what the history will be assembled from.
 it('lists the sections the history is assembled from', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-sections"', false)
         ->assertSeeInOrder([
@@ -99,8 +99,8 @@ it('lists the sections the history is assembled from', function () {
 
 it('renders a help popover on every history section title, and on the valuation confidence field', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $sectionNeedles = [
@@ -117,24 +117,24 @@ it('renders a help popover on every history section title, and on the valuation 
 
     foreach ($sectionNeedles as $section => $needle) {
         $this->actingAs($user)
-            ->get(route('items.history.show', [$collection, $item, $copy, $section]))
+            ->get(route('items.history.show', [$catalog, $item, $copy, $section]))
             ->assertOk()
             ->assertSee($needle);
     }
 
     $this->actingAs($user)
-        ->get(route('items.history.show', [$collection, $item, $copy, 'valuations']))
+        ->get(route('items.history.show', [$catalog, $item, $copy, 'valuations']))
         ->assertSee('record it alongside the value rather than only in the note');
 
     $this->actingAs($user)
-        ->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+        ->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertSee('Spelling it the same way each time makes it easy to find every transaction');
 });
 
 it('shows the valuations of a copy on its timeline, newest first', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $newer = Valuation::factory()->create([
         'copy_id' => $copy->id,
@@ -152,7 +152,7 @@ it('shows the valuations of a copy on its timeline, newest first', function () {
     ]);
 
     // The amount renders in its own currency, and the newest entry reads first.
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-valuation-'.$older->id.'"', false)
         ->assertSee('data-test="history-valuation-'.$newer->id.'"', false)
@@ -165,8 +165,8 @@ it('shows the valuations of a copy on its timeline, newest first', function () {
 // operational and stay out until the complete view is asked for.
 it('shows only the meaningful entries by default', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-05-01']);
@@ -188,7 +188,7 @@ it('shows only the meaningful entries by default', function () {
         'moved_at' => '2012-08-01',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false)
         ->assertDontSee('data-test="history-transaction-'.$fee->id.'"', false)
@@ -199,8 +199,8 @@ it('shows only the meaningful entries by default', function () {
 // The complete view adds the routine records the meaningful view leaves out.
 it('shows the routine entries in the complete view', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $location = Location::factory()->create(['account_id' => $user->account_id, 'name' => 'Secure storage']);
@@ -216,7 +216,7 @@ it('shows the routine entries in the complete view', function () {
         'performed_at' => '2025-01-01',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'timeline', 'view' => 'complete']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'timeline', 'view' => 'complete']))
         ->assertOk()
         ->assertSee('data-test="history-location-'.$move->id.'"', false)
         ->assertSee('Moved to Secure storage')
@@ -228,8 +228,8 @@ it('shows the routine entries in the complete view', function () {
 // it reads on the default timeline while a plain cleaning does not.
 it('treats a restoration as meaningful without the flag', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $restoration = MaintenanceRecord::factory()->create([
@@ -240,7 +240,7 @@ it('treats a restoration as meaningful without the flag', function () {
         'performed_at' => '1998-01-01',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-maintenance-'.$restoration->id.'"', false);
 });
@@ -249,8 +249,8 @@ it('treats a restoration as meaningful without the flag', function () {
 // for the sources the copy actually has.
 it('filters the timeline by event type', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
@@ -261,7 +261,7 @@ it('filters the timeline by event type', function () {
         'occurred_at_precision' => DatePrecision::Year,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'timeline', 'type' => ['valuation']]))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'timeline', 'type' => ['valuation']]))
         ->assertOk()
         ->assertSee('data-test="history-valuation-'.$valuation->id.'"', false)
         ->assertDontSee('data-test="history-provenance-'.$event->id.'"', false)
@@ -274,8 +274,8 @@ it('filters the timeline by event type', function () {
 // above an older acquisition regardless of which model each came from.
 it('orders entries from every source newest first', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
@@ -286,7 +286,7 @@ it('orders entries from every source newest first', function () {
         'occurred_at_precision' => DatePrecision::Year,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSeeInOrder([
             'data-test="history-valuation-'.$valuation->id.'"',
@@ -298,8 +298,8 @@ it('orders entries from every source newest first', function () {
 // the dated entries rather than reading as though it happened at the epoch.
 it('sorts undated entries to the end', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $dated = Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
@@ -310,7 +310,7 @@ it('sorts undated entries to the end', function () {
         'occurred_at_precision' => DatePrecision::Unknown,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSeeInOrder([
             'data-test="history-valuation-'.$dated->id.'"',
@@ -322,8 +322,8 @@ it('sorts undated entries to the end', function () {
 // it reads as two entries.
 it('shows a loan and its return as separate entries', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $loan = Loan::factory()->create([
@@ -336,7 +336,7 @@ it('shows a loan and its return as separate entries', function () {
         'returned_at' => '2025-06-01',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-loan-'.$loan->id.'"', false)
         ->assertSee('data-test="history-loan-'.$loan->id.'-return"', false)
@@ -348,22 +348,22 @@ it('shows a loan and its return as separate entries', function () {
 // timeline opens the valuations panel for the full record.
 it('links each entry into its section', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     Valuation::factory()->create(['copy_id' => $copy->id, 'valued_at' => '2012-01-01']);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
-        ->assertSee(route('items.history.show', [$collection, $item, $copy, 'valuations']), false);
+        ->assertSee(route('items.history.show', [$catalog, $item, $copy, 'valuations']), false);
 });
 
 // A copy that has records but none matching the filter reads a filter empty
 // state rather than the no-history one, so the reader knows there is more.
 it('shows the filter empty state when nothing matches the current view', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     // A single routine move: nothing meaningful, so the default view is empty
@@ -371,7 +371,7 @@ it('shows the filter empty state when nothing matches the current view', functio
     $location = Location::factory()->create(['account_id' => $user->account_id]);
     LocationHistory::factory()->create(['copy_id' => $copy->id, 'location_id' => $location->id]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="no-history-matches"', false)
         ->assertDontSee('data-test="no-history"', false);
@@ -381,8 +381,8 @@ it('shows the filter empty state when nothing matches the current view', functio
 // currency.
 it('shows an insurance record on the timeline', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
     $insurance = InsuranceRecord::factory()->create([
@@ -393,7 +393,7 @@ it('shows an insurance record on the timeline', function () {
         'starts_at' => '2022-01-01',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="history-insurance-'.$insurance->id.'"', false)
         ->assertSee('Hiscox')
@@ -404,12 +404,12 @@ it('shows an insurance record on the timeline', function () {
 // while the copy stays the same.
 it('shows the valuations section when it is selected', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $valuation = Valuation::factory()->create(['copy_id' => $copy->id, 'amount' => 5000]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'valuations']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'valuations']))
         ->assertOk()
         ->assertSee('Append-only value estimates over time. The latest is shown as the current estimated value.')
         ->assertSee('data-test="valuation-'.$valuation->id.'"', false);
@@ -418,15 +418,15 @@ it('shows the valuations section when it is selected', function () {
 // The documents section reads the documents attached to the copy as a whole.
 it('shows the documents section with the copy documents', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     Document::factory()->for($copy, 'documentable')->create([
         'account_id' => $user->account_id,
         'name' => 'Certificate of authenticity',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'documents']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'documents']))
         ->assertOk()
         ->assertSee('data-test="documents-for-copy-'.$copy->id.'"', false)
         ->assertSee('Certificate of authenticity');
@@ -434,12 +434,12 @@ it('shows the documents section with the copy documents', function () {
 
 it('renders the loans section with the copy loans', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $loan = Loan::factory()->create(['copy_id' => $copy->id, 'party' => 'The Whitney Museum']);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'loans']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'loans']))
         ->assertOk()
         ->assertSee('data-test="loan-'.$loan->id.'"', false)
         ->assertSee('The Whitney Museum');
@@ -447,8 +447,8 @@ it('renders the loans section with the copy loans', function () {
 
 it('shows the active loan banner while an outgoing loan is out', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id, 'status' => CopyStatus::Loaned]);
     Loan::factory()->create([
         'copy_id' => $copy->id,
@@ -457,7 +457,7 @@ it('shows the active loan banner while an outgoing loan is out', function () {
         'party' => 'The Tate',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'timeline']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'timeline']))
         ->assertOk()
         ->assertSee('data-test="loan-banner-'.$copy->id.'"', false)
         ->assertSee('The Tate');
@@ -467,22 +467,22 @@ it('shows the active loan banner while an outgoing loan is out', function () {
 // than erroring.
 it('falls back to the timeline for an unknown section', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'nonsense']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'nonsense']))
         ->assertOk()
         ->assertSee('A combined chronological view built from every record below. Each entry keeps its own source of truth.');
 });
 
 it('shows the empty state when nothing has been recorded against a copy', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="no-history"', false)
         ->assertSee('Nothing has been recorded against this copy yet.');
@@ -490,10 +490,10 @@ it('shows the empty state when nothing has been recorded against a copy', functi
 
 it('shows the empty state when the item has no copies at all', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))
         ->assertOk()
         ->assertSee('data-test="no-copies-to-track"', false)
         ->assertSee('This item has no copies, so there is nothing to track the history of.')
@@ -503,12 +503,12 @@ it('shows the empty state when the item has no copies at all', function () {
 // A copy named in the url has to be one of this item's own.
 it('does not show a copy that belongs to another item', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
-    $otherItem = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+    $otherItem = Item::factory()->create(['catalog_id' => $catalog->id]);
     $strangerCopy = Copy::factory()->create(['item_id' => $otherItem->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $strangerCopy]))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $strangerCopy]))
         ->assertNotFound();
 });
 
@@ -516,33 +516,33 @@ it('lets a viewer read the history of an item', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
-    $this->actingAs($viewer)->get(route('items.history.index', [$collection, $item]))->assertOk();
+    $this->actingAs($viewer)->get(route('items.history.index', [$catalog, $item]))->assertOk();
 });
 
 it('does not show the history of an item belonging to another account', function () {
     $user = $this->createUser();
-    $foreign = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $foreign->id]);
+    $foreign = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $foreign->id]);
 
     $this->actingAs($user)->get(route('items.history.index', [$foreign, $item]))->assertNotFound();
 });
 
 it('does not show the history of an item that belongs to a different collection', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $other = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $other->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $other = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $other->id]);
 
-    $this->actingAs($user)->get(route('items.history.index', [$collection, $item]))->assertNotFound();
+    $this->actingAs($user)->get(route('items.history.index', [$catalog, $item]))->assertNotFound();
 });
 
 it('lists the transactions of a copy, newest first', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $older = Transaction::factory()->create([
         'copy_id' => $copy->id,
@@ -563,7 +563,7 @@ it('lists the transactions of a copy, newest first', function () {
         'occurred_at' => '2026-02-11',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-'.$older->id.'"', false)
         ->assertSee('data-test="transaction-'.$newer->id.'"', false)
@@ -576,8 +576,8 @@ it('lists the transactions of a copy, newest first', function () {
 // parts when nobody typed one.
 it('adds the parts together when a transaction has no stored total', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create([
         'copy_id' => $copy->id,
@@ -589,7 +589,7 @@ it('adds the parts together when a transaction has no stored total', function ()
         'currency_code' => 'USD',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-total-'.$transaction->id.'"', false)
         ->assertSee('$120')
@@ -598,8 +598,8 @@ it('adds the parts together when a transaction has no stored total', function ()
 
 it('shows the reference number and the note of a transaction', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create([
         'copy_id' => $copy->id,
@@ -607,7 +607,7 @@ it('shows the reference number and the note of a transaction', function () {
         'note' => 'Bought the day Ross said we were on a break.',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-reference-'.$transaction->id.'"', false)
         ->assertSee('Invoice 4021')
@@ -616,11 +616,11 @@ it('shows the reference number and the note of a transaction', function () {
 
 it('says so when a copy has no transaction yet', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="no-transactions-'.$copy->id.'"', false)
         ->assertSee('No transaction has been recorded against this copy yet.');
@@ -628,29 +628,29 @@ it('says so when a copy has no transaction yet', function () {
 
 it('offers an editor the forms to add, edit and delete a transaction', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="new-transaction-'.$copy->id.'"', false)
         ->assertSee('data-test="create-transaction-form-'.$copy->id.'"', false)
         ->assertSee('data-test="edit-transaction-form-'.$transaction->id.'"', false)
         ->assertSee('data-test="delete-transaction-'.$transaction->id.'"', false)
-        ->assertSee(route('transactions.create', [$collection, $item, $copy]), false);
+        ->assertSee(route('transactions.create', [$catalog, $item, $copy]), false);
 });
 
 // Deleting a transaction cannot be undone, so it has to be confirmed first.
 it('asks for confirmation before deleting a transaction', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('Delete this transaction? This cannot be undone.');
 });
@@ -659,12 +659,12 @@ it('does not offer a viewer any way to change a transaction', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($viewer)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-'.$transaction->id.'"', false)
         ->assertDontSee('data-test="new-transaction-'.$copy->id.'"', false)
@@ -676,8 +676,8 @@ it('does not offer a viewer any way to change a transaction', function () {
 // transactions the timeline runs forwards.
 it('lists the provenance of a copy on a timeline, oldest first', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $newer = ProvenanceEvent::factory()->create([
         'copy_id' => $copy->id,
@@ -694,7 +694,7 @@ it('lists the provenance of a copy on a timeline, oldest first', function () {
         'occurred_at_precision' => DatePrecision::Exact,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-'.$older->id.'"', false)
         ->assertSee('data-test="provenance-event-'.$newer->id.'"', false)
@@ -707,8 +707,8 @@ it('lists the provenance of a copy on a timeline, oldest first', function () {
 // Showing the stored day would claim a precision the evidence does not support.
 it('renders a provenance date at the precision it was recorded at', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $year = ProvenanceEvent::factory()->create([
         'copy_id' => $copy->id,
@@ -723,7 +723,7 @@ it('renders a provenance date at the precision it was recorded at', function () 
         'occurred_at_precision' => DatePrecision::Unknown,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-date-'.$year->id.'"', false)
         ->assertSee('1987')
@@ -734,8 +734,8 @@ it('renders a provenance date at the precision it was recorded at', function () 
 
 it('shows the parties, the location and the verified badge of a provenance event', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create([
         'copy_id' => $copy->id,
@@ -748,7 +748,7 @@ it('shows the parties, the location and the verified badge of a provenance event
         'verification_note' => 'Checked against the auction catalogue.',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-parties-'.$event->id.'"', false)
         ->assertSee('From Gunther to Ross Geller')
@@ -764,8 +764,8 @@ it('shows the parties, the location and the verified badge of a provenance event
 // screen has to say so before anyone deletes anything.
 it('says when a provenance event is linked to a transaction, and on the transaction too', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create([
         'copy_id' => $copy->id,
@@ -777,12 +777,12 @@ it('says when a provenance event is linked to a transaction, and on the transact
         'transaction_id' => $transaction->id,
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-transaction-'.$event->id.'"', false)
         ->assertSee('Deleting that transaction keeps this event and only unlinks it.');
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('data-test="transaction-provenance-'.$transaction->id.'"', false)
         ->assertSee('In the provenance')
@@ -791,11 +791,11 @@ it('says when a provenance event is linked to a transaction, and on the transact
 
 it('says so when a copy has no provenance event yet', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="no-provenance-'.$copy->id.'"', false)
         ->assertSee('No provenance event has been recorded against this copy yet.');
@@ -803,29 +803,29 @@ it('says so when a copy has no provenance event yet', function () {
 
 it('offers an editor the forms to add, edit and delete a provenance event', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="new-provenance-event-'.$copy->id.'"', false)
         ->assertSee('data-test="create-provenance-event-form-'.$copy->id.'"', false)
         ->assertSee('data-test="edit-provenance-event-form-'.$event->id.'"', false)
         ->assertSee('data-test="delete-provenance-event-'.$event->id.'"', false)
-        ->assertSee(route('provenanceEvents.create', [$collection, $item, $copy]), false);
+        ->assertSee(route('provenanceEvents.create', [$catalog, $item, $copy]), false);
 });
 
 // Deleting a provenance event cannot be undone, so it has to be confirmed first.
 it('asks for confirmation before deleting a provenance event', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('Delete this provenance event? This cannot be undone.');
 });
@@ -834,12 +834,12 @@ it('does not offer a viewer any way to change a provenance event', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $event = ProvenanceEvent::factory()->create(['copy_id' => $copy->id]);
 
-    $this->actingAs($viewer)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($viewer)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('data-test="provenance-event-'.$event->id.'"', false)
         ->assertDontSee('data-test="new-provenance-event-'.$copy->id.'"', false)
@@ -850,8 +850,8 @@ it('does not offer a viewer any way to change a provenance event', function () {
 // The precision decides how the date reads, and each one needs explaining.
 it('offers every provenance type, every precision and the copy transactions on the form', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'USD']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
     $transaction = Transaction::factory()->create([
         'copy_id' => $copy->id,
@@ -859,7 +859,7 @@ it('offers every provenance type, every precision and the copy transactions on t
         'occurred_at' => '1987-06-02',
     ]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'provenance']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'provenance']))
         ->assertOk()
         ->assertSee('Significant restoration')
         ->assertSee('Custody transfer')
@@ -871,11 +871,11 @@ it('offers every provenance type, every precision and the copy transactions on t
 
 it('offers every transaction type and the currency of the collection on the form', function () {
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id, 'currency' => 'GBP']);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'currency' => 'GBP']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $copy = Copy::factory()->create(['item_id' => $item->id]);
 
-    $this->actingAs($user)->get(route('items.history.show', [$collection, $item, $copy, 'transactions']))
+    $this->actingAs($user)->get(route('items.history.show', [$catalog, $item, $copy, 'transactions']))
         ->assertOk()
         ->assertSee('Gift received')
         ->assertSee('Inheritance')

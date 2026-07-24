@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('sets', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->unsignedBigInteger('collection_id')->comment('collection the set belongs to');
+            $table->unsignedBigInteger('catalog_id')->comment('collection the set belongs to');
             $table->text('name')->comment('name of the set, e.g. Amazing Spider-Man #1-10');
             $table->text('description')->nullable()->comment('free text description of the set');
             $table->unsignedInteger('target_count')->nullable()->comment('number of items the set should contain when complete, null when the set has no target');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes()->comment('null unless the set has been soft deleted');
 
-            $table->foreign('collection_id')->references('id')->on('collections')->cascadeOnDelete();
+            $table->foreign('catalog_id')->references('id')->on('catalogs')->cascadeOnDelete();
         });
     }
 

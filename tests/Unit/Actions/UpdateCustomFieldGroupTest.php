@@ -5,7 +5,7 @@ use App\Actions\UpdateCustomFieldGroup;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use App\Models\CustomFieldGroup;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,8 +19,8 @@ it('renames a group and stamps the editor', function () {
     $account = $this->createAccount();
     $editor = $this->createUser(['first_name' => 'Monica', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'name' => 'Main']);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'name' => 'Main']);
 
     $group = new UpdateCustomFieldGroup(
         user: $editor,
@@ -44,8 +44,8 @@ it('leaves the position and the fields of the group alone', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id, 'position' => 3]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id, 'position' => 3]);
 
     new UpdateCustomFieldGroup(user: $owner, customFieldGroup: $group, name: 'Origin')->execute();
 
@@ -59,8 +59,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collectionType = CollectionType::factory()->create(['account_id' => $account->id]);
-    $group = CustomFieldGroup::factory()->create(['type_id' => $collectionType->id]);
+    $catalogType = CatalogType::factory()->create(['account_id' => $account->id]);
+    $group = CustomFieldGroup::factory()->create(['type_id' => $catalogType->id]);
 
     new UpdateCustomFieldGroup(
         user: $viewer,

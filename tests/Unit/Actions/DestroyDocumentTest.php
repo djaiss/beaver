@@ -4,7 +4,7 @@ declare(strict_types=1);
 use App\Actions\DestroyDocument;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Document;
 use App\Models\Item;
@@ -18,8 +18,8 @@ uses(RefreshDatabase::class);
 if (! function_exists('storedDocumentForAccount')) {
     function storedDocumentForAccount(int $accountId, ?string $path = null): Document
     {
-        $collection = Collection::factory()->create(['account_id' => $accountId]);
-        $item = Item::factory()->create(['collection_id' => $collection->id]);
+        $catalog = Catalog::factory()->create(['account_id' => $accountId]);
+        $item = Item::factory()->create(['catalog_id' => $catalog->id]);
         $copy = Copy::factory()->create(['item_id' => $item->id]);
 
         return Document::factory()->for($copy, 'documentable')->create([

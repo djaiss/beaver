@@ -3,7 +3,7 @@
 declare(strict_types=1);
 use App\Actions\DestroyItemPhoto;
 use App\Actions\IndexItemPhotoSearchTokens;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use App\Services\BlindIndex;
@@ -15,8 +15,8 @@ uses(RefreshDatabase::class);
 
 function photoNamed(string $filename, string $itemName): ItemPhoto
 {
-    $collection = Collection::factory()->create();
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => $itemName]);
+    $catalog = Catalog::factory()->create();
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => $itemName]);
 
     return ItemPhoto::factory()->create(['item_id' => $item->id, 'filename' => $filename]);
 }
@@ -86,8 +86,8 @@ it('takes the hashes with the photo when it is deleted', function () {
     Queue::fake();
     Storage::fake(config('filesystems.default'));
     $user = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'name' => 'Barista']);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Barista']);
     $photo = ItemPhoto::factory()->create(['item_id' => $item->id, 'filename' => 'gunther.png']);
     new IndexItemPhotoSearchTokens(itemPhoto: $photo)->execute();
 

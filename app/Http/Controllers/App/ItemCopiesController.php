@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App;
 
-use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
+use App\Traits\SuggestsTags;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -14,12 +14,11 @@ use Illuminate\View\View;
  */
 class ItemCopiesController extends Controller
 {
-    use FindsItems;
+    use SuggestsTags;
 
-    public function index(Request $request, int $collection, int $item): View
+    public function index(Request $request): View
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, [
+        $request->attributes->get('item')->load([
             'tags',
             'copies.itemCondition',
             'copies.currentLocation',
@@ -27,12 +26,10 @@ class ItemCopiesController extends Controller
             'copies.latestValuation',
             'copies.acquiringTransaction',
             'category',
-            'collectionType',
+            'catalogType',
         ]);
 
         return view('app.items.copies', [
-            'collection' => $collectionModel,
-            'item' => $itemModel,
             'tags' => $this->accountTags($request),
         ]);
     }

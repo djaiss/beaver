@@ -37,7 +37,7 @@
     <div x-show="adding" x-cloak class="mb-5">
       @include('app.items.partials._insuranceRecordForm', [
           'formId' => 'add-insurance-'.$selectedCopy->id,
-          'action' => route('insuranceRecords.create', [$collection, $item, $selectedCopy]),
+          'action' => route('insuranceRecords.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'adding',
           'submitLabel' => __('Add record'),
@@ -112,8 +112,8 @@
           <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._insuranceRecordForm', [
                 'formId' => 'edit-insurance-'.$record->id,
-                'action' => route('insuranceRecords.update', [$collection, $item, $selectedCopy, $record]),
-                'deleteAction' => route('insuranceRecords.destroy', [$collection, $item, $selectedCopy, $record]),
+                'action' => route('insuranceRecords.update', [$catalog, $item, $selectedCopy, $record]),
+                'deleteAction' => route('insuranceRecords.destroy', [$catalog, $item, $selectedCopy, $record]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save changes'),
@@ -125,7 +125,7 @@
 
         <div class="border-t border-hairline px-5 py-4">
           <p class="mb-2.5 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
-          @include('app.items.partials._documentsFor', ['documentable' => $record, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+          @include('app.items.partials._documentsFor', ['documentable' => $record, 'catalog' => $catalog, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
         </div>
       </div>
     @empty

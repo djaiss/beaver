@@ -8,8 +8,8 @@ use App\Enums\TrashableEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Account;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Set;
@@ -30,7 +30,7 @@ class RestoreFromTrash
         private readonly int $objectId,
     ) {}
 
-    public function execute(): Category|Collection|Copy|Item|Set
+    public function execute(): Category|Catalog|Copy|Item|Set
     {
         $this->validate();
 
@@ -50,14 +50,14 @@ class RestoreFromTrash
         }
     }
 
-    private function find(): Category|Collection|Copy|Item|Set
+    private function find(): Category|Catalog|Copy|Item|Set
     {
         return new Trash(account: $this->account)
             ->query($this->type)
             ->findOrFail($this->objectId);
     }
 
-    private function log(Category|Collection|Copy|Item|Set $model): void
+    private function log(Category|Catalog|Copy|Item|Set $model): void
     {
         LogUserAction::dispatch(
             user: $this->user,

@@ -17,6 +17,7 @@ use App\Models\ItemCondition;
 use App\Models\Location;
 use App\Models\User;
 use App\Models\Valuation;
+use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 /**
@@ -56,7 +57,7 @@ class CreateCopy
 
     private function validate(): void
     {
-        $account = $this->item->collection->account;
+        $account = $this->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -122,7 +123,7 @@ class CreateCopy
             'copy_id' => $this->copy->id,
             'type' => ValuationType::UserEstimate,
             'amount' => $this->estimatedValue,
-            'currency_code' => $this->item->collection->currency,
+            'currency_code' => $this->item->catalog->currency,
             'valued_at' => now()->toDateString(),
             'confidence' => ValuationConfidence::Unknown,
         ]);

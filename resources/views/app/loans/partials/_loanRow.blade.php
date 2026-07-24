@@ -53,7 +53,7 @@
   @unless ($compact)
     <div class="hidden w-40 min-w-0 md:block">
       <div class="truncate text-sm text-ink">{{ $loan->party }}</div>
-      <div class="truncate text-[11px] text-muted">{{ $item->collection->name }}</div>
+      <div class="truncate text-[11px] text-muted">{{ $item->catalog->name }}</div>
     </div>
 
     <div class="hidden w-28 shrink-0 text-[13px] text-muted lg:block">

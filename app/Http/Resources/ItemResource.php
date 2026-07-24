@@ -26,7 +26,7 @@ class ItemResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'description' => $this->description,
-                'collection_id' => (string) $this->collection_id,
+                'catalog_id' => (string) $this->catalog_id,
                 'type_id' => $this->type_id !== null ? (string) $this->type_id : null,
                 'category_id' => $this->category_id !== null ? (string) $this->category_id : null,
                 'set_id' => $this->set_id !== null ? (string) $this->set_id : null,
@@ -35,7 +35,7 @@ class ItemResource extends JsonResource
                 'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.collections.items.show', [$this->collection_id, $this->id]),
+                'self' => route('api.collections.items.show', [$this->catalog_id, $this->id]),
             ],
         ];
     }

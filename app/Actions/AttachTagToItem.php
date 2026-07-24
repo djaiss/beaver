@@ -45,7 +45,7 @@ class AttachTagToItem
 
     private function validate(): void
     {
-        if (! $this->item->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->item->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }
@@ -66,7 +66,7 @@ class AttachTagToItem
      */
     private function resolve(): void
     {
-        $account = $this->item->collection->account;
+        $account = $this->item->catalog->account;
 
         $existing = $account->tags()->get()->first(
             fn (Tag $tag): bool => mb_strtolower($tag->name) === mb_strtolower($this->name),

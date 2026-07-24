@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -28,7 +28,7 @@ it('shows the getting started screen', function () {
 it('reports progress as the account fills up', function () {
     $user = $this->createUser();
     Tag::factory()->create(['account_id' => $user->account_id]);
-    Collection::factory()->create(['account_id' => $user->account_id]);
+    Catalog::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->get('/getting-started')
         ->assertOk()
@@ -45,7 +45,7 @@ it('sends an empty account from the dashboard to the getting started screen', fu
 
 it('shows the dashboard once the account has a collection', function () {
     $user = $this->createUser();
-    Collection::factory()->create(['account_id' => $user->account_id]);
+    Catalog::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->get('/dashboard')->assertOk();
 });
@@ -59,7 +59,7 @@ it('shows the dashboard once the screen has been dismissed', function () {
 
 it('puts a getting started link in the sidebar while the screen is on', function () {
     $user = $this->createUser();
-    Collection::factory()->create(['account_id' => $user->account_id]);
+    Catalog::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->get('/dashboard')
         ->assertOk()
@@ -70,7 +70,7 @@ it('puts a getting started link in the sidebar while the screen is on', function
 it('takes the sidebar link away once the screen has been dismissed', function () {
     $user = $this->createUser();
     $user->account->update(['show_getting_started' => false]);
-    Collection::factory()->create(['account_id' => $user->account_id]);
+    Catalog::factory()->create(['account_id' => $user->account_id]);
 
     $this->actingAs($user)->get('/dashboard')
         ->assertOk()

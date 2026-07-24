@@ -5,7 +5,7 @@ use App\Actions\SetMainItemPhoto;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\ItemPhoto;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -20,8 +20,8 @@ beforeEach(function () {
     $this->account = $this->createAccount();
     $this->editor = $this->createUser(['first_name' => 'Ross', 'last_name' => 'Geller']);
     $this->assignUserToAccount(user: $this->editor, account: $this->account, role: PermissionEnum::Editor->value);
-    $this->collection = Collection::factory()->create(['account_id' => $this->account->id]);
-    $this->item = Item::factory()->create(['collection_id' => $this->collection->id, 'name' => 'Amazing Spider-Man #1']);
+    $this->catalog = Catalog::factory()->create(['account_id' => $this->account->id]);
+    $this->item = Item::factory()->create(['catalog_id' => $this->catalog->id, 'name' => 'Amazing Spider-Man #1']);
 
     $this->rachel = ItemPhoto::factory()->create(['item_id' => $this->item->id, 'filename' => 'rachel.jpg', 'position' => 1, 'is_main' => true]);
     $this->monica = ItemPhoto::factory()->create(['item_id' => $this->item->id, 'filename' => 'monica.jpg', 'position' => 2, 'is_main' => false]);
@@ -58,7 +58,7 @@ it('does not change the position of the photos', function () {
 });
 
 it('does not touch the main photo of another item', function () {
-    $otherItem = Item::factory()->create(['collection_id' => $this->collection->id]);
+    $otherItem = Item::factory()->create(['catalog_id' => $this->catalog->id]);
     $otherItemMain = ItemPhoto::factory()->create(['item_id' => $otherItem->id, 'position' => 1, 'is_main' => true]);
 
     new SetMainItemPhoto(user: $this->editor, itemPhoto: $this->monica)->execute();

@@ -350,7 +350,7 @@
     </p>
 
     @php
-        $collections = [
+        $catalogs = [
             ['name' => __('Books'), 'spins' => false, 'svg' => '<rect x="22" y="60" width="52" height="13" rx="3" fill="#4f6bed"/><rect x="20" y="47" width="46" height="13" rx="3" fill="#e08a3c" transform="rotate(-4 43 53)"/><rect x="27" y="33" width="42" height="13" rx="3" fill="#3fae6b"/><rect x="22" y="63.5" width="6" height="6" rx="1.5" fill="#fff" opacity=".5"/>'],
             ['name' => __('Comics'), 'spins' => false, 'svg' => '<rect x="24" y="20" width="44" height="56" rx="5" fill="#e0574f"/><rect x="30" y="26" width="32" height="44" rx="3" fill="#fdf1d6"/><path d="M38 34l4 8 8 2-6 5 2 8-8-4-8 4 2-8-6-5 8-2z" fill="#4f6bed"/><rect x="34" y="58" width="24" height="7" rx="3.5" fill="#e08a3c"/>'],
             ['name' => __('Vinyl Records'), 'spins' => true, 'svg' => '<circle cx="48" cy="48" r="28" fill="#222"/><circle cx="48" cy="48" r="19" fill="none" stroke="#444" stroke-width="1.5"/><circle cx="48" cy="48" r="10" fill="#e08a3c"/><circle cx="48" cy="48" r="3" fill="#222"/>'],
@@ -367,17 +367,17 @@
 
     {{-- The illustrations lift and grow on hover; discs (records, CDs, film reels) turn as they do. --}}
     <div class="mt-12 grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-6 lg:gap-5">
-      @foreach ($collections as $collection)
+      @foreach ($catalogs as $catalog)
         <div class="group flex flex-col items-center gap-y-3.5">
           <div class="flex aspect-square w-full items-center justify-center overflow-hidden rounded-[20px] bg-card transition-shadow duration-200 group-hover:shadow-[0_8px_20px_rgba(17,17,17,0.08)]">
             <span @class([
                 'flex h-[58%] w-[58%] items-center justify-center transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-110',
-                'group-hover:rotate-[18deg]' => $collection['spins'],
+                'group-hover:rotate-[18deg]' => $catalog['spins'],
             ])>
-              <svg viewBox="0 0 96 96" class="h-full w-full overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">{!! $collection['svg'] !!}</svg>
+              <svg viewBox="0 0 96 96" class="h-full w-full overflow-visible" fill="none" xmlns="http://www.w3.org/2000/svg">{!! $catalog['svg'] !!}</svg>
             </span>
           </div>
-          <p class="text-base font-semibold tracking-[-0.2px] text-ink">{{ $collection['name'] }}</p>
+          <p class="text-base font-semibold tracking-[-0.2px] text-ink">{{ $catalog['name'] }}</p>
         </div>
       @endforeach
 

@@ -21,7 +21,7 @@ class ItemPhotoController extends Controller
     {
         $account = $request->user()->account;
 
-        if ($itemPhoto->item->collection->account_id !== $account->id) {
+        if ($itemPhoto->item->catalog->account_id !== $account->id) {
             abort(404);
         }
 

@@ -16,7 +16,7 @@
   $canManage = $user->account->allowsManagementBy($user);
   $copy = $loan->copy;
   $item = $copy->item;
-  $collection = $item->collection;
+  $catalog = $item->catalog;
   $isOut = $loan->direction === LoanDirection::Outgoing;
   $closeUrl = route('loans.show', ['direction' => $direction->slug(), 'tab' => $tab]);
 
@@ -50,8 +50,8 @@
       <div class="flex items-center gap-3">
         <div class="flex size-11 shrink-0 items-center justify-center rounded-lg bg-card text-sm font-semibold text-muted">{{ \Illuminate\Support\Str::of($item->name)->substr(0, 1)->upper() }}</div>
         <div class="min-w-0">
-          <a href="{{ route('items.history.show', [$collection, $item, $copy, 'loans']) }}" class="truncate text-base font-semibold text-ink hover:underline">{{ $item->name }}</a>
-          <div class="truncate font-mono text-[12px] text-muted">{{ $copy->identifier ?? '#'.$copy->id }} · {{ $collection->name }}</div>
+          <a href="{{ route('items.history.show', [$catalog, $item, $copy, 'loans']) }}" class="truncate text-base font-semibold text-ink hover:underline">{{ $item->name }}</a>
+          <div class="truncate font-mono text-[12px] text-muted">{{ $copy->identifier ?? '#'.$copy->id }} · {{ $catalog->name }}</div>
         </div>
       </div>
 
@@ -146,7 +146,7 @@
           </x-button>
 
           <div x-show="returning" x-cloak class="mt-4">
-            <x-form method="put" :action="route('loans.return.update', [$collection, $item, $copy, $loan])" data-test="return-loan-form">
+            <x-form method="put" :action="route('loans.return.update', [$catalog, $item, $copy, $loan])" data-test="return-loan-form">
               <input type="hidden" name="from" value="loans" />
               <div class="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
@@ -176,7 +176,7 @@
       {{-- Danger zone --}}
       @if ($canManage)
         <div class="border-t border-hairline pt-4">
-          <x-form method="delete" :action="route('loans.destroy', [$collection, $item, $copy, $loan])" onsubmit="return confirm('{{ __('Delete this loan? This cannot be undone.') }}')" data-test="delete-loan-form">
+          <x-form method="delete" :action="route('loans.destroy', [$catalog, $item, $copy, $loan])" onsubmit="return confirm('{{ __('Delete this loan? This cannot be undone.') }}')" data-test="delete-loan-form">
             <input type="hidden" name="from" value="loans" />
             <button type="submit" class="text-[13px] font-medium text-error hover:underline">{{ __('Delete this loan') }}</button>
           </x-form>

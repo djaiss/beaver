@@ -50,9 +50,9 @@ class BrunoCommand extends Command
         }
 
         $apiKey = $user->createToken(self::TOKEN_NAME)->plainTextToken;
-        $updatedCollection = $this->replaceApiKey($collection, $apiKey);
+        $updatedCatalog = $this->replaceApiKey($collection, $apiKey);
 
-        if ($updatedCollection === null || ! File::put($collectionPath, $updatedCollection)) {
+        if ($updatedCatalog === null || ! File::put($collectionPath, $updatedCatalog)) {
             $this->error('The Bruno collection API key could not be updated.');
 
             return self::FAILURE;
@@ -85,7 +85,7 @@ class BrunoCommand extends Command
     private function replaceApiKey(string $collection, string $apiKey): ?string
     {
         $replacementCount = 0;
-        $updatedCollection = preg_replace_callback(
+        $updatedCatalog = preg_replace_callback(
             '/(?<prefix>auth:bearer\s*\{\s*token:\s*)[^\r\n}]*/',
             static fn (array $matches): string => $matches['prefix'].$apiKey,
             $collection,
@@ -93,10 +93,10 @@ class BrunoCommand extends Command
             $replacementCount,
         );
 
-        if ($updatedCollection === null || $replacementCount !== 1) {
+        if ($updatedCatalog === null || $replacementCount !== 1) {
             return null;
         }
 
-        return $updatedCollection;
+        return $updatedCatalog;
     }
 }

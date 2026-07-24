@@ -51,22 +51,22 @@ class PopulateAccount implements ShouldQueue
      */
     private function createType(array $type): void
     {
-        $collectionType = $this->account->collectionTypes()->create([
+        $catalogType = $this->account->catalogTypes()->create([
             'name' => $type['name'],
             'color' => $type['color'],
         ]);
 
-        $collectionType->customFields()->createMany($this->fieldRows($type['fields']));
+        $catalogType->customFields()->createMany($this->fieldRows($type['fields']));
 
         foreach ($type['groups'] ?? [] as $index => $group) {
-            $customFieldGroup = $collectionType->customFieldGroups()->create([
+            $customFieldGroup = $catalogType->customFieldGroups()->create([
                 'name' => $group['name'],
                 'position' => $index + 1,
             ]);
 
             $customFieldGroup->customFields()->createMany(
                 collect($this->fieldRows($group['fields']))
-                    ->map(fn (array $field): array => ['type_id' => $collectionType->id, ...$field])
+                    ->map(fn (array $field): array => ['type_id' => $catalogType->id, ...$field])
                     ->all()
             );
         }

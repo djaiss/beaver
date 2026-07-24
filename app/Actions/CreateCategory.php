@@ -7,8 +7,8 @@ namespace App\Actions;
 use App\Enums\UserActionEnum;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogUserAction;
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -23,7 +23,7 @@ class CreateCategory
 
     public function __construct(
         private readonly User $user,
-        private readonly Collection $collection,
+        private readonly Catalog $catalog,
         private string $name,
         private ?int $parentId = null,
         private ?string $description = null,
@@ -42,11 +42,11 @@ class CreateCategory
 
     private function validate(): void
     {
-        if (! $this->collection->account->allowsManagementBy($this->user)) {
-            throw new ModelNotFoundException('Collection not found');
+        if (! $this->catalog->account->allowsManagementBy($this->user)) {
+            throw new ModelNotFoundException('Catalog not found');
         }
 
-        if ($this->parentId !== null && ! $this->collection->categories()->whereKey($this->parentId)->exists()) {
+        if ($this->parentId !== null && ! $this->catalog->categories()->whereKey($this->parentId)->exists()) {
             throw ValidationException::withMessages(['parent_id' => 'Invalid parent category']);
         }
     }
@@ -63,7 +63,7 @@ class CreateCategory
     private function create(): void
     {
         $this->category = Category::query()->create([
-            'collection_id' => $this->collection->id,
+            'catalog_id' => $this->catalog->id,
             'parent_id' => $this->parentId,
             'name' => $this->name,
             'description' => $this->description,

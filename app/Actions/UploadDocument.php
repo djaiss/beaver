@@ -131,7 +131,7 @@ class UploadDocument
 
     private function account(): Account
     {
-        return $this->copy->item->collection->account;
+        return $this->copy->item->catalog->account;
     }
 
     /**

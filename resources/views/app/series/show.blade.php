@@ -41,8 +41,8 @@
           </div>
 
           <div>
-            <div class="text-[22px] font-semibold text-ink" data-test="series-collection-count">{{ number_format($collectionCount) }}</div>
-            <div class="mt-0.5 text-xs text-muted-soft">{{ trans_choice('Collection|Collections', $collectionCount) }}</div>
+            <div class="text-[22px] font-semibold text-ink" data-test="series-collection-count">{{ number_format($catalogCount) }}</div>
+            <div class="mt-0.5 text-xs text-muted-soft">{{ trans_choice('Collection|Collections', $catalogCount) }}</div>
           </div>
         </div>
 
@@ -68,20 +68,20 @@
           @foreach ($groups as $group)
             <div>
               <div class="mb-3 flex items-center gap-2.5">
-                <span class="size-2.5 shrink-0 rounded-sm {{ $dots[$group['collection']->id % count($dots)] }}"></span>
-                <a href="{{ route('collections.show', $group['collection']->id) }}" data-turbo="true" class="truncate text-[13px] font-semibold tracking-wide text-muted uppercase transition-colors hover:text-ink">{{ $group['collection']->name }}</a>
+                <span class="size-2.5 shrink-0 rounded-sm {{ $dots[$group['catalog']->id % count($dots)] }}"></span>
+                <a href="{{ route('collections.show', $group['catalog']->id) }}" data-turbo="true" class="truncate text-[13px] font-semibold tracking-wide text-muted uppercase transition-colors hover:text-ink">{{ $group['catalog']->name }}</a>
                 <span class="text-xs text-muted-soft">{{ count($group['items']) }}</span>
               </div>
 
               <div class="overflow-hidden rounded-xl border border-hairline">
                 @foreach ($group['items'] as $item)
                   <a
-                    href="{{ route('items.show', [$group['collection']->id, $item->id]) }}"
+                    href="{{ route('items.show', [$group['catalog']->id, $item->id]) }}"
                     data-turbo="true"
                     class="flex items-center gap-3.5 px-4.5 py-3.5 transition-colors hover:bg-card @unless ($loop->last) border-b border-hairline-soft @endunless"
                     data-test="series-item-{{ $item->id }}"
                   >
-                    <span class="flex size-9.5 shrink-0 items-center justify-center rounded-lg bg-card text-lg">{{ $group['collection']->emoji ?? '📦' }}</span>
+                    <span class="flex size-9.5 shrink-0 items-center justify-center rounded-lg bg-card text-lg">{{ $group['catalog']->emoji ?? '📦' }}</span>
 
                     <div class="min-w-0 flex-1">
                       <div class="truncate text-sm font-semibold text-ink">{{ $item->name }}</div>
@@ -90,8 +90,8 @@
                       @endif
                     </div>
 
-                    @if ($item->collectionType)
-                      <span class="shrink-0 rounded-full bg-card px-2.5 py-1 text-xs font-semibold text-muted">{{ $item->collectionType->name }}</span>
+                    @if ($item->catalogType)
+                      <span class="shrink-0 rounded-full bg-card px-2.5 py-1 text-xs font-semibold text-muted">{{ $item->catalogType->name }}</span>
                     @endif
                   </a>
                 @endforeach

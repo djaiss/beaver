@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\View\Components;
 
+use App\Models\Catalog;
 use App\Models\Category;
-use App\Models\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\View\Component;
 use Illuminate\View\View;
@@ -14,7 +14,7 @@ class AppLayout extends Component
 {
     public function __construct(
         public string $title = '',
-        public ?Collection $collection = null,
+        public ?Catalog $catalog = null,
     ) {}
 
     /**
@@ -25,11 +25,11 @@ class AppLayout extends Component
      */
     public function categories(): EloquentCollection
     {
-        if ($this->collection === null) {
+        if ($this->catalog === null) {
             return new EloquentCollection;
         }
 
-        return $this->collection->categories()
+        return $this->catalog->categories()
             ->withCount('items')
             ->get()
             ->sortBy('name')

@@ -9,7 +9,7 @@
   file. Managers get an add form, an inline edit and a delete that warns the file
   goes with it.
 
-  Expects: $documentable, $collection, $item, $selectedCopy, $canManage.
+  Expects: $documentable, $catalog, $item, $selectedCopy, $canManage.
 --}}
 
 @use('App\Enums\DocumentType')
@@ -55,7 +55,7 @@
     <div x-show="adding" x-cloak class="mb-3.5">
       @include('app.items.partials._documentForm', [
           'formId' => 'add-document-'.$scope,
-          'action' => route('documents.create', [$collection, $item, $selectedCopy]),
+          'action' => route('documents.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'submitLabel' => __('Attach document'),
           'dataTest' => 'create-document-form-'.$scope,
@@ -128,7 +128,7 @@
           <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._documentForm', [
                 'formId' => 'edit-document-'.$document->id,
-                'action' => route('documents.update', [$collection, $item, $selectedCopy, $document]),
+                'action' => route('documents.update', [$catalog, $item, $selectedCopy, $document]),
                 'method' => 'put',
                 'submitLabel' => __('Save changes'),
                 'dataTest' => 'edit-document-form-'.$document->id,
@@ -140,7 +140,7 @@
 
             <x-form
               method="delete"
-              :action="route('documents.destroy', [$collection, $item, $selectedCopy, $document])"
+              :action="route('documents.destroy', [$catalog, $item, $selectedCopy, $document])"
               onsubmit="return confirm('{{ __('Delete this document? The file is removed with it and this cannot be undone.') }}')"
               class="mt-3"
             >

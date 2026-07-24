@@ -5,7 +5,7 @@
     <div>
       @if ($item->photos->isEmpty())
         <div class="flex aspect-4/3 w-full items-center justify-center rounded-xl border border-dashed border-hairline bg-card text-5xl">
-          {{ $collection->emoji ?? '📦' }}
+          {{ $catalog->emoji ?? '📦' }}
         </div>
       @else
         {{-- The outer element is the flat hit area the pointer is measured
@@ -114,7 +114,7 @@
     <div class="rounded-xl border border-hairline px-4.5">
       @php
         $glance = [
-            __('Type') => $item->collectionType?->name ?? '—',
+            __('Type') => $item->catalogType?->name ?? '—',
             // A nested category means little on its own, so it is shown under its parent.
             __('Category') => $item->category
                 ? ($item->category->parent ? $item->category->parent->name . ' › ' . $item->category->name : $item->category->name)
@@ -155,7 +155,7 @@
         <p class="mt-2.5 text-xs text-muted-soft" data-test="series-span">
           {{ __(':items across :collections', [
               'items' => trans_choice(':count item|:count items', $seriesItemCount, ['count' => $seriesItemCount]),
-              'collections' => trans_choice(':count collection|:count collections', $seriesCollectionCount, ['count' => $seriesCollectionCount]),
+              'collections' => trans_choice(':count collection|:count collections', $seriesCatalogCount, ['count' => $seriesCatalogCount]),
           ]) }}
         </p>
 
@@ -192,7 +192,7 @@
           </p>
         @endif
 
-        <a href="{{ route('sets.index', $item->collection_id) }}" data-turbo="true" class="mt-3.5 inline-block text-[13px] font-semibold text-ink transition-opacity hover:opacity-75">{{ __('View set →') }}</a>
+        <a href="{{ route('sets.index', $item->catalog_id) }}" data-turbo="true" class="mt-3.5 inline-block text-[13px] font-semibold text-ink transition-opacity hover:opacity-75">{{ __('View set →') }}</a>
       </div>
     @endif
 

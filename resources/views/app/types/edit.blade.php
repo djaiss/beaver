@@ -60,7 +60,7 @@
             </button>
           </x-form>
 
-          <p class="mt-2 text-xs text-muted-soft">{{ __('Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)', ['collections' => $type->collections->count(), 'groups' => $type->custom_field_groups_count, 'fields' => $type->custom_fields_count]) }}</p>
+          <p class="mt-2 text-xs text-muted-soft">{{ __('Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)', ['collections' => $type->catalogs->count(), 'groups' => $type->custom_field_groups_count, 'fields' => $type->custom_fields_count]) }}</p>
         </div>
 
         <div id="type-actions" class="flex shrink-0 items-center gap-3">
@@ -177,19 +177,19 @@
       <h2 class="text-lg font-semibold text-ink">{{ __('Collections using this type') }}</h2>
       <p class="mt-0.5 mb-3.5 text-xs text-muted-soft">{{ __('A collection can use many types; an item picks exactly one.') }}</p>
 
-      @if ($collections->isEmpty())
+      @if ($catalogs->isEmpty())
         <p class="text-sm text-muted">{{ __('No collections use this type yet.') }}</p>
       @else
         <div class="flex flex-wrap gap-2">
-          @foreach ($collections as $collection)
+          @foreach ($catalogs as $catalog)
             <a
-              href="{{ route('collections.show', $collection->id) }}"
+              href="{{ route('collections.show', $catalog->id) }}"
               data-turbo="true"
-              data-test="collection-chip-{{ $collection->id }}"
+              data-test="collection-chip-{{ $catalog->id }}"
               class="flex items-center gap-2 rounded-full border border-hairline px-3.5 py-2 text-sm font-medium text-ink transition-colors hover:bg-card"
             >
-              <span>{{ $collection->emoji }}</span>
-              {{ $collection->name }}
+              <span>{{ $catalog->emoji }}</span>
+              {{ $catalog->name }}
               @svg('lucide-arrow-up-right', 'size-3.5 shrink-0 text-muted-soft')
             </a>
           @endforeach

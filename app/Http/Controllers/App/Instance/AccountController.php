@@ -35,7 +35,7 @@ class AccountController extends Controller
         // splitting them would match an account that merely has some owner and,
         // separately, somebody whose email matches.
         $accounts = Account::query()
-            ->withCount(['users', 'collections'])
+            ->withCount(['users', 'catalogs'])
             ->when($search !== null || $role !== null, fn (Builder $query): Builder => $query->whereHas(
                 'users',
                 function (Builder $users) use ($search, $role): Builder {
@@ -85,7 +85,7 @@ class AccountController extends Controller
             'account' => $account,
             'members' => $members,
             'activity' => $activity,
-            'collectionCount' => $account->collections()->count(),
+            'catalogCount' => $account->catalogs()->count(),
             'itemCount' => $account->items()->count(),
         ]);
     }

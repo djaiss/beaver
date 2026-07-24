@@ -58,7 +58,7 @@
               <p class="truncate text-xs text-muted">
                 {{ $account->users_count }} {{ Str::plural('member', $account->users_count) }}
                 ·
-                {{ $account->collections_count }} {{ Str::plural('collection', $account->collections_count) }}
+                {{ $account->catalogs_count }} {{ Str::plural('collection', $account->catalogs_count) }}
               </p>
             </div>
 

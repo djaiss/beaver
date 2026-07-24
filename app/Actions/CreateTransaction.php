@@ -51,7 +51,7 @@ class CreateTransaction
 
     private function validate(): void
     {
-        $account = $this->copy->item->collection->account;
+        $account = $this->copy->item->catalog->account;
 
         if (! $account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
@@ -67,7 +67,7 @@ class CreateTransaction
             'amount' => $this->amount,
             // Every amount on the row is in one currency, and the collection's
             // is the sensible default when the caller does not say.
-            'currency_code' => $this->currencyCode ?? $this->copy->item->collection->currency,
+            'currency_code' => $this->currencyCode ?? $this->copy->item->catalog->currency,
             'tax_amount' => $this->taxAmount,
             'fee_amount' => $this->feeAmount,
             'shipping_amount' => $this->shippingAmount,

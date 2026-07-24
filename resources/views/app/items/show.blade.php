@@ -2,7 +2,7 @@
 @use('App\Helpers\Money')
 
 @php
-    $type = $item->collectionType;
+    $type = $item->catalogType;
     $values = $item->customFieldValues->keyBy('custom_field_id');
 
     // A field reads as its stored value, except for a yes/no field, whose
@@ -21,7 +21,7 @@
         return $value;
     };
 
-    $money = fn (int $cents): string => Money::format($cents, $collection->currency);
+    $money = fn (int $cents): string => Money::format($cents, $catalog->currency);
 
     // A copy carries no value of its own any more, so the total is the sum of
     // what each one was last valued at.
@@ -32,7 +32,7 @@
     $hasDetails = $ungroupedFields->isNotEmpty() || $fieldGroups->isNotEmpty();
 @endphp
 
-<x-item-page :collection="$collection" :item="$item" :tags="$tags" tab="overview">
+<x-item-page :catalog="$catalog" :item="$item" :tags="$tags" tab="overview">
   <div x-data="{ photo: 0 }">
     @include('app.items.partials._overview')
   </div>

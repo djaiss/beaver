@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table): void {
             $table->id()->comment('primary key');
-            $table->unsignedBigInteger('collection_id')->comment('collection the item belongs to');
+            $table->unsignedBigInteger('catalog_id')->comment('collection the item belongs to');
             $table->unsignedBigInteger('type_id')->nullable()->comment('type of the item, null when untyped, and always one of the types linked to the collection');
             $table->text('name')->comment('name of the item, e.g. Amazing Spider-Man #1');
             $table->text('description')->nullable()->comment('free text description of the item');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes()->comment('null unless the item has been soft deleted');
 
-            $table->foreign('collection_id')->references('id')->on('collections')->cascadeOnDelete();
+            $table->foreign('catalog_id')->references('id')->on('catalogs')->cascadeOnDelete();
 
             // Deleting a type leaves its items alone: they drop back to untyped.
             $table->foreign('type_id')->references('id')->on('types')->nullOnDelete();

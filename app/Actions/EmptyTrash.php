@@ -29,7 +29,7 @@ class EmptyTrash
         TrashableEnum::Copy,
         TrashableEnum::Item,
         TrashableEnum::Category,
-        TrashableEnum::Collection,
+        TrashableEnum::Catalog,
         TrashableEnum::Set,
     ];
 

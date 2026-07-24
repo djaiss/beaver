@@ -9,7 +9,7 @@ use App\Actions\DestroyCustomField;
 use App\Actions\UpdateCustomField;
 use App\Enums\FieldTypeEnum;
 use App\Http\Controllers\Controller;
-use App\Models\CollectionType;
+use App\Models\CatalogType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,13 +17,13 @@ use Illuminate\Validation\Rule;
 
 class CustomFieldController extends Controller
 {
-    public function create(Request $request, int $collectionType): RedirectResponse
+    public function create(Request $request, int $catalogType): RedirectResponse
     {
-        $type = $this->findType($request, $collectionType);
+        $type = $this->findType($request, $catalogType);
 
         new CreateCustomField(
             user: $request->user(),
-            collectionType: $type,
+            catalogType: $type,
             name: '',
         )->execute();
 
@@ -32,9 +32,9 @@ class CustomFieldController extends Controller
             ->with('status_description', __('A new custom field was added to the type.'));
     }
 
-    public function update(Request $request, int $collectionType, int $customField): RedirectResponse
+    public function update(Request $request, int $catalogType, int $customField): RedirectResponse
     {
-        $type = $this->findType($request, $collectionType);
+        $type = $this->findType($request, $catalogType);
 
         try {
             $field = $type->customFields()->findOrFail($customField);
@@ -72,9 +72,9 @@ class CustomFieldController extends Controller
             ->with('status_description', __('Your changes to the field were saved.'));
     }
 
-    public function destroy(Request $request, int $collectionType, int $customField): RedirectResponse
+    public function destroy(Request $request, int $catalogType, int $customField): RedirectResponse
     {
-        $type = $this->findType($request, $collectionType);
+        $type = $this->findType($request, $catalogType);
 
         try {
             $field = $type->customFields()->findOrFail($customField);
@@ -92,10 +92,10 @@ class CustomFieldController extends Controller
             ->with('status_description', __('The custom field was removed from the type.'));
     }
 
-    private function findType(Request $request, int $collectionType): CollectionType
+    private function findType(Request $request, int $catalogType): CatalogType
     {
         try {
-            return $request->user()->account->collectionTypes()->findOrFail($collectionType);
+            return $request->user()->account->catalogTypes()->findOrFail($catalogType);
         } catch (ModelNotFoundException) {
             abort(404);
         }

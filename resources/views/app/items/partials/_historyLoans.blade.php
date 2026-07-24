@@ -46,7 +46,7 @@
     <div x-show="adding" x-cloak class="mb-5">
       @include('app.items.partials._loanForm', [
           'formId' => 'add-loan-'.$selectedCopy->id,
-          'action' => route('loans.create', [$collection, $item, $selectedCopy]),
+          'action' => route('loans.create', [$catalog, $item, $selectedCopy]),
           'method' => 'post',
           'openVar' => 'adding',
           'submitLabel' => __('Add loan'),
@@ -136,8 +136,8 @@
           <div x-show="editing" x-cloak class="border-t border-hairline bg-card/40 p-4">
             @include('app.items.partials._loanForm', [
                 'formId' => 'edit-loan-'.$loan->id,
-                'action' => route('loans.update', [$collection, $item, $selectedCopy, $loan]),
-                'deleteAction' => route('loans.destroy', [$collection, $item, $selectedCopy, $loan]),
+                'action' => route('loans.update', [$catalog, $item, $selectedCopy, $loan]),
+                'deleteAction' => route('loans.destroy', [$catalog, $item, $selectedCopy, $loan]),
                 'method' => 'put',
                 'openVar' => 'editing',
                 'submitLabel' => __('Save changes'),
@@ -149,7 +149,7 @@
 
         <div class="border-t border-hairline px-5 py-4">
           <p class="mb-2.5 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Documents') }}</p>
-          @include('app.items.partials._documentsFor', ['documentable' => $loan, 'collection' => $collection, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
+          @include('app.items.partials._documentsFor', ['documentable' => $loan, 'catalog' => $catalog, 'item' => $item, 'selectedCopy' => $selectedCopy, 'canManage' => $canManage])
         </div>
       </div>
     @empty

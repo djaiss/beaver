@@ -33,7 +33,7 @@ class CustomFieldResource extends JsonResource
                 'updated_at' => $this->updated_at?->timestamp,
             ],
             'links' => [
-                'self' => route('api.collectionTypes.customFields.show', [
+                'self' => route('api.catalogTypes.customFields.show', [
                     'collectionType' => $this->type_id,
                     'customField' => $this->id,
                 ]),

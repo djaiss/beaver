@@ -5,7 +5,7 @@ use App\Actions\DestroyLoan;
 use App\Enums\CopyStatus;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Loan;
@@ -19,8 +19,8 @@ uses(RefreshDatabase::class);
 if (! function_exists('copyForLoan')) {
     function copyForLoan(int $accountId, array $attributes = []): Copy
     {
-        $collection = Collection::factory()->create(array_merge(['account_id' => $accountId], $attributes['collection'] ?? []));
-        $item = Item::factory()->create(['collection_id' => $collection->id]);
+        $catalog = Catalog::factory()->create(array_merge(['account_id' => $accountId], $attributes['catalog'] ?? []));
+        $item = Item::factory()->create(['catalog_id' => $catalog->id]);
 
         return Copy::factory()->create(array_merge(['item_id' => $item->id], $attributes['copy'] ?? []));
     }

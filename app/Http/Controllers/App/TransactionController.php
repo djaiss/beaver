@@ -8,8 +8,8 @@ use App\Actions\CreateTransaction;
 use App\Actions\DestroyTransaction;
 use App\Actions\UpdateTransaction;
 use App\Enums\TransactionType;
-use App\Http\Controllers\Concerns\FindsItems;
 use App\Http\Controllers\Controller;
+use App\Models\Catalog;
 use App\Models\Copy;
 use App\Models\Item;
 use App\Models\Transaction;
@@ -26,19 +26,13 @@ use Illuminate\Validation\Rule;
  */
 class TransactionController extends Controller
 {
-    use FindsItems;
-
-    public function create(Request $request, int $collection, int $item, int $copy): RedirectResponse
+    public function create(Request $request, Catalog $catalog, Item $item, Copy $copy): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-
         $validated = $request->validate($this->rules());
 
         new CreateTransaction(
             user: $request->user(),
-            copy: $copyModel,
+            copy: $copy,
             type: TransactionType::from($validated['type']),
             occurredAt: $validated['occurred_at'],
             counterparty: $validated['counterparty'] ?? null,
@@ -53,17 +47,14 @@ class TransactionController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'transactions'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'transactions'])
             ->with('status', __('Transaction recorded'))
             ->with('status_description', __('The transaction was added to the history of this copy.'));
     }
 
-    public function update(Request $request, int $collection, int $item, int $copy, int $transaction): RedirectResponse
+    public function update(Request $request, Catalog $catalog, Item $item, Copy $copy, int $transaction): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $transactionModel = $this->findTransaction($copyModel, $transaction);
+        $transactionModel = $this->findTransaction($copy, $transaction);
 
         $validated = $request->validate($this->rules());
 
@@ -84,35 +75,21 @@ class TransactionController extends Controller
             note: $validated['note'] ?? null,
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'transactions'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'transactions'])
             ->with('status', __('Transaction updated'))
             ->with('status_description', __('Your changes to the transaction were saved.'));
     }
 
-    public function destroy(Request $request, int $collection, int $item, int $copy, int $transaction): RedirectResponse
+    public function destroy(Request $request, Catalog $catalog, Item $item, Copy $copy, int $transaction): RedirectResponse
     {
-        $collectionModel = $this->findCollection($request, $collection);
-        $itemModel = $this->findItem($collectionModel, $item, []);
-        $copyModel = $this->findCopy($itemModel, $copy);
-        $transactionModel = $this->findTransaction($copyModel, $transaction);
-
         new DestroyTransaction(
             user: $request->user(),
-            transaction: $transactionModel,
+            transaction: $this->findTransaction($copy, $transaction),
         )->execute();
 
-        return to_route('items.history.show', [$collectionModel, $itemModel, $copyModel, 'transactions'])
+        return to_route('items.history.show', [$catalog, $item, $copy, 'transactions'])
             ->with('status', __('Transaction deleted'))
             ->with('status_description', __('The transaction was removed from the history of this copy.'));
-    }
-
-    private function findCopy(Item $item, int $copy): Copy
-    {
-        try {
-            return $item->copies()->findOrFail($copy);
-        } catch (ModelNotFoundException) {
-            abort(404);
-        }
     }
 
     private function findTransaction(Copy $copy, int $transaction): Transaction

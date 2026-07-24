@@ -14,8 +14,8 @@
   // Every filter control is a link that reloads the panel, matching how the copy
   // pills and sections navigate. This builds the timeline url for a given view
   // and set of types, keeping the url clean when they are at their defaults.
-  $timelineUrl = function (string $view, array $types) use ($collection, $item, $selectedCopy): string {
-      $params = [$collection, $item, $selectedCopy, 'timeline'];
+  $timelineUrl = function (string $view, array $types) use ($catalog, $item, $selectedCopy): string {
+      $params = [$catalog, $item, $selectedCopy, 'timeline'];
 
       if ($view === 'complete') {
           $params['view'] = 'complete';
@@ -130,7 +130,7 @@
     @endphp
 
     <a
-      href="{{ route('items.history.show', [$collection, $item, $selectedCopy, $entry->source->section()]) }}"
+      href="{{ route('items.history.show', [$catalog, $item, $selectedCopy, $entry->source->section()]) }}"
       data-turbo="true"
       class="group flex gap-4"
       data-test="history-{{ $entry->key() }}"

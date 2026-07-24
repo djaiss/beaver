@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Series;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,10 +53,10 @@ it('counts the collections a series reaches into', function () {
     $user = $this->createUser();
     $series = Series::factory()->create(['account_id' => $user->account_id, 'name' => 'Harry Potter']);
 
-    $books = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Books']);
-    $lego = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'LEGO']);
-    Item::factory()->count(2)->create(['collection_id' => $books->id, 'series_id' => $series->id]);
-    Item::factory()->create(['collection_id' => $lego->id, 'series_id' => $series->id]);
+    $books = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Books']);
+    $lego = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'LEGO']);
+    Item::factory()->count(2)->create(['catalog_id' => $books->id, 'series_id' => $series->id]);
+    Item::factory()->create(['catalog_id' => $lego->id, 'series_id' => $series->id]);
 
     $response = $this->actingAs($user)->get('/series');
 
@@ -71,10 +71,10 @@ it('shows a series with its items grouped by collection', function () {
     $user = $this->createUser();
     $series = Series::factory()->create(['account_id' => $user->account_id, 'name' => 'Harry Potter']);
 
-    $books = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Books']);
-    $films = Collection::factory()->create(['account_id' => $user->account_id, 'name' => 'Films']);
-    Item::factory()->create(['collection_id' => $books->id, 'series_id' => $series->id, 'name' => 'Philosopher’s Stone']);
-    Item::factory()->create(['collection_id' => $films->id, 'series_id' => $series->id, 'name' => 'Chamber of Secrets (4K)']);
+    $books = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Books']);
+    $films = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Films']);
+    Item::factory()->create(['catalog_id' => $books->id, 'series_id' => $series->id, 'name' => 'Philosopher’s Stone']);
+    Item::factory()->create(['catalog_id' => $films->id, 'series_id' => $series->id, 'name' => 'Chamber of Secrets (4K)']);
 
     $response = $this->actingAs($user)->get('/series/'.$series->id);
 
@@ -164,8 +164,8 @@ it('deletes a series and keeps its items', function () {
 
     $user = $this->createUser();
     $series = Series::factory()->create(['account_id' => $user->account_id]);
-    $collection = Collection::factory()->create(['account_id' => $user->account_id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id, 'series_id' => $series->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'series_id' => $series->id]);
 
     $response = $this->actingAs($user)->delete('/series/'.$series->id);
 

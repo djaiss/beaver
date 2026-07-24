@@ -37,7 +37,7 @@ class UpdateSet
 
     private function validate(): void
     {
-        if (! $this->set->collection->account->allowsManagementBy($this->user)) {
+        if (! $this->set->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Concerns\HasAuthor;
-use App\Models\Concerns\HasDeleter;
+use App\Traits\HasAuthor;
+use App\Traits\HasDeleter;
 use Carbon\Carbon;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * comics collection. Categories can be nested.
  *
  * @property int $id
- * @property int $collection_id
+ * @property int $catalog_id
  * @property int|null $parent_id
  * @property string $name
  * @property string|null $description
@@ -53,7 +53,7 @@ class Category extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'collection_id',
+        'catalog_id',
         'parent_id',
         'name',
         'description',
@@ -75,11 +75,11 @@ class Category extends Model
     /**
      * Get the collection the category belongs to.
      *
-     * @return BelongsTo<Collection, $this>
+     * @return BelongsTo<Catalog, $this>
      */
-    public function collection(): BelongsTo
+    public function catalog(): BelongsTo
     {
-        return $this->belongsTo(Collection::class);
+        return $this->belongsTo(Catalog::class);
     }
 
     /**

@@ -34,14 +34,14 @@ class MoveCustomFieldGroup
 
     private function validate(): void
     {
-        if (! $this->customFieldGroup->collectionType->account->allowsManagementBy($this->user)) {
+        if (! $this->customFieldGroup->catalogType->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
         }
     }
 
     private function swap(): void
     {
-        $groups = $this->customFieldGroup->collectionType
+        $groups = $this->customFieldGroup->catalogType
             ->customFieldGroups()
             ->orderBy('position')
             ->orderBy('id')

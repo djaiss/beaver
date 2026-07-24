@@ -2,7 +2,7 @@
   $searchTexts = $sets->map(fn ($set): string => Str::lower($set->name))->values()->all();
 @endphp
 
-<x-app-layout :collection="$collection">
+<x-app-layout :catalog="$catalog">
   <x-slot:title>
     {{ __('Sets') }}
   </x-slot>
@@ -24,7 +24,7 @@
       <div class="mb-5 flex items-center gap-1.5 text-[13px]">
         <a href="{{ route('collections.index') }}" data-turbo="true" class="font-medium text-muted-soft transition-colors hover:text-ink">{{ __('Collections') }}</a>
         <span class="text-muted-soft">/</span>
-        <a href="{{ route('collections.show', $collection->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $collection->name }}</a>
+        <a href="{{ route('collections.show', $catalog->id) }}" data-turbo="true" class="truncate font-medium text-muted-soft transition-colors hover:text-ink">{{ $catalog->name }}</a>
         <span class="text-muted-soft">/</span>
         <span class="font-medium text-ink">{{ __('Sets') }}</span>
       </div>
@@ -53,7 +53,7 @@
         <div class="text-base font-semibold text-ink">{{ __('New set') }}</div>
         <p class="mt-0.5 mb-4 text-[13px] text-muted">{{ __('Give it a target so KolleK can show how complete it is. Leave the target empty to just group items.') }}</p>
 
-        <x-form method="post" :action="route('sets.create', $collection->id)" data-test="create-set-form" x-target="sets-panel add-set-fields notifications" x-on:ajax:after="showAddForm = document.querySelector('#add-set-fields .text-error') !== null">
+        <x-form method="post" :action="route('sets.create', $catalog->id)" data-test="create-set-form" x-target="sets-panel add-set-fields notifications" x-on:ajax:after="showAddForm = document.querySelector('#add-set-fields .text-error') !== null">
           <div id="add-set-fields">
             <div class="mb-5 flex flex-wrap gap-3.5">
               <div class="min-w-[200px] flex-1">
@@ -147,7 +147,7 @@
 
           <div class="mt-4 flex flex-col gap-3.5">
             @foreach ($sets as $set)
-              @include('app.sets._card', ['set' => $set, 'collection' => $collection])
+              @include('app.sets._card', ['set' => $set, 'catalog' => $catalog])
             @endforeach
           </div>
 

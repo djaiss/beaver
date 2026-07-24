@@ -5,7 +5,7 @@ use App\Actions\DetachTagFromItem;
 use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
-use App\Models\Collection;
+use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -20,8 +20,8 @@ it('takes a tag off an item and keeps the tag on the account', function () {
     $account = $this->createAccount();
     $editor = $this->createUser();
     $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $removed = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Signed']);
     $kept = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Key issue']);
     $item->tags()->sync([$removed->id, $kept->id]);
@@ -46,8 +46,8 @@ it('does nothing when the tag is not on the item', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id]);
 
     new DetachTagFromItem(user: $owner, item: $item, tag: $tag)->execute();
@@ -62,8 +62,8 @@ it('throws when the tag belongs to another account', function () {
     $account = $this->createAccount();
     $owner = $this->createUser();
     $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $foreignTag = Tag::factory()->create();
 
     new DetachTagFromItem(user: $owner, item: $item, tag: $foreignTag)->execute();
@@ -76,8 +76,8 @@ it('throws when the user is only a viewer', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();
     $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id]);
     $item->tags()->sync([$tag->id]);
 
@@ -90,8 +90,8 @@ it('throws when the user does not belong to the account', function () {
 
     $account = $this->createAccount();
     $stranger = $this->createUser();
-    $collection = Collection::factory()->create(['account_id' => $account->id]);
-    $item = Item::factory()->create(['collection_id' => $collection->id]);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
     $tag = Tag::factory()->create(['account_id' => $account->id]);
 
     new DetachTagFromItem(user: $stranger, item: $item, tag: $tag)->execute();

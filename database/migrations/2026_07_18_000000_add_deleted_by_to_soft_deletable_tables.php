@@ -13,7 +13,7 @@ return new class extends Migration
      *
      * @var list<string>
      */
-    private array $tables = ['collections', 'items', 'copies', 'categories', 'sets'];
+    private array $tables = ['catalogs', 'items', 'copies', 'categories', 'sets'];
 
     public function up(): void
     {
