@@ -14,7 +14,8 @@
   editEmoji: @js($location->emoji ?? '📦'),
 }" class="border-b border-hairline-soft last:border-b-0">
   <div class="flex min-h-14 items-stretch {{ $depth === 0 ? 'bg-card/40' : '' }}">
-    <div class="flex flex-1 items-center gap-3 py-2.5 pr-4" style="padding-left: {{ 16 + $depth * 32 }}px" data-test="location-row-{{ $location->id }}">
+    {{-- Locations have no screen of their own, so account search links here and scrolls to the row. --}}
+    <div id="location-{{ $location->id }}" class="flex flex-1 items-center gap-3 py-2.5 pr-4 scroll-mt-24" style="padding-left: {{ 16 + $depth * 32 }}px" data-test="location-row-{{ $location->id }}">
       <div class="flex w-7 shrink-0 items-center justify-center">
         @if ($hasChildren)
           <button type="button" x-on:click="expanded = !expanded" :class="expanded ? 'rotate-90' : 'rotate-0'" class="flex size-7 shrink-0 items-center justify-center rounded-md text-ink transition-transform hover:bg-card" aria-label="{{ __('Toggle sublocations') }}">

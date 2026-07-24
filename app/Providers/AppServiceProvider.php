@@ -4,11 +4,20 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Models\Catalog;
+use App\Models\Category;
 use App\Models\Copy;
+use App\Models\Document;
 use App\Models\InsuranceRecord;
+use App\Models\Item;
+use App\Models\ItemPhoto;
 use App\Models\Loan;
+use App\Models\Location;
 use App\Models\MaintenanceRecord;
 use App\Models\ProvenanceEvent;
+use App\Models\Series;
+use App\Models\Set;
+use App\Models\Tag;
 use App\Models\Transaction;
 use App\Models\Valuation;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -42,13 +51,17 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Pins the polymorphic type strings that documents store, so a renamed or
-     * moved model never changes what is written in documentable_type, and a raw
-     * class name never leaks into the database or the API.
+     * Pins the polymorphic type strings that documents and search tokens store,
+     * so a renamed or moved model never changes what is written in
+     * documentable_type or searchable_type, and a raw class name never leaks
+     * into the database or the API.
      *
      * This registers the map without enforcing it globally: the framework's own
      * morphs (Sanctum tokens are tokenable to a User) stay on their class names,
-     * and only the documentable models resolve to these stable aliases.
+     * and only these models resolve to the stable aliases.
+     *
+     * A Catalog is written as `collection`: the alias leaves the codebase, and
+     * a collection is what a user calls it.
      */
     private function registerMorphMap(): void
     {
@@ -60,6 +73,15 @@ class AppServiceProvider extends ServiceProvider
             'insurance_record' => InsuranceRecord::class,
             'maintenance_record' => MaintenanceRecord::class,
             'loan' => Loan::class,
+            'collection' => Catalog::class,
+            'item' => Item::class,
+            'photo' => ItemPhoto::class,
+            'location' => Location::class,
+            'set' => Set::class,
+            'series' => Series::class,
+            'category' => Category::class,
+            'tag' => Tag::class,
+            'document' => Document::class,
         ]);
     }
 

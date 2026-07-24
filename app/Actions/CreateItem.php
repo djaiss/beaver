@@ -79,9 +79,21 @@ class CreateItem
         });
 
         $this->addPhotos();
+        $this->reindexSearch();
         $this->log();
 
         return $this->item;
+    }
+
+    /**
+     * Tags and custom field values are written after the item row itself, so the
+     * search index built when it saved does not have them yet.
+     */
+    private function reindexSearch(): void
+    {
+        $this->item->load(['catalog', 'category', 'set', 'series', 'catalogType', 'tags', 'customFieldValues']);
+
+        new IndexSearchable(searchable: $this->item)->execute();
     }
 
     private function validate(): void

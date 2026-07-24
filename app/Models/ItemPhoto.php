@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Traits\HasAuthor;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\ItemPhotoFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -37,12 +40,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class ItemPhoto extends Model
+class ItemPhoto extends Model implements Searchable
 {
     use HasAuthor;
 
     /** @use HasFactory<ItemPhotoFactory> */
     use HasFactory;
+
+    use HasSearchIndex;
 
     protected $table = 'item_photos';
 
@@ -91,11 +96,14 @@ class ItemPhoto extends Model
     }
 
     /**
-     * Get the search hashes that make the photo findable.
+     * Get the search hashes that make the photo findable from the photo library
+     * screen. Account wide search reads searchTokens() instead: the two indexes
+     * hold the same words, and this one is due to be retired once an upgrade can
+     * fill the general index without a manual rebuild.
      *
      * @return HasMany<ItemPhotoSearchToken, $this>
      */
-    public function searchTokens(): HasMany
+    public function photoSearchTokens(): HasMany
     {
         return $this->hasMany(ItemPhotoSearchToken::class);
     }
@@ -149,5 +157,55 @@ class ItemPhoto extends Model
         }
 
         return mb_strtoupper(mb_substr($this->mime_type, $separator + 1));
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->item?->catalog?->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_IDENTIFIER => [$this->filename],
+            IndexSearchable::WEIGHT_RELATED => [(string) $this->item?->name],
+        ];
+    }
+
+    public function searchableTitleColumn(): string
+    {
+        return 'filename';
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->filename;
+    }
+
+    /**
+     * A photo has no screen of its own that every role may open, so a result
+     * points at the item whose gallery holds it.
+     */
+    public function searchableContext(): string
+    {
+        return collect([$this->item?->name, $this->format()])->filter()->implode(' · ');
+    }
+
+    public function searchableUrl(): string
+    {
+        return route('items.show', [$this->item?->catalog_id, $this->item_id]);
+    }
+
+    public function searchableThumbnailUrl(): ?string
+    {
+        return $this->url();
+    }
+
+    public function searchableCollectionName(): ?string
+    {
+        return $this->item?->catalog?->name;
     }
 }

@@ -10,6 +10,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Tag;
+use App\Services\BlindIndex;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -195,4 +196,22 @@ it('does not record activity when the item already carries the tag', function ()
     new AttachTagToItem(user: $editor, item: $item, name: 'Signed')->execute();
 
     Queue::assertNotPushed(LogItemAction::class);
+});
+
+it('makes the item findable by the tag it was given', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+
+    new AttachTagToItem(user: $editor, item: $item, name: 'Autographed')->execute();
+
+    $this->assertDatabaseHas('search_tokens', [
+        'searchable_type' => 'item',
+        'searchable_id' => $item->id,
+        'token' => BlindIndex::hash('autographed'),
+    ]);
 });

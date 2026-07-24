@@ -42,6 +42,14 @@ php artisan photos:rebuild-search-index
 
 Reconstrói o índice de busca por trás da biblioteca de fotos e preenche retroativamente as dimensões de imagem que estejam faltando. Execute uma vez depois de atualizar para uma versão que introduz a tela de fotos. É seguro executar novamente a qualquer momento; ele pula fotos cujos arquivos estão faltando e não altera mais nada. Veja @doc(selfHosting.upgrade).
 
+### Reconstruir o índice de busca da conta
+
+```
+php artisan search:rebuild-index
+```
+
+Reconstrói o índice por trás da busca de toda a conta: itens, coleções, exemplares, fotos, empréstimos, locais, conjuntos, séries, categorias, etiquetas e documentos. Execute uma vez depois de atualizar para uma versão que introduz a busca: a migração cria a tabela, mas só este comando a preenche. Passe `--type=item` para reconstruir apenas um tipo de registro. É seguro executar novamente a qualquer momento, e também é o conserto se o índice sair de sincronia. Veja @doc(search.overview).
+
 ### Preparar uma localidade para tradução
 
 ```

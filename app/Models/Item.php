@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Traits\HasAuthor;
 use App\Traits\HasDeleter;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\ItemFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,8 +41,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property int|null $copies_count
  */
-class Item extends Model
+class Item extends Model implements Searchable
 {
     use HasAuthor;
     use HasDeleter;
@@ -47,6 +51,7 @@ class Item extends Model
     /** @use HasFactory<ItemFactory> */
     use HasFactory;
 
+    use HasSearchIndex;
     use SoftDeletes;
 
     protected $table = 'items';
@@ -189,5 +194,76 @@ class Item extends Model
     public function logs(): HasMany
     {
         return $this->hasMany(ItemLog::class);
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->catalog?->account_id;
+    }
+
+    /**
+     * An item is the thing people actually look for, so it carries the widest
+     * net: everything filed around it is indexed into it, which is how searching
+     * a tag or a category name surfaces the items rather than only the label.
+     *
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_TITLE => [$this->name],
+            IndexSearchable::WEIGHT_RELATED => [
+                (string) $this->catalog?->name,
+                (string) $this->category?->name,
+                (string) $this->set?->name,
+                (string) $this->series?->name,
+                (string) $this->catalogType?->name,
+                ...$this->tags->pluck('name')->all(),
+            ],
+            IndexSearchable::WEIGHT_TEXT => [
+                (string) $this->description,
+                ...$this->customFieldValues->pluck('value')->all(),
+            ],
+        ];
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->name;
+    }
+
+    public function searchableContext(): string
+    {
+        $copies = $this->copies_count ?? $this->copies()->count();
+
+        return trans_choice(':count copy|:count copies', $copies, ['count' => $copies]);
+    }
+
+    public function searchableUrl(): string
+    {
+        return route('items.show', [$this->catalog_id, $this->id]);
+    }
+
+    public function searchableThumbnailUrl(): ?string
+    {
+        return $this->mainPhoto?->url();
+    }
+
+    public function searchableCollectionName(): ?string
+    {
+        return $this->catalog?->name;
+    }
+
+    /**
+     * @return iterable<int, Model>
+     */
+    public function searchableDependents(): iterable
+    {
+        $copies = $this->copies()->with(['loans', 'documents'])->get();
+
+        return $copies
+            ->concat($this->photos()->get())
+            ->concat($copies->flatMap->loans)
+            ->concat($copies->flatMap->documents);
     }
 }

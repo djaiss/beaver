@@ -23,7 +23,9 @@
   }"
   x-show="visible"
   data-set-card
-  class="rounded-xl border border-hairline bg-canvas px-5 py-4"
+  {{-- Sets have no screen of their own, so account search links here and scrolls to the card. --}}
+  id="set-{{ $set->id }}"
+  class="scroll-mt-24 rounded-xl border border-hairline bg-canvas px-5 py-4"
   data-test="set-card-{{ $set->id }}"
 >
   <div class="flex items-start gap-3">

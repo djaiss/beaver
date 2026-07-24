@@ -44,6 +44,7 @@ use App\Http\Controllers\Api\Catalog\SetController;
 use App\Http\Controllers\Api\Catalog\StatisticsController;
 use App\Http\Controllers\Api\Catalog\TagController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function (): void {
@@ -250,6 +251,9 @@ Route::name('api.')->group(function (): void {
         Route::get('trash', [TrashController::class, 'index'])->name('trash');
         Route::put('trash', [TrashController::class, 'update'])->name('trash.update');
         Route::delete('trash', [TrashController::class, 'destroy'])->name('trash.destroy');
+
+        // account wide search, across everything the caller's account holds
+        Route::get('search', [SearchController::class, 'index'])->name('search');
 
         // the account itself
         Route::get('account', [AccountController::class, 'show'])->name('account');

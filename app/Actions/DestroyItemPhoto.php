@@ -57,7 +57,7 @@ class DestroyItemPhoto
             // enforces one when the connection asks it to, and SQLite is a
             // supported way to run this app. Clearing the hashes here means the
             // index cannot outlive the photo whatever the database is.
-            $this->itemPhoto->searchTokens()->delete();
+            $this->itemPhoto->photoSearchTokens()->delete();
 
             $this->itemPhoto->delete();
 

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Enums\DatePrecision;
 use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Enums\TimelineSource;
 use App\Traits\HasAuthor;
 use App\Traits\HasDocuments;
+use App\Traits\HasSearchIndex;
 use App\ValueObjects\TimelineEntry;
 use Carbon\Carbon;
 use Database\Factories\LoanFactory;
@@ -59,13 +62,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class Loan extends Model
+class Loan extends Model implements Searchable
 {
     use HasAuthor;
     use HasDocuments;
 
     /** @use HasFactory<LoanFactory> */
     use HasFactory;
+
+    use HasSearchIndex;
 
     /**
      * The attributes that are mass assignable.
@@ -281,5 +286,63 @@ class Loan extends Model
         );
 
         return $entries;
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->copy?->item?->catalog?->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_TITLE => [$this->party],
+            IndexSearchable::WEIGHT_RELATED => [
+                (string) $this->copy?->item?->name,
+                (string) $this->copy?->identifier,
+            ],
+            IndexSearchable::WEIGHT_TEXT => [(string) $this->purpose],
+        ];
+    }
+
+    public function searchableTitleColumn(): string
+    {
+        return 'party';
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->party;
+    }
+
+    public function searchableContext(): string
+    {
+        return collect([
+            $this->direction->label(),
+            $this->copy?->item?->name,
+            $this->status->label(),
+        ])->filter()->implode(' · ');
+    }
+
+    public function searchableUrl(): string
+    {
+        return route('loans.show', [
+            'direction' => $this->direction->slug(),
+            'tab' => 'all',
+            'loan' => $this->id,
+        ]);
+    }
+
+    public function searchableThumbnailUrl(): ?string
+    {
+        return $this->copy?->item?->mainPhoto?->url();
+    }
+
+    public function searchableCollectionName(): ?string
+    {
+        return $this->copy?->item?->catalog?->name;
     }
 }

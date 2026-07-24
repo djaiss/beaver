@@ -25,6 +25,7 @@ Do not excessively use emojis.
 
 - `app/Actions`: one class per user action, holding the business logic. Controllers stay thin and delegate here. Most of the app lives in this folder.
 - `app/Models`: Eloquent models.
+- `app/Contracts`: the interfaces a model or a service implements to join a shared mechanism, such as `Searchable`.
 - `app/Traits`: shared traits used across the app, such as `HasAuthor` (mixed into models), `GuardsOverlappingLoans` (mixed into actions) or `SuggestsTags` (mixed into controllers).
 - `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs).
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
@@ -158,6 +159,40 @@ under `docs/portal`, written with the `writer` skill, in the same PR that adds t
 feature. A capability a user can reach but cannot read about is not finished. The
 inline help `doc:` links resolve to these portal pages, so the portal stays the
 single source of truth the popups defer to.
+
+## Searching an account
+
+Names, descriptions, identifiers and notes are encrypted at rest, so `LIKE`
+cannot see them. `App\Services\BlindIndex` hashes each word, and every prefix of
+it, with a key derived from `app.key`, and `search_tokens` stores those hashes
+next to the record they came from with a weight saying how strong a match on
+them counts as (100 for a name, 80 for an identifier, 60 for something filed
+around the record, 30 for free text).
+
+A model joins the index by implementing `App\Contracts\Searchable` and using
+`App\Traits\HasSearchIndex`. The trait reindexes on save, clears on delete (a
+soft delete included, which is what keeps the trash out of search) and reindexes
+on restore. The eleven kinds of record in the index, and everything the search
+screen needs to label and rank them, live in `App\Enums\SearchableEnum`, whose
+case values are the polymorphic aliases pinned in `AppServiceProvider`.
+
+Two things do not follow from a record saving itself, and both are handled
+explicitly rather than left to drift:
+
+A rename makes the records that quote it stale, because an item is indexed under
+the name of its collection, its tags and its category. `searchableDependents()`
+names them and `ReindexSearchDependents` rebuilds them on the queue, so search
+can lag a rename by as long as the queue takes.
+
+Tags and custom field values are written after the item row, so the index built
+when it saved does not have them. `CreateItem`, `UpdateItem`, `AttachTagToItem`
+and `DetachTagFromItem` reindex the item themselves at the end.
+
+Reading is `App\Services\AccountSearch`, which starts from the tokens table
+filtered on the account, demands one matched token per word typed, and only then
+hydrates through Eloquent. `php artisan search:rebuild-index` fills the index
+from scratch: a migration can create the table but not the hashes, so an
+upgraded instance needs it once.
 
 ## The instance administration
 

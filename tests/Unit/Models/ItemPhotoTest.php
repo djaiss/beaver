@@ -70,7 +70,7 @@ it('has search tokens', function () {
     $photo = ItemPhoto::factory()->create();
     ItemPhotoSearchToken::create(['item_photo_id' => $photo->id, 'token' => str_repeat('a', 64)]);
 
-    expect($photo->searchTokens()->exists())->toBeTrue();
+    expect($photo->photoSearchTokens()->exists())->toBeTrue();
 });
 
 it('reads the dimensions as a pair', function () {

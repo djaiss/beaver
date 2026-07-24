@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Traits\HasAuthor;
 use App\Traits\HasDeleter;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\SetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,8 +38,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property int|null $items_count
  */
-class Set extends Model
+class Set extends Model implements Searchable
 {
     use HasAuthor;
     use HasDeleter;
@@ -44,6 +48,7 @@ class Set extends Model
     /** @use HasFactory<SetFactory> */
     use HasFactory;
 
+    use HasSearchIndex;
     use SoftDeletes;
 
     protected $table = 'sets';
@@ -92,5 +97,60 @@ class Set extends Model
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->catalog?->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_TITLE => [$this->name],
+            IndexSearchable::WEIGHT_RELATED => [(string) $this->catalog?->name],
+            IndexSearchable::WEIGHT_TEXT => [(string) $this->description],
+        ];
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->name;
+    }
+
+    public function searchableContext(): string
+    {
+        $owned = $this->items_count ?? $this->items()->count();
+
+        if ($this->target_count === null || $this->target_count === 0) {
+            return trans_choice(':count item|:count items', $owned, ['count' => $owned]);
+        }
+
+        return __(':owned of :target items', ['owned' => $owned, 'target' => $this->target_count]);
+    }
+
+    /**
+     * Sets have no screen of their own, so a result opens the list of the
+     * collection and jumps to the card.
+     */
+    public function searchableUrl(): string
+    {
+        return route('sets.index', $this->catalog_id).'#set-'.$this->id;
+    }
+
+    public function searchableCollectionName(): ?string
+    {
+        return $this->catalog?->name;
+    }
+
+    /**
+     * @return iterable<int, Model>
+     */
+    public function searchableDependents(): iterable
+    {
+        return $this->items()->get();
     }
 }

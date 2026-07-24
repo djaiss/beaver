@@ -28,7 +28,7 @@ class IndexItemPhotoSearchTokens
         $rows = $this->rows();
 
         DB::transaction(function () use ($rows): void {
-            $this->itemPhoto->searchTokens()->delete();
+            $this->itemPhoto->photoSearchTokens()->delete();
 
             if ($rows === []) {
                 return;

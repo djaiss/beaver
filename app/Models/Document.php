@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Enums\DocumentType;
 use App\Traits\HasAuthor;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -48,12 +51,14 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  */
-class Document extends Model
+class Document extends Model implements Searchable
 {
     use HasAuthor;
 
     /** @use HasFactory<DocumentFactory> */
     use HasFactory;
+
+    use HasSearchIndex;
 
     /**
      * The attributes that are mass assignable.
@@ -214,5 +219,77 @@ class Document extends Model
         }
 
         return round($size, $unit === 0 ? 0 : 1).' '.$units[$unit];
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        $copy = $this->searchableCopy();
+
+        return [
+            IndexSearchable::WEIGHT_TITLE => [$this->name],
+            IndexSearchable::WEIGHT_IDENTIFIER => [(string) $this->reference_number],
+            IndexSearchable::WEIGHT_RELATED => [
+                (string) $copy?->item?->name,
+                (string) $copy?->identifier,
+            ],
+            IndexSearchable::WEIGHT_TEXT => [(string) $this->description],
+        ];
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->name;
+    }
+
+    public function searchableContext(): string
+    {
+        return collect([
+            $this->type->label(),
+            $this->searchableCopy()?->item?->name,
+        ])->filter()->implode(' · ');
+    }
+
+    /**
+     * The documents route streams the file itself, so a result opens the
+     * documents section of the copy the document hangs from instead.
+     */
+    public function searchableUrl(): string
+    {
+        $copy = $this->searchableCopy();
+
+        if ($copy === null) {
+            return route('dashboard.index');
+        }
+
+        return route('items.history.show', [$copy->item?->catalog_id, $copy->item_id, $copy->id, 'documents']);
+    }
+
+    public function searchableCollectionName(): ?string
+    {
+        return $this->searchableCopy()?->item?->catalog?->name;
+    }
+
+    /**
+     * The copy the document hangs from. Item::item() would do, but it assumes
+     * every link in the chain is still there, and the index has to survive a
+     * documentable that has gone.
+     */
+    private function searchableCopy(): ?Copy
+    {
+        $documentable = $this->documentable;
+
+        if ($documentable instanceof Copy) {
+            return $documentable;
+        }
+
+        return $documentable?->getRelationValue('copy');
     }
 }
