@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Enums\CopyStatus;
 use App\Enums\InsuranceStatus;
 use App\Enums\LoanDirection;
@@ -12,6 +14,7 @@ use App\Enums\TransactionType;
 use App\Traits\HasAuthor;
 use App\Traits\HasDeleter;
 use App\Traits\HasDocuments;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\CopyFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -53,7 +56,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  */
-class Copy extends Model
+class Copy extends Model implements Searchable
 {
     use HasAuthor;
     use HasDeleter;
@@ -62,6 +65,7 @@ class Copy extends Model
     /** @use HasFactory<CopyFactory> */
     use HasFactory;
 
+    use HasSearchIndex;
     use SoftDeletes;
 
     protected $table = 'copies';
@@ -338,5 +342,72 @@ class Copy extends Model
                 ->where('direction', LoanDirection::Outgoing->value)
                 ->whereIn('status', [LoanStatus::Active->value, LoanStatus::Overdue->value]),
         );
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->item?->catalog?->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_IDENTIFIER => [(string) $this->identifier],
+            IndexSearchable::WEIGHT_RELATED => [
+                (string) $this->item?->name,
+                (string) $this->currentLocation?->name,
+                (string) $this->itemCondition?->name,
+            ],
+            IndexSearchable::WEIGHT_TEXT => [(string) $this->note],
+        ];
+    }
+
+    public function searchableTitleColumn(): string
+    {
+        return 'identifier';
+    }
+
+    /**
+     * An identifier is optional, and most copies never get one, so a result
+     * falls back to the name of the item rather than reading "(untitled)".
+     */
+    public function searchableTitle(): string
+    {
+        return $this->identifier ?? $this->item->name;
+    }
+
+    public function searchableContext(): string
+    {
+        return collect([
+            $this->identifier === null ? null : $this->item?->name,
+            $this->itemCondition?->name,
+            $this->currentLocation?->name,
+        ])->filter()->implode(' · ');
+    }
+
+    public function searchableUrl(): string
+    {
+        return route('items.history.show', [$this->item?->catalog_id, $this->item_id, $this->id]);
+    }
+
+    public function searchableThumbnailUrl(): ?string
+    {
+        return $this->item?->mainPhoto?->url();
+    }
+
+    public function searchableCollectionName(): ?string
+    {
+        return $this->item?->catalog?->name;
+    }
+
+    /**
+     * @return iterable<int, Model&Searchable>
+     */
+    public function searchableDependents(): iterable
+    {
+        return $this->loans()->get()->concat($this->documents()->get());
     }
 }

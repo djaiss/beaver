@@ -42,6 +42,14 @@ php artisan photos:rebuild-search-index
 
 Reconstruit l'index de recherche derrière la bibliothèque de photos et comble les dimensions d'image manquantes. Exécutez-la une fois après une mise à jour vers une version qui introduit l'écran des photos. Elle peut être exécutée à nouveau à tout moment sans risque ; elle ignore les photos dont les fichiers sont manquants et ne change rien d'autre. Voyez @doc(selfHosting.upgrade).
 
+### Reconstruire l'index de recherche du compte
+
+```
+php artisan search:rebuild-index
+```
+
+Reconstruit l'index derrière la recherche à l'échelle du compte : objets, collections, exemplaires, photos, prêts, lieux, séries à compléter, sagas, catégories, étiquettes et documents. Exécutez-la une fois après une mise à jour vers une version qui introduit la recherche : la migration crée la table, mais seule cette commande la remplit. Passez `--type=item` pour ne reconstruire qu'un seul type de fiche. Elle peut être exécutée à nouveau à tout moment sans risque, et c'est aussi le remède si l'index dérive. Voyez @doc(search.overview).
+
 ### Amorcer une locale pour la traduction
 
 ```

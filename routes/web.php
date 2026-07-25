@@ -43,6 +43,7 @@ use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\LocationHistoryController;
 use App\Http\Controllers\App\MaintenanceRecordController;
 use App\Http\Controllers\App\ProvenanceEventController;
+use App\Http\Controllers\App\SearchController;
 use App\Http\Controllers\App\SeriesController;
 use App\Http\Controllers\App\SetController;
 use App\Http\Controllers\App\Settings\ApiKeyController;
@@ -145,7 +146,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
     Route::get('loans/{direction}/export', [LoanExportController::class, 'show'])->where('direction', 'lent-out|borrowed-in')->name('loans.export.show');
     Route::get('loans/{direction}/{tab?}/{loan?}', [LoansController::class, 'show'])->where(['direction' => 'lent-out|borrowed-in', 'tab' => 'all|due|risk|by-party|deposits|timeline', 'loan' => '[1-9][0-9]*'])->name('loans.show');
 
-    Route::get('search', fn () => view('app._placeholder', ['title' => __('Search'), 'body' => __('Search across everything in your account. This is coming soon.')]))->name('search.index');
+    // account wide search. The words typed are a free-form refinement, so they
+    // live in the query string; narrowing the results to one kind of record is a
+    // click, so it is a segment of the path and has its own url.
+    Route::get('search/{type?}', [SearchController::class, 'index'])
+        ->where('type', 'items|collections|copies|photos|loans|locations|sets|series|categories|tags|documents')
+        ->name('search.index');
 
     // collections — owners and editors may create new collections
     Route::middleware(['editor'])->group(function (): void {

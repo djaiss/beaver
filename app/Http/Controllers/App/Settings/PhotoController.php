@@ -118,7 +118,7 @@ class PhotoController extends Controller
         }
 
         foreach ($hashes as $hash) {
-            $query->whereHas('searchTokens', fn (Builder $tokens): Builder => $tokens->where('token', $hash));
+            $query->whereHas('photoSearchTokens', fn (Builder $tokens): Builder => $tokens->where('token', $hash));
         }
     }
 

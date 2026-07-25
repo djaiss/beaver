@@ -1,6 +1,7 @@
 {{-- `color` paints the square swatch of a collection nav entry, `dot` the round one of a
-     category, and `count` the number sitting at the far right of a category. --}}
-@props(['href', 'active' => false, 'icon' => null, 'color' => null, 'dot' => null, 'count' => null])
+     category, `count` the number sitting at the far right of a category, and `shortcut`
+     the keyboard hint sitting in that same place. --}}
+@props(['href', 'active' => false, 'icon' => null, 'color' => null, 'dot' => null, 'count' => null, 'shortcut' => false])
 
 <a
     href="{{ $href }}"
@@ -22,5 +23,8 @@
     <span class="flex-1 truncate">{{ $slot }}</span>
     @if ($count !== null)
         <span class="shrink-0 text-xs text-muted-soft">{{ number_format($count) }}</span>
+    @endif
+    @if ($shortcut)
+        <kbd class="shrink-0 rounded border border-hairline px-1.5 py-0.5 font-mono text-[10px] text-muted-soft" x-data x-text="navigator.platform.toLowerCase().includes('mac') ? '⌘K' : 'Ctrl K'">⌘K</kbd>
     @endif
 </a>

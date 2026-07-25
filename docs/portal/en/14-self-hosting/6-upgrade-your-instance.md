@@ -52,6 +52,16 @@ docker compose exec app php artisan photos:rebuild-search-index
 
 The command is idempotent and safe to run on any instance, so when in doubt, run it. It also backfills image dimensions for photos uploaded before dimensions were recorded.
 
+## The account search index step
+
+Search across your account reads an index of its own. The migration creates the table, but only the rebuild command fills it, so on an existing instance search finds nothing until it has run once:
+
+```bash
+docker compose exec app php artisan search:rebuild-index
+```
+
+It walks every record in every account, so give it a moment on a large instance. From then on the index keeps itself up to date as records change. See @doc(search.overview).
+
 :::note
 Do not change `APP_KEY` as part of an upgrade. The key outlives every version. If an upgrade guide ever seems to ask for a new key, you are misreading it. See @doc(selfHosting.applicationKeyAndEncryption).
 :::

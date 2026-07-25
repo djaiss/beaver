@@ -42,6 +42,14 @@ php artisan photos:rebuild-search-index
 
 Rebuilds the search index behind the photo library and backfills missing image dimensions. Run it once after upgrading to a version that introduces the photo screen. It is safe to run again at any time; it skips photos whose files are missing and changes nothing else. See @doc(selfHosting.upgrade).
 
+### Rebuild the account search index
+
+```
+php artisan search:rebuild-index
+```
+
+Rebuilds the index behind account wide search, across items, collections, copies, photos, loans, locations, sets, series, categories, tags and documents. Run it once after upgrading to a version that introduces search: the migration creates the table, but only this fills it. Pass `--type=item` to rebuild one kind of record only. It is safe to run again at any time, and it is also the fix if the index ever drifts. See @doc(search.overview).
+
 ### Scaffold a locale for translation
 
 ```

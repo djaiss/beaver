@@ -150,7 +150,18 @@
         </nav>
     @else
         <nav class="flex flex-col gap-0.5">
-            <x-sidebar-link :href="route('search.index')" :active="request()->routeIs('search.*')" icon="search">{{ __('Search') }}</x-sidebar-link>
+            {{-- The shortcut lives on the link itself, so it works from every screen the
+                 sidebar is on and always opens the same page the link does. --}}
+            <x-sidebar-link
+                :href="route('search.index')"
+                :active="request()->routeIs('search.*')"
+                icon="search"
+                shortcut
+                x-data
+                x-on:keydown.window.prevent.meta.k="$el.click()"
+                x-on:keydown.window.prevent.ctrl.k="$el.click()"
+                data-test="sidebar-search"
+            >{{ __('Search') }}</x-sidebar-link>
             <p class="px-2 pt-4 pb-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
             {{-- Only while the account still wants the screen. Dismissing it takes the link with it. --}}
             @if ($user->account->show_getting_started)

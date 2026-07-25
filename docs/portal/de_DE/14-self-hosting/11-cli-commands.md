@@ -42,6 +42,14 @@ php artisan photos:rebuild-search-index
 
 Baut den Suchindex hinter der Fotobibliothek neu auf und füllt fehlende Bildabmessungen nach. Führe ihn einmal aus, nachdem du auf eine Version aktualisiert hast, die den Fotobildschirm einführt. Er kann jederzeit gefahrlos erneut ausgeführt werden, überspringt Fotos, deren Dateien fehlen, und ändert sonst nichts. Siehe @doc(selfHosting.upgrade).
 
+### Den Kontosuche-Index neu aufbauen
+
+```
+php artisan search:rebuild-index
+```
+
+Baut den Index hinter der kontoweiten Suche neu auf, über Objekte, Sammlungen, Exemplare, Fotos, Leihgaben, Standorte, Sets, Reihen, Kategorien, Schlagwörter und Dokumente hinweg. Führe ihn einmal aus, nachdem du auf eine Version aktualisiert hast, die die Suche einführt: Die Migration legt die Tabelle an, gefüllt wird sie aber nur hiervon. Mit `--type=item` baust du nur eine Art von Datensatz neu auf. Er kann jederzeit gefahrlos erneut ausgeführt werden und ist auch die Abhilfe, falls der Index abdriftet. Siehe @doc(search.overview).
+
 ### Ein Sprachgebiet für die Übersetzung anlegen
 
 ```

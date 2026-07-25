@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Traits\HasAuthor;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\SeriesFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,13 +35,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $updated_by_name
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $items_count
  */
-class Series extends Model
+class Series extends Model implements Searchable
 {
     use HasAuthor;
 
     /** @use HasFactory<SeriesFactory> */
     use HasFactory;
+
+    use HasSearchIndex;
 
     protected $table = 'series';
 
@@ -84,5 +90,46 @@ class Series extends Model
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_TITLE => [$this->name],
+            IndexSearchable::WEIGHT_TEXT => [(string) $this->description],
+        ];
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->name;
+    }
+
+    public function searchableContext(): string
+    {
+        $items = $this->items_count ?? $this->items()->count();
+
+        return trans_choice(':count item|:count items', $items, ['count' => $items]);
+    }
+
+    public function searchableUrl(): string
+    {
+        return route('series.show', $this->id);
+    }
+
+    /**
+     * @return iterable<int, Model&Searchable>
+     */
+    public function searchableDependents(): iterable
+    {
+        return $this->items()->get();
     }
 }

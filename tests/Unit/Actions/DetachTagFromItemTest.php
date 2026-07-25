@@ -8,6 +8,7 @@ use App\Jobs\LogUserAction;
 use App\Models\Catalog;
 use App\Models\Item;
 use App\Models\Tag;
+use App\Services\BlindIndex;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -95,4 +96,24 @@ it('throws when the user does not belong to the account', function () {
     $tag = Tag::factory()->create(['account_id' => $account->id]);
 
     new DetachTagFromItem(user: $stranger, item: $item, tag: $tag)->execute();
+});
+
+it('stops the item being findable by the tag it lost', function () {
+    Queue::fake();
+
+    $account = $this->createAccount();
+    $editor = $this->createUser();
+    $this->assignUserToAccount(user: $editor, account: $account, role: PermissionEnum::Editor->value);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+    $tag = Tag::factory()->create(['account_id' => $account->id, 'name' => 'Autographed']);
+    $item->tags()->sync([$tag->id]);
+
+    new DetachTagFromItem(user: $editor, item: $item, tag: $tag)->execute();
+
+    $this->assertDatabaseMissing('search_tokens', [
+        'searchable_type' => 'item',
+        'searchable_id' => $item->id,
+        'token' => BlindIndex::hash('autographed'),
+    ]);
 });

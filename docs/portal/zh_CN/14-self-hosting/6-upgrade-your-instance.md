@@ -52,6 +52,16 @@ docker compose exec app php artisan photos:rebuild-search-index
 
 这个命令是幂等的，在任何实例上运行都是安全的，如果不确定就直接运行它。它还会为那些在记录图片尺寸功能上线之前上传的照片补全尺寸信息。
 
+## 账户搜索索引这一步
+
+账户范围的搜索读取自己的索引。迁移只创建数据表，填充数据的只有重建命令，因此在已有实例上，搜索在命令运行一次之前什么也找不到：
+
+```bash
+docker compose exec app php artisan search:rebuild-index
+```
+
+它会遍历每个账户里的每条记录，实例较大时请稍等片刻。之后索引会随着记录变化自行保持更新。参见 @doc(search.overview)。
+
 :::note
 升级过程中不要更改 `APP_KEY`。这个密钥的生命周期跨越所有版本。如果某份升级指南看起来要求你更换密钥，那一定是你理解有误。参见 @doc(selfHosting.applicationKeyAndEncryption)。
 :::

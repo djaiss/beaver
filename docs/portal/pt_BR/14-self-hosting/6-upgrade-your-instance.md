@@ -52,6 +52,16 @@ docker compose exec app php artisan photos:rebuild-search-index
 
 O comando é idempotente e seguro para rodar em qualquer instância, então, na dúvida, execute-o. Ele também preenche retroativamente as dimensões de imagem para fotos enviadas antes de as dimensões passarem a ser registradas.
 
+## A etapa do índice de busca da conta
+
+A busca em toda a conta lê um índice próprio. A migração cria a tabela, mas só o comando de reconstrução a preenche, então numa instância existente a busca não encontra nada até que ele tenha rodado uma vez:
+
+```bash
+docker compose exec app php artisan search:rebuild-index
+```
+
+Ele percorre cada registro de cada conta, então dê um instante numa instância grande. Dali em diante o índice se mantém em dia sozinho conforme os registros mudam. Veja @doc(search.overview).
+
 :::note
 Não altere `APP_KEY` como parte de uma atualização. A chave sobrevive a todas as versões. Se um guia de atualização em algum momento parecer pedir uma nova chave, você está interpretando errado. Veja @doc(selfHosting.applicationKeyAndEncryption).
 :::

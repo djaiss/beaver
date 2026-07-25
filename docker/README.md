@@ -93,6 +93,19 @@ It reads every photo off the disk, so give it a moment on a large library. It is
 safe to run again at any time, and photos uploaded from then on are indexed as
 they arrive.
 
+Account wide search reads an index of its own, covering items, collections,
+copies, photos, loans, locations, sets, series, categories, tags and documents.
+The migration creates its table, but only this command fills it, so search finds
+nothing on an existing instance until it has run once:
+
+```bash
+docker compose exec app php artisan search:rebuild-index
+```
+
+It walks every record in every account, so give it a moment on a large instance.
+From then on the index keeps itself up to date as records change. Add
+`--type=item` to rebuild one kind of record only.
+
 ## Administering the instance
 
 The instance administration lives at `/instance-admin` and lists every account

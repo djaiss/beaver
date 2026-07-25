@@ -52,6 +52,16 @@ docker compose exec app php artisan photos:rebuild-search-index
 
 Der Befehl ist idempotent und kann gefahrlos auf jeder Instanz ausgeführt werden. Im Zweifel also einfach ausführen. Er füllt außerdem nachträglich die Bildabmessungen für Fotos auf, die hochgeladen wurden, bevor Abmessungen erfasst wurden.
 
+## Der Schritt für den Kontosuche-Index
+
+Die kontoweite Suche liest einen eigenen Index. Die Migration legt die Tabelle an, gefüllt wird sie aber nur vom Neuaufbau-Befehl, auf einer bestehenden Instanz findet die Suche also nichts, bis er einmal gelaufen ist:
+
+```bash
+docker compose exec app php artisan search:rebuild-index
+```
+
+Er geht jeden Datensatz in jedem Konto durch, gib ihm auf einer großen Instanz also einen Moment. Danach hält sich der Index bei Änderungen von selbst aktuell. Siehe @doc(search.overview).
+
 :::note
 Ändere `APP_KEY` nicht im Rahmen eines Updates. Der Schlüssel überdauert jede Version. Falls eine Update-Anleitung jemals so klingt, als würde sie einen neuen Schlüssel verlangen, hast du sie missverstanden. Siehe @doc(selfHosting.applicationKeyAndEncryption).
 :::

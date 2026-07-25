@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Enums\ItemViewEnum;
 use App\Enums\VisibilityEnum;
 use App\Traits\HasAuthor;
 use App\Traits\HasDeleter;
+use App\Traits\HasSearchIndex;
 use Carbon\Carbon;
 use Database\Factories\CatalogFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,8 +42,9 @@ use Illuminate\Support\Str;
  * @property Carbon $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
+ * @property int|null $items_count
  */
-class Catalog extends Model
+class Catalog extends Model implements Searchable
 {
     use HasAuthor;
     use HasDeleter;
@@ -48,6 +52,7 @@ class Catalog extends Model
     /** @use HasFactory<CatalogFactory> */
     use HasFactory;
 
+    use HasSearchIndex;
     use SoftDeletes;
 
     protected $table = 'catalogs';
@@ -157,5 +162,48 @@ class Catalog extends Model
         return $this->catalogViews()
             ->where('user_id', $user->id)
             ->value('items_view') ?? ItemViewEnum::Grid;
+    }
+
+    public function searchableAccountId(): ?int
+    {
+        return $this->account_id;
+    }
+
+    /**
+     * @return array<int, list<string>>
+     */
+    public function searchableText(): array
+    {
+        return [
+            IndexSearchable::WEIGHT_TITLE => [$this->name],
+            IndexSearchable::WEIGHT_TEXT => [(string) $this->description],
+        ];
+    }
+
+    public function searchableTitle(): string
+    {
+        return $this->name;
+    }
+
+    public function searchableContext(): string
+    {
+        $items = $this->items_count ?? $this->items()->count();
+
+        return trans_choice(':count item|:count items', $items, ['count' => $items]);
+    }
+
+    public function searchableUrl(): string
+    {
+        return route('collections.show', $this->id);
+    }
+
+    /**
+     * @return iterable<int, Model&Searchable>
+     */
+    public function searchableDependents(): iterable
+    {
+        return $this->items()->get()
+            ->concat($this->sets()->get())
+            ->concat($this->categories()->get());
     }
 }

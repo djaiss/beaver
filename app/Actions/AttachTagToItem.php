@@ -38,6 +38,7 @@ class AttachTagToItem
         $this->sanitize();
         $this->resolve();
         $this->attach();
+        $this->reindexSearch();
         $this->log();
 
         return $this->tag;
@@ -94,6 +95,21 @@ class AttachTagToItem
         $changes = $this->item->tags()->syncWithoutDetaching([$this->tag->id]);
 
         $this->attached = $changes['attached'] !== [];
+    }
+
+    /**
+     * Tagging touches the pivot rather than the item, so nothing has told the
+     * search index that the item is now findable under the tag.
+     */
+    private function reindexSearch(): void
+    {
+        if (! $this->attached) {
+            return;
+        }
+
+        $this->item->load(['catalog', 'category', 'set', 'series', 'catalogType', 'tags', 'customFieldValues']);
+
+        new IndexSearchable(searchable: $this->item)->execute();
     }
 
     /**

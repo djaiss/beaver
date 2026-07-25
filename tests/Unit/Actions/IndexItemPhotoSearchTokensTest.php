@@ -58,11 +58,11 @@ it('replaces the previous hashes rather than adding to them', function () {
     $photo = photoNamed('gunther.png', 'Barista');
 
     new IndexItemPhotoSearchTokens(itemPhoto: $photo)->execute();
-    $firstCount = $photo->searchTokens()->count();
+    $firstCount = $photo->photoSearchTokens()->count();
 
     new IndexItemPhotoSearchTokens(itemPhoto: $photo)->execute();
 
-    expect($photo->searchTokens()->count())->toBe($firstCount);
+    expect($photo->photoSearchTokens()->count())->toBe($firstCount);
 });
 
 it('drops the hashes of a name that is no longer used', function () {
