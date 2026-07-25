@@ -75,7 +75,7 @@ interface Searchable
      * The records whose indexed text quotes this one, and so go stale when it
      * is renamed.
      *
-     * @return iterable<int, Model>
+     * @return iterable<int, Model&Searchable>
      */
     public function searchableDependents(): iterable;
 }

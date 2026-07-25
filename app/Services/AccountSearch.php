@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 /**
  * Answers "where is this in my account?" against the search index.
@@ -215,7 +216,7 @@ class AccountSearch
      * in the name comes out at 100 and one that only matched a description at 30.
      *
      * @param  list<string>  $hashes
-     * @return Collection<int, object>
+     * @return Collection<int, stdClass>
      */
     private function candidates(array $hashes): Collection
     {
@@ -239,7 +240,7 @@ class AccountSearch
      * so anything the index has not caught up with yet simply falls out here
      * rather than being offered as a result that 404s.
      *
-     * @param  Collection<int, object>  $candidates
+     * @param  Collection<int, stdClass>  $candidates
      * @return Collection<int, SearchResult>
      */
     private function rank(Collection $candidates): Collection
@@ -274,16 +275,23 @@ class AccountSearch
     }
 
     /**
+     * The records of one kind, with everything their rows read already loaded.
+     *
+     * A record whose account no longer resolves is dropped: its parent has been
+     * trashed since it was indexed, so it has nothing left to say and no screen
+     * left to open.
+     *
      * @param  list<int>  $ids
-     * @return Collection<int, Model&Searchable>
+     * @return iterable<int, Model&Searchable>
      */
-    private function records(SearchableEnum $type, array $ids): Collection
+    private function records(SearchableEnum $type, array $ids): iterable
     {
         return $type->modelClass()::query()
             ->whereKey($ids)
             ->with($type->relations())
             ->withCount($type->relationCounts())
-            ->get();
+            ->get()
+            ->filter(fn (Searchable $record): bool => $record->searchableAccountId() !== null);
     }
 
     private function result(SearchableEnum $type, Model&Searchable $record, int $score): SearchResult

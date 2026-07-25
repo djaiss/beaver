@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Traits;
 
 use App\Actions\IndexSearchable;
+use App\Contracts\Searchable;
 use App\Jobs\ReindexSearchDependents;
 use App\Models\SearchToken;
 use Illuminate\Database\Eloquent\Model;
@@ -79,7 +80,7 @@ trait HasSearchIndex
     }
 
     /**
-     * @return iterable<int, Model>
+     * @return iterable<int, Model&Searchable>
      */
     public function searchableDependents(): iterable
     {

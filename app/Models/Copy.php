@@ -376,7 +376,7 @@ class Copy extends Model implements Searchable
      */
     public function searchableTitle(): string
     {
-        return $this->identifier ?? $this->item?->name ?? __('(untitled)');
+        return $this->identifier ?? $this->item->name;
     }
 
     public function searchableContext(): string
@@ -404,7 +404,7 @@ class Copy extends Model implements Searchable
     }
 
     /**
-     * @return iterable<int, Model>
+     * @return iterable<int, Model&Searchable>
      */
     public function searchableDependents(): iterable
     {

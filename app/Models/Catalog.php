@@ -198,7 +198,7 @@ class Catalog extends Model implements Searchable
     }
 
     /**
-     * @return iterable<int, Model>
+     * @return iterable<int, Model&Searchable>
      */
     public function searchableDependents(): iterable
     {

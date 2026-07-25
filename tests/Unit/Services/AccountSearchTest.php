@@ -131,6 +131,21 @@ it('leaves a soft deleted record out', function () {
     expect($search->total())->toBe(0);
 });
 
+it('leaves out a record whose parent has been trashed since it was indexed', function () {
+    $user = $this->createUser();
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Comics']);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id, 'name' => 'Smelly Cat']);
+    Copy::factory()->create(['item_id' => $item->id, 'identifier' => 'SMELLY-1']);
+
+    // Trashing the item does not touch the tokens of its copies, so the copy is
+    // still in the index with nothing left to reach its account through.
+    $item->delete();
+
+    $search = new AccountSearch(account: $user->account, user: $user, query: 'smelly');
+
+    expect(titlesOf($search))->toBe([]);
+});
+
 it('ranks a name match above a match on something filed around the record', function () {
     $user = $this->createUser();
     $catalog = Catalog::factory()->create(['account_id' => $user->account_id, 'name' => 'Spider']);
