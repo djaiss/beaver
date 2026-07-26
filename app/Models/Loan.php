@@ -73,6 +73,11 @@ class Loan extends Model implements Searchable
     use HasSearchIndex;
 
     /**
+     * How many days ahead still counts as "due soon".
+     */
+    private const int DUE_SOON_DAYS = 30;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -200,6 +205,22 @@ class Loan extends Model implements Searchable
         return $this->status->hasLeftCustody()
             && $this->due_at !== null
             && $this->due_at->isBefore(Carbon::today());
+    }
+
+    /**
+     * Whether the loan is out and falls due within the next month. This is the one
+     * place the "due soon" window is decided, so the loans section and the
+     * dashboard cannot drift apart on what counts as soon.
+     */
+    public function isDueSoon(): bool
+    {
+        if (! $this->status->hasLeftCustody() || $this->due_at === null) {
+            return false;
+        }
+
+        $today = Carbon::today();
+
+        return $this->due_at->betweenIncluded($today, $today->copy()->addDays(self::DUE_SOON_DAYS));
     }
 
     /**

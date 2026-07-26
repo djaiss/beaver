@@ -40,6 +40,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $locale
  * @property bool $time_format_24h
  * @property PhotoViewEnum $photos_view
+ * @property array<int, string>|null $hidden_dashboard_sections
  * @property string|null $avatar_path
  * @property bool $auto_delete_user
  * @property Carbon $created_at
@@ -78,6 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'locale',
         'time_format_24h',
         'photos_view',
+        'hidden_dashboard_sections',
         'avatar_path',
         'auto_delete_user',
     ];
@@ -110,6 +112,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'last_activity_at' => 'datetime',
             'time_format_24h' => 'boolean',
             'photos_view' => PhotoViewEnum::class,
+            'hidden_dashboard_sections' => 'array',
             'two_factor_secret' => 'encrypted',
             'two_factor_confirmed_at' => 'datetime',
             'two_factor_recovery_codes' => 'encrypted:array',

@@ -17,6 +17,7 @@ use App\Http\Controllers\App\CustomFieldGroupFieldController;
 use App\Http\Controllers\App\CustomFieldGroupOrderController;
 use App\Http\Controllers\App\CustomFieldOrderController;
 use App\Http\Controllers\App\DashboardController;
+use App\Http\Controllers\App\DashboardSectionController;
 use App\Http\Controllers\App\DocumentController;
 use App\Http\Controllers\App\DocumentDownloadController;
 use App\Http\Controllers\App\GettingStartedController;
@@ -82,6 +83,8 @@ Route::put('/locale', [LocaleController::class, 'update'])->name('locale.update'
 Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(function (): void {
     // dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    // which blocks of the dashboard a member keeps on screen is a private preference, so any role may set it
+    Route::put('dashboard/sections', [DashboardSectionController::class, 'update'])->name('dashboard.sections.update');
 
     // getting started — the screen a new account lands on until it has something in it.
     // Reading it is open to any role; dismissing it changes the whole account, so it is not.
