@@ -5,7 +5,7 @@
     'description' => __('past due date · from the overdue check'),
     'dot' => 'bg-error',
     'loans' => $tabData['overdue'],
-    'emptyMessage' => __('Nothing here — nice.'),
+    'emptyMessage' => __('Nothing here. Nice.'),
   ])
 
   @include('app.loans.partials._group', [
@@ -13,7 +13,7 @@
     'description' => __('within 30 days'),
     'dot' => 'bg-badge-orange',
     'loans' => $tabData['dueSoon'],
-    'emptyMessage' => __('Nothing here — nice.'),
+    'emptyMessage' => __('Nothing here. Nice.'),
   ])
 
   @include('app.loans.partials._group', [
@@ -21,6 +21,6 @@
     'description' => __('active, no due date set'),
     'dot' => 'bg-muted',
     'loans' => $tabData['openEnded'],
-    'emptyMessage' => __('Nothing here — nice.'),
+    'emptyMessage' => __('Nothing here. Nice.'),
   ])
 </div>

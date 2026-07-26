@@ -30,6 +30,6 @@
   </div>
 
   @if ($worse)
-    <p class="mt-2 text-[12px] text-error">{{ __('Returned worse than it left — flagged as possible damage.') }}</p>
+    <p class="mt-2 text-[12px] text-error">{{ __('Returned worse than it left. Flagged as possible damage.') }}</p>
   @endif
 </div>

@@ -57,7 +57,7 @@
           <div id="add-set-fields">
             <div class="mb-5 flex flex-wrap gap-3.5">
               <div class="min-w-[200px] flex-1">
-                <x-input id="name" x-ref="addName" :label="__('Name')" placeholder="{{ __('e.g. Amazing Spider-Man #1-10') }}" :error="$errors->get('name')" required autofocus />
+                <x-input id="name" x-ref="addName" :label="__('Name')" :placeholder="__('e.g. Amazing Spider-Man #1-10')" :error="$errors->get('name')" required autofocus />
               </div>
 
               <div class="w-[120px]">

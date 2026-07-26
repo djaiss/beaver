@@ -29,7 +29,7 @@
         <x-box>
           <x-form method="post" :action="route('login')" class="space-y-4">
             <!-- Email address -->
-            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
+            <x-input type="email" id="email" :value="old('email')" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
 
             <!-- Password -->
             <x-input type="password" id="password" :label="__('Password')" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="current-password" />

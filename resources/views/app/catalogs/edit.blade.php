@@ -42,10 +42,10 @@
           </div>
 
           {{-- Name --}}
-          <x-input id="name" :label="__('Name')" placeholder="{{ __('e.g. Marvel Comics 1990s') }}" :value="old('name', $catalog->name)" :error="$errors->get('name')" required autofocus data-test="collection-name-input" />
+          <x-input id="name" :label="__('Name')" :placeholder="__('e.g. Marvel Comics 1990s')" :value="old('name', $catalog->name)" :error="$errors->get('name')" required autofocus data-test="collection-name-input" />
 
           {{-- Description --}}
-          <x-textarea id="description" :label="__('Description')" placeholder="{{ __('What\'s in this collection?') }}" rows="3" :value="old('description', $catalog->description)" :error="$errors->get('description')" />
+          <x-textarea id="description" :label="__('Description')" :placeholder="__('What\'s in this collection?')" rows="3" :value="old('description', $catalog->description)" :error="$errors->get('description')" />
 
           {{-- Types --}}
           <div>

@@ -243,10 +243,10 @@
     </div>
 
     {{-- Name --}}
-    <x-input id="name" :label="__('Name')" placeholder="{{ __('e.g. Amazing Spider-Man #1') }}" x-model="name" :error="$errors->get('name')" required autofocus data-test="item-name-input" />
+    <x-input id="name" :label="__('Name')" :placeholder="__('e.g. Amazing Spider-Man #1')" x-model="name" :error="$errors->get('name')" required autofocus data-test="item-name-input" />
 
     {{-- Description --}}
-    <x-textarea id="description" :label="__('Description')" placeholder="{{ __('Notes about this item…') }}" rows="3" :value="old('description', $item?->description)" :error="$errors->get('description')" />
+    <x-textarea id="description" :label="__('Description')" :placeholder="__('Notes about this item…')" rows="3" :value="old('description', $item?->description)" :error="$errors->get('description')" />
 
     {{-- Type --}}
     <div>
@@ -453,7 +453,7 @@
         <h2 class="text-lg font-semibold text-ink">{{ __('Copies') }}</h2>
         <x-help id="items.copies" />
       </div>
-      <p class="mt-0.5 text-[13px] text-muted-soft">{{ __('Each copy is a physical instance you own — add one row per copy.') }}</p>
+      <p class="mt-0.5 text-[13px] text-muted-soft">{{ __('Each copy is a physical instance you own. Add one row per copy.') }}</p>
     </div>
 
     <div class="space-y-3">

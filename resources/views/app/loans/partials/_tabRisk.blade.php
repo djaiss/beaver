@@ -2,7 +2,7 @@
 @php
   $cards = [
     ['title' => __('Overdue'), 'description' => __('Past the agreed return date.'), 'dot' => 'bg-error', 'loans' => $tabData['overdue']],
-    ['title' => __('Lost'), 'description' => __('Never came back — needs a decision.'), 'dot' => 'bg-error', 'loans' => $tabData['lost']],
+    ['title' => __('Lost'), 'description' => __('Never came back. Needs a decision.'), 'dot' => 'bg-error', 'loans' => $tabData['lost']],
     ['title' => __('Returned worse'), 'description' => __('Condition-in is below condition-out.'), 'dot' => 'bg-badge-orange', 'loans' => $tabData['returnedWorse']],
     ['title' => __('No due date'), 'description' => __('Open-ended loans drift out of sight.'), 'dot' => 'bg-badge-orange', 'loans' => $tabData['noDueDate']],
     ['title' => __('Missing condition-out'), 'description' => __('No baseline to compare a return against.'), 'dot' => 'bg-muted', 'loans' => $tabData['missingConditionOut']],

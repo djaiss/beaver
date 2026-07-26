@@ -119,7 +119,7 @@
             <span class="truncate">{{ $document->name }}</span>
           </a>
         @empty
-          <p class="rounded-lg border border-dashed border-hairline px-3 py-3 text-[12px] text-muted-soft">{{ __('No documents attached — agreements, receipts, and condition reports live here.') }}</p>
+          <p class="rounded-lg border border-dashed border-hairline px-3 py-3 text-[12px] text-muted-soft">{{ __('No documents attached. Agreements, receipts, and condition reports live here.') }}</p>
         @endforelse
       </div>
 

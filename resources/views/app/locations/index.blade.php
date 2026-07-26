@@ -11,7 +11,7 @@
             <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Locations') }}</h1>
             <x-help id="locations.list" />
           </div>
-          <p class="mt-1 max-w-lg text-[15px] text-muted">{{ __('Where items are physically stored — shelves, boxes, display cases. Locations can be nested.') }}</p>
+          <p class="mt-1 max-w-lg text-[15px] text-muted">{{ __('Where items are physically stored: shelves, boxes, display cases. Locations can be nested.') }}</p>
         </div>
 
         <x-button type="button" x-on:click="showAddForm = true; addParentId = ''; addEmoji = '📦'; $refs.addName.value = ''" data-test="new-location-button">
@@ -34,7 +34,7 @@
           <div id="add-location-fields">
             <div class="mb-4 flex flex-wrap gap-3.5">
               <div class="min-w-[200px] flex-1">
-                <x-input id="name" x-ref="addName" :label="__('Name')" placeholder="{{ __('e.g. Box A1') }}" :error="$errors->get('name')" required autofocus />
+                <x-input id="name" x-ref="addName" :label="__('Name')" :placeholder="__('e.g. Box A1')" :error="$errors->get('name')" required autofocus />
               </div>
 
               <div class="min-w-[200px]">
@@ -83,7 +83,7 @@
             <x-slot:icon>
               <x-lucide-map-pin class="size-6 text-muted" />
             </x-slot>
-            {{ __('No locations yet — add one to start organizing where items are stored.') }}
+            {{ __('No locations yet. Add one to start organizing where items are stored.') }}
           </x-empty-state>
         @endforelse
       </div>

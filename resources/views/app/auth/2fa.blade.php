@@ -25,7 +25,7 @@
           <form method="POST" action="{{ route('2fa.challenge.store') }}">
             @csrf
             <div>
-              <x-input type="text" id="code" value="{{ old('code') }}" :label="__('Enter your 2FA code')" required :error="$errors->get('code')" :passManagerDisabled="false" autocomplete="one-time-code" autofocus />
+              <x-input type="text" id="code" :value="old('code')" :label="__('Enter your 2FA code')" required :error="$errors->get('code')" :passManagerDisabled="false" autocomplete="one-time-code" autofocus />
             </div>
             <div class="mt-6 flex items-center justify-between">
               <x-button>{{ __('Verify') }}</x-button>

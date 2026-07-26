@@ -1,7 +1,7 @@
 <x-guest-layout>
   <div class="flex min-h-screen w-screen items-center justify-center px-5 py-10">
     <div class="w-full max-w-md space-y-8">
-      <x-box title="{{ __('Account invitation') }}">
+      <x-box :title="__('Account invitation')">
         @if (! $invitation->isPending())
           <p class="text-sm text-body">
             {{ __('This invitation is no longer valid.') }}

@@ -34,16 +34,16 @@
             <!-- Name -->
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <div class="w-full">
-                <x-input type="text" id="first_name" value="{{ old('first_name') }}" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" autocomplete="first_name" />
+                <x-input type="text" id="first_name" :value="old('first_name')" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" autocomplete="first_name" />
               </div>
 
               <div class="w-full">
-                <x-input type="text" id="last_name" value="{{ old('last_name') }}" :label="__('Last name')" required placeholder="Doe" :error="$errors->get('last_name')" autocomplete="last_name" />
+                <x-input type="text" id="last_name" :value="old('last_name')" :label="__('Last name')" required placeholder="Doe" :error="$errors->get('last_name')" autocomplete="last_name" />
               </div>
             </div>
 
             <!-- Email address -->
-            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" help="{{ __('We will never, ever send you marketing emails.') }}" />
+            <x-input type="email" id="email" :value="old('email')" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" :help="__('We will never, ever send you marketing emails.')" />
 
             <!-- Password -->
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
