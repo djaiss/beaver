@@ -2288,7 +2288,7 @@
     "Sort: due date": "排序：到期日",
     "Sort: party": "排序：相关方",
     "Sort: recently loaned": "排序：最近借出",
-    "This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.": "该副本已有一笔进行中的外借。Beaver 会阻止第二笔，请先归还当前借出。",
+    "This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.": "该副本已有一笔进行中的外借。:name 会阻止第二笔，请先归还当前借出。",
     "This copy currently reads as Loaned in your collection.": "该副本在你的收藏中当前显示为“已借出”。",
     "This is a loan in: someone else owns the copy, you are holding it for now.": "这是一笔借入：副本归他人所有，目前由你保管。",
     "This is a loan out: you still own the copy, someone else is just holding it.": "这是一笔外借：副本仍归你所有，只是暂由他人保管。",

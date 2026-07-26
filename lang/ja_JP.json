@@ -2288,7 +2288,7 @@
     "Sort: due date": "並び替え：返却期限",
     "Sort: party": "並び替え：相手",
     "Sort: recently loaned": "並び替え：最近の貸出",
-    "This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.": "この個体にはすでに進行中の貸出があります。Beaver は 2 件目をブロックするため、まず現在の貸出を返却してください。",
+    "This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.": "この個体にはすでに進行中の貸出があります。:name は 2 件目をブロックするため、まず現在の貸出を返却してください。",
     "This copy currently reads as Loaned in your collection.": "この個体は現在、コレクション内で「貸出中」と表示されています。",
     "This is a loan in: someone else owns the copy, you are holding it for now.": "これは借入です。個体の所有者は他者で、あなたは一時的に預かっています。",
     "This is a loan out: you still own the copy, someone else is just holding it.": "これは貸出です。個体の所有権はあなたにあり、他者が一時的に預かっているだけです。",

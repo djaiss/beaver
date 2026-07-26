@@ -208,7 +208,7 @@ API. The API is tenant scoped, every endpoint resolves through the caller's
 account, and an instance wide surface has no place in it. Add capabilities here to
 the web app only, and do not add `resources/docs/api` entries for them.
 
-Grant the flag with `php artisan beaver:make-instance-administrator {email}`
+Grant the flag with `php artisan kollek:make-instance-administrator {email}`
 (`--revoke` takes it back). The seeded `admin@admin.com` user has it. Nobody can
 revoke their own flag or delete their own user from the panel, so an instance
 cannot be locked out of it.

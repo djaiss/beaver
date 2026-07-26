@@ -26,8 +26,8 @@ section: jiaocheng
 ## 第一步：克隆项目并创建配置文件
 
 ```bash
-git clone https://github.com/djaiss/beaver.git
-cd beaver
+git clone https://github.com/djaiss/kollek.git kollek
+cd kollek
 cp .env.docker.example .env
 ```
 

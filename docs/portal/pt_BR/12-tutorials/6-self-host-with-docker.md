@@ -26,8 +26,8 @@ Também ajuda dar uma olhada antes na @doc(selfHosting.index, "visão geral da a
 ## Passo 1: Clone o projeto e crie sua configuração
 
 ```bash
-git clone https://github.com/djaiss/beaver.git
-cd beaver
+git clone https://github.com/djaiss/kollek.git kollek
+cd kollek
 cp .env.docker.example .env
 ```
 

@@ -2288,7 +2288,7 @@
     "Sort: due date": "Sort: due date",
     "Sort: party": "Sort: party",
     "Sort: recently loaned": "Sort: recently loaned",
-    "This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.": "This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.",
+    "This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.": "This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.",
     "This copy currently reads as Loaned in your collection.": "This copy currently reads as Loaned in your collection.",
     "This is a loan in: someone else owns the copy, you are holding it for now.": "This is a loan in: someone else owns the copy, you are holding it for now.",
     "This is a loan out: you still own the copy, someone else is just holding it.": "This is a loan out: you still own the copy, someone else is just holding it.",

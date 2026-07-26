@@ -2288,7 +2288,7 @@
     "Sort: due date": "Trier : échéance",
     "Sort: party": "Trier : partie",
     "Sort: recently loaned": "Trier : récemment prêtés",
-    "This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.": "Cet exemplaire a déjà un prêt sortant en cours. Beaver en bloque un second, rendez d'abord le prêt actuel.",
+    "This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.": "Cet exemplaire a déjà un prêt sortant en cours. :name en bloque un second, rendez d'abord le prêt actuel.",
     "This copy currently reads as Loaned in your collection.": "Cet exemplaire est actuellement indiqué comme Prêté dans votre collection.",
     "This is a loan in: someone else owns the copy, you are holding it for now.": "Ceci est un emprunt : quelqu'un d'autre possède l'exemplaire, vous le détenez pour le moment.",
     "This is a loan out: you still own the copy, someone else is just holding it.": "Ceci est un prêt : vous possédez toujours l'exemplaire, quelqu'un d'autre le détient simplement.",

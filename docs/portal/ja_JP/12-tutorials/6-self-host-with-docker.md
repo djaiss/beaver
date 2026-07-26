@@ -26,8 +26,8 @@ section: chuutoriaru
 ## ステップ1: プロジェクトをクローンし、設定ファイルを作成する
 
 ```bash
-git clone https://github.com/djaiss/beaver.git
-cd beaver
+git clone https://github.com/djaiss/kollek.git kollek
+cd kollek
 cp .env.docker.example .env
 ```
 
