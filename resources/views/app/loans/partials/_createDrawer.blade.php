@@ -80,7 +80,7 @@
 
       {{-- Overlap block --}}
       <div x-show="overlap" x-cloak class="rounded-lg border border-error/30 bg-error/10 px-3.5 py-3 text-[13px] text-error">
-        {{ __('This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.') }}
+        {{ __('This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.', ['name' => config('app.name')]) }}
       </div>
 
       {{-- Party --}}

@@ -13,8 +13,8 @@
 
 KolleK is a self hostable web application for cataloguing collections of any kind, from comics and vinyl records to coins, watches, and wine. Organize your items, track every physical copy you own, record what you paid and what it is worth, and keep the whole history in one private, encrypted place.
 
-[![Tests](https://github.com/djaiss/beaver/actions/workflows/tests.yml/badge.svg)](https://github.com/djaiss/beaver/actions/workflows/tests.yml)
-[![Static analysis](https://github.com/djaiss/beaver/actions/workflows/static.yml/badge.svg)](https://github.com/djaiss/beaver/actions/workflows/static.yml)
+[![Tests](https://github.com/djaiss/kollek/actions/workflows/tests.yml/badge.svg)](https://github.com/djaiss/kollek/actions/workflows/tests.yml)
+[![Static analysis](https://github.com/djaiss/kollek/actions/workflows/static.yml/badge.svg)](https://github.com/djaiss/kollek/actions/workflows/static.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
 [![PHP 8.4](https://img.shields.io/badge/PHP-8.4-777BB4.svg?logo=php&logoColor=white)](https://www.php.net)
 [![Laravel 13](https://img.shields.io/badge/Laravel-13-FF2D20.svg?logo=laravel&logoColor=white)](https://laravel.com)
@@ -102,7 +102,7 @@ It is built to be run by anyone: a single collector on a small server, or a grou
 The fastest way to run your own instance. You need Docker Engine 24 or newer with the Compose plugin.
 
 ```bash
-git clone https://github.com/djaiss/beaver.git kollek
+git clone https://github.com/djaiss/kollek.git kollek
 cd kollek
 
 cp .env.docker.example .env
@@ -132,7 +132,7 @@ For working on KolleK itself.
 **Setup**
 
 ```bash
-git clone https://github.com/djaiss/beaver.git kollek
+git clone https://github.com/djaiss/kollek.git kollek
 cd kollek
 
 composer setup
@@ -206,7 +206,7 @@ Code style is handled by Laravel Pint and Prettier, refactoring by Rector, and s
 
 ## Roadmap
 
-KolleK is under active development. Planned and in progress work includes provenance history for copies, richer valuation reporting, import and export tools, and public collection sharing. Follow the [issues](https://github.com/djaiss/beaver/issues) to see what is coming and to weigh in.
+KolleK is under active development. Planned and in progress work includes provenance history for copies, richer valuation reporting, import and export tools, and public collection sharing. Follow the [issues](https://github.com/djaiss/kollek/issues) to see what is coming and to weigh in.
 
 ## Contributing
 

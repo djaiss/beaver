@@ -35,7 +35,7 @@ When we are translating logs, match the convention for each language:
 
 1. Run the locale generation command:
    ```bash
-   composer beaver:locale
+   composer kollek:locale
    ```
 2. Confirm the command completes successfully before making any edits.
 

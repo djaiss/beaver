@@ -2288,7 +2288,7 @@
     "Sort: due date": "Sortieren: Fälligkeitsdatum",
     "Sort: party": "Sortieren: Partei",
     "Sort: recently loaned": "Sortieren: kürzlich verliehen",
-    "This copy already has an open outgoing loan. Beaver blocks a second one, so return the current loan first.": "Dieses Exemplar hat bereits eine offene ausgehende Leihgabe. Beaver blockiert eine zweite, geben Sie zuerst die aktuelle Leihgabe zurück.",
+    "This copy already has an open outgoing loan. :name blocks a second one, so return the current loan first.": "Dieses Exemplar hat bereits eine offene ausgehende Leihgabe. :name blockiert eine zweite, geben Sie zuerst die aktuelle Leihgabe zurück.",
     "This copy currently reads as Loaned in your collection.": "Dieses Exemplar wird in Ihrer Sammlung derzeit als Verliehen geführt.",
     "This is a loan in: someone else owns the copy, you are holding it for now.": "Dies ist eine eingehende Leihgabe: jemand anderes besitzt das Exemplar, Sie verwahren es vorerst.",
     "This is a loan out: you still own the copy, someone else is just holding it.": "Dies ist eine ausgehende Leihgabe: das Exemplar gehört weiterhin Ihnen, jemand anderes verwahrt es nur.",
