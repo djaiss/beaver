@@ -117,7 +117,7 @@
               @endif
 
               @if ($st === 'draft')
-                <span class="text-[13px] text-muted-soft">Not submitted yet — waiting on the member.</span>
+                <span class="text-[13px] text-muted-soft">Not submitted yet, waiting on the member.</span>
               @endif
             </div>
           </x-box>

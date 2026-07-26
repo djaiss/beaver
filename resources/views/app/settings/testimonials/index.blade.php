@@ -26,7 +26,7 @@
 
       @if ($isEditable)
         {{-- STATE: form (no testimonial yet, or a draft/rejected one to revise) --}}
-        <x-box title="{{ __('Say a few words') }}">
+        <x-box :title="__('Say a few words')">
           <x-form method="post" :action="route('settings.testimonials.create')" class="space-y-5">
             <x-input
               id="name"
@@ -34,7 +34,7 @@
               :value="old('name', $testimonial?->name)"
               :error="$errors->get('name')"
               required
-              placeholder="{{ __('e.g. Marion Delacroix') }}"
+              :placeholder="__('e.g. Marion Delacroix')"
             />
 
             <div class="space-y-2">
@@ -61,7 +61,7 @@
                 :value="old('body', $testimonial?->body)"
                 :error="$errors->get('body')"
                 required
-                placeholder="{{ __('What do you use :name for, and what do you love about it? Speak like you would tell a friend.', ['name' => config('app.name')]) }}"
+                :placeholder="__('What do you use :name for, and what do you love about it? Speak like you would tell a friend.', ['name' => config('app.name')])"
               />
             </div>
 

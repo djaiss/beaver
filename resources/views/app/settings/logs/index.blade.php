@@ -26,7 +26,7 @@
               </div>
             </div>
 
-            <x-tooltip text="{{ $log->created_at }}">
+            <x-tooltip :text="$log->created_at">
               <p class="font-mono text-xs text-muted-soft">{{ $log->created_at_human }}</p>
             </x-tooltip>
           </div>

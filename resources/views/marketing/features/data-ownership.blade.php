@@ -163,7 +163,7 @@
                     <span class="w-px bg-hairline"></span>
                     <span class="w-px bg-hairline"></span>
                 </div>
-                <p class="mb-2 text-[10px] font-semibold tracking-[0.6px] text-muted-soft uppercase">{{ __('State — you own this') }}</p>
+                <p class="mb-2 text-[10px] font-semibold tracking-[0.6px] text-muted-soft uppercase">{{ __('State: you own this') }}</p>
                 <div class="grid grid-cols-2 gap-2.5">
                     @foreach ($stateTiers as $tier)
                         <div class="flex flex-col gap-2 rounded-[10px] bg-[#101010] p-3.5 text-white">

@@ -29,7 +29,7 @@
         <x-box>
           <x-form method="post" :action="route('magic.link.store')" class="space-y-4">
             <!-- Email address -->
-            <x-input type="email" id="email" value="{{ old('email') }}" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
+            <x-input type="email" id="email" :value="old('email')" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" autofocus />
 
             <div class="flex items-center justify-between">
               <x-button data-test="send-button">{{ __('Email me a link to login') }}</x-button>

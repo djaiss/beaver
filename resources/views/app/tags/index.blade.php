@@ -42,7 +42,7 @@
           class="flex flex-1 flex-wrap gap-2.5"
         >
           <div id="add-tag-fields" class="min-w-[200px] flex-1">
-            <x-input id="name" x-ref="addInput" placeholder="{{ __('New tag name…') }}" :error="$errors->get('name')" maxlength="255" required />
+            <x-input id="name" x-ref="addInput" :placeholder="__('New tag name…')" :error="$errors->get('name')" maxlength="255" required />
           </div>
 
           <x-button type="submit" data-test="new-tag-button">
@@ -75,7 +75,7 @@
                 <x-lucide-tag class="size-6 text-muted" />
               </x-slot>
 
-              {{ __('No tags yet — add one above.') }}
+              {{ __('No tags yet. Add one above.') }}
             </x-empty-state>
           </div>
         @else

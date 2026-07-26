@@ -11,7 +11,7 @@
       </div>
 
       {{-- General --}}
-      <x-box title="{{ __('General') }}">
+      <x-box :title="__('General')">
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div class="space-y-2">
             <p class="text-sm text-muted">{{ __('The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.') }}</p>
@@ -29,7 +29,7 @@
       </x-box>
 
       {{-- Getting started --}}
-      <x-box title="{{ __('Getting started screen') }}" helpId="settings.getting_started">
+      <x-box :title="__('Getting started screen')" helpId="settings.getting_started">
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div class="space-y-2">
             <p class="text-sm text-muted">{{ __('The welcome screen and setup checklist new accounts land on. Turn it back on to bring it into the sidebar, for everyone in the account.') }}</p>
@@ -49,7 +49,7 @@
       </x-box>
 
       {{-- Danger zone --}}
-      <x-box title="{{ __('Delete account') }}" helpId="settings.delete_account">
+      <x-box :title="__('Delete account')" helpId="settings.delete_account">
         <p class="mb-4 text-sm text-muted">{{ __('Permanently delete this account, all of its members, and everything it contains. This cannot be undone.') }}</p>
         <x-form method="delete" :action="route('settings.destroy')" onsubmit="return confirm('{{ __('Are you absolutely sure? This action cannot be undone.') }}')">
           <x-button.secondary type="submit">{{ __('Delete account') }}</x-button.secondary>

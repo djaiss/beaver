@@ -264,7 +264,7 @@
                 <div class="m-4 rounded-xl border border-hairline bg-sidebar p-3.5 shadow-[0_8px_20px_rgba(17,17,17,0.06)]">
                     <div class="mb-2.5 flex items-center gap-x-2 text-[12px] font-semibold text-body">
                         <span class="flex h-4 w-4 items-center justify-center rounded-[5px] bg-ink">@svg('lucide-plus', 'size-2.5 text-on-primary')</span>
-                        {{ __('New field — pick a kind') }}
+                        {{ __('New field (pick a kind)') }}
                     </div>
                     <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
                         @foreach ($fieldKinds as $kind)

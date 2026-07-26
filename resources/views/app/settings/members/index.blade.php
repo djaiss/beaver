@@ -43,7 +43,7 @@
       </x-box>
 
       {{-- Invite --}}
-      <x-box title="{{ __('Invite a member') }}" helpId="settings.invite_member">
+      <x-box :title="__('Invite a member')" helpId="settings.invite_member">
         <x-form method="post" :action="route('settings.members.create')" x-target="members" class="space-y-4">
           <x-input id="email" name="email" :label="__('Email')" :value="$previewEmail ?? ''" :error="$errors->get('email')" required placeholder="ross@friends.com" />
           <x-select id="role" :label="__('Role')" :options="$roleOptions" :selected="$previewRole ?? 'viewer'" :error="$errors->get('role')" required />
@@ -51,7 +51,7 @@
             <x-button.secondary
               type="submit"
               name="preview"
-              value="{{ ($showPreview ?? false) ? '0' : '1' }}"
+              :value="($showPreview ?? false) ? '0' : '1'"
               formmethod="get"
               formaction="{{ route('settings.members.index') }}"
             >
@@ -65,7 +65,7 @@
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-hairline-soft bg-card px-4 py-2.5">
                 <div class="flex items-center gap-2 text-xs font-semibold tracking-wide text-muted uppercase">
                   @svg('lucide-eye', 'size-4')
-                  {{ __('Preview — not sent yet') }}
+                  {{ __('Preview (not sent yet)') }}
                 </div>
                 @if (str_contains($previewEmail ?? '', '@'))
                   <div class="text-xs text-muted">{{ __('To:') }} <span class="font-medium text-ink">{{ $previewEmail }}</span></div>
@@ -87,7 +87,7 @@
 
       {{-- Pending invitations --}}
       @if ($invitations->isNotEmpty())
-        <x-box title="{{ __('Pending invitations') }}" padding="p-0">
+        <x-box :title="__('Pending invitations')" padding="p-0">
           @foreach ($invitations as $invitation)
             <div class="flex items-center justify-between border-b border-hairline-soft px-4 py-3 last:border-b-0">
               <p class="text-sm text-ink">{{ $invitation->email }}</p>

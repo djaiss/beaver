@@ -76,7 +76,7 @@
         <x-form method="post" :action="route('series.create')" data-test="create-series-form" x-target="series-panel add-series-fields notifications" x-on:ajax:after="showAddForm = document.querySelector('#add-series-fields .text-error') !== null">
           <div id="add-series-fields">
             <div class="mb-5">
-              <x-input id="name" x-ref="addName" :label="__('Name')" placeholder="{{ __('e.g. Star Wars') }}" :error="$errors->get('name')" required autofocus />
+              <x-input id="name" x-ref="addName" :label="__('Name')" :placeholder="__('e.g. Star Wars')" :error="$errors->get('name')" required autofocus />
             </div>
 
             <div class="mb-5">

@@ -68,7 +68,7 @@
           <div id="add-category-fields">
             <div class="mb-5 flex flex-wrap gap-3.5">
               <div class="min-w-[200px] flex-1">
-                <x-input id="name" x-ref="addName" :label="__('Name')" placeholder="{{ __('e.g. Spider-Man') }}" :error="$errors->get('name')" required autofocus />
+                <x-input id="name" x-ref="addName" :label="__('Name')" :placeholder="__('e.g. Spider-Man')" :error="$errors->get('name')" required autofocus />
               </div>
 
               <div class="min-w-[200px]">
@@ -86,7 +86,7 @@
             </div>
 
             <div class="mb-5">
-              <x-input id="description" :label="__('Description')" placeholder="{{ __('e.g. Wall-crawler key issues and full runs.') }}" :error="$errors->get('description')" />
+              <x-input id="description" :label="__('Description')" :placeholder="__('e.g. Wall-crawler key issues and full runs.')" :error="$errors->get('description')" />
               <p class="mt-1.5 text-xs text-muted-soft">{{ __('Shown on the category page. Optional.') }}</p>
             </div>
 

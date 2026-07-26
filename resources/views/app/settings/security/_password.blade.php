@@ -14,7 +14,7 @@
     <div class="grid grid-cols-3 items-center border-b border-hairline-soft p-3">
       <p class="col-span-2 block text-sm font-medium text-ink">{{ __('New password') }}</p>
       <div class="w-full justify-self-end">
-        <x-input id="new_password" type="password" help="{{ __('Minimum 8 characters.') }}" passwordrules="minlength: 8" required :error="$errors->get('new_password')" :passManagerDisabled="false" />
+        <x-input id="new_password" type="password" :help="__('Minimum 8 characters.')" passwordrules="minlength: 8" required :error="$errors->get('new_password')" :passManagerDisabled="false" />
       </div>
     </div>
 

@@ -53,7 +53,7 @@
             <h1 class="text-[28px] font-semibold tracking-tight text-ink">{{ __('Loans') }}</h1>
             <x-help id="loans.list" />
           </div>
-          <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('A loan moves custody, not ownership — you still own what you lend out.') }}</p>
+          <p class="mt-1 max-w-xl text-[15px] text-muted">{{ __('A loan moves custody, not ownership. You still own what you lend out.') }}</p>
         </div>
 
         <div class="flex items-center gap-2.5">

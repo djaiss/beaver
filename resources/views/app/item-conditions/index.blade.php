@@ -42,7 +42,7 @@
           class="flex flex-1 flex-wrap gap-2.5"
         >
           <div id="add-condition-fields" class="min-w-[200px] flex-1">
-            <x-input id="name" x-ref="addInput" placeholder="{{ __('New condition name…') }}" :error="$errors->get('name')" maxlength="255" required />
+            <x-input id="name" x-ref="addInput" :placeholder="__('New condition name…')" :error="$errors->get('name')" maxlength="255" required />
           </div>
 
           <x-button type="submit" data-test="new-condition-button">
@@ -75,7 +75,7 @@
                 <x-lucide-gauge class="size-6 text-muted" />
               </x-slot>
 
-              {{ __('No conditions yet — add one above.') }}
+              {{ __('No conditions yet. Add one above.') }}
             </x-empty-state>
           </div>
         @else
