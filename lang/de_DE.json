@@ -1062,7 +1062,6 @@
     "Use any authenticator app to scan your QR code, or manually use the setup key.": "Verwende eine beliebige Authentifizierungs-App, um deinen QR-Code zu scannen, oder nutze den Einrichtungsschlüssel manuell.",
     "Use these codes to access your account if you lose access to your authenticator app.": "Verwende diese Codes, um auf dein Konto zuzugreifen, wenn du den Zugriff auf deine Authentifizierungs-App verlierst.",
     "Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)": "Verwendet von :collections Sammlung(en) · :groups Feldgruppe(n) · :fields benutzerdefinierte(s) Feld(er)",
-    "Used for valuation totals across your collections.": "Wird für die Wertermittlung deiner Sammlungen verwendet.",
     "User deleted successfully": "Benutzer erfolgreich gelöscht",
     "User reviews": "Benutzerbewertungen",
     "User updated successfully": "Benutzer erfolgreich aktualisiert",
@@ -2347,5 +2346,7 @@
     "Where things are": "Wo alles liegt",
     "Estimated value by location.": "Geschätzter Wert nach Standort.",
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "Noch ist nichts bewertet und eingeräumt. Halten Sie fest, was ein Exemplar wert ist und wo Sie es aufbewahren, dann erscheint es hier.",
-    "Account activity": "Kontoaktivität"
+    "Account activity": "Kontoaktivität",
+    "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "Der Kontoname kennzeichnet diesen Arbeitsbereich gegenüber allen, mit denen Sie ihn teilen. Ihn umzubenennen ist unbedenklich und wirkt sofort.",
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "Die Standardwährung wird für die Wertsummen Ihrer Sammlungen verwendet. Eine Änderung beschriftet nur neue Summen neu, sie rechnet bereits erfasste Werte nicht um."
 }
