@@ -8,7 +8,6 @@ use App\Enums\LoanDirection;
 use App\Enums\LoanStatus;
 use App\Models\Account;
 use App\Models\Loan;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -32,11 +31,6 @@ class LoanDashboard
      * @var Collection<int, Loan>
      */
     private Collection $loans;
-
-    /**
-     * How many days ahead still counts as "due soon".
-     */
-    private const int DUE_SOON_DAYS = 30;
 
     public function __construct(
         private readonly Account $account,
@@ -244,27 +238,7 @@ class LoanDashboard
      */
     private function dueSoon(): Collection
     {
-        $today = Carbon::today();
-        $window = $today->copy()->addDays(self::DUE_SOON_DAYS);
-
-        return $this->loans->filter(function (Loan $loan) use ($today, $window): bool {
-            if (! $loan->status->hasLeftCustody() || $loan->due_at === null) {
-                return false;
-            }
-
-            return $loan->due_at->betweenIncluded($today, $window);
-        });
-    }
-
-    private function isEffectivelyOverdue(Loan $loan): bool
-    {
-        if ($loan->status === LoanStatus::Overdue) {
-            return true;
-        }
-
-        return $loan->status->hasLeftCustody()
-            && $loan->due_at !== null
-            && $loan->due_at->isBefore(Carbon::today());
+        return $this->loans->filter(fn (Loan $loan): bool => $loan->isDueSoon());
     }
 
     /**
@@ -289,7 +263,7 @@ class LoanDashboard
     private function filterByStatus(Collection $loans, string $status): Collection
     {
         return match ($status) {
-            'overdue' => $loans->filter(fn (Loan $loan): bool => $this->isEffectivelyOverdue($loan)),
+            'overdue' => $loans->filter(fn (Loan $loan): bool => $loan->isEffectivelyOverdue()),
             'due-soon' => $this->dueSoon(),
             'open' => $loans->filter(fn (Loan $loan): bool => $loan->status->isOpen()),
             default => $loans->filter(fn (Loan $loan): bool => $loan->status->value === $status),

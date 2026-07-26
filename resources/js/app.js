@@ -86,6 +86,28 @@ window.switchPhotoView = (target) => {
   }).catch(() => {});
 };
 
+// --- Dashboard sections ---
+// The whole dashboard is on the page, so showing and hiding a block is instant and this only
+// saves which blocks the current user turned off, in the background. Failing to save is not
+// worth interrupting anyone over: the screen still changed, it just will not be remembered.
+window.saveDashboardSections = (hidden) => {
+  const url = document.getElementById('dashboard-sections-endpoint')?.value;
+
+  if (!url) {
+    return;
+  }
+
+  fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+    },
+    body: JSON.stringify({ sections: hidden }),
+  }).catch(() => {});
+};
+
 // --- Upload size guard ---
 // Returns the files from `fileList` that are larger than maxKilobytes, so an
 // upload form can reject them in the browser and show a friendly message rather

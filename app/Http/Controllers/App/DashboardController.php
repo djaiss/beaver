@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\App;
 
+use App\Enums\DashboardSectionEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Log;
+use App\Services\AccountDashboard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,10 +26,10 @@ class DashboardController extends Controller
             return to_route('gettingStarted.index');
         }
 
-        $userIds = $account->users()->pluck('id');
+        $dashboard = new AccountDashboard(account: $account);
 
         $activity = Log::query()
-            ->whereIn('user_id', $userIds)
+            ->whereIn('user_id', $account->users()->pluck('id'))
             ->with('user')
             ->latest()
             ->limit(6)
@@ -42,12 +44,15 @@ class DashboardController extends Controller
         return view('app.dashboard.index', [
             'greeting' => $this->greeting(),
             'firstName' => $user->first_name,
-            'memberCount' => $userIds->count(),
-            'pendingInvitations' => $account->invitations()
-                ->whereNull('accepted_at')
-                ->where('expires_at', '>', now())
-                ->count(),
+            'currency' => $account->currency_code,
+            'totals' => $dashboard->totals(),
+            'collections' => $dashboard->collections(),
+            'recentAdditions' => $dashboard->recentAdditions(),
+            'loans' => $dashboard->loanSnapshot(),
+            'locations' => $dashboard->valueByLocation(),
             'activity' => $activity,
+            'sections' => DashboardSectionEnum::cases(),
+            'hiddenSections' => $user->hidden_dashboard_sections ?? [],
         ]);
     }
 

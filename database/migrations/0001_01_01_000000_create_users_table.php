@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('locale', 5)->default('en')->comment('user\'s locale');
             $table->boolean('time_format_24h')->default(true)->comment('time format preference');
             $table->boolean('auto_delete_account')->default(false)->comment('auto delete account preference');
+            $table->json('hidden_dashboard_sections')->nullable()->comment('dashboard sections the user has hidden, private to them');
             $table->rememberToken()->comment('remember token');
             $table->timestamps();
 

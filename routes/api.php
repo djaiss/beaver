@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Account\CatalogType\CustomFieldController;
 use App\Http\Controllers\Api\Account\CatalogType\CustomFieldGroupController;
 use App\Http\Controllers\Api\Account\CatalogType\CustomFieldGroupOrderController;
 use App\Http\Controllers\Api\Account\CatalogType\CustomFieldOrderController;
+use App\Http\Controllers\Api\Account\DashboardController;
 use App\Http\Controllers\Api\Account\InvitationController;
 use App\Http\Controllers\Api\Account\ItemConditionController;
 use App\Http\Controllers\Api\Account\LocationController;
@@ -63,6 +64,9 @@ Route::name('api.')->group(function (): void {
         // logged user
         Route::get('me', [MeController::class, 'show'])->name('me');
         Route::put('me', [MeController::class, 'update'])->name('me.update');
+
+        // the aggregates behind the dashboard, read across the whole account
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // collections
         Route::get('collections', [CatalogController::class, 'index'])->name('collections');
