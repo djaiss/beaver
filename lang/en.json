@@ -1062,7 +1062,6 @@
     "Use any authenticator app to scan your QR code, or manually use the setup key.": "Use any authenticator app to scan your QR code, or manually use the setup key.",
     "Use these codes to access your account if you lose access to your authenticator app.": "Use these codes to access your account if you lose access to your authenticator app.",
     "Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)": "Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)",
-    "Used for valuation totals across your collections.": "Used for valuation totals across your collections.",
     "User deleted successfully": "User deleted successfully",
     "User reviews": "User reviews",
     "User updated successfully": "User updated successfully",
@@ -2347,5 +2346,7 @@
     "Where things are": "Where things are",
     "Estimated value by location.": "Estimated value by location.",
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.",
-    "Account activity": "Account activity"
+    "Account activity": "Account activity",
+    "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.",
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded."
 }

@@ -1062,7 +1062,6 @@
     "Use any authenticator app to scan your QR code, or manually use the setup key.": "お好みの認証アプリでQRコードを読み取るか、セットアップキーを手動で入力してください。",
     "Use these codes to access your account if you lose access to your authenticator app.": "認証アプリが使えなくなったときは、これらのコードでアカウントにアクセスできます。",
     "Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)": "コレクション :collections 件 · フィールドグループ :groups 件 · カスタムフィールド :fields 件",
-    "Used for valuation totals across your collections.": "コレクション全体の評価額の集計に使われます。",
     "User deleted successfully": "ユーザーを削除しました",
     "User reviews": "ユーザーレビュー",
     "User updated successfully": "ユーザーを更新しました",
@@ -2347,5 +2346,7 @@
     "Where things are": "保管場所",
     "Estimated value by location.": "保管場所ごとの推定価値。",
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "評価も保管場所の登録もまだありません。所蔵品の価値と保管場所を記録すると、ここに表示されます。",
-    "Account activity": "アカウントの動き"
+    "Account activity": "アカウントの動き",
+    "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "アカウント名は、このワークスペースを共有しているすべての人に対する識別名です。名前の変更は安全で、すぐに反映されます。",
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "既定の通貨はコレクション全体の評価額の合計に使われます。変更しても新しい合計の表示が変わるだけで、すでに記録された金額は換算されません。"
 }

@@ -1062,7 +1062,6 @@
     "Use any authenticator app to scan your QR code, or manually use the setup key.": "Usa cualquier aplicación de autenticación para escanear tu código QR, o utiliza manualmente la clave de configuración.",
     "Use these codes to access your account if you lose access to your authenticator app.": "Usa estos códigos para acceder a tu cuenta si pierdes el acceso a tu aplicación de autenticación.",
     "Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)": "Usado por :collections colección(es) · :groups grupo(s) de campos · :fields campo(s) personalizado(s)",
-    "Used for valuation totals across your collections.": "Se usa para los totales de valoración de tus colecciones.",
     "User deleted successfully": "Usuario eliminado correctamente",
     "User reviews": "Opiniones de usuarios",
     "User updated successfully": "Usuario actualizado correctamente",
@@ -2347,5 +2346,7 @@
     "Where things are": "Dónde está cada cosa",
     "Estimated value by location.": "Valor estimado por ubicación.",
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "Todavía no hay nada valorado ni guardado. Anota cuánto vale un ejemplar y dónde lo tienes, y aparecerá aquí.",
-    "Account activity": "Actividad de la cuenta"
+    "Account activity": "Actividad de la cuenta",
+    "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "El nombre de la cuenta identifica este espacio de trabajo ante todas las personas con las que lo compartes. Cambiarlo es seguro y surte efecto de inmediato.",
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "La moneda predeterminada se usa para los totales de valoración de tus colecciones. Cambiarla solo reetiqueta los nuevos totales, no convierte los valores que ya has registrado."
 }

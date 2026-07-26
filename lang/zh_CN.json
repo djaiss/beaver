@@ -1062,7 +1062,6 @@
     "Use any authenticator app to scan your QR code, or manually use the setup key.": "用任意身份验证器应用扫描 QR 码，或手动输入设置密钥。",
     "Use these codes to access your account if you lose access to your authenticator app.": "如果你无法使用身份验证器应用，可以用这些代码登录账户。",
     "Used by :collections collection(s) · :groups field group(s) · :fields custom field(s)": ":collections 个收藏使用 · :groups 个字段组 · :fields 个自定义字段",
-    "Used for valuation totals across your collections.": "用于统计你所有收藏的估值总额。",
     "User deleted successfully": "用户删除成功",
     "User reviews": "用户评价",
     "User updated successfully": "用户更新成功",
@@ -2347,5 +2346,7 @@
     "Where things are": "存放位置",
     "Estimated value by location.": "按存放位置统计的估值。",
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "尚未记录估值和存放位置。填写藏品的价值和存放地点后，就会显示在这里。",
-    "Account activity": "账户动态"
+    "Account activity": "账户动态",
+    "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "账户名称向与您共享此工作区的所有人标识该工作区。重命名是安全的，并会立即生效。",
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "默认货币用于您所有收藏的估值总额。更改它只会改变新总额的显示单位，不会转换您已经记录的数值。"
 }
