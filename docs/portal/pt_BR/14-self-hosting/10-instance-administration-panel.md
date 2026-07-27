@@ -33,6 +33,14 @@ Você pode buscar contas **pelo e-mail de um membro** e filtrar por função. Bu
 
 Abrir uma conta mostra seus membros, ordenados primeiro por proprietários, depois editores, depois visualizadores, junto com as contagens de coleções e itens da conta e suas quinze entradas mais recentes no log de atividade.
 
+## Motivos de exclusão
+
+Quem exclui o próprio usuário precisa dizer antes por quê, e a área **Motivos de exclusão** é onde essas respostas chegam, da mais recente para a mais antiga, 25 por página.
+
+Cada entrada é uma frase e uma data, nada mais. Ela não está ligada a quem a escreveu e permanece depois que a pessoa vai embora: o usuário some, a frase fica. Não há nada para abrir nem nenhuma ação a tomar, então a página apenas as lista.
+
+Os motivos são criptografados em repouso, como todo o resto que as pessoas escrevem no aplicativo, então esta página não tem campo de busca.
+
 ## Opções do site
 
 A área **Opções do site** reúne as configurações do site de marketing público, as páginas que um visitante vê antes de entrar. Esse site vem desligado por padrão em uma instância auto-hospedada (veja @doc(selfHosting.configure)), então, se você nunca o ligou, nada aqui muda o que seus usuários enxergam.

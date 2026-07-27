@@ -33,6 +33,14 @@ You can search accounts **by a member's email address** and filter by role. Sear
 
 Opening an account shows its members, sorted owners first, then editors, then viewers, along with the account's collection and item counts and its fifteen most recent activity log entries.
 
+## Deletion reasons
+
+Someone deleting their user is asked why first, and the **Deletion reasons** area is where those answers land, newest first, 25 per page.
+
+An entry is a sentence and a date, nothing more. It is not tied to the person who wrote it, and it stays once they are gone: the user record goes, the sentence remains. There is nothing to open and no action to take, so the page only lists them.
+
+Reasons are encrypted at rest, like the rest of what people write in the application, so this page has no search box.
+
 ## Site options
 
 The **Site options** area holds the settings for the public marketing site, the pages a visitor sees before signing in. That site is off by default on a self hosted instance (see @doc(selfHosting.configure)), so if you never turned it on, nothing here changes what anyone sees.

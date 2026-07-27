@@ -33,6 +33,14 @@ Du kannst Konten **nach der E-Mail-Adresse eines Mitglieds** suchen und nach Rol
 
 Öffnest du ein Konto, siehst du dessen Mitglieder, sortiert erst nach Eigentümern, dann Bearbeitern, dann Betrachtern, zusammen mit den Sammlungs- und Objektzahlen des Kontos und seinen fünfzehn jüngsten Einträgen im Aktivitätsprotokoll.
 
+## Löschgründe
+
+Wer sein Benutzerkonto löscht, wird vorher nach dem Grund gefragt, und im Bereich **Löschgründe** landen diese Antworten, die neueste zuerst, 25 pro Seite.
+
+Ein Eintrag besteht aus einem Satz und einem Datum, mehr nicht. Er ist mit niemandem verknüpft und bleibt bestehen, wenn die Person weg ist: der Benutzer verschwindet, der Satz bleibt. Es gibt nichts zu öffnen und nichts zu tun, also listet die Seite die Gründe nur auf.
+
+Die Gründe sind bei der Speicherung verschlüsselt, wie alles andere, was Menschen in der Anwendung schreiben, daher hat diese Seite kein Suchfeld.
+
 ## Website-Optionen
 
 Der Bereich **Website-Optionen** bündelt die Einstellungen der öffentlichen Marketing-Website, also der Seiten, die ein Besucher vor der Anmeldung sieht. Diese Website ist auf einer selbst gehosteten Instanz standardmäßig aus (siehe @doc(selfHosting.configure)). Wenn du sie nie eingeschaltet hast, ändert hier nichts daran, was deine Nutzer sehen.

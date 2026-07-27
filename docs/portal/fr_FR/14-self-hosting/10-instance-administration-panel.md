@@ -33,6 +33,14 @@ Vous pouvez rechercher des comptes **par l'adresse e-mail d'un membre** et filtr
 
 Ouvrir un compte affiche ses membres, triés propriétaires d'abord, puis éditeurs, puis lecteurs, ainsi que le nombre de collections et d'objets du compte et ses quinze entrées de journal d'activité les plus récentes.
 
+## Motifs de suppression
+
+Toute personne qui supprime son utilisateur doit d'abord dire pourquoi, et la section **Motifs de suppression** est l'endroit où ces réponses arrivent, la plus récente en premier, 25 par page.
+
+Une entrée se résume à une phrase et une date. Elle n'est rattachée à personne, et elle reste une fois la personne partie : l'utilisateur disparaît, la phrase demeure. Il n'y a rien à ouvrir ni aucune action à mener, donc la page se contente de les lister.
+
+Les motifs sont chiffrés au repos, comme le reste de ce que les gens écrivent dans l'application, si bien que cette page n'a pas de champ de recherche.
+
 ## Options du site
 
 La rubrique **Options du site** regroupe les réglages du site vitrine public, les pages qu'un visiteur voit avant de se connecter. Ce site est désactivé par défaut sur une instance auto hébergée (voir @doc(selfHosting.configure)) : si tu ne l'as jamais activé, rien ici ne change ce que voient tes utilisateurs.
