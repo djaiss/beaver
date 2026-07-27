@@ -2595,5 +2595,6 @@
     "Ask it in the open and the answer helps the next person too. No ticket queue, no chatbot, no sales follow-up.": "Hazla en abierto y la respuesta servirá también a la siguiente persona. Sin cola de tickets, sin chatbot, sin seguimiento comercial.",
     "Read the documentation": "Leer la documentación",
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "Todavía no, y preferimos decirlo aquí. Las definiciones de tipos de colección se exportan e importan en JSON, y los préstamos abiertos se descargan en CSV. Si te autoalojas, una copia de seguridad de la base de datos y del volumen de almacenamiento lo contiene todo.",
-    "Read the full FAQ": "Leer la FAQ completa"
+    "Read the full FAQ": "Leer la FAQ completa",
+    "Reviews": "Opiniones"
 }

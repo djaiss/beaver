@@ -7,6 +7,18 @@
           <x-wordmark height="17" class="text-white" />
         </div>
         <p class="max-w-60 text-sm leading-relaxed">{{ __('The open source collection manager that belongs to you.') }}</p>
+
+        {{-- The picker keeps the visitor on the page they are reading, so it needs the
+             current request rather than just the list of languages. --}}
+        @php
+            $languages = app(\App\Services\MarketingLanguages::class);
+        @endphp
+
+        @if ($languages->isOffered())
+          <div class="mt-5">
+            <x-marketing.language-picker :links="$languages->links(request())" />
+          </div>
+        @endif
       </div>
 
       @php
@@ -69,7 +81,7 @@
       <p class="text-[13px] text-[#898989]">{{ __('© :year :name. Released under the MIT License.', ['year' => date('Y'), 'name' => config('app.name')]) }}</p>
 
       <div class="flex items-center gap-x-4">
-        <x-theme-toggle class="border border-[#242424] text-[#a1a1aa] hover:bg-[#1a1a1a] hover:text-white" />
+        <x-theme-switch />
 
         <p class="flex items-center gap-x-2 text-[13px] text-[#898989]">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 9600 4800" aria-hidden="true">

@@ -2595,5 +2595,6 @@
     "Ask it in the open and the answer helps the next person too. No ticket queue, no chatbot, no sales follow-up.": "Posez-la publiquement et la réponse servira aussi à la personne suivante. Pas de file d'attente, pas de robot conversationnel, pas de relance commerciale.",
     "Read the documentation": "Lire la documentation",
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "Pas encore, et nous préférons le dire ici. Les définitions de types de collection s'exportent et s'importent en JSON, et les prêts en cours se téléchargent en CSV. Si vous vous auto-hébergez, une sauvegarde de la base de données et du volume de stockage contient tout.",
-    "Read the full FAQ": "Lire la FAQ complète"
+    "Read the full FAQ": "Lire la FAQ complète",
+    "Reviews": "Avis"
 }
