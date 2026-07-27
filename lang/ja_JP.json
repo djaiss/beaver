@@ -2595,5 +2595,6 @@
     "Ask it in the open and the answer helps the next person too. No ticket queue, no chatbot, no sales follow-up.": "公開の場で尋ねてもらえれば、その答えは次の人の役にも立ちます。チケットの待ち行列も、チャットボットも、営業の追いかけもありません。",
     "Read the documentation": "ドキュメントを読む",
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "まだできません。ここではっきり書いておきます。コレクションタイプの定義は JSON で書き出しと取り込みができ、貸出中の一覧は CSV でダウンロードできます。セルフホストしているなら、データベースとストレージボリュームのバックアップにすべてが含まれます。",
-    "Read the full FAQ": "FAQ をすべて読む"
+    "Read the full FAQ": "FAQ をすべて読む",
+    "Reviews": "レビュー"
 }
