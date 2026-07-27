@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\ViewModels;
 
 /**
  * The catalogue of feature areas shown in the marketing "Features" mega menu and

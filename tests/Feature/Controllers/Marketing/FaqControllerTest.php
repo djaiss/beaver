@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Services\MarketingFaq;
+use App\ViewModels\MarketingFaq;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

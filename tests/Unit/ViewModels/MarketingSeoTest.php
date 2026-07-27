@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use App\Services\DocumentationPortal;
-use App\Services\MarketingFeatures;
-use App\Services\MarketingLanguages;
-use App\Services\MarketingSeo;
+use App\ViewModels\MarketingFeatures;
+use App\ViewModels\MarketingLanguages;
+use App\ViewModels\MarketingSeo;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 

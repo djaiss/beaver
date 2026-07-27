@@ -24,7 +24,7 @@ return [
     |
     | The one line summary of the application, used as the meta description of
     | any page that does not carry one of its own. The public pages each supply
-    | their own through App\Services\MarketingSeo.
+    | their own through App\ViewModels\MarketingSeo.
     |
     */
 

@@ -1,6 +1,6 @@
 {{--
   The social and crawler half of the head, for the public pages only. Everything here comes
-  from App\Services\MarketingSeo, which decides which URL owns the page and which languages
+  from App\ViewModels\MarketingSeo, which decides which URL owns the page and which languages
   are allowed to claim it. The application and the error pages sit behind auth or behind a
   4xx, so they get none of this.
 

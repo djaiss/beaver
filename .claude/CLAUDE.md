@@ -30,7 +30,8 @@ Do not excessively use emojis.
 - `app/Http/Controllers`: split into `App` (the logged in app), `Api` (the JSON API) and `Marketing` (the public site and docs).
 - `app/Http/Middleware`: route middleware, including the role gates. `app/Http/Resources`: API transformers.
 - `app/Jobs`: queued jobs. `app/Mail`: mailables. `app/Enums`: enums. `app/Helpers`: helpers.
-- `app/Services`: `ApiDocumentation` builds the API reference served at `/docs` from the endpoint definition files in `resources/docs/api`.
+- `app/Services`: everything a screen is not the only consumer of. The read side shared by the web app and the JSON API (`AccountSearch`, `AccountDashboard`, `CatalogStatistics`, `BuildCopyHistory`, `Trash`, `LoanDashboard`), and the plumbing underneath (`BlindIndex` hashing search tokens from inside models and actions, `DocumentationPortal` resolving locales from middleware, `DocumentationParser`, `HelpSnippets`, `ApiDocumentation`).
+- `app/ViewModels`: the classes only Blade ever asks. `MarketingFeatures` (the mega menu and the features hub), `MarketingFaq`, `MarketingLanguages` (the footer picker) and `MarketingSeo` (the tags in the head). The test is who calls it: the moment an API controller, an action, a model, a job or middleware needs a class, it is a service, because a view model that renders JSON is a lie.
 - `app/View/Components`: the layout components (app, guest, marketing).
 - `resources/views`: `app` for the logged in screens, `components` for shared UI, `layouts` and `partials` for the shell, `marketing` for the public site, `mail` for emails.
 - `resources/css` and `resources/js`: the Tailwind theme and the Alpine setup.

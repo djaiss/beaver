@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\ViewModels;
 
+use App\Services\DocumentationPortal;
 use Illuminate\Http\Request;
 use Throwable;
 

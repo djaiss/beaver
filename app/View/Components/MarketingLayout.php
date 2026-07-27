@@ -11,7 +11,7 @@ class MarketingLayout extends Component
 {
     /**
      * Both the title and the description are optional. A page that gives neither
-     * is described by App\Services\MarketingSeo from its route name, which is
+     * is described by App\ViewModels\MarketingSeo from its route name, which is
      * where the copy for the public pages lives.
      */
     public function __construct(

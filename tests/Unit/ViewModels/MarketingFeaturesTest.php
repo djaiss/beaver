@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Services\MarketingFeatures;
+use App\ViewModels\MarketingFeatures;
 
 it('exposes three columns of feature areas', function () {
     $columns = (new MarketingFeatures)->columns();

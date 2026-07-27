@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     @php
-        $seo = app(\App\Services\MarketingSeo::class)->forRequest(request(), $pageTitle ?? null, $pageDescription ?? null);
+        $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request(), $pageTitle ?? null, $pageDescription ?? null);
     @endphp
 
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])

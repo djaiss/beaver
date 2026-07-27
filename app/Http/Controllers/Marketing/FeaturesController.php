@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Marketing;
 
 use App\Http\Controllers\Controller;
-use App\Services\MarketingFeatures;
+use App\ViewModels\MarketingFeatures;
 use Illuminate\Support\Facades\View as ViewFactory;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

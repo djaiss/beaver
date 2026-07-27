@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Marketing;
 
 use App\Http\Controllers\Controller;
-use App\Services\MarketingFaq;
+use App\ViewModels\MarketingFaq;
 use Illuminate\View\View;
 
 class FaqController extends Controller
