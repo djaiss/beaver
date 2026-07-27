@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('support_messages', function (Blueprint $table): void {
-            $table->boolean('is_from_team')->default(false)->after('user_id')->comment('true when written by the instance team rather than the user');
+        Schema::create('user_deletion_reasons', function (Blueprint $table): void {
+            $table->id()->comment('primary key');
+            $table->text('reason')->comment('reason for user deletion');
+            $table->timestamps();
         });
     }
 
@@ -23,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('support_messages', function (Blueprint $table): void {
-            $table->dropColumn('is_from_team');
-        });
+        Schema::dropIfExists('user_deletion_reasons');
     }
 };

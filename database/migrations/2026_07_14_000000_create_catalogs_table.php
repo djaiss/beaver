@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('catalogs', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->uuid('uuid')->unique()->comment('public-facing identifier');
-            $table->foreignId('account_id')->comment('account the collection belongs to')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('account_id')->comment('account the collection belongs to');
             $table->text('name')->comment('name of the collection');
             $table->text('description')->nullable()->comment('free text description of the collection');
             $table->string('emoji')->nullable()->comment('emoji representing the collection');
@@ -25,8 +25,12 @@ return new class extends Migration
             $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the collection');
             $table->text('updated_by_name')->nullable()->comment('name of the last editor at the time');
+            $table->unsignedBigInteger('deleted_by_id')->nullable()->comment('user who deleted the record');
+            $table->text('deleted_by_name')->nullable()->comment('name of the user who deleted the record, at the time');
             $table->timestamps();
             $table->softDeletes()->comment('null unless the collection has been soft deleted');
+
+            $table->foreign('account_id')->references('id')->on('accounts')->cascadeOnDelete();
         });
     }
 

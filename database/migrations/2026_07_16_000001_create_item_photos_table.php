@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('filename')->comment('original name of the uploaded file, as given by the user');
             $table->string('mime_type')->comment('mime type of the file, e.g. image/jpeg');
             $table->unsignedInteger('size')->comment('size of the file in bytes');
+            $table->unsignedInteger('width')->nullable()->comment('width of the image in pixels, null until the rebuild command reads it off the disk');
+            $table->unsignedInteger('height')->nullable()->comment('height of the image in pixels, null until the rebuild command reads it off the disk');
             $table->boolean('is_main')->default(false)->comment('true when the photo is the main visual of the item, and only one photo per item can be');
             $table->unsignedInteger('position')->comment('order of the photo within the item, starting at 1');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who added the photo');

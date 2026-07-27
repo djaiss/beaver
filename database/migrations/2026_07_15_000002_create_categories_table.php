@@ -15,10 +15,13 @@ return new class extends Migration
             $table->unsignedBigInteger('catalog_id')->comment('collection the category belongs to');
             $table->unsignedBigInteger('parent_id')->nullable()->comment('parent category, null when top level');
             $table->text('name')->comment('name of the category, e.g. Spider-Man');
+            $table->text('description')->nullable()->comment('what the category holds, shown on the category page');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the category');
             $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the category');
             $table->text('updated_by_name')->nullable()->comment('name of the last editor at the time');
+            $table->unsignedBigInteger('deleted_by_id')->nullable()->comment('user who deleted the record');
+            $table->text('deleted_by_name')->nullable()->comment('name of the user who deleted the record, at the time');
             $table->timestamps();
             $table->softDeletes()->comment('null unless the category has been soft deleted');
 

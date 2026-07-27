@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('account_id')->comment('account the user belongs to');
             $table->string('role', 15)->default(PermissionEnum::Viewer->value)->comment('user\'s role within their account');
+            $table->boolean('is_instance_administrator')->default(false)->comment('whether the user administers the whole instance, which is separate from their role within their account');
             $table->text('first_name')->comment('user\'s first name');
             $table->text('last_name')->comment('user\'s last name');
             $table->text('nickname')->nullable()->comment('user\'s nickname');
@@ -32,7 +33,9 @@ return new class extends Migration
             $table->datetime('last_activity_at')->nullable()->comment('last activity timestamp');
             $table->string('locale', 5)->default('en')->comment('user\'s locale');
             $table->boolean('time_format_24h')->default(true)->comment('time format preference');
-            $table->boolean('auto_delete_account')->default(false)->comment('auto delete account preference');
+            $table->string('photos_view')->default('grid')->comment('layout the user last chose on the photos screen, private to them');
+            $table->string('avatar_path')->nullable()->comment('path of the original avatar file, the resized versions sit next to it');
+            $table->boolean('auto_delete_user')->default(false)->comment('auto delete user preference');
             $table->json('hidden_dashboard_sections')->nullable()->comment('dashboard sections the user has hidden, private to them');
             $table->rememberToken()->comment('remember token');
             $table->timestamps();
