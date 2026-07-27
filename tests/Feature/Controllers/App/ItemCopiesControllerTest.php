@@ -175,6 +175,31 @@ it('tells the reader when an item has no copies', function () {
         ->assertSee('No copies of this item yet.');
 });
 
+// Copies are added on the item form, which carries a row per copy, so the button
+// hands the reader over to it rather than opening a screen of its own.
+it('sends the add copy button to the item form', function () {
+    $user = $this->createUser();
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+
+    $this->actingAs($user)->get(route('items.copies.index', [$catalog, $item]))
+        ->assertOk()
+        ->assertSee('data-test="add-copy-button"', false)
+        ->assertSee(route('items.edit', [$catalog, $item]), false);
+});
+
+it('does not offer a viewer the add copy button', function () {
+    $account = $this->createAccount();
+    $viewer = $this->createUser();
+    $this->assignUserToAccount(user: $viewer, account: $account, role: PermissionEnum::Viewer->value);
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    $item = Item::factory()->create(['catalog_id' => $catalog->id]);
+
+    $this->actingAs($viewer)->get(route('items.copies.index', [$catalog, $item]))
+        ->assertOk()
+        ->assertDontSee('data-test="add-copy-button"', false);
+});
+
 it('marks the copies tab as the current page', function () {
     $user = $this->createUser();
     $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);

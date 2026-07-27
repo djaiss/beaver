@@ -12,7 +12,6 @@
         ['copies', __('Copies'), $item->copies->count(), route('items.copies.index', [$catalog, $item])],
         ['history', __('History'), null, route('items.history.index', [$catalog, $item])],
         ['activities', __('Activity'), null, route('items.activities.index', [$catalog, $item])],
-        ['roadmap', __('Roadmap'), null, route('items.roadmap.index', [$catalog, $item])],
     ];
 @endphp
 

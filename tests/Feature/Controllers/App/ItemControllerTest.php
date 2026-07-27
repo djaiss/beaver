@@ -167,7 +167,7 @@ it('shows the item detail page', function () {
     $response->assertSee('The one where Chandler gets a chick and a duck.');
     $response->assertSee('Overview');
     $response->assertSee('Copies');
-    $response->assertSee('Roadmap');
+    $response->assertSee('History');
 });
 
 it('shows the custom field values grouped the way the type orders them', function () {

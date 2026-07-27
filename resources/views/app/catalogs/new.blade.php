@@ -84,7 +84,12 @@
                     <span class="size-2 rounded-full bg-ink" x-show="visibility === '{{ $option['key'] }}'"></span>
                   </span>
                   <span>
-                    <span class="block text-sm font-semibold text-ink">{{ $option['label'] }}</span>
+                    <span class="flex items-center gap-2">
+                      <span class="text-sm font-semibold text-ink">{{ $option['label'] }}</span>
+                      @if ($option['soon'])
+                        <x-soon />
+                      @endif
+                    </span>
                     <span class="mt-0.5 block text-[13px] text-muted">{{ $option['description'] }}</span>
                   </span>
                 </label>

@@ -1,5 +1,10 @@
 @use('App\Helpers\Money')
 
+@php
+  $user = auth()->user();
+  $canManage = $user->account->allowsManagementBy($user);
+@endphp
+
 <div class="flex max-w-3xl flex-col gap-4">
   <div class="flex flex-wrap items-center justify-between gap-3">
     <p class="text-sm text-muted">
@@ -9,10 +14,16 @@
       @endif
     </p>
 
-    <span class="flex h-9 cursor-not-allowed items-center gap-2 rounded-md border border-hairline px-3.5 text-[13px] font-semibold text-muted-soft">
-      {{ __('Add copy') }}
-      <x-soon />
-    </span>
+    {{-- Copies are added on the item form, which carries a row per copy, so this
+         hands the reader over to it rather than being a screen of its own. --}}
+    @if ($canManage)
+      <x-button.secondary :href="route('items.edit', [$catalog, $item])" turbo class="shrink-0 !h-9 !px-4 text-[13px]" data-test="add-copy-button">
+        <x-slot:icon>
+          <x-lucide-plus class="size-4" />
+        </x-slot>
+        {{ __('Add copy') }}
+      </x-button.secondary>
+    @endif
   </div>
 
   @forelse ($item->copies as $copy)

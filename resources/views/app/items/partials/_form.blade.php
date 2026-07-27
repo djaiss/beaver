@@ -103,7 +103,9 @@
         // Reject here so an oversized photo never leaves the browser: the server
         // caps a photo at 10 MB, and a bigger request would bounce off nginx.
         if (window.oversizedFiles([file], 10240).length) {
-          this.sizeError = @js(__('Each photo must be under 10 MB. Larger ones were skipped.'))
+          // The semicolon is load bearing. A blade echo compiles to a php echo, and php
+          // eats the newline after the closing tag, gluing the next statement onto this one.
+          this.sizeError = @js(__('Each photo must be under 10 MB. Larger ones were skipped.'));
           continue
         }
         this.newPhotos.push({ key: this.nextPhotoKey++, file, preview: URL.createObjectURL(file) })

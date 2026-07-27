@@ -80,6 +80,16 @@ it('renders the types, visibility and currency help popovers on the new collecti
     $response->assertSee('overriding the account default');
 });
 
+it('marks the public visibility as not shipped yet on the new collection form', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/collections/new');
+
+    $response->assertOk();
+    $response->assertSee('Anyone with the link will be able to view it, read-only.');
+    $response->assertSeeInOrder(['Public', 'Soon'], false);
+});
+
 it('forbids viewers from viewing the new collection form', function () {
     $account = $this->createAccount();
     $viewer = $this->createUser();

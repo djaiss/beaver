@@ -112,7 +112,7 @@ return [
                     'name' => 'visibility',
                     'type' => 'string',
                     'required' => true,
-                    'description' => 'Who can see the collection. One of private (only you), shared (everyone in the account) or public (anyone with the link, read only).',
+                    'description' => 'Who the collection is meant for. One of private (you alone), shared (everyone in the account) or public (anyone with the link, read only). The setting is recorded but not enforced yet: every member of the account can read every collection, and public collections have no link to hand out, so nothing is reachable from outside the account.',
                     'example' => 'private',
                 ],
                 [
@@ -170,7 +170,7 @@ return [
                     'name' => 'visibility',
                     'type' => 'string',
                     'required' => true,
-                    'description' => 'Who can see the collection. One of private, shared or public.',
+                    'description' => 'Who the collection is meant for. One of private, shared or public. The setting is recorded but not enforced yet.',
                     'example' => 'private',
                 ],
                 [
