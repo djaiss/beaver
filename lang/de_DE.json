@@ -2596,5 +2596,6 @@
     "Read the documentation": "Dokumentation lesen",
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "Noch nicht, und das sagen wir hier lieber deutlich. Definitionen von Sammlungstypen lassen sich als JSON exportieren und importieren, offene Leihgaben als CSV herunterladen. Beim Self-Hosting enthält eine Sicherung der Datenbank und des Speichervolumes alles.",
     "Read the full FAQ": "Die vollständige FAQ lesen",
-    "Reviews": "Bewertungen"
+    "Reviews": "Bewertungen",
+    "Media kit": "Pressekit"
 }

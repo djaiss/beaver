@@ -9,6 +9,7 @@ use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
 use App\Http\Controllers\Marketing\FaqController;
 use App\Http\Controllers\Marketing\FeaturesController;
 use App\Http\Controllers\Marketing\MarketingController;
+use App\Http\Controllers\Marketing\MediaKitController;
 use App\Http\Controllers\Marketing\PricingController;
 use App\Http\Controllers\Marketing\PrivacyController;
 use App\Http\Controllers\Marketing\TermsController;
@@ -53,6 +54,8 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
         Route::get('pricing', [PricingController::class, 'index'])->name('marketing.pricing.index');
 
         Route::get('faq', [FaqController::class, 'index'])->name('marketing.faq.index');
+
+        Route::get('media-kit', [MediaKitController::class, 'index'])->name('marketing.mediaKit.index');
 
         Route::get('testimonials', [TestimonialsController::class, 'index'])->name('marketing.testimonials.index');
 
