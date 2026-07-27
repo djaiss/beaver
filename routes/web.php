@@ -34,7 +34,6 @@ use App\Http\Controllers\App\ItemController;
 use App\Http\Controllers\App\ItemCopiesController;
 use App\Http\Controllers\App\ItemHistoryController;
 use App\Http\Controllers\App\ItemPhotoController;
-use App\Http\Controllers\App\ItemRoadmapController;
 use App\Http\Controllers\App\ItemTagController;
 use App\Http\Controllers\App\LoanController;
 use App\Http\Controllers\App\LoanExportController;
@@ -126,7 +125,6 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
             Route::get('history', [ItemHistoryController::class, 'index'])->name('items.history.index');
             Route::get('history/{copy}/{section?}', [ItemHistoryController::class, 'show'])->whereNumber('copy')->where('section', '[a-z]+')->name('items.history.show');
             Route::get('activities', [ItemActivitiesController::class, 'index'])->name('items.activities.index');
-            Route::get('roadmap', [ItemRoadmapController::class, 'index'])->name('items.roadmap.index');
         });
     });
 

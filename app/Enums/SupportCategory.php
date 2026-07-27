@@ -86,7 +86,8 @@ enum SupportCategory: string
                 __('I can\'t promise every idea will make it into the app, but I promise I\'ll read every single one.'),
             ],
             self::Billing => [
-                __('If you have a question about your subscription, a payment, a renewal, or anything related to billing, send me the details.'),
+                __('There is no subscription here, and nothing ever renews. Self-hosting is free, and the managed hosting is a single one-time payment.'),
+                __('So if you were charged something you did not expect, or you have a question about a payment or a receipt, send me the details.'),
                 __('I\'ll investigate and get back to you as quickly as I can.'),
             ],
             self::EmailDelivery => [

@@ -57,7 +57,9 @@
             // Reject an oversized file in the browser and clear the input, so the
             // request never carries it and never bounces off the server limit.
             if (window.oversizedFiles(files, {{ $maxKb }}).length) {
-              this.sizeError = @js(__('The file must be under :size MB.', ['size' => $maxMb]))
+              // The semicolon is load bearing. A blade echo compiles to a php echo, and php
+              // eats the newline after the closing tag, gluing the next statement onto this one.
+              this.sizeError = @js(__('The file must be under :size MB.', ['size' => $maxMb]));
               this.$refs.file.value = ''
               this.filename = ''
               return

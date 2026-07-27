@@ -53,6 +53,16 @@ it('shows the new conversation form', function () {
     $response->assertSee('Subject');
 });
 
+it('tells the reader on the new conversation form that nothing is a subscription', function () {
+    $user = $this->createUser();
+
+    $response = $this->actingAs($user)->get('/support/new');
+
+    $response->assertOk();
+    $response->assertSee('There is no subscription here, and nothing ever renews.');
+    $response->assertDontSee('a question about your subscription');
+});
+
 it('opens a conversation', function () {
     Queue::fake();
 

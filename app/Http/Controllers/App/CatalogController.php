@@ -149,14 +149,18 @@ class CatalogController extends Controller
     }
 
     /**
-     * @return list<array{key: string, label: string, description: string}>
+     * Public collections are still on their way: the setting saves, but there is
+     * no public link yet, so the option carries a badge and reads in the future
+     * tense. See docs/portal/en/15-troubleshooting/5-feature-status.md.
+     *
+     * @return list<array{key: string, label: string, description: string, soon: bool}>
      */
     private function visibilityOptions(): array
     {
         return [
-            ['key' => VisibilityEnum::Private->value, 'label' => __('Private'), 'description' => __('Only you can see this collection.')],
-            ['key' => VisibilityEnum::Shared->value, 'label' => __('Shared'), 'description' => __('Visible to everyone in your account.')],
-            ['key' => VisibilityEnum::Public->value, 'label' => __('Public'), 'description' => __('Anyone with the link can view it, read-only.')],
+            ['key' => VisibilityEnum::Private->value, 'label' => __('Private'), 'description' => __('Only you can see this collection.'), 'soon' => false],
+            ['key' => VisibilityEnum::Shared->value, 'label' => __('Shared'), 'description' => __('Visible to everyone in your account.'), 'soon' => false],
+            ['key' => VisibilityEnum::Public->value, 'label' => __('Public'), 'description' => __('Anyone with the link will be able to view it, read-only.'), 'soon' => true],
         ];
     }
 }
