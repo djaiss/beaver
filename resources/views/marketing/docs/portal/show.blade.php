@@ -6,10 +6,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="csrf-token" content="{{ csrf_token() }}" />
-
     @php
         // The documentation supplies its own title and description: the title comes from the
         // page frontmatter and the description from its opening lines, neither of which the
