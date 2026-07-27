@@ -45,6 +45,7 @@
             <x-sidebar-link :href="route('instanceAdmin.index')" :active="request()->routeIs('instanceAdmin.index')" icon="layout-grid">Overview</x-sidebar-link>
             <x-sidebar-link :href="route('instanceAdmin.accounts.index')" :active="request()->routeIs('instanceAdmin.accounts.*')" icon="users">Accounts & users</x-sidebar-link>
             <x-sidebar-link :href="route('instanceAdmin.support.index')" :active="request()->routeIs('instanceAdmin.support.*')" icon="message-square">Support tickets</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.deletionReasons.index')" :active="request()->routeIs('instanceAdmin.deletionReasons.*')" icon="door-open">Deletion reasons</x-sidebar-link>
         </nav>
 
         @php

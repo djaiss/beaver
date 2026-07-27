@@ -22,6 +22,7 @@ use App\Http\Controllers\App\DocumentController;
 use App\Http\Controllers\App\DocumentDownloadController;
 use App\Http\Controllers\App\GettingStartedController;
 use App\Http\Controllers\App\Instance\AccountController as InstanceAccountController;
+use App\Http\Controllers\App\Instance\DeletionReasonController as InstanceDeletionReasonController;
 use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
 use App\Http\Controllers\App\Instance\ResponseCacheController as InstanceResponseCacheController;
 use App\Http\Controllers\App\Instance\SiteOptionController as InstanceSiteOptionController;
@@ -390,6 +391,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
 
         Route::delete('users/{user}', [InstanceUserController::class, 'destroy'])->where('user', '[1-9][0-9]*')->name('users.destroy');
         Route::put('users/{user}/administrator', [InstanceUserController::class, 'update'])->where('user', '[1-9][0-9]*')->name('users.administrator.update');
+
+        // what people wrote on their way out. The rows outlive the person who
+        // wrote them and belong to nobody, so the page only lists them.
+        Route::get('deletion-reasons', [InstanceDeletionReasonController::class, 'index'])->name('deletionReasons.index');
 
         // the support inbox, spanning every account. Both the tab and the open
         // conversation live in the path (no query string), so each bucket and each

@@ -33,6 +33,14 @@ Puedes buscar cuentas **por la dirección de correo de un miembro** y filtrar po
 
 Al abrir una cuenta se muestran sus miembros, ordenados primero los propietarios, luego los editores y por último los lectores, junto con los recuentos de colecciones y elementos de la cuenta y sus quince entradas más recientes del registro de actividad.
 
+## Motivos de eliminación
+
+A quien elimina su usuario se le pregunta antes por qué, y la sección **Motivos de eliminación** es donde llegan esas respuestas, la más reciente primero, 25 por página.
+
+Cada entrada es una frase y una fecha, nada más. No está ligada a quien la escribió y permanece cuando esa persona ya no está: el usuario se va, la frase se queda. No hay nada que abrir ni ninguna acción que realizar, así que la página se limita a listarlas.
+
+Los motivos están cifrados en reposo, como todo lo demás que la gente escribe en la aplicación, por lo que esta página no tiene buscador.
+
 ## Opciones del sitio
 
 El área **Opciones del sitio** reúne los ajustes del sitio de marketing público, las páginas que un visitante ve antes de iniciar sesión. Ese sitio está desactivado por defecto en una instancia autoalojada (consulta @doc(selfHosting.configure)), así que si nunca lo activaste, nada de lo que hay aquí cambia lo que ven tus usuarios.
