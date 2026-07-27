@@ -33,6 +33,33 @@ Você pode buscar contas **pelo e-mail de um membro** e filtrar por função. Bu
 
 Abrir uma conta mostra seus membros, ordenados primeiro por proprietários, depois editores, depois visualizadores, junto com as contagens de coleções e itens da conta e suas quinze entradas mais recentes no log de atividade.
 
+## Opções do site
+
+A área **Opções do site** reúne as configurações do site de marketing público, as páginas que um visitante vê antes de entrar. Esse site vem desligado por padrão em uma instância auto-hospedada (veja @doc(selfHosting.configure)), então, se você nunca o ligou, nada aqui muda o que seus usuários enxergam.
+
+### O banner de anúncio
+
+O banner é a barra preta no topo de cada página do site de marketing. É o lugar para uma frase curta: uma versão que você quer que as pessoas notem, uma janela de manutenção, um evento.
+
+Só a frase é necessária. Todo o resto é opcional:
+
+- **Mostrar o banner** liga e desliga. Coloque em **Não** e nenhuma barra aparece, independentemente do que você tenha preenchido.
+- **Versão** é a pequena pílula verde à esquerda, como `v0.9`. Deixe vazia e a pílula some.
+- **Link** é o endereço para onde o banner aponta, e **Texto do link** é o que o visitante clica. Deixe o link vazio para um banner que apenas comunica algo.
+- **Frase** é o anúncio em si.
+
+O site de marketing é servido em vários idiomas, então a frase e o texto do link são escritos um idioma por vez, com uma aba para cada. Um idioma que você deixar vazio recorre ao inglês, ou seja, preencher só o inglês já garante um banner para todos os visitantes. O ponto verde em uma aba indica que aquele idioma tem a própria frase.
+
+A pré-visualização acima do formulário mostra a barra do jeito que o visitante vai ver, no idioma da aba em que você está. Salvar limpa para você as páginas de marketing em cache, então a mudança fica no ar na hora.
+
+### Limpando o cache de respostas
+
+As páginas de marketing mudam pouco, então cada uma é renderizada uma vez e depois servida a partir de um cache por sete dias. Isso mantém o site público rápido, mas também significa que uma edição pode ficar uma semana sem aparecer.
+
+**Limpar cache** descarta todas as páginas em cache de uma vez. Recorra a isso depois de mudar algo que o site público mostra e que a aplicação desconhece, como uma página de documentação que você editou no servidor. Salvar o banner e moderar um depoimento já limpam o cache por conta própria.
+
+Limpar não perde nada. Cada página é renderizada de novo na próxima vez que alguém a pedir, e o único custo é que o primeiro visitante espera por essa renderização. O mesmo pode ser feito na linha de comando com `php artisan responsecache:clear`, descrito em @doc(selfHosting.cliCommands).
+
 ## As ações destrutivas
 
 Três ações no painel alteram ou removem dados, e nenhuma delas pode ser desfeita:

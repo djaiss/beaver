@@ -50,6 +50,14 @@ php artisan search:rebuild-index
 
 Reconstruye el índice que hay detrás de la búsqueda de toda la cuenta: objetos, colecciones, ejemplares, fotos, préstamos, ubicaciones, conjuntos, sagas, categorías, etiquetas y documentos. Ejecútalo una vez después de actualizar a una versión que introduce la búsqueda: la migración crea la tabla, pero solo este comando la rellena. Pasa `--type=item` para reconstruir un único tipo de registro. Es seguro volver a ejecutarlo en cualquier momento, y también es el remedio si el índice se desvía. Consulta @doc(search.overview).
 
+### Limpiar la caché del sitio de marketing
+
+```
+php artisan responsecache:clear
+```
+
+Descarta las copias cacheadas de las páginas públicas del sitio de marketing, que por lo demás se sirven desde la caché durante siete días. No se pierde nada: cada página se vuelve a renderizar en la siguiente visita. El mismo botón existe en el panel, descrito en @doc(instanceAdmin.panel).
+
 ### Preparar un idioma para su traducción
 
 ```

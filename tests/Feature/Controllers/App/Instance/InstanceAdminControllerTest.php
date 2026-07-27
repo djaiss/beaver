@@ -19,6 +19,7 @@ function instanceAdminPages(): array
         'instance-admin/accounts',
         'instance-admin/support',
         'instance-admin/marketing/testimonials',
+        'instance-admin/site-options',
     ];
 }
 

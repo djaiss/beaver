@@ -105,6 +105,8 @@ enum UserActionEnum: string
     case TestimonialWithdrawn = 'testimonial_withdrawn';
     case TestimonialPublished = 'testimonial_published';
     case TestimonialRejected = 'testimonial_rejected';
+    case SiteOptionsUpdate = 'site_options_updated';
+    case ResponseCacheCleared = 'response_cache_cleared';
 
     public function translationKey(): string
     {
@@ -208,6 +210,8 @@ enum UserActionEnum: string
             self::TestimonialWithdrawn => 'Withdrew their testimonial from the marketing site',
             self::TestimonialPublished => 'Published the testimonial by :name on the marketing site',
             self::TestimonialRejected => 'Rejected the testimonial by :name',
+            self::SiteOptionsUpdate => 'Updated the site options from the instance administration',
+            self::ResponseCacheCleared => 'Cleared the response cache from the instance administration',
         };
     }
 }
