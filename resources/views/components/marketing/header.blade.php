@@ -9,7 +9,7 @@
         ['label' => __('FAQ'), 'url' => route('marketing.faq.index')],
     ];
 
-    $featureColumns = app(\App\Services\MarketingFeatures::class)->columns();
+    $featureColumns = app(\App\ViewModels\MarketingFeatures::class)->columns();
 
     // The reviews link only appears once there is something to read, so the site
     // never points visitors at an empty page.

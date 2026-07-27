@@ -11,7 +11,7 @@
         {{-- The picker keeps the visitor on the page they are reading, so it needs the
              current request rather than just the list of languages. --}}
         @php
-            $languages = app(\App\Services\MarketingLanguages::class);
+            $languages = app(\App\ViewModels\MarketingLanguages::class);
         @endphp
 
         @if ($languages->isOffered())

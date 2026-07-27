@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   <head>
     @php
-        $seo = app(\App\Services\MarketingSeo::class)->forRequest(request());
+        $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request());
     @endphp
 
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])

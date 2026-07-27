@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\ViewModels;
 
 /**
  * The questions and answers shown on the public FAQ page. They live here rather

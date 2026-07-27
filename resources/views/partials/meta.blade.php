@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-{{-- The public pages hand in their own description through App\Services\MarketingSeo;
+{{-- The public pages hand in their own description through App\ViewModels\MarketingSeo;
      everything else falls back to the one line summary of the application. --}}
 @php($metaDescription = $description ?? config('app.description'))
 

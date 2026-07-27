@@ -16,7 +16,7 @@
         // route name could tell you.
         // The portal home already says it is the documentation in its own title.
         $seoTitle = $page['is_home'] ? $page['title'] : $page['title'].' — '.__('documentation');
-        $seo = app(\App\Services\MarketingSeo::class)->forRequest(request(), $seoTitle, $excerpt);
+        $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request(), $seoTitle, $excerpt);
     @endphp
 
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
