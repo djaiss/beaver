@@ -2331,5 +2331,10 @@
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "尚未记录估值和存放位置。填写藏品的价值和存放地点后，就会显示在这里。",
     "Account activity": "账户动态",
     "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "账户名称向与您共享此工作区的所有人标识该工作区。重命名是安全的，并会立即生效。",
-    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "默认货币用于您所有收藏的估值总额。更改它只会改变新总额的显示单位，不会转换您已经记录的数值。"
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "默认货币用于您所有收藏的估值总额。更改它只会改变新总额的显示单位，不会转换您已经记录的数值。",
+    "This page is only available in English.": "本页面仅提供英文版本。",
+    "I agree with the :terms and the :privacy.": "我同意:terms和:privacy。",
+    "terms of use": "使用条款",
+    "privacy policy": "隐私政策",
+    "You have to agree with the terms of use and the privacy policy to create an account.": "创建账户前，你需要同意使用条款和隐私政策。"
 }

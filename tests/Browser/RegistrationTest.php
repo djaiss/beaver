@@ -16,6 +16,7 @@ it('registers a new user through the browser', function () {
         ->fill('email', 'chandler.bing@friends.com')
         ->fill('password', '5UTHSmdj')
         ->fill('password_confirmation', '5UTHSmdj')
+        ->check('terms')
         ->submit()
         ->assertPathIs('/verify-email')
         ->assertSee('Thanks for signing up!');

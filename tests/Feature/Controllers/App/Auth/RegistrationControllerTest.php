@@ -20,6 +20,7 @@ it('creates a user with their own account', function () {
         'email' => 'chandler.bing@friends.com',
         'password' => '5UTHSmdj',
         'password_confirmation' => '5UTHSmdj',
+        'terms' => '1',
     ]);
 
     $this->assertAuthenticated();
@@ -33,4 +34,26 @@ it('creates a user with their own account', function () {
     expect($account->name)->toBe('Chandler Bing');
     expect($account->created_by_id)->toBe($user->id);
     expect(Account::query()->count())->toBe(1);
+});
+
+it('refuses to sign anybody up who has not agreed to the terms', function () {
+    $response = $this->post('/register', [
+        'first_name' => 'Chandler',
+        'last_name' => 'Bing',
+        'email' => 'chandler.bing@friends.com',
+        'password' => '5UTHSmdj',
+        'password_confirmation' => '5UTHSmdj',
+    ]);
+
+    $response->assertSessionHasErrors('terms');
+
+    $this->assertGuest();
+    expect(User::query()->count())->toBe(0);
+});
+
+it('links to the terms of use and the privacy policy on the sign up page', function () {
+    $this->get('/register')
+        ->assertOk()
+        ->assertSee(route('marketing.terms.index'))
+        ->assertSee(route('marketing.privacy.index'));
 });

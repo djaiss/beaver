@@ -1,3 +1,5 @@
+@use('App\Services\DocumentationPortal')
+
 <x-guest-layout>
   <div class="grid min-h-screen w-screen grid-cols-1 lg:grid-cols-2">
     <!-- Left side -->
@@ -54,6 +56,26 @@
               <div class="w-full">
                 <x-input type="password" id="password_confirmation" :label="__('Confirm password')" required :error="$errors->get('password_confirmation')" :passManagerDisabled="false" autocomplete="new-password" />
               </div>
+            </div>
+
+            {{-- The legal pages live on the public site, behind its language prefix.
+                 This form is not one of those pages, so it names the prefix itself
+                 rather than inheriting it. Both open in a new tab so a half filled
+                 form is not lost on the way. --}}
+            @php
+              $urlLocale = app(DocumentationPortal::class)->urlLocaleFor(app()->getLocale());
+              $linkClasses = 'font-medium text-ink underline underline-offset-2';
+              $terms = '<a href="'.route('marketing.terms.index', ['locale' => $urlLocale]).'" target="_blank" rel="noopener" class="'.$linkClasses.'">'.__('terms of use').'</a>';
+              $privacy = '<a href="'.route('marketing.privacy.index', ['locale' => $urlLocale]).'" target="_blank" rel="noopener" class="'.$linkClasses.'">'.__('privacy policy').'</a>';
+            @endphp
+
+            <div class="space-y-1">
+              <label for="terms" class="flex items-start gap-x-2 text-sm text-body">
+                <input type="checkbox" id="terms" name="terms" value="1" required @checked(old('terms')) class="mt-0.5 rounded-sm border-hairline bg-input text-primary shadow-xs focus:ring-primary/30" />
+                <span>{!! __('I agree with the :terms and the :privacy.', ['terms' => $terms, 'privacy' => $privacy]) !!}</span>
+              </label>
+
+              <x-error :messages="$errors->get('terms')" />
             </div>
 
             <div class="flex items-center justify-between">

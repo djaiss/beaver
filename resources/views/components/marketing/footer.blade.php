@@ -44,8 +44,8 @@
               [
                   'title' => __('Legal'),
                   'links' => [
-                      ['label' => __('Privacy'), 'url' => '#'],
-                      ['label' => __('Terms'), 'url' => '#'],
+                      ['label' => __('Privacy'), 'url' => route('marketing.privacy.index')],
+                      ['label' => __('Terms'), 'url' => route('marketing.terms.index')],
                       ['label' => __('MIT License'), 'url' => $github . '/blob/main/LICENSE'],
                   ],
               ],

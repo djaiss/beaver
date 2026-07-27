@@ -20,6 +20,7 @@ Du brauchst die Adresse deiner KolleK-Instanz. Wenn du selbst hostest, ist das d
 - **Vorname** und **Nachname**.
 - **E-Mail-Adresse.** Damit meldest du dich an, und dorthin schickt KolleK dir Dinge wie Anmeldelinks und Sicherheitshinweise.
 - **Passwort.**
+- **Deine Zustimmung.** Das Kästchen, mit dem du den Nutzungsbedingungen und der Datenschutzerklärung zustimmst, muss angehakt sein. Vorher lässt sich das Formular nicht absenden.
 
 Sende dann das Formular ab. Du bist sofort angemeldet und landest in deinem neuen, leeren Konto.
 

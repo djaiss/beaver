@@ -20,6 +20,7 @@ Ouvrez votre instance et accédez à la page d'inscription. Remplissez :
 - **Prénom** et **nom**.
 - **Adresse email**. C'est ainsi que vous vous connectez, et c'est là que KolleK vous envoie des éléments comme les liens de connexion et les avis de sécurité.
 - **Mot de passe**.
+- **Votre accord**. La case confirmant que vous acceptez les conditions d'utilisation et la politique de confidentialité doit être cochée. Le formulaire n'est pas envoyé tant qu'elle ne l'est pas.
 
 Puis validez le formulaire. Vous êtes connecté immédiatement et amené vers votre nouveau compte, vide pour l'instant.
 

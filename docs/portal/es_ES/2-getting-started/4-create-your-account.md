@@ -20,6 +20,7 @@ Abre tu instancia y ve a la página de registro. Rellena:
 - **Nombre** y **apellidos**.
 - **Dirección de correo electrónico**. Es lo que usas para iniciar sesión y adonde KolleK te envía cosas como enlaces de acceso y avisos de seguridad.
 - **Contraseña**.
+- **Tu aceptación**. La casilla que confirma que aceptas los términos de uso y la política de privacidad tiene que estar marcada. El formulario no se envía hasta que lo esté.
 
 Luego envía el formulario. Se inicia tu sesión de inmediato y llegas a tu nueva cuenta, todavía vacía.
 

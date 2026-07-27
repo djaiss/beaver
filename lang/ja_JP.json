@@ -2331,5 +2331,10 @@
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "評価も保管場所の登録もまだありません。所蔵品の価値と保管場所を記録すると、ここに表示されます。",
     "Account activity": "アカウントの動き",
     "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "アカウント名は、このワークスペースを共有しているすべての人に対する識別名です。名前の変更は安全で、すぐに反映されます。",
-    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "既定の通貨はコレクション全体の評価額の合計に使われます。変更しても新しい合計の表示が変わるだけで、すでに記録された金額は換算されません。"
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "既定の通貨はコレクション全体の評価額の合計に使われます。変更しても新しい合計の表示が変わるだけで、すでに記録された金額は換算されません。",
+    "This page is only available in English.": "このページは英語版のみです。",
+    "I agree with the :terms and the :privacy.": ":termsと:privacyに同意します。",
+    "terms of use": "利用規約",
+    "privacy policy": "プライバシーポリシー",
+    "You have to agree with the terms of use and the privacy policy to create an account.": "アカウントを作成するには、利用規約とプライバシーポリシーに同意する必要があります。"
 }
