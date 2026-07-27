@@ -24,7 +24,7 @@
       ];
     }
 
-    $confirmClear = 'return confirm('.Js::from('Clear the cached marketing pages? Visitors will get freshly rendered ones, which is slower until the cache fills up again.').')';
+    $confirmPurge = 'return confirm('.Js::from('Purge the cached marketing pages from Cloudflare? Visitors will get freshly rendered ones, which is slower until the cache fills up again.').')';
   @endphp
 
   <div class="px-6 py-8 lg:px-12 lg:py-10">
@@ -153,23 +153,25 @@
         </x-box>
       </div>
 
-      <x-box title="Response cache" padding="p-0">
-        <x-slot:description>
-          Marketing pages are rendered once and served from a cache for seven days. Clear it after changing anything the public site shows, such as a testimonial or the documentation portal.
-        </x-slot>
+      @if ($cloudflareConfigured)
+        <x-box title="Cloudflare cache" padding="p-0">
+          <x-slot:description>
+            Marketing pages are rendered once and held by Cloudflare for seven days. Purge it after changing anything the public site shows, such as a testimonial or the documentation portal.
+          </x-slot>
 
-        <div class="flex items-center justify-between gap-3 p-3">
-          <p class="text-sm text-muted">Clearing drops every cached page at once. Nothing is lost: the pages are rendered again on the next visit, only slower until the cache fills up.</p>
+          <div class="flex items-center justify-between gap-3 p-3">
+            <p class="text-sm text-muted">Purging drops every cached page at once. Nothing is lost: the pages are rendered again on the next visit, only slower until the cache fills up. Visitors keep their own copy of a page for five minutes, which no purge can reach.</p>
 
-          <x-form
-            method="delete"
-            :action="route('instanceAdmin.siteOptions.responseCache.destroy')"
-            :onsubmit="$confirmClear"
-          >
-            <x-button.secondary type="submit">Clear cache</x-button.secondary>
-          </x-form>
-        </div>
-      </x-box>
+            <x-form
+              method="delete"
+              :action="route('instanceAdmin.siteOptions.cloudflareCache.destroy')"
+              :onsubmit="$confirmPurge"
+            >
+              <x-button.secondary type="submit">Purge cache</x-button.secondary>
+            </x-form>
+          </div>
+        </x-box>
+      @endif
     </div>
   </div>
 </x-app-layout>

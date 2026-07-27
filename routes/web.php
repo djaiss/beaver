@@ -22,9 +22,9 @@ use App\Http\Controllers\App\DocumentController;
 use App\Http\Controllers\App\DocumentDownloadController;
 use App\Http\Controllers\App\GettingStartedController;
 use App\Http\Controllers\App\Instance\AccountController as InstanceAccountController;
+use App\Http\Controllers\App\Instance\CloudflareCacheController as InstanceCloudflareCacheController;
 use App\Http\Controllers\App\Instance\DeletionReasonController as InstanceDeletionReasonController;
 use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
-use App\Http\Controllers\App\Instance\ResponseCacheController as InstanceResponseCacheController;
 use App\Http\Controllers\App\Instance\SiteOptionController as InstanceSiteOptionController;
 use App\Http\Controllers\App\Instance\SupportController as InstanceSupportController;
 use App\Http\Controllers\App\Instance\SupportMessageController as InstanceSupportMessageController;
@@ -78,7 +78,9 @@ use App\Http\Controllers\LocaleController;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 
-require __DIR__.'/marketing.php';
+// The public site is not required here. It runs outside the web middleware
+// group so its responses carry no session cookie and can be cached by a CDN,
+// which means it is registered from bootstrap/app.php instead.
 
 Route::put('/locale', [LocaleController::class, 'update'])->name('locale.update');
 
@@ -410,10 +412,10 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('marketing/testimonials/{testimonial}', [InstanceTestimonialController::class, 'update'])->where('testimonial', '[1-9][0-9]*')->name('marketing.testimonials.update');
 
         // site options — the announcement banner on the marketing site, and the
-        // response cache that holds its rendered pages.
+        // Cloudflare cache that holds its rendered pages.
         Route::get('site-options', [InstanceSiteOptionController::class, 'index'])->name('siteOptions.index');
         Route::put('site-options', [InstanceSiteOptionController::class, 'update'])->name('siteOptions.update');
-        Route::delete('site-options/response-cache', [InstanceResponseCacheController::class, 'destroy'])->name('siteOptions.responseCache.destroy');
+        Route::delete('site-options/cloudflare-cache', [InstanceCloudflareCacheController::class, 'destroy'])->name('siteOptions.cloudflareCache.destroy');
     });
 });
 

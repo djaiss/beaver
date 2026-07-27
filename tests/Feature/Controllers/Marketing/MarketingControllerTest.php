@@ -80,7 +80,9 @@ it('offers to sign up when the visitor is a guest', function () {
         ->assertSee(route('register'));
 });
 
-it('offers to go back to the account when the visitor is signed in', function () {
+it('offers the same call to action to a signed in visitor', function () {
+    // The page is cached as one copy for everybody, so it cannot ask who is
+    // reading it.
     config()->set('marketing.show', true);
     $user = $this->createUser();
 
@@ -88,8 +90,8 @@ it('offers to go back to the account when the visitor is signed in', function ()
 
     $response
         ->assertOk()
-        ->assertSee('Go to your account')
-        ->assertSee(route('dashboard.index'));
+        ->assertSee('Get started')
+        ->assertDontSee('Go to your account');
 });
 
 it('sends everyone to the login page when the marketing site is off', function () {

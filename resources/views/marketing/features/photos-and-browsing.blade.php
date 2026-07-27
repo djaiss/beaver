@@ -140,11 +140,7 @@
                 {{ __('Covers, labels, packaging, and detail shots are part of how collectors remember what they own. :name gives the visual side of a collection enough room to do its job.', ['name' => config('app.name')]) }}
             </p>
             <div class="mt-8 flex">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Give it some shelf appeal') }}</a>
-                @else
-                    <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Give it some shelf appeal') }}</a>
-                @endauth
+                <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Give it some shelf appeal') }}</a>
             </div>
         </div>
 
@@ -333,11 +329,7 @@
                     {{ __('See file size, format, dimensions, upload date, uploader, cover status, and the item a photo belongs to. Useful for the careful collector and the person wondering why storage disappeared.') }}
                 </p>
                 <div class="mt-8 flex">
-                    @auth
-                        <a href="{{ route('dashboard.index') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Open the photo library') }} @svg('lucide-arrow-right', 'size-4')</a>
-                    @else
-                        <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Open the photo library') }} @svg('lucide-arrow-right', 'size-4')</a>
-                    @endauth
+                    <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Open the photo library') }} @svg('lucide-arrow-right', 'size-4')</a>
                 </div>
             </div>
 

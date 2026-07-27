@@ -139,11 +139,7 @@
                 {{ __('Some objects need more than a title and a photo. :name keeps insurance, care, custody, condition, storage, and proof of ownership beside the physical copy they describe.', ['name' => config('app.name')]) }}
             </p>
             <div class="mt-8 flex">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Give valuables a paper trail') }} @svg('lucide-arrow-right', 'size-4')</a>
-                @else
-                    <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Give valuables a paper trail') }} @svg('lucide-arrow-right', 'size-4')</a>
-                @endauth
+                <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Give valuables a paper trail') }} @svg('lucide-arrow-right', 'size-4')</a>
             </div>
         </div>
 
@@ -424,11 +420,7 @@
 
         {{-- SECONDARY CTA --}}
         <div class="mt-9 flex justify-center">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md border border-hairline bg-canvas px-6 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">{{ __('Track a valuable object') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @else
-                <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md border border-hairline bg-canvas px-6 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">{{ __('Track a valuable object') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @endauth
+            <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md border border-hairline bg-canvas px-6 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">{{ __('Track a valuable object') }} @svg('lucide-arrow-right', 'size-4')</a>
         </div>
     </section>
 
@@ -441,11 +433,7 @@
                     {{ __('Insurance, valuations, care, custody, storage, and proof of ownership, all beside the physical copy they describe.') }}
                 </p>
             </div>
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex h-[52px] shrink-0 items-center justify-center gap-x-2.5 rounded-[10px] bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Give valuables a paper trail') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @else
-                <a href="{{ route('register') }}" class="inline-flex h-[52px] shrink-0 items-center justify-center gap-x-2.5 rounded-[10px] bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Give valuables a paper trail') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @endauth
+            <a href="{{ route('register') }}" class="inline-flex h-[52px] shrink-0 items-center justify-center gap-x-2.5 rounded-[10px] bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Give valuables a paper trail') }} @svg('lucide-arrow-right', 'size-4')</a>
         </div>
     </section>
 

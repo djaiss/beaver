@@ -9,8 +9,8 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Services\CloudflareCache;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\ResponseCache\Facades\ResponseCache;
 
 /**
  * Reject a testimonial so it does not appear on the marketing site. Only an
@@ -52,12 +52,12 @@ class RejectTestimonial
     }
 
     /**
-     * Unpublishing must also drop the testimonial from the response-cached
-     * marketing pages, so clear the cache the same way publishing does.
+     * Unpublishing must also drop the testimonial from the cached marketing
+     * pages, so purge Cloudflare the same way publishing does.
      */
     private function flushMarketingCache(): void
     {
-        ResponseCache::clear();
+        CloudflareCache::purgeEverything();
     }
 
     private function log(): void

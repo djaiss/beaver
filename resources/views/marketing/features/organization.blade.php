@@ -149,11 +149,7 @@
                 {{ __('Collections grow. Shelves fill. The box labelled “other” becomes a lifestyle. :name gives you several sensible ways to arrange what you own, then lets you browse it according to the question in front of you.', ['name' => config('app.name')]) }}
             </p>
             <div class="mt-8 flex">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Tidy the chaos') }} @svg('lucide-arrow-right', 'size-4')</a>
-                @else
-                    <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Tidy the chaos') }} @svg('lucide-arrow-right', 'size-4')</a>
-                @endauth
+                <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Tidy the chaos') }} @svg('lucide-arrow-right', 'size-4')</a>
             </div>
         </div>
 
@@ -420,11 +416,7 @@
         </div>
 
         <div class="mt-8 flex">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Organize a collection') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @else
-                <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Organize a collection') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @endauth
+            <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Organize a collection') }} @svg('lucide-arrow-right', 'size-4')</a>
         </div>
     </section>
 
@@ -437,11 +429,7 @@
                     {{ __('Grid, list, and table views. Locations, categories, sets, series, tags, and conditions. Filter what is in front of you and get on with it.') }}
                 </p>
             </div>
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex h-[52px] shrink-0 items-center justify-center gap-x-2.5 rounded-[10px] bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Tidy the chaos') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @else
-                <a href="{{ route('register') }}" class="inline-flex h-[52px] shrink-0 items-center justify-center gap-x-2.5 rounded-[10px] bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Tidy the chaos') }} @svg('lucide-arrow-right', 'size-4')</a>
-            @endauth
+            <a href="{{ route('register') }}" class="inline-flex h-[52px] shrink-0 items-center justify-center gap-x-2.5 rounded-[10px] bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Tidy the chaos') }} @svg('lucide-arrow-right', 'size-4')</a>
         </div>
     </section>
 

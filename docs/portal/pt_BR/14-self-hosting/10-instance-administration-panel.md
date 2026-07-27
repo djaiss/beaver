@@ -58,15 +58,17 @@ Só a frase é necessária. Todo o resto é opcional:
 
 O site de marketing é servido em vários idiomas, então a frase e o texto do link são escritos um idioma por vez, com uma aba para cada. Um idioma que você deixar vazio recorre ao inglês, ou seja, preencher só o inglês já garante um banner para todos os visitantes. O ponto verde em uma aba indica que aquele idioma tem a própria frase.
 
-A pré-visualização acima do formulário mostra a barra do jeito que o visitante vai ver, no idioma da aba em que você está. Salvar limpa para você as páginas de marketing em cache, então a mudança fica no ar na hora.
+A pré-visualização acima do formulário mostra a barra do jeito que o visitante vai ver, no idioma da aba em que você está. Salvar purga para você o cache do Cloudflare, então a mudança fica no ar na hora.
 
-### Limpando o cache de respostas
+### Purgando o cache do Cloudflare
 
-As páginas de marketing mudam pouco, então cada uma é renderizada uma vez e depois servida a partir de um cache por sete dias. Isso mantém o site público rápido, mas também significa que uma edição pode ficar uma semana sem aparecer.
+As páginas de marketing mudam pouco, então cada uma é renderizada uma vez e depois fica guardada pelo Cloudflare por sete dias. Isso mantém o site público rápido, mas também significa que uma edição pode ficar uma semana sem aparecer.
 
-**Limpar cache** descarta todas as páginas em cache de uma vez. Recorra a isso depois de mudar algo que o site público mostra e que a aplicação desconhece, como uma página de documentação que você editou no servidor. Salvar o banner e moderar um depoimento já limpam o cache por conta própria.
+**Purgar cache** descarta de uma vez todas as páginas que o Cloudflare guarda. Recorra a isso depois de mudar algo que o site público mostra e que a aplicação desconhece, como uma página de documentação que você editou no servidor. Salvar o banner e moderar um depoimento já purgam por conta própria.
 
-Limpar não perde nada. Cada página é renderizada de novo na próxima vez que alguém a pedir, e o único custo é que o primeiro visitante espera por essa renderização. O mesmo pode ser feito na linha de comando com `php artisan responsecache:clear`, descrito em @doc(selfHosting.cliCommands).
+Purgar não perde nada. Cada página é renderizada de novo na próxima vez que alguém a pedir, e o único custo é que o primeiro visitante espera por essa renderização. O mesmo pode ser feito na linha de comando com `php artisan kollek:purge-cloudflare-cache`, descrito em @doc(selfHosting.cliCommands).
+
+Esta seção só aparece em uma instância servida atrás do Cloudflare, ou seja, uma com `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ZONE_ID` definidos. Sem eles não há o que purgar: uma instância servida diretamente renderiza cada página no momento em que ela é pedida. Note que o navegador do visitante guarda uma página por cinco minutos aconteça o que acontecer, e nenhuma purga alcança essa cópia.
 
 ## As ações destrutivas
 

@@ -50,13 +50,13 @@ php artisan search:rebuild-index
 
 Reconstrói o índice por trás da busca de toda a conta: itens, coleções, exemplares, fotos, empréstimos, locais, conjuntos, séries, categorias, etiquetas e documentos. Execute uma vez depois de atualizar para uma versão que introduz a busca: a migração cria a tabela, mas só este comando a preenche. Passe `--type=item` para reconstruir apenas um tipo de registro. É seguro executar novamente a qualquer momento, e também é o conserto se o índice sair de sincronia. Veja @doc(search.overview).
 
-### Limpar o cache do site de marketing
+### Purgar o cache do Cloudflare
 
 ```
-php artisan responsecache:clear
+php artisan kollek:purge-cloudflare-cache
 ```
 
-Descarta as cópias em cache das páginas públicas do site de marketing, que de outro modo são servidas do cache por sete dias. Nada se perde: cada página é renderizada de novo na próxima visita. O mesmo botão existe no painel, descrito em @doc(instanceAdmin.panel).
+Descarta todas as páginas públicas que o Cloudflare guarda, de outro modo servidas do cache dele por sete dias. Nada se perde: cada página é renderizada de novo na próxima visita. O comando precisa de `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ZONE_ID`, e avisa quando eles faltam. O mesmo botão existe no painel, descrito em @doc(instanceAdmin.panel).
 
 ### Preparar uma localidade para tradução
 

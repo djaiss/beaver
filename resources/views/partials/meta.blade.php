@@ -3,7 +3,12 @@
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="csrf-token" content="{{ csrf_token() }}" />
+
+{{-- The public site runs without a session so its pages can be cached by a CDN, and there
+     is no token to print there. It has no form to protect either, so nothing misses it. --}}
+@if (request()->hasSession())
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
+@endif
 
 <title>{{ $title ?? config('app.name') }}</title>
 

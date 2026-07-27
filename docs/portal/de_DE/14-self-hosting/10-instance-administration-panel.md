@@ -58,15 +58,17 @@ Nötig ist nur der Satz. Alles andere ist optional:
 
 Die Marketing-Website wird in mehreren Sprachen ausgeliefert, deshalb werden Satz und Linktext eine Sprache nach der anderen geschrieben, mit je einem Reiter. Eine Sprache, die du leer lässt, fällt auf Englisch zurück. Nur Englisch auszufüllen reicht also schon für ein Banner für alle Besucher. Der grüne Punkt auf einem Reiter zeigt, dass diese Sprache einen eigenen Satz hat.
 
-Die Vorschau über dem Formular zeigt den Balken so, wie ein Besucher ihn sehen wird, in der Sprache des Reiters, auf dem du gerade bist. Das Speichern leert für dich den Cache der Marketing-Seiten, die Änderung ist also sofort sichtbar.
+Die Vorschau über dem Formular zeigt den Balken so, wie ein Besucher ihn sehen wird, in der Sprache des Reiters, auf dem du gerade bist. Das Speichern leert für dich den Cloudflare-Cache, die Änderung ist also sofort sichtbar.
 
-### Den Response-Cache leeren
+### Den Cloudflare-Cache leeren
 
-Marketing-Seiten ändern sich selten, deshalb wird jede einmal gerendert und danach sieben Tage lang aus einem Cache ausgeliefert. Das hält die öffentliche Website schnell, bedeutet aber auch, dass eine Änderung eine Woche lang ungesehen bleiben kann.
+Marketing-Seiten ändern sich selten, deshalb wird jede einmal gerendert und danach sieben Tage lang von Cloudflare vorgehalten. Das hält die öffentliche Website schnell, bedeutet aber auch, dass eine Änderung eine Woche lang ungesehen bleiben kann.
 
-**Cache leeren** verwirft alle zwischengespeicherten Seiten auf einen Schlag. Greif darauf zurück, wenn du etwas geändert hast, das die öffentliche Website zeigt und wovon die Anwendung nichts weiß, etwa eine Dokumentationsseite, die du auf dem Server bearbeitet hast. Das Speichern des Banners und das Moderieren einer Bewertung leeren den Cache bereits von selbst.
+**Cache leeren** verwirft auf einen Schlag alle Seiten, die Cloudflare vorhält. Greif darauf zurück, wenn du etwas geändert hast, das die öffentliche Website zeigt und wovon die Anwendung nichts weiß, etwa eine Dokumentationsseite, die du auf dem Server bearbeitet hast. Das Speichern des Banners und das Moderieren einer Bewertung leeren ihn bereits von selbst.
 
-Beim Leeren geht nichts verloren. Jede Seite wird beim nächsten Aufruf neu gerendert, und der einzige Preis ist, dass der erste Besucher auf dieses Rendern wartet. Dasselbe geht auf der Kommandozeile mit `php artisan responsecache:clear`, beschrieben in @doc(selfHosting.cliCommands).
+Beim Leeren geht nichts verloren. Jede Seite wird beim nächsten Aufruf neu gerendert, und der einzige Preis ist, dass der erste Besucher auf dieses Rendern wartet. Dasselbe geht auf der Kommandozeile mit `php artisan kollek:purge-cloudflare-cache`, beschrieben in @doc(selfHosting.cliCommands).
+
+Dieser Abschnitt erscheint nur auf einer Instanz hinter Cloudflare, also einer, auf der `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ZONE_ID` gesetzt sind. Ohne sie gibt es nichts zu leeren: eine direkt ausgelieferte Instanz rendert jede Seite dann, wenn sie angefragt wird. Beachte, dass der Browser des Besuchers eine Seite fünf Minuten lang behält, was auch immer du tust, und dass kein Leeren diese Kopie erreicht.
 
 ## Die destruktiven Aktionen
 

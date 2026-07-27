@@ -160,11 +160,7 @@
             {{ __('A watch is not just a thing with a name. A comic is not just a book. A bottle is not just a drink. Start with a collection type that gets close, then teach :name the details that actually matter to you.', ['name' => config('app.name')]) }}
         </p>
         <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Teach :name your hobby', ['name' => config('app.name')]) }}</a>
-            @else
-                <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Teach :name your hobby', ['name' => config('app.name')]) }}</a>
-            @endauth
+            <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Teach :name your hobby', ['name' => config('app.name')]) }}</a>
             <a href="#fields" class="flex h-12 items-center justify-center gap-x-2 rounded-md border border-hairline bg-canvas px-5.5 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">
                 {{ __('See a type in action') }}
                 @svg('lucide-arrow-down', 'size-4')
@@ -367,11 +363,7 @@
                 <p class="mt-5 mb-6 text-[16px] leading-relaxed text-pretty text-muted">
                     {{ __('Build a type once and use it across the account. A carefully tuned “Vinyl” type should not have to be rebuilt every time another shelf becomes a collection.') }}
                 </p>
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-5.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Set up a collection type') }} @svg('lucide-arrow-right', 'size-4')</a>
-                @else
-                    <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-5.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Set up a collection type') }} @svg('lucide-arrow-right', 'size-4')</a>
-                @endauth
+                <a href="{{ route('register') }}" class="inline-flex h-12 items-center justify-center gap-x-2.5 rounded-md bg-primary px-5.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Set up a collection type') }} @svg('lucide-arrow-right', 'size-4')</a>
             </div>
             <div class="overflow-hidden rounded-2xl border border-hairline bg-canvas shadow-[0_4px_14px_rgba(17,17,17,0.05)]">
                 <div class="flex items-center justify-between border-b border-hairline-soft bg-sidebar px-5 py-4">
@@ -406,11 +398,7 @@
                 {{ __('Pick a ready-made type, add the fields that matter, and catalogue your collection the way it deserves.') }}
             </p>
             <div class="mt-8 flex justify-center">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="flex h-[50px] items-center justify-center rounded-md bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Set up a collection type') }}</a>
-                @else
-                    <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Set up a collection type') }}</a>
-                @endauth
+                <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('Set up a collection type') }}</a>
             </div>
         </div>
     </section>

@@ -95,12 +95,11 @@ as_www php artisan event:cache
 as_www php artisan view:cache
 as_www php artisan docs:cache
 
-# The response cache holds rendered marketing and docs HTML, which embeds the
-# hashed Vite asset names. A new image ships new hashes, so any page cached by
-# the previous image would point at asset files that no longer exist. Clear it
-# on every boot so the first request after a deploy re-renders against the
-# current build.
-as_www php artisan responsecache:clear
+# Nothing caches rendered pages on the instance itself any more: the public site
+# sends cache headers and whatever sits in front of it does the holding. An
+# instance behind Cloudflare purges that after a deploy with
+# `php artisan kollek:purge-cloudflare-cache`, since a page cached by the
+# previous image points at Vite asset names the new one no longer ships.
 
 echo "Starting role '${ROLE}': $*"
 exec "$@"

@@ -58,15 +58,17 @@ Seule la phrase est nécessaire. Tout le reste est facultatif :
 
 Le site vitrine est servi en plusieurs langues, donc la phrase et le libellé du lien s'écrivent une langue à la fois, avec un onglet pour chacune. Une langue laissée vide retombe sur l'anglais, ce qui veut dire que remplir l'anglais seul donne déjà une bannière à tous les visiteurs. Le point vert sur un onglet indique que cette langue a sa propre phrase.
 
-L'aperçu au-dessus du formulaire montre la barre telle que le visiteur la verra, dans la langue de l'onglet où tu te trouves. L'enregistrement vide pour toi le cache des pages du site vitrine, donc le changement est visible tout de suite.
+L'aperçu au-dessus du formulaire montre la barre telle que le visiteur la verra, dans la langue de l'onglet où tu te trouves. L'enregistrement purge pour toi le cache Cloudflare, donc le changement est visible tout de suite.
 
-### Vider le cache des réponses
+### Purger le cache Cloudflare
 
-Les pages du site vitrine changent rarement, donc chacune est rendue une fois puis servie depuis un cache pendant sept jours. Le site public reste rapide, mais une modification peut aussi rester invisible pendant une semaine.
+Les pages du site vitrine changent rarement, donc chacune est rendue une fois puis conservée par Cloudflare pendant sept jours. Le site public reste rapide, mais une modification peut aussi rester invisible pendant une semaine.
 
-**Vider le cache** supprime d'un coup toutes les pages en cache. Utilise-le après avoir changé quelque chose que le site public affiche et dont l'application n'a pas connaissance, par exemple une page de documentation modifiée sur le serveur. Enregistrer la bannière et modérer un témoignage vident déjà le cache d'eux-mêmes.
+**Purger le cache** supprime d'un coup toutes les pages que Cloudflare conserve. Utilise-le après avoir changé quelque chose que le site public affiche et dont l'application n'a pas connaissance, par exemple une page de documentation modifiée sur le serveur. Enregistrer la bannière et modérer un témoignage purgent déjà le cache d'eux-mêmes.
 
-Vider ne perd rien. Chaque page est rendue à nouveau à la prochaine demande, et le seul coût est que le premier visiteur attend ce rendu. La même chose se fait en ligne de commande avec `php artisan responsecache:clear`, décrite dans @doc(selfHosting.cliCommands).
+Purger ne perd rien. Chaque page est rendue à nouveau à la prochaine demande, et le seul coût est que le premier visiteur attend ce rendu. La même chose se fait en ligne de commande avec `php artisan kollek:purge-cloudflare-cache`, décrite dans @doc(selfHosting.cliCommands).
+
+Cette section n'apparaît que sur une instance servie derrière Cloudflare, c'est à dire une instance où `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ZONE_ID` sont renseignés. Sans eux il n'y a rien à purger : une instance servie directement rend chaque page au moment où on la demande. Note que le navigateur du visiteur garde une page pendant cinq minutes quoi que tu fasses, et qu'aucune purge n'atteint cette copie.
 
 ## Les actions destructrices
 

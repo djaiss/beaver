@@ -50,6 +50,10 @@ Com o mailer padrão `log`, nenhum e-mail chega a ser enviado. Convites, links m
 
 `SHOW_MARKETING_SITE` é `false` por padrão, o que significa que sua instância serve apenas a aplicação em si. Defina como `true` para também servir as páginas públicas institucionais e a referência de API gerada em `/docs/api`. A maioria das instâncias privadas mantém isso desligado; ative se seus desenvolvedores quiserem a referência de API disponível localmente.
 
+Essas páginas são iguais para todos os visitantes e só mudam quando você reimplanta, então cada uma é enviada com cabeçalhos de cache: um navegador a guarda por cinco minutos, e qualquer CDN à frente da instância a guarda por uma semana. Defina `CACHE_PUBLIC_PAGES` como `false` para parar de enviá-los. De um jeito ou de outro, nada é cacheado na própria instância.
+
+Se você serve o site através do Cloudflare, defina também `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ZONE_ID`. São eles que permitem à instância pedir ao Cloudflare que descarte o que ele guarda quando algo que o site público mostra muda, por conta própria ou pelo @doc(instanceAdmin.panel, "painel"). Deixe vazios em uma instância servida diretamente: não há nada à frente dela para purgar.
+
 ## O que você não precisa configurar
 
 Sessões (`SESSION_DRIVER`), cache (`CACHE_STORE`) e a fila de jobs (`QUEUE_CONNECTION`) são todos baseados em `database` por padrão. Os valores padrão estão corretos para a stack fornecida, e não há Redis ou outro serviço para adicionar. Deixe-os como estão, a menos que você saiba exatamente por que está mudando.

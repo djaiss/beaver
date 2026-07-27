@@ -161,11 +161,7 @@
             {{ __('One catalogue entry can describe the title. The copies beneath it describe the real objects you own: the pristine one, the battered one, the graded one, and the one currently hiding somewhere extremely safe.') }}
         </p>
         <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Meet your duplicates') }}</a>
-            @else
-                <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Meet your duplicates') }}</a>
-            @endauth
+            <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Meet your duplicates') }}</a>
             <a href="#switch" class="flex h-12 items-center justify-center gap-x-2 rounded-md border border-hairline bg-canvas px-5.5 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">
                 {{ __('See a copy switch') }}
                 @svg('lucide-arrow-down', 'size-4')
@@ -416,11 +412,7 @@
                 @endforeach
             </div>
             <div class="mt-8 flex">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Track your first item') }}</a>
-                @else
-                    <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Track your first item') }}</a>
-                @endauth
+                <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Track your first item') }}</a>
             </div>
         </div>
     </section>

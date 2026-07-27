@@ -192,11 +192,7 @@
             {{ __('Record what you paid and what each copy is worth today. :name turns that history into a collection view that answers useful questions without making up the missing bits.', ['name' => config('app.name')]) }}
         </p>
         <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Show me the numbers') }}</a>
-            @else
-                <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Show me the numbers') }}</a>
-            @endauth
+            <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Show me the numbers') }}</a>
             <a href="#worth" class="flex h-12 items-center justify-center gap-x-2 rounded-md border border-hairline bg-canvas px-5.5 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">
                 {{ __('See how value works') }}
                 @svg('lucide-arrow-down', 'size-4')
@@ -555,11 +551,7 @@
                 {{ __('Every figure on the dashboard points back to a transaction or valuation you entered. That is the whole trick.') }}
             </p>
             <div class="mt-8 flex justify-center">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Explore collection statistics') }}</a>
-                @else
-                    <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Explore collection statistics') }}</a>
-                @endauth
+                <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Explore collection statistics') }}</a>
             </div>
         </div>
     </section>

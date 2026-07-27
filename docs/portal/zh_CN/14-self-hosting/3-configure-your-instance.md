@@ -50,6 +50,10 @@ docker compose up -d
 
 `SHOW_MARKETING_SITE` 默认值为 `false`，也就是说你的实例只提供应用本身。将其设置为 `true` 后，还会提供公开的营销页面，以及 `/docs/api` 上自动生成的 API 参考文档。大多数私有实例都会关闭它，只有当你的开发者需要本地访问 API 参考文档时才建议开启。
 
+这些页面对每位访客都是一样的，只有在你重新部署时才会变化，因此每个页面都会带着缓存头发出：浏览器保存五分钟，实例前面的任何 CDN 保存一周。把 `CACHE_PUBLIC_PAGES` 设为 `false` 就不再发送这些头。无论哪种情况，实例本身都不会缓存任何东西。
+
+如果你通过 Cloudflare 提供站点，还要设置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ZONE_ID`。当公开站点展示的内容发生变化时，实例正是靠它们告诉 Cloudflare 丢弃已保存的副本，无论是实例自己触发，还是从@doc(instanceAdmin.panel, "面板")触发。直接对外提供服务的实例请把它们留空：前面没有什么可清除的。
+
 ## 不需要配置的部分
 
 会话（`SESSION_DRIVER`）、缓存（`CACHE_STORE`）和队列（`QUEUE_CONNECTION`）默认都基于数据库存储。这些默认值对提供的服务栈来说已经是正确的，不需要额外添加 Redis 或其他服务。除非你清楚知道自己为什么要改，否则不要动它们。

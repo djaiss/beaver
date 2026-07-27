@@ -12,8 +12,8 @@ use App\Jobs\SendEmail;
 use App\Mail\TestimonialPublished as TestimonialPublishedMail;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Services\CloudflareCache;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\ResponseCache\Facades\ResponseCache;
 
 /**
  * Publish a testimonial so it appears on the marketing site, and email the
@@ -67,13 +67,13 @@ class PublishTestimonial
     }
 
     /**
-     * The public marketing pages are response cached, so a freshly published
-     * testimonial would not show until the cache expired. Clearing it makes the
+     * The public marketing pages are held by Cloudflare for a week, so a freshly
+     * published testimonial would not show until then. Purging makes the
      * homepage and the testimonials page reflect the change at once.
      */
     private function flushMarketingCache(): void
     {
-        ResponseCache::clear();
+        CloudflareCache::purgeEverything();
     }
 
     private function log(): void

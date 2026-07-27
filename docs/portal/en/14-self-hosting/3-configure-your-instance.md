@@ -50,6 +50,10 @@ With the default `log` mailer, no email is ever sent. Invitations, magic links, 
 
 `SHOW_MARKETING_SITE` is `false` by default, meaning your instance serves only the application itself. Set it to `true` to also serve the public marketing pages and the generated API reference at `/docs/api`. Most private instances leave it off; turn it on if your developers want the API reference served locally.
 
+Those pages are the same for every visitor and change only when you redeploy, so each one is sent with cache headers: a browser holds it for five minutes, and any CDN in front of the instance holds it for a week. Set `CACHE_PUBLIC_PAGES` to `false` to stop sending them. Nothing is cached on the instance itself either way.
+
+If you serve the site through Cloudflare, set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ZONE_ID` as well. They are what lets the instance tell Cloudflare to drop what it holds when something the public site shows changes, either by itself or through @doc(instanceAdmin.panel, "the panel"). Leave them empty on an instance served directly: there is nothing in front of it to purge.
+
 ## What you do not need to configure
 
 Sessions (`SESSION_DRIVER`), cache (`CACHE_STORE`), and the queue (`QUEUE_CONNECTION`) are all `database` backed out of the box. The defaults are correct for the provided stack, and there is no Redis or other service to add. Leave them alone unless you know precisely why you are changing them.

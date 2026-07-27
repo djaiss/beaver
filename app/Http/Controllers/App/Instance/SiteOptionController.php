@@ -7,6 +7,7 @@ namespace App\Http\Controllers\App\Instance;
 use App\Actions\UpdateSiteOptions;
 use App\Http\Controllers\Controller;
 use App\Models\SiteOption;
+use App\Services\CloudflareCache;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -26,6 +27,9 @@ class SiteOptionController extends Controller
         return view('app.instance.siteOptions.index', [
             'siteOption' => SiteOption::current(),
             'locales' => $this->locales(),
+            // An instance that does not sit behind Cloudflare has nothing to purge,
+            // so the panel does not offer it.
+            'cloudflareConfigured' => CloudflareCache::isConfigured(),
         ]);
     }
 
@@ -54,7 +58,7 @@ class SiteOptionController extends Controller
 
         return to_route('instanceAdmin.siteOptions.index')
             ->with('status', 'Site options updated successfully')
-            ->with('status_description', 'The marketing site cache was cleared, so the change is live.');
+            ->with('status_description', 'The Cloudflare cache was purged, so the change is live.');
     }
 
     /**

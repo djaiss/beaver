@@ -50,6 +50,10 @@ Con el mailer `log` por defecto, no se envía ningún correo. Las invitaciones, 
 
 `SHOW_MARKETING_SITE` es `false` por defecto, lo que significa que tu instancia solo sirve la aplicación en sí. Ponlo en `true` para servir también las páginas públicas de marketing y la referencia de API generada en `/docs/api`. La mayoría de las instancias privadas lo dejan desactivado; actívalo si tus desarrolladores quieren tener la referencia de la API disponible localmente.
 
+Esas páginas son iguales para todos los visitantes y solo cambian cuando redespliegas, así que cada una se envía con cabeceras de caché: un navegador la guarda cinco minutos, y cualquier CDN delante de la instancia la guarda una semana. Pon `CACHE_PUBLIC_PAGES` en `false` para dejar de enviarlas. En ningún caso se cachea nada en la propia instancia.
+
+Si sirves el sitio a través de Cloudflare, define también `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ZONE_ID`. Son los que permiten a la instancia pedir a Cloudflare que descarte lo que guarda cuando cambia algo que muestra el sitio público, por su cuenta o desde @doc(instanceAdmin.panel, "el panel"). Déjalos vacíos en una instancia servida directamente: no hay nada delante que purgar.
+
 ## Lo que no necesitas configurar
 
 Las sesiones (`SESSION_DRIVER`), la caché (`CACHE_STORE`) y la cola (`QUEUE_CONNECTION`) dependen todas de la base de datos (`database`) de fábrica. Los valores por defecto son correctos para la pila proporcionada, y no hay Redis ni ningún otro servicio que añadir. Déjalos como están a menos que sepas con precisión por qué los cambias.
