@@ -9,16 +9,23 @@ use Illuminate\View\View;
 
 class MarketingLayout extends Component
 {
+    /**
+     * Both the title and the description are optional. A page that gives neither
+     * is described by App\ViewModels\MarketingSeo from its route name, which is
+     * where the copy for the public pages lives.
+     */
     public function __construct(
         public array $breadcrumbItems = [],
         public ?string $title = null,
+        public ?string $description = null,
     ) {}
 
     public function render(): View
     {
         return view('layouts.marketing', [
             'breadcrumbItems' => $this->breadcrumbItems,
-            'title' => $this->title ? $this->title.' · '.config('app.name') : null,
+            'pageTitle' => $this->title,
+            'pageDescription' => $this->description,
         ]);
     }
 }

@@ -2597,5 +2597,12 @@
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "まだできません。ここではっきり書いておきます。コレクションタイプの定義は JSON で書き出しと取り込みができ、貸出中の一覧は CSV でダウンロードできます。セルフホストしているなら、データベースとストレージボリュームのバックアップにすべてが含まれます。",
     "Read the full FAQ": "FAQ をすべて読む",
     "Reviews": "レビュー",
-    "Media kit": "メディアキット"
+    "Media kit": "メディアキット",
+    "The open source home for everything you collect": "集めたものすべてのための、オープンソースの置き場所",
+    "Catalogue books, records, comics, watches, wine and anything else you collect. Track every physical copy you own, what it cost, what it is worth and where it lives. Self-host it for free.": "本、レコード、コミック、腕時計、ワインなど、集めているものを目録にまとめます。所有している実物のコピーごとに、購入額、価値、保管場所を記録できます。無料でセルフホストできます。",
+    "Copy tracking, custom collection types, photos, loans, valuations, provenance, an API and self-hosting. Everything KolleK does, area by area.": "コピーの管理、独自のコレクションタイプ、写真、貸出、評価額、来歴、API、セルフホスト。KolleK にできることを分野ごとに紹介します。",
+    "Self-host KolleK for free, forever, under the MIT licence. No subscription, no per-seat charge, and no feature held back from the free version.": "MIT ライセンスで、KolleK をずっと無料でセルフホストできます。サブスクリプションも人数課金もなく、無料版だけ機能が削られることもありません。",
+    "A hundred answers about ownership, privacy, pricing, self-hosting and the honest limits of what KolleK does today.": "所有権、プライバシー、料金、セルフホスト、そして現時点の KolleK にできることの正直な限界について、100 の回答。",
+    "What collectors say about cataloguing their collection with KolleK, in their own words.": "KolleK でコレクションを整理している人たちの言葉。",
+    "Guides, tutorials and reference for cataloguing a collection with KolleK, from the first item to running your own instance.": "KolleK でコレクションを目録にするためのガイド、チュートリアル、リファレンス。最初の一点から自分のインスタンス運用まで。"
 }

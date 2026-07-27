@@ -4,7 +4,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-<meta name="description" content="{{ config('app.description') }}" />
+{{-- The public pages hand in their own description through App\ViewModels\MarketingSeo;
+     everything else falls back to the one line summary of the application. --}}
+@php($metaDescription = $description ?? config('app.description'))
+
+@if ($metaDescription)
+  <meta name="description" content="{{ $metaDescription }}" />
+@endif
 
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
 <link rel="alternate icon" href="{{ asset('favicon.ico') }}" sizes="32x32" />

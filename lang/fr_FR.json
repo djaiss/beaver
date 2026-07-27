@@ -2597,5 +2597,12 @@
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "Pas encore, et nous préférons le dire ici. Les définitions de types de collection s'exportent et s'importent en JSON, et les prêts en cours se téléchargent en CSV. Si vous vous auto-hébergez, une sauvegarde de la base de données et du volume de stockage contient tout.",
     "Read the full FAQ": "Lire la FAQ complète",
     "Reviews": "Avis",
-    "Media kit": "Kit média"
+    "Media kit": "Kit média",
+    "The open source home for everything you collect": "Le foyer open source de tout ce que vous collectionnez",
+    "Catalogue books, records, comics, watches, wine and anything else you collect. Track every physical copy you own, what it cost, what it is worth and where it lives. Self-host it for free.": "Cataloguez livres, disques, bandes dessinées, montres, vins et tout ce que vous collectionnez. Suivez chaque exemplaire physique que vous possédez, son prix, sa valeur et son emplacement. Hébergez le tout gratuitement.",
+    "Copy tracking, custom collection types, photos, loans, valuations, provenance, an API and self-hosting. Everything KolleK does, area by area.": "Suivi des exemplaires, types de collection personnalisés, photos, prêts, estimations, provenance, API et auto-hébergement. Tout ce que fait KolleK, domaine par domaine.",
+    "Self-host KolleK for free, forever, under the MIT licence. No subscription, no per-seat charge, and no feature held back from the free version.": "Auto-hébergez KolleK gratuitement, pour toujours, sous licence MIT. Aucun abonnement, aucun frais par utilisateur, aucune fonctionnalité retenue dans la version gratuite.",
+    "A hundred answers about ownership, privacy, pricing, self-hosting and the honest limits of what KolleK does today.": "Cent réponses sur la propriété, la confidentialité, les tarifs, l'auto-hébergement et les limites assumées de ce que fait KolleK aujourd'hui.",
+    "What collectors say about cataloguing their collection with KolleK, in their own words.": "Ce que les collectionneurs disent du catalogage de leur collection avec KolleK, avec leurs propres mots.",
+    "Guides, tutorials and reference for cataloguing a collection with KolleK, from the first item to running your own instance.": "Guides, tutoriels et référence pour cataloguer une collection avec KolleK, du premier objet à votre propre instance."
 }

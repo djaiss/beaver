@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   <head>
-    @include('partials.meta', ['title' => config('app.name').' API documentation'])
+    @php
+        $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request());
+    @endphp
+
+    @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
+    @include('partials.marketingMeta', ['seo' => $seo])
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
 

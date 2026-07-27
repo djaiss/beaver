@@ -2597,5 +2597,12 @@
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "还不行，我们更愿意在这里说清楚。收藏类型定义可以用 JSON 导出和导入，未归还的借出记录可以下载为 CSV。如果你自托管，备份数据库和存储卷就包含了全部内容。",
     "Read the full FAQ": "阅读完整常见问题",
     "Reviews": "用户评价",
-    "Media kit": "媒体资料包"
+    "Media kit": "媒体资料包",
+    "The open source home for everything you collect": "收藏一切的开源家园",
+    "Catalogue books, records, comics, watches, wine and anything else you collect. Track every physical copy you own, what it cost, what it is worth and where it lives. Self-host it for free.": "为书籍、唱片、漫画、腕表、葡萄酒以及你收藏的一切建立目录。记录你拥有的每一件实体副本：花了多少、值多少、存放在哪里。可免费自托管。",
+    "Copy tracking, custom collection types, photos, loans, valuations, provenance, an API and self-hosting. Everything KolleK does, area by area.": "副本追踪、自定义收藏类型、照片、借出、估值、来源、API 和自托管。KolleK 的全部能力，按领域逐一列出。",
+    "Self-host KolleK for free, forever, under the MIT licence. No subscription, no per-seat charge, and no feature held back from the free version.": "在 MIT 许可下永久免费自托管 KolleK。没有订阅，没有按人收费，也没有任何功能被排除在免费版之外。",
+    "A hundred answers about ownership, privacy, pricing, self-hosting and the honest limits of what KolleK does today.": "关于所有权、隐私、价格、自托管，以及 KolleK 目前能力边界的一百个坦白回答。",
+    "What collectors say about cataloguing their collection with KolleK, in their own words.": "收藏者用自己的话，讲述用 KolleK 整理收藏的体验。",
+    "Guides, tutorials and reference for cataloguing a collection with KolleK, from the first item to running your own instance.": "用 KolleK 整理收藏的指南、教程与参考文档，从第一件藏品到运行你自己的实例。"
 }

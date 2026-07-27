@@ -1,5 +1,5 @@
 {{--
-  The public FAQ. The questions and answers come from App\Services\MarketingFaq, because
+  The public FAQ. The questions and answers come from App\ViewModels\MarketingFaq, because
   there are a hundred of them and the page has to count them before it renders any.
 
   Everything is rendered server side, so the whole page is readable (and indexable) with

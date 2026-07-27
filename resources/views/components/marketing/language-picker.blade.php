@@ -2,7 +2,7 @@
 
 {{--
   The footer language picker. Every link is the page the visitor is already on, in another
-  language, built by App\Services\MarketingLanguages. The menu opens upwards because the
+  language, built by App\ViewModels\MarketingLanguages. The menu opens upwards because the
   footer sits at the bottom of the page.
 
   These are ordinary links rather than Turbo visits on purpose: switching language changes

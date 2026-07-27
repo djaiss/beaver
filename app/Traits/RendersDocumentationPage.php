@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 /**
@@ -31,7 +32,39 @@ trait RendersDocumentationPage
             'content' => $rendered['html'],
             'toc' => $rendered['toc'],
             'languageUrls' => $this->languageUrls($locale, $page),
+            'excerpt' => $this->excerpt($parts['body']),
         ]);
+    }
+
+    /**
+     * The opening sentences of a page, used as its meta and Open Graph
+     * description. The body is already in memory here, so this costs nothing,
+     * and it beats repeating one generic line across a hundred pages.
+     */
+    private function excerpt(string $body): string
+    {
+        $paragraphs = preg_split('/\n{2,}/', trim($body)) ?: [];
+
+        foreach ($paragraphs as $paragraph) {
+            $paragraph = trim($paragraph);
+
+            // Skip everything that is not prose: the h1, note blocks, lists,
+            // tables, code fences and the @doc() directives around them.
+            if ($paragraph === '' || preg_match('/^([#>\-*|`:]|\d+\.)/', $paragraph) === 1) {
+                continue;
+            }
+
+            $text = preg_replace('/@doc\([^,)]+,\s*"([^"]+)"\)/', '$1', $paragraph) ?? $paragraph;
+            $text = preg_replace('/@doc\(([^)]+)\)/', '', $text) ?? $text;
+            $text = trim(preg_replace('/[*_`\[\]]|\(https?:[^)]*\)/', '', $text) ?? $text);
+            $text = trim((string) preg_replace('/\s+/', ' ', $text));
+
+            if ($text !== '') {
+                return Str::limit($text, 200);
+            }
+        }
+
+        return (string) config('app.description');
     }
 
     /**

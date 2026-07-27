@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\ViewModels;
 
+use App\Services\DocumentationPortal;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -28,7 +29,11 @@ class MarketingLanguages
     /**
      * Every locale that has content on disk, in the order they are configured.
      *
-     * @return array<int, array{locale: string, code: string, label: string, flag: string, url: string, current: bool}>
+     * "translated" says whether that language really carries the page being read,
+     * as opposed to the link falling back to the portal home. The picker shows
+     * every language either way; the SEO tags only claim the ones that are real.
+     *
+     * @return array<int, array{locale: string, code: string, label: string, flag: string, url: string, current: bool, translated: bool}>
      */
     public function links(Request $request): array
     {
@@ -52,6 +57,7 @@ class MarketingLanguages
                 'flag' => $meta['flag'],
                 'url' => $this->urlFor($request, $locale, $meta['url'], $documentationId),
                 'current' => $locale === $current,
+                'translated' => $this->isTranslatedInto($request, $locale, $documentationId),
             ];
         }
 
@@ -87,6 +93,24 @@ class MarketingLanguages
         } catch (Throwable) {
             return route('marketing.index', ['locale' => $urlLocale]);
         }
+    }
+
+    /**
+     * Whether the page being read exists in that language. Only the documentation
+     * portal can answer no: everywhere else the page is the same route with
+     * another prefix, and the interface around it is translated in full.
+     */
+    private function isTranslatedInto(Request $request, string $locale, ?string $documentationId): bool
+    {
+        if ($request->route()?->getName() !== self::DOCUMENTATION_ROUTE) {
+            return true;
+        }
+
+        if ($documentationId === null) {
+            return false;
+        }
+
+        return collect($this->portal->pagesFor($locale))->contains('id', $documentationId);
     }
 
     /**
