@@ -10,7 +10,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    @include('partials.meta', ['title' => $page['title'].' — '.config('app.name').' '.__('documentation')])
+    @php
+        // The documentation supplies its own title and description: the title comes from the
+        // page frontmatter and the description from its opening lines, neither of which the
+        // route name could tell you.
+        // The portal home already says it is the documentation in its own title.
+        $seoTitle = $page['is_home'] ? $page['title'] : $page['title'].' — '.__('documentation');
+        $seo = app(\App\Services\MarketingSeo::class)->forRequest(request(), $seoTitle, $excerpt);
+    @endphp
+
+    @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
+    @include('partials.marketingMeta', ['seo' => $seo])
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
 

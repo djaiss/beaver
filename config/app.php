@@ -19,6 +19,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Description
+    |--------------------------------------------------------------------------
+    |
+    | The one line summary of the application, used as the meta description of
+    | any page that does not carry one of its own. The public pages each supply
+    | their own through App\Services\MarketingSeo.
+    |
+    */
+
+    'description' => env('APP_DESCRIPTION', 'The open source collection manager that belongs to you.'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |
