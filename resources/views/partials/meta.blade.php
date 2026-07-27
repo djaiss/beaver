@@ -1,8 +1,11 @@
-<title>{{ $title ?? config('app.name') }}</title>
+{{-- Every layout opens its <head> with this partial, so the charset, the viewport and the
+     csrf token live here and nowhere else. A layout that repeats them ships them twice. --}}
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+<title>{{ $title ?? config('app.name') }}</title>
 
 {{-- The public pages hand in their own description through App\ViewModels\MarketingSeo;
      everything else falls back to the one line summary of the application. --}}
