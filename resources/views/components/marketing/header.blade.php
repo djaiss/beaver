@@ -15,6 +15,8 @@
     if (\App\Models\Testimonial::query()->published()->exists()) {
         $navigation[] = ['label' => __('Reviews'), 'url' => route('marketing.testimonials.index')];
     }
+
+    $banner = \App\Models\SiteOption::current()->bannerFor(app()->getLocale());
 @endphp
 
 {{-- display:contents so the sticky nav below resolves against the page container,
@@ -32,13 +34,21 @@
   @keydown.escape.window="featuresOpen = false"
   class="contents"
 >
-  <div class="flex flex-col items-center justify-center gap-2 bg-[#101010] px-4 py-2 text-center text-[13px] font-medium sm:h-10 sm:flex-row sm:py-0">
-    <div class="flex items-center gap-2">
-      <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold tracking-wide text-badge-emerald">v0.9</span>
-      <span class="text-[#a1a1aa]">{{ __('Custom item types are here. Build a schema for any hobby.') }}</span>
+  {{-- The announcement bar is written by an instance administrator in the site
+       options, so it is only here when there is something to announce. --}}
+  @if ($banner)
+    <div class="flex flex-col items-center justify-center gap-2 bg-[#101010] px-4 py-2 text-center text-[13px] font-medium sm:h-10 sm:flex-row sm:py-0">
+      <div class="flex items-center gap-2">
+        @if ($banner['version'])
+          <span class="rounded-full bg-[#1a1a1a] px-2 py-[3px] text-[11px] font-semibold tracking-wide text-badge-emerald">{{ $banner['version'] }}</span>
+        @endif
+        <span class="text-[#a1a1aa]">{{ $banner['text'] }}</span>
+      </div>
+      @if ($banner['url'])
+        <a href="{{ $banner['url'] }}" class="font-semibold text-white hover:underline">{{ $banner['link_label'] ?? __('Read more') }} &rarr;</a>
+      @endif
     </div>
-    <a href="{{ config('marketing.github_url') }}/releases" class="font-semibold text-white hover:underline">{{ __('Read the changelog') }} &rarr;</a>
-  </div>
+  @endif
 
   {{-- Main nav --}}
   <div class="sticky top-0 z-50 border-b border-hairline bg-page/85 backdrop-blur-md">

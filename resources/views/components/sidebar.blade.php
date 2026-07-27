@@ -53,6 +53,7 @@
         <nav class="-mt-2 flex flex-col gap-0.5">
             <p class="px-2 py-1.5 text-xs font-medium tracking-wide text-muted-soft uppercase">Marketing</p>
             <x-sidebar-link :href="route('instanceAdmin.marketing.testimonials.index')" :active="request()->routeIs('instanceAdmin.marketing.testimonials.*')" icon="quote" :count="$pendingTestimonials > 0 ? $pendingTestimonials : null">Testimonials</x-sidebar-link>
+            <x-sidebar-link :href="route('instanceAdmin.siteOptions.index')" :active="request()->routeIs('instanceAdmin.siteOptions.*')" icon="sliders-horizontal">Site options</x-sidebar-link>
         </nav>
     @elseif ($isProfile)
         <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex items-center gap-2 px-2 text-[13px] font-medium text-muted transition-colors hover:text-ink">

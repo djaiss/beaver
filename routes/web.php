@@ -23,6 +23,8 @@ use App\Http\Controllers\App\DocumentDownloadController;
 use App\Http\Controllers\App\GettingStartedController;
 use App\Http\Controllers\App\Instance\AccountController as InstanceAccountController;
 use App\Http\Controllers\App\Instance\OverviewController as InstanceOverviewController;
+use App\Http\Controllers\App\Instance\ResponseCacheController as InstanceResponseCacheController;
+use App\Http\Controllers\App\Instance\SiteOptionController as InstanceSiteOptionController;
 use App\Http\Controllers\App\Instance\SupportController as InstanceSupportController;
 use App\Http\Controllers\App\Instance\SupportMessageController as InstanceSupportMessageController;
 use App\Http\Controllers\App\Instance\TestimonialController as InstanceTestimonialController;
@@ -401,6 +403,12 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         // Publishing and rejecting are one update, told apart by the intent field.
         Route::get('marketing/testimonials/{status?}', [InstanceTestimonialController::class, 'index'])->where('status', 'in_review|published|rejected|draft|all')->name('marketing.testimonials.index');
         Route::put('marketing/testimonials/{testimonial}', [InstanceTestimonialController::class, 'update'])->where('testimonial', '[1-9][0-9]*')->name('marketing.testimonials.update');
+
+        // site options — the announcement banner on the marketing site, and the
+        // response cache that holds its rendered pages.
+        Route::get('site-options', [InstanceSiteOptionController::class, 'index'])->name('siteOptions.index');
+        Route::put('site-options', [InstanceSiteOptionController::class, 'update'])->name('siteOptions.update');
+        Route::delete('site-options/response-cache', [InstanceResponseCacheController::class, 'destroy'])->name('siteOptions.responseCache.destroy');
     });
 });
 

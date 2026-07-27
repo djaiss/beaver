@@ -33,6 +33,33 @@ You can search accounts **by a member's email address** and filter by role. Sear
 
 Opening an account shows its members, sorted owners first, then editors, then viewers, along with the account's collection and item counts and its fifteen most recent activity log entries.
 
+## Site options
+
+The **Site options** area holds the settings for the public marketing site, the pages a visitor sees before signing in. That site is off by default on a self hosted instance (see @doc(selfHosting.configure)), so if you never turned it on, nothing here changes what anyone sees.
+
+### The announcement banner
+
+The banner is the black bar across the top of every marketing page. It is the place for one short sentence: a release you want people to notice, a maintenance window, an event.
+
+Only the sentence is needed. Everything else is optional:
+
+- **Show the banner** switches it on and off. Set it to **No** and no bar appears, whatever else you have filled in.
+- **Version** is the small green pill on the left, such as `v0.9`. Leave it empty and the pill goes away.
+- **Link** is the address the banner points to, and **Link label** is the text a visitor clicks. Leave the link empty for a banner that only says something.
+- **Sentence** is the announcement itself.
+
+The marketing site is served in several languages, so the sentence and the link label are written one language at a time, with a tab for each. A language you leave empty falls back to English, which means filling in English alone already gives every visitor a banner. The green dot on a tab tells you that language has a sentence of its own.
+
+The preview above the form shows the bar the way a visitor will see it, in the language of the tab you are on. Saving clears the cached marketing pages for you, so the change is live straight away.
+
+### Clearing the response cache
+
+Marketing pages change rarely, so each one is rendered once and then served from a cache for seven days. That keeps the public site fast, but it also means an edit can sit unseen for a week.
+
+**Clear cache** drops every cached page at once. Reach for it after changing something the public site shows that the application does not know about, such as a documentation page you edited on the server. Saving the banner and moderating a testimonial already clear the cache themselves.
+
+Clearing loses nothing. Each page is rendered again the next time somebody asks for it, and the only cost is that the first visitor waits for that render. The same thing can be done from the command line with `php artisan responsecache:clear`, described in @doc(selfHosting.cliCommands).
+
 ## The destructive actions
 
 Three actions in the panel change or remove data, and none of them can be undone:

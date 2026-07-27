@@ -50,6 +50,14 @@ php artisan search:rebuild-index
 
 Reconstruit l'index derrière la recherche à l'échelle du compte : objets, collections, exemplaires, photos, prêts, lieux, séries à compléter, sagas, catégories, étiquettes et documents. Exécutez-la une fois après une mise à jour vers une version qui introduit la recherche : la migration crée la table, mais seule cette commande la remplit. Passez `--type=item` pour ne reconstruire qu'un seul type de fiche. Elle peut être exécutée à nouveau à tout moment sans risque, et c'est aussi le remède si l'index dérive. Voyez @doc(search.overview).
 
+### Vider le cache du site vitrine
+
+```
+php artisan responsecache:clear
+```
+
+Supprime les copies en cache des pages publiques du site vitrine, sinon servies depuis le cache pendant sept jours. Rien n'est perdu : chaque page est rendue à nouveau à la prochaine visite. Le même bouton existe dans le panneau, décrit dans @doc(instanceAdmin.panel).
+
 ### Amorcer une locale pour la traduction
 
 ```

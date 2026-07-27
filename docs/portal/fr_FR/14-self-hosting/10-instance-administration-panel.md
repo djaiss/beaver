@@ -33,6 +33,33 @@ Vous pouvez rechercher des comptes **par l'adresse e-mail d'un membre** et filtr
 
 Ouvrir un compte affiche ses membres, triés propriétaires d'abord, puis éditeurs, puis lecteurs, ainsi que le nombre de collections et d'objets du compte et ses quinze entrées de journal d'activité les plus récentes.
 
+## Options du site
+
+La rubrique **Options du site** regroupe les réglages du site vitrine public, les pages qu'un visiteur voit avant de se connecter. Ce site est désactivé par défaut sur une instance auto hébergée (voir @doc(selfHosting.configure)) : si tu ne l'as jamais activé, rien ici ne change ce que voient tes utilisateurs.
+
+### La bannière d'annonce
+
+La bannière est la barre noire en haut de chaque page du site vitrine. Elle est faite pour une phrase courte : une version que tu veux faire remarquer, une fenêtre de maintenance, un événement.
+
+Seule la phrase est nécessaire. Tout le reste est facultatif :
+
+- **Afficher la bannière** l'active ou la désactive. Mets-la sur **Non** et aucune barre n'apparaît, quoi que tu aies rempli par ailleurs.
+- **Version** est la petite pastille verte à gauche, par exemple `v0.9`. Laisse le champ vide et la pastille disparaît.
+- **Lien** est l'adresse vers laquelle pointe la bannière, et **Libellé du lien** le texte sur lequel le visiteur clique. Laisse le lien vide pour une bannière qui se contente d'annoncer quelque chose.
+- **Phrase** est l'annonce elle-même.
+
+Le site vitrine est servi en plusieurs langues, donc la phrase et le libellé du lien s'écrivent une langue à la fois, avec un onglet pour chacune. Une langue laissée vide retombe sur l'anglais, ce qui veut dire que remplir l'anglais seul donne déjà une bannière à tous les visiteurs. Le point vert sur un onglet indique que cette langue a sa propre phrase.
+
+L'aperçu au-dessus du formulaire montre la barre telle que le visiteur la verra, dans la langue de l'onglet où tu te trouves. L'enregistrement vide pour toi le cache des pages du site vitrine, donc le changement est visible tout de suite.
+
+### Vider le cache des réponses
+
+Les pages du site vitrine changent rarement, donc chacune est rendue une fois puis servie depuis un cache pendant sept jours. Le site public reste rapide, mais une modification peut aussi rester invisible pendant une semaine.
+
+**Vider le cache** supprime d'un coup toutes les pages en cache. Utilise-le après avoir changé quelque chose que le site public affiche et dont l'application n'a pas connaissance, par exemple une page de documentation modifiée sur le serveur. Enregistrer la bannière et modérer un témoignage vident déjà le cache d'eux-mêmes.
+
+Vider ne perd rien. Chaque page est rendue à nouveau à la prochaine demande, et le seul coût est que le premier visiteur attend ce rendu. La même chose se fait en ligne de commande avec `php artisan responsecache:clear`, décrite dans @doc(selfHosting.cliCommands).
+
 ## Les actions destructrices
 
 Trois actions du panneau modifient ou suppriment des données, et aucune d'entre elles n'est réversible :
