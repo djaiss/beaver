@@ -2331,5 +2331,10 @@
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.",
     "Account activity": "Account activity",
     "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.",
-    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded."
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.",
+    "This page is only available in English.": "This page is only available in English.",
+    "I agree with the :terms and the :privacy.": "I agree with the :terms and the :privacy.",
+    "terms of use": "terms of use",
+    "privacy policy": "privacy policy",
+    "You have to agree with the terms of use and the privacy policy to create an account.": "You have to agree with the terms of use and the privacy policy to create an account."
 }

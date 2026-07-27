@@ -9,6 +9,8 @@ use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
 use App\Http\Controllers\Marketing\FeaturesController;
 use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\PricingController;
+use App\Http\Controllers\Marketing\PrivacyController;
+use App\Http\Controllers\Marketing\TermsController;
 use App\Http\Controllers\Marketing\TestimonialsController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,16 @@ $urlLocales = collect(config('docs.locales'))
     ->filter(fn (array $meta, string $locale): bool => is_dir($portalPath.DIRECTORY_SEPARATOR.$locale))
     ->pluck('url')
     ->implode('|');
+
+// The terms of use and the privacy policy sit outside the marketing gate below.
+// The registration form links to them and refuses to sign anybody up until they
+// have agreed, so they have to be readable on an instance that keeps the rest of
+// the public site switched off. They carry the language prefix all the same, so
+// the page around the text still reads in the visitor's language.
+Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'cacheResponse'])->group(function (): void {
+    Route::get('terms', [TermsController::class, 'index'])->name('marketing.terms.index');
+    Route::get('privacy', [PrivacyController::class, 'index'])->name('marketing.privacy.index');
+});
 
 Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
     Route::get('/', fn () => redirect()->route('marketing.index'))->name('marketing.root');

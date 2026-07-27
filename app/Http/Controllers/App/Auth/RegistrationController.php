@@ -47,6 +47,9 @@ class RegistrationController extends Controller
                 'confirmed',
                 Password::min(8)->uncompromised(),
             ],
+            'terms' => ['accepted'],
+        ], [
+            'terms.accepted' => __('You have to agree with the terms of use and the privacy policy to create an account.'),
         ]);
 
         $user = new CreateAccount(

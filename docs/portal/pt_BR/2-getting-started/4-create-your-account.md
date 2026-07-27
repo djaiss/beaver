@@ -20,6 +20,7 @@ Abra sua instância e vá para a página de cadastro. Preencha:
 - **Nome** e **sobrenome**.
 - **Endereço de e-mail**. É assim que você entra e é para onde o KolleK envia coisas como links de acesso e avisos de segurança.
 - **Senha**.
+- **Sua concordância**. A caixa que confirma que você concorda com os termos de uso e a política de privacidade precisa estar marcada. O formulário não é enviado enquanto ela não estiver.
 
 Depois envie o formulário. Você é conectado imediatamente e levado para sua nova conta, ainda vazia.
 

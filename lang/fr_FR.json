@@ -2331,5 +2331,10 @@
     "Nothing is valued and shelved yet. Record what a copy is worth and where you keep it, and it shows up here.": "Rien n'est encore estimé ni rangé. Indiquez ce que vaut un exemplaire et où vous le gardez, et il apparaîtra ici.",
     "Account activity": "Activité du compte",
     "The account name identifies this workspace to everyone you share it with. Renaming it is safe and takes effect immediately.": "Le nom du compte identifie cet espace de travail auprès de toutes les personnes avec qui vous le partagez. Le renommer est sans risque et prend effet immédiatement.",
-    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "La devise par défaut est utilisée pour les totaux de valorisation de vos collections. La modifier change l'affichage des nouveaux totaux, elle ne convertit pas les valeurs déjà enregistrées."
+    "The default currency is used for valuation totals across your collections. Changing it relabels new totals, it does not convert the values you have already recorded.": "La devise par défaut est utilisée pour les totaux de valorisation de vos collections. La modifier change l'affichage des nouveaux totaux, elle ne convertit pas les valeurs déjà enregistrées.",
+    "This page is only available in English.": "Cette page n'est disponible qu'en anglais.",
+    "I agree with the :terms and the :privacy.": "J'accepte les :terms et la :privacy.",
+    "terms of use": "conditions d'utilisation",
+    "privacy policy": "politique de confidentialité",
+    "You have to agree with the terms of use and the privacy policy to create an account.": "Vous devez accepter les conditions d'utilisation et la politique de confidentialité pour créer un compte."
 }

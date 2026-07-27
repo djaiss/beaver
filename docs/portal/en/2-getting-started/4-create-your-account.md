@@ -20,6 +20,7 @@ Open your instance and go to the registration page. Fill in:
 - **First name** and **last name**.
 - **Email address**. This is how you sign in and where KolleK sends you things like sign in links and security notices.
 - **Password**.
+- **Your agreement to the terms**. The box confirming you agree with the terms of use and the privacy policy has to be ticked. The form will not go through until it is.
 
 Then submit the form. You are signed in immediately and taken to your new, empty account.
 
