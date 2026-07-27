@@ -28,4 +28,17 @@ return [
 
     'github_url' => 'https://github.com/djaiss/kollek',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Press contact
+    |--------------------------------------------------------------------------
+    |
+    | The address the media kit publishes for journalists. Set it to null on an
+    | instance that does not want to advertise a mailbox: the page then sends
+    | people to the GitHub discussions instead.
+    |
+    */
+
+    'press_email' => env('PRESS_EMAIL', 'press@getkollek.com'),
+
 ];

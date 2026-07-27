@@ -2596,5 +2596,6 @@
     "Read the documentation": "阅读文档",
     "Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.": "还不行，我们更愿意在这里说清楚。收藏类型定义可以用 JSON 导出和导入，未归还的借出记录可以下载为 CSV。如果你自托管，备份数据库和存储卷就包含了全部内容。",
     "Read the full FAQ": "阅读完整常见问题",
-    "Reviews": "用户评价"
+    "Reviews": "用户评价",
+    "Media kit": "媒体资料包"
 }
