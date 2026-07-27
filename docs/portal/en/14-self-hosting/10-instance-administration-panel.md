@@ -58,15 +58,17 @@ Only the sentence is needed. Everything else is optional:
 
 The marketing site is served in several languages, so the sentence and the link label are written one language at a time, with a tab for each. A language you leave empty falls back to English, which means filling in English alone already gives every visitor a banner. The green dot on a tab tells you that language has a sentence of its own.
 
-The preview above the form shows the bar the way a visitor will see it, in the language of the tab you are on. Saving clears the cached marketing pages for you, so the change is live straight away.
+The preview above the form shows the bar the way a visitor will see it, in the language of the tab you are on. Saving purges the Cloudflare cache for you, so the change is live straight away.
 
-### Clearing the response cache
+### Purging the Cloudflare cache
 
-Marketing pages change rarely, so each one is rendered once and then served from a cache for seven days. That keeps the public site fast, but it also means an edit can sit unseen for a week.
+Marketing pages change rarely, so each one is rendered once and then held by Cloudflare for seven days. That keeps the public site fast, but it also means an edit can sit unseen for a week.
 
-**Clear cache** drops every cached page at once. Reach for it after changing something the public site shows that the application does not know about, such as a documentation page you edited on the server. Saving the banner and moderating a testimonial already clear the cache themselves.
+**Purge cache** drops every page Cloudflare holds, all at once. Reach for it after changing something the public site shows that the application does not know about, such as a documentation page you edited on the server. Saving the banner and moderating a testimonial already purge it themselves.
 
-Clearing loses nothing. Each page is rendered again the next time somebody asks for it, and the only cost is that the first visitor waits for that render. The same thing can be done from the command line with `php artisan responsecache:clear`, described in @doc(selfHosting.cliCommands).
+Purging loses nothing. Each page is rendered again the next time somebody asks for it, and the only cost is that the first visitor waits for that render. The same thing can be done from the command line with `php artisan kollek:purge-cloudflare-cache`, described in @doc(selfHosting.cliCommands).
+
+This section only appears on an instance that sits behind Cloudflare, meaning one with `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ZONE_ID` set. Without them there is nothing to purge: an instance served directly renders each page as it is asked for. Note that a visitor's own browser holds a page for five minutes whatever you do, and no purge reaches that copy.
 
 ## The destructive actions
 

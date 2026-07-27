@@ -123,11 +123,7 @@
             {{ __('A collection can be a solo pursuit. It can also be a household project, a club archive, or the shared responsibility of people who all have strong opinions about where the rare one belongs.') }}
         </p>
         <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Bring in the crew') }}</a>
-            @else
-                <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Bring in the crew') }}</a>
-            @endauth
+            <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Bring in the crew') }}</a>
             <a href="#roles" class="flex h-12 items-center justify-center gap-x-2 rounded-md border border-hairline bg-canvas px-5.5 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">
                 {{ __('See the roles') }}
                 @svg('lucide-arrow-down', 'size-4')
@@ -383,11 +379,7 @@
                 {{ __('Give everyone one place to look, one vocabulary to use, and the right amount of access. That tends to make “where did it go?” a less frequent conversation.') }}
             </p>
             <div class="mt-8 flex justify-center">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Invite your first member') }}</a>
-                @else
-                    <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Invite your first member') }}</a>
-                @endauth
+                <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-primary px-6.5 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Invite your first member') }}</a>
             </div>
         </div>
     </section>

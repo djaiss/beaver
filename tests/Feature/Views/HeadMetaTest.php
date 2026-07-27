@@ -38,10 +38,28 @@ test('only the shared meta partial writes the charset, the viewport and the csrf
     expect($offenders)->toBe([]);
 });
 
-test('a marketing page renders each of those tags exactly once', function () {
+test('a marketing page renders each of those tags exactly once, and no csrf token', function () {
+    // The public site runs without a session so its pages can be cached whole, so
+    // there is no token to print there. It has no form to protect either.
     config()->set('marketing.show', true);
 
     $response = $this->get(route('marketing.index', ['locale' => 'en']));
+
+    $response->assertOk();
+
+    $html = $response->getContent();
+
+    expect(substr_count($html, '<meta charset='))->toBe(1)
+        ->and(substr_count($html, 'name="viewport"'))->toBe(1)
+        ->and(substr_count($html, 'name="csrf-token"'))->toBe(0);
+});
+
+test('an application page still renders each of those tags exactly once', function () {
+    $rachel = $this->createUser();
+
+    // A brand new account is carried on to the getting started screen, which is
+    // an application page all the same.
+    $response = $this->actingAs($rachel)->followingRedirects()->get(route('dashboard.index'));
 
     $response->assertOk();
 

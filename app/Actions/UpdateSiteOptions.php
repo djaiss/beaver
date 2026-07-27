@@ -8,15 +8,15 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\SiteOption;
 use App\Models\User;
+use App\Services\CloudflareCache;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\ResponseCache\Facades\ResponseCache;
 
 /**
  * Update the instance wide site options. Only an instance administrator may do
  * this, and the action checks the flag itself.
  *
- * The banner lives inside the response cached marketing pages, so saving it has
- * to clear that cache or the change would not show for a week.
+ * The banner lives inside the cached marketing pages, so saving it has to purge
+ * Cloudflare or the change would not show for a week.
  */
 class UpdateSiteOptions
 {
@@ -63,7 +63,7 @@ class UpdateSiteOptions
 
     private function flushMarketingCache(): void
     {
-        ResponseCache::clear();
+        CloudflareCache::purgeEverything();
     }
 
     private function log(): void

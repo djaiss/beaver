@@ -50,6 +50,10 @@ Mit dem Standardmailer `log` wird nie eine E-Mail tatsächlich versendet. Einlad
 
 `SHOW_MARKETING_SITE` ist standardmäßig `false`, das heißt, deine Instanz liefert nur die Anwendung selbst aus. Setze es auf `true`, um zusätzlich die öffentlichen Marketingseiten und die generierte API-Referenz unter `/docs/api` auszuliefern. Die meisten privaten Instanzen lassen es ausgeschaltet, schalte es ein, wenn deine Entwickler die API-Referenz lokal bereitgestellt haben möchten.
 
+Diese Seiten sind für jeden Besucher gleich und ändern sich nur beim Neuausrollen, deshalb wird jede mit Cache-Headern ausgeliefert: ein Browser behält sie fünf Minuten, jedes CDN vor der Instanz eine Woche. Setze `CACHE_PUBLIC_PAGES` auf `false`, um sie nicht mehr zu senden. Auf der Instanz selbst wird so oder so nichts zwischengespeichert.
+
+Wenn du die Website über Cloudflare auslieferst, setze zusätzlich `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ZONE_ID`. Sie sind es, die der Instanz erlauben, Cloudflare zum Verwerfen des Vorgehaltenen aufzufordern, wenn sich etwas ändert, das die öffentliche Website zeigt, von selbst oder über @doc(instanceAdmin.panel, "das Panel"). Lass sie leer auf einer direkt ausgelieferten Instanz: davor gibt es nichts zu leeren.
+
 ## Was du nicht konfigurieren musst
 
 Sessions (`SESSION_DRIVER`), Cache (`CACHE_STORE`) und die Warteschlange (`QUEUE_CONNECTION`) laufen von Haus aus alle über `database`. Die Standardwerte sind für den mitgelieferten Stack korrekt, und es gibt keinen Redis oder anderen Dienst hinzuzufügen. Lass sie unangetastet, es sei denn, du weißt genau, warum du sie änderst.

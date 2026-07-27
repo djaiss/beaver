@@ -50,6 +50,10 @@ Avec le mailer `log` par défaut, aucun e-mail n'est jamais envoyé. Les invitat
 
 `SHOW_MARKETING_SITE` vaut `false` par défaut, ce qui signifie que votre instance ne sert que l'application elle-même. Définissez cette valeur à `true` pour servir aussi les pages vitrine publiques et la référence API générée à `/docs/api`. La plupart des instances privées laissent ce réglage désactivé ; activez-le si vos développeurs souhaitent que la référence API soit servie localement.
 
+Ces pages sont les mêmes pour tous les visiteurs et ne changent qu'au redéploiement, donc chacune part avec des en-têtes de cache : un navigateur la garde cinq minutes, et tout CDN placé devant l'instance la garde une semaine. Définissez `CACHE_PUBLIC_PAGES` à `false` pour ne plus les envoyer. Dans les deux cas, rien n'est mis en cache sur l'instance elle-même.
+
+Si vous servez le site à travers Cloudflare, renseignez aussi `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ZONE_ID`. Ce sont eux qui permettent à l'instance de demander à Cloudflare de supprimer ce qu'il conserve quand quelque chose d'affiché sur le site public change, d'elle même ou depuis @doc(instanceAdmin.panel, "le panneau"). Laissez-les vides sur une instance servie directement : il n'y a rien à purger devant elle.
+
 ## Ce que vous n'avez pas besoin de configurer
 
 Les sessions (`SESSION_DRIVER`), le cache (`CACHE_STORE`) et la file d'attente (`QUEUE_CONNECTION`) reposent tous sur `database` par défaut. Les valeurs par défaut sont correctes pour la stack fournie, et il n'y a pas de Redis ni d'autre service à ajouter. Laissez-les inchangées à moins de savoir précisément pourquoi vous les modifiez.

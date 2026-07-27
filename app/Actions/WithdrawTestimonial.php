@@ -9,14 +9,14 @@ use App\Enums\UserActionEnum;
 use App\Jobs\LogUserAction;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Services\CloudflareCache;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\ResponseCache\Facades\ResponseCache;
 
 /**
  * Withdraw a member's own testimonial, deleting it outright. A member owns their
  * testimonial and can take it back at any time, whether it is still in review or
  * already live on the marketing site. Removing a published one has to drop it
- * from the response-cached public pages, so the cache is cleared in that case.
+ * from the cached public pages, so Cloudflare is purged in that case.
  */
 class WithdrawTestimonial
 {
@@ -35,7 +35,7 @@ class WithdrawTestimonial
         $this->testimonial->delete();
 
         if ($wasPublished) {
-            ResponseCache::clear();
+            CloudflareCache::purgeEverything();
         }
     }
 

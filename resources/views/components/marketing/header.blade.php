@@ -95,11 +95,9 @@
           {{ __('GitHub') }}
         </a>
 
-        @auth
-          <a href="{{ route('dashboard.index') }}" data-turbo="true" class="flex h-10 items-center rounded-md bg-primary px-4 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Go to your account') }}</a>
-        @else
-          <a href="{{ route('register') }}" data-turbo="true" class="flex h-10 items-center rounded-md bg-primary px-4.5 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Get started') }}</a>
-        @endauth
+        {{-- The public site is cached as one page for everybody, so this cannot ask who is
+             reading it: a signed in visitor sees the same call to action as a stranger. --}}
+        <a href="{{ route('register') }}" data-turbo="true" class="flex h-10 items-center rounded-md bg-primary px-4.5 text-sm font-semibold text-on-primary transition-colors hover:opacity-90">{{ __('Get started') }}</a>
 
         {{-- Mobile menu button --}}
         <button type="button" @click="mobileMenuOpen = true" class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-ink lg:hidden">
@@ -159,9 +157,7 @@
         @endforeach
         <a href="{{ config('marketing.github_url') }}" target="_blank" rel="noopener" class="border-b border-hairline-soft py-3.5 text-base font-semibold text-ink">{{ __('GitHub') }}</a>
 
-        @guest
-          <a href="{{ route('login') }}" data-turbo="true" class="py-3.5 text-base font-semibold text-ink">{{ __('Sign in') }}</a>
-        @endguest
+        <a href="{{ route('login') }}" data-turbo="true" class="py-3.5 text-base font-semibold text-ink">{{ __('Sign in') }}</a>
       </div>
     </div>
   </div>

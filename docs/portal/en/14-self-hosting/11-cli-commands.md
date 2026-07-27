@@ -50,13 +50,13 @@ php artisan search:rebuild-index
 
 Rebuilds the index behind account wide search, across items, collections, copies, photos, loans, locations, sets, series, categories, tags and documents. Run it once after upgrading to a version that introduces search: the migration creates the table, but only this fills it. Pass `--type=item` to rebuild one kind of record only. It is safe to run again at any time, and it is also the fix if the index ever drifts. See @doc(search.overview).
 
-### Clear the marketing cache
+### Purge the Cloudflare cache
 
 ```
-php artisan responsecache:clear
+php artisan kollek:purge-cloudflare-cache
 ```
 
-Drops the cached copies of the public marketing pages, which are otherwise served from cache for seven days. Nothing is lost: each page is rendered again on the next visit. The same button exists in the panel, described in @doc(instanceAdmin.panel).
+Drops every public page Cloudflare holds, which are otherwise served from its cache for seven days. Nothing is lost: each page is rendered again on the next visit. It needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ZONE_ID`, and says so when they are missing. The same button exists in the panel, described in @doc(instanceAdmin.panel).
 
 ### Scaffold a locale for translation
 

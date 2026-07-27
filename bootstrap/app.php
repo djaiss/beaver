@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\CacheMarketingResponse;
 use App\Http\Middleware\CheckCatalog;
 use App\Http\Middleware\CheckCopy;
 use App\Http\Middleware\CheckItem;
@@ -16,7 +17,8 @@ use App\Http\Middleware\SetMarketingLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Spatie\ResponseCache\Middlewares\CacheResponse;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,6 +26,17 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function (): void {
+            // The public site is registered outside the web group on purpose. It
+            // is served through a CDN, and a response that starts a session
+            // carries a Set-Cookie header, which is enough for a cache in front
+            // of us to refuse to store it. So no session is started here, no
+            // cookie is queued, and every visitor gets the same page. Nothing on
+            // these pages needs either: the language comes from the url, the
+            // theme from the browser, and there is no form to protect.
+            Route::middleware([SubstituteBindings::class])
+                ->group(__DIR__.'/../routes/marketing.php');
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Runs before CSRF verification: a body over post_max_size arrives without
@@ -42,7 +55,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'support.enabled' => EnsureSupportEnabled::class,
             'marketing' => CheckMarketing::class,
             'marketing.locale' => SetMarketingLocale::class,
-            'cacheResponse' => CacheResponse::class,
+            'marketing.cache' => CacheMarketingResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

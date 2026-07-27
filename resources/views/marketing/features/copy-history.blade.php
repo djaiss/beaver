@@ -142,11 +142,7 @@
             {{ __('A physical object has a life beyond its title and cover photo. :name keeps the purchase, the latest valuation, the service, the loan, the move, and the paperwork together, where they belong: with the exact copy they describe.', ['name' => config('app.name')]) }}
         </p>
         <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-            @auth
-                <a href="{{ route('dashboard.index') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Follow the plot') }}</a>
-            @else
-                <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Follow the plot') }}</a>
-            @endauth
+            <a href="{{ route('register') }}" class="flex h-12 items-center justify-center rounded-md bg-primary px-6 text-[15px] font-semibold text-on-primary transition-opacity hover:opacity-90">{{ __('Follow the plot') }}</a>
             <a href="#control" class="flex h-12 items-center justify-center gap-x-2 rounded-md border border-hairline bg-canvas px-5.5 text-[15px] font-semibold text-ink transition-colors hover:bg-sidebar">
                 {{ __('See the whole saga') }}
                 @svg('lucide-arrow-down', 'size-4')
@@ -453,11 +449,7 @@
                 {{ __('Keep the purchase, the valuation, the service, the loan, the move, and the paperwork with the exact copy they describe.') }}
             </p>
             <div class="mt-8 flex justify-center">
-                @auth
-                    <a href="{{ route('dashboard.index') }}" class="flex h-[50px] items-center justify-center rounded-md bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('See a complete copy history') }}</a>
-                @else
-                    <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('See a complete copy history') }}</a>
-                @endauth
+                <a href="{{ route('register') }}" class="flex h-[50px] items-center justify-center rounded-md bg-white px-6.5 text-[15px] font-semibold text-[#111111] transition-colors hover:bg-[#e5e7eb]">{{ __('See a complete copy history') }}</a>
             </div>
         </div>
     </section>

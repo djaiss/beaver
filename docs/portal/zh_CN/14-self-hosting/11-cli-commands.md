@@ -50,13 +50,13 @@ php artisan search:rebuild-index
 
 重建账户范围搜索背后的索引，涵盖藏品、收藏、副本、照片、借出记录、存放位置、套组、系列、分类、标签和文档。升级到引入搜索功能的版本之后，运行一次：迁移只创建数据表，填充数据的只有这条命令。加上 `--type=item` 可以只重建某一种记录。之后随时重复运行也是安全的，索引出现偏差时同样用它修复。参见 @doc(search.overview)。
 
-### 清理营销站点缓存
+### 清除 Cloudflare 缓存
 
 ```
-php artisan responsecache:clear
+php artisan kollek:purge-cloudflare-cache
 ```
 
-丢弃公开营销页面的缓存副本，这些页面本来会从缓存中提供七天。不会丢失任何东西：每个页面会在下一次访问时重新渲染。面板里也有同样的按钮，详见 @doc(instanceAdmin.panel)。
+丢弃 Cloudflare 保存的所有公开页面，这些页面本来会从它的缓存中提供七天。不会丢失任何东西：每个页面会在下一次访问时重新渲染。该命令需要 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ZONE_ID`，缺少时会明确提示。面板里也有同样的按钮，详见 @doc(instanceAdmin.panel)。
 
 ### 为翻译搭建语言包骨架
 

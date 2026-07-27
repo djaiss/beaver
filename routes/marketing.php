@@ -31,7 +31,7 @@ $urlLocales = collect(config('docs.locales'))
 // have agreed, so they have to be readable on an instance that keeps the rest of
 // the public site switched off. They carry the language prefix all the same, so
 // the page around the text still reads in the visitor's language.
-Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'cacheResponse'])->group(function (): void {
+Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'marketing.cache'])->group(function (): void {
     Route::get('terms', [TermsController::class, 'index'])->name('marketing.terms.index');
     Route::get('privacy', [PrivacyController::class, 'index'])->name('marketing.privacy.index');
 });
@@ -40,12 +40,11 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
     Route::get('/', fn () => redirect()->route('marketing.index'))->name('marketing.root');
 
     // Every localized page is a public GET that changes only when the site is
-    // redeployed, so the whole group is response cached (7 days, see
-    // config/responsecache.php). The default cache profile keys on the URL and
-    // suffixes the authenticated user id, so a signed in visitor and a guest
-    // never share a cached page (the header differs between them). The bare
-    // root redirect above is left uncached on purpose.
-    Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'cacheResponse'])->group(function (): void {
+    // redeployed, so the whole group carries the cache headers that let a CDN
+    // hold it for a week (see config/marketing.php). Every visitor gets the same
+    // page, signed in or not, which is what makes one shared copy correct. The
+    // bare root redirect above is left out of the group on purpose.
+    Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'marketing.cache'])->group(function (): void {
         Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
 
         Route::get('features', [FeaturesController::class, 'index'])->name('marketing.features.index');
