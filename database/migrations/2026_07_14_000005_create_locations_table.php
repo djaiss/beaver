@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('account_id')->comment('account the location belongs to');
             $table->unsignedBigInteger('parent_id')->nullable()->comment('parent location, for nesting');
             $table->text('name')->comment('name of the location, e.g. Shelf A or Box 3');
+            $table->string('emoji', 8)->nullable()->comment('cover emoji for the location');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the location');
             $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the location');

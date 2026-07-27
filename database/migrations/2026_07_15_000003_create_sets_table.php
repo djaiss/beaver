@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the set');
             $table->text('updated_by_name')->nullable()->comment('name of the last editor at the time');
+            $table->unsignedBigInteger('deleted_by_id')->nullable()->comment('user who deleted the record');
+            $table->text('deleted_by_name')->nullable()->comment('name of the user who deleted the record, at the time');
             $table->timestamps();
             $table->softDeletes()->comment('null unless the set has been soft deleted');
 

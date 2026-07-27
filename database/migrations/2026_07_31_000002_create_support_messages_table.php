@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id()->comment('primary key');
             $table->unsignedBigInteger('support_ticket_id')->comment('conversation the message belongs to');
             $table->unsignedBigInteger('user_id')->comment('user who wrote the message');
+            $table->boolean('is_from_team')->default(false)->comment('true when written by the instance team rather than the user');
             $table->text('body')->comment('the message itself');
             $table->timestamps();
             $table->foreign('support_ticket_id')->references('id')->on('support_tickets')->cascadeOnDelete();

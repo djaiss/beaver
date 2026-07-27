@@ -13,6 +13,8 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table): void {
             $table->id()->comment('primary key');
             $table->text('name')->comment('name of the account');
+            $table->string('currency_code', 3)->default('USD')->comment('default currency of the account');
+            $table->boolean('show_getting_started')->default(true)->comment('whether the getting started screen is still shown to the account');
             $table->unsignedBigInteger('created_by_id')->nullable()->comment('user who created the account');
             $table->text('created_by_name')->nullable()->comment('name of the creator at the time');
             $table->unsignedBigInteger('updated_by_id')->nullable()->comment('user who last updated the account');
