@@ -598,7 +598,7 @@
           ],
           [
               'question' => __('Can I export everything?'),
-              'answer' => __('One click export of your entire catalog to JSON, including custom types and every physical copy. Import it back into any instance.'),
+              'answer' => __('Not yet, and we would rather say so here. Collection type definitions export and import as JSON, and open loans download as CSV. If you self-host, a backup of the database and the storage volume holds everything.'),
           ],
           [
               'question' => __('Is there an API?'),
@@ -630,6 +630,10 @@
         </div>
       @endforeach
     </div>
+
+    <p class="mt-8 text-center text-[15px] text-muted">
+      <a href="{{ route('marketing.faq.index') }}" data-turbo="true" class="font-semibold text-ink underline underline-offset-4 hover:text-body">{{ __('Read the full FAQ') }}</a>
+    </p>
   </section>
 
   {{-- FINAL CTA --}}

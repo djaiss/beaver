@@ -9,6 +9,7 @@ Turbo.session.drive = false; // explicit (enabled by default)
 import Alpine from 'alpinejs';
 import morph from '@alpinejs/morph';
 import ajax from '@imacrayon/alpine-ajax';
+import Faq from './components/faq';
 import Popover from './components/popover';
 import PricingCalculator from './components/pricing-calculator';
 import RelationshipTypeSorter from './components/relationship-type-sorter';
@@ -24,6 +25,7 @@ Alpine.plugin(ajax);
 // its own x-target region stays connected (and keeps firing ajax:* events)
 // after the region it lives in gets updated.
 ajax.configure({ mergeStrategy: 'morph' });
+Alpine.data('faq', Faq);
 Alpine.data('popover', Popover);
 Alpine.data('pricingCalculator', PricingCalculator);
 Alpine.data('relationshipTypeSorter', RelationshipTypeSorter);

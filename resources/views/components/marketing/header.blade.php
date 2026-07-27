@@ -6,6 +6,7 @@
         ['label' => __('Pricing'), 'url' => route('marketing.pricing.index')],
         ['label' => __('Docs'), 'url' => route('marketing.docs.portal.home.show')],
         ['label' => __('API'), 'url' => route('marketing.docs.api.index')],
+        ['label' => __('FAQ'), 'url' => route('marketing.faq.index')],
     ];
 
     $featureColumns = app(\App\Services\MarketingFeatures::class)->columns();
