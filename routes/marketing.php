@@ -6,6 +6,7 @@ use App\Http\Controllers\Marketing\Docs\ApiDocsController;
 use App\Http\Controllers\Marketing\Docs\ApiDocsMarkdownController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
+use App\Http\Controllers\Marketing\FaqController;
 use App\Http\Controllers\Marketing\FeaturesController;
 use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\PricingController;
@@ -50,6 +51,8 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
         Route::get('features/{slug}', [FeaturesController::class, 'show'])->where('slug', '[a-z0-9\-]+')->name('marketing.features.show');
 
         Route::get('pricing', [PricingController::class, 'index'])->name('marketing.pricing.index');
+
+        Route::get('faq', [FaqController::class, 'index'])->name('marketing.faq.index');
 
         Route::get('testimonials', [TestimonialsController::class, 'index'])->name('marketing.testimonials.index');
 
