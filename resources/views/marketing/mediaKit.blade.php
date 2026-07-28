@@ -348,12 +348,14 @@
   {{-- 08 CONTACT AND USAGE --}}
   <section id="contact" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="grid grid-cols-1 gap-12 rounded-2xl bg-card px-6 py-12 sm:px-12 sm:py-14 lg:grid-cols-2 lg:gap-14">
-      <div @if ($pressEmail) x-data="copyToClipboard(@js($pressEmail))" @endif>
+      {{-- The address is never written into the page, so the copy button reads it back off
+           the link, which the component below has filled in long before anybody clicks. --}}
+      <div @if ($pressEmail) x-data="copyToClipboard()" @endif>
         <p class="mb-4 font-mono text-[11px] tracking-[1.2px] text-muted-soft uppercase">Press contact</p>
         <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1.2px] text-ink sm:text-[34px]">One inbox. One person.</h2>
 
         @if ($pressEmail)
-          <a href="mailto:{{ $pressEmail }}" class="mt-6 inline-block border-b border-hairline font-mono text-[19px] font-medium text-ink hover:border-ink">{{ $pressEmail }}</a>
+          <x-marketing.email :address="$pressEmail" x-ref="pressEmail" class="mt-6 inline-block border-b border-hairline font-mono text-[19px] font-medium text-ink hover:border-ink" />
         @endif
 
         <p class="mt-5 max-w-[420px] text-[15px] leading-relaxed text-muted">
@@ -361,7 +363,7 @@
         </p>
 
         @if ($pressEmail)
-          <button type="button" @click="copy()" class="{{ $copyButton }} mt-6 border-hairline">
+          <button type="button" @click="copy($refs.pressEmail.href.replace('mailto:', ''))" class="{{ $copyButton }} mt-6 border-hairline">
             <span x-show="! copied">Copy address</span>
             <span x-show="copied" x-cloak>&check; Copied</span>
           </button>
