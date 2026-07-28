@@ -17,23 +17,30 @@
      can strand the panel visible, since its resting display is block. Animating
      opacity on an always-block element closes reliably every time. --}}
 
+{{-- Both halves carry the closed state as a static opacity-0, and Alpine only
+     paints over it once it is open. An x-cloak would look equivalent and is not:
+     Alpine drops x-cloak the moment it boots, and undoes the inline styles it
+     added when the element leaves the document, so the copy Turbo caches on the
+     way out of a page is the menu stripped of everything keeping it hidden.
+     Coming back to that cached page paints the whole menu at full opacity for a
+     frame, and the transitions below then animate it away. A class Alpine never
+     wrote is a class it cannot take back. --}}
+
 {{-- Dim the rest of the page behind the panel (visual only). Opacity is bound
      inline rather than through utility classes so the animation never depends on
      Tailwind emitting a class it only sees inside an Alpine expression. --}}
 <div
-  x-cloak
   :style="featuresOpen ? 'opacity:1' : 'opacity:0'"
-  class="pointer-events-none fixed inset-0 top-16 z-40 hidden bg-ink/25 backdrop-blur-[1px] transition-opacity duration-200 lg:block"
+  class="pointer-events-none fixed inset-0 top-16 z-40 hidden bg-ink/25 opacity-0 backdrop-blur-[1px] transition-opacity duration-200 lg:block"
   aria-hidden="true"
 ></div>
 
 <div
-  x-cloak
   :inert="! featuresOpen"
   :style="featuresOpen
     ? 'opacity:1; transform:translateY(0); transition:opacity .2s ease-out, transform .2s ease-out'
     : 'opacity:0; transform:translateY(-8px); transition:opacity .15s ease-in, transform .15s ease-in'"
-  class="pointer-events-none absolute inset-x-0 top-full z-50 hidden lg:block"
+  class="pointer-events-none absolute inset-x-0 top-full z-50 hidden opacity-0 lg:block"
 >
   {{-- The card plus the small bridge gap above it: the only pointer target. --}}
   <div class="pointer-events-auto relative mx-auto max-w-[1080px] px-5 pt-3.5">

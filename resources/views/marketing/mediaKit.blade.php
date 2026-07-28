@@ -26,7 +26,7 @@
     $facts = [
         ['key' => 'Founder', 'value' => 'Regis Freyd', 'note' => 'Sole developer. No employees.'],
         ['key' => 'Based', 'value' => 'Canada', 'note' => 'Remote, no offices.'],
-        ['key' => 'Status', 'value' => 'In development', 'note' => 'Not launched. The documentation keeps a public feature status page of what is finished and what is not.'],
+        ['key' => 'Status', 'value' => 'In development', 'note' => 'Just launched. The documentation keeps a public feature status page of what is finished and what is not.'],
         ['key' => 'Licence', 'value' => 'MIT', 'note' => 'The whole application, not an open core split.'],
         ['key' => 'Price', 'value' => 'Free to self-host', 'note' => 'There is no billing code in the application. A managed instance is planned at one payment of $49, and is not on sale yet.'],
         ['key' => 'Platform', 'value' => 'Web application', 'note' => 'Any modern browser, laid out down to phone width. There is no native mobile app.'],
@@ -251,7 +251,7 @@
   </section>
 
   {{-- 05 SCREENSHOTS --}}
-  <section id="screenshots" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
+  {{-- <section id="screenshots" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="{{ $sectionHeading }}">
       <span class="{{ $sectionNumber }}">05</span>
       <h2 class="{{ $sectionTitle }}">Product screenshots</h2>
@@ -274,7 +274,7 @@
         </div>
       @endforeach
     </div>
-  </section>
+  </section> --}}
 
   {{-- 06 FOUNDER --}}
   <section id="founder" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
@@ -286,8 +286,8 @@
 
     <div class="mt-9 grid grid-cols-1 gap-10 lg:grid-cols-[340px_1fr] lg:gap-14">
       <div>
-        <div class="media-slot flex aspect-[4/5] items-end rounded-2xl border border-hairline p-3.5">
-          <span class="rounded-md border border-hairline bg-page px-2.5 py-1 font-mono text-[11px] text-muted">founder portrait &mdash; 2400&times;3000</span>
+        <div class="media-slot flex items-end rounded-2xl border border-hairline p-3.5">
+          <x-image src="{{ asset('images/marketing/media-kit/regis.webp') }}" srcset="{{ asset('images/marketing/media-kit/regis.webp') }}, {{ asset('images/marketing/media-kit/regis@2x.webp') }} 2x" height="340" width="340" alt="Regis Freyd" class="" />
         </div>
 
         <div class="mt-3 flex gap-2">
@@ -309,12 +309,6 @@
           <p class="text-base leading-[1.7] text-body">
             The application is built around one idea: collectors do not own categories, they own particular objects with particular histories. That shows up in the data model, where an item and the individual copies owned of it are deliberately two different things.
           </p>
-        </div>
-
-        {{-- Waiting on a sentence in the founder's own words. Nothing is invented here on
-             his behalf, so the slot stays visibly empty until he writes it. --}}
-        <div class="media-slot mt-7 max-w-[620px] rounded-xl border border-dashed border-hairline p-5">
-          <span class="rounded-md border border-hairline bg-page px-2.5 py-1 font-mono text-[11px] text-muted">founder quote &mdash; to be written</span>
         </div>
 
         <button type="button" @click="copy()" class="{{ $copyButton }} mt-7">

@@ -1,13 +1,3 @@
-{{--
-  Who is behind KolleK. The page is deliberately light on its feet: the "team" is one
-  developer and a set of AI tools, and the page says so rather than dressing it up.
-
-  Two things on this page are not settled facts. The first four timeline entries are
-  bracketed placeholders waiting for Régis to check the years, and the page says so
-  underneath them. The launch date is a plan, not a shipped release: the media kit
-  still describes the status as in development.
---}}
-
 @php
     $github = config('marketing.github_url');
 
@@ -16,7 +6,7 @@
             'name' => 'Régis',
             'initial' => 'R',
             'kind' => __('Human'),
-            'role' => __('Founder, support, coffee consumer'),
+            'role' => __('Founder, support, main engineer'),
             'blurb' => __('Designs the product, writes the code, answers support requests and occasionally remembers to eat lunch.'),
         ],
         [
@@ -78,28 +68,28 @@
     // The first four dates are placeholders, and the note under the list says so.
     $timeline = [
         [
-            'date' => __('[Birth year]'),
+            'date' => __('1981'),
             'placeholder' => true,
             'title' => __('Régis is born.'),
             'body' => __('No collection yet. Give it time.'),
         ],
         [
-            'date' => __('[Childhood]'),
+            'date' => __('1987'),
             'placeholder' => true,
             'title' => __('The first object is carefully kept for no logical reason.'),
             'body' => __('A collector is born. Nobody notices, least of all him.'),
         ],
         [
-            'date' => __('[Pokémon year]'),
+            'date' => __('1996'),
             'placeholder' => true,
             'title' => __('The first Pokémon card enters the collection.'),
             'body' => __('Things escalate quickly. Sleeves are purchased. A binder becomes several binders.'),
         ],
         [
-            'date' => __('[Another milestone]'),
+            'date' => __('2004'),
             'placeholder' => true,
-            'title' => __('Placeholder for another important collecting memory.'),
-            'body' => __('Something worth keeping, and the exact date worth checking before this page goes live.'),
+            'title' => __('My first manga after years of reading Dragon Ball Z.'),
+            'body' => __('Discovers a new passion for collecting manga.'),
         ],
         [
             'date' => '2026',
@@ -149,10 +139,6 @@
         ['title' => __('AI features that exist only because they are fashionable'), 'note' => __('The AI helps build KolleK. It does not need to live inside it.')],
     ];
 
-    /*
-     * The last one used to promise a roadmap and a changelog page. Neither exists:
-     * the releases are on GitHub and the feature status page is in the portal.
-     */
     $openSourcePoints = [
         ['title' => __('Read the code'), 'body' => __('The whole application, not a trimmed community edition.')],
         ['title' => __('Contribute'), 'body' => __('Issues, patches and translations are all welcome.')],
@@ -260,8 +246,6 @@
         </li>
       @endforeach
     </ol>
-
-    <p class="mt-8 pl-7.5 font-mono text-xs leading-[1.7] text-muted-soft">{{ __('Entries in brackets are placeholders until Régis checks the exact years.') }}</p>
   </section>
 
   {{-- WHY --}}
@@ -386,12 +370,12 @@
         {{ __('KolleK is the collection app I always wanted to use.') }}
       </h2>
 
-      <p class="mx-auto mt-4.5 max-w-[520px] text-[19px] leading-[1.6] text-muted">
+      <p class="mx-auto mt-4.5 max-w-[620px] text-[19px] leading-[1.6] text-muted">
         {{ __('I hope you will enjoy using it as much as I enjoy building it.') }}
       </p>
 
       <div class="mt-8 flex items-center justify-center gap-x-3">
-        <span aria-hidden="true" class="flex size-9 items-center justify-center rounded-full border border-hairline bg-page font-mono text-[13px] text-ink">R</span>
+        <x-image src="{{ asset('images/regis.png') }}" srcset="{{ asset('images/regis.png') }}, {{ asset('images/regis@2x.png') }} 2x" height="52" width="52" alt="Regis Freyd" class="rounded-full" />
         <p class="text-[15px] font-semibold text-ink">Régis</p>
       </div>
 
