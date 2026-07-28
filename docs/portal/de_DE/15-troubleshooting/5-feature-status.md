@@ -39,6 +39,10 @@ Du kannst Webhook-Endpunkte registrieren, und jeder erhält ein Signaturgeheimni
 
 Import und Export existieren nur für Sammlungstyp-Definitionen. Es gibt noch keinen Import oder Export auf Objekt- oder ganzer Sammlungsebene. Um alles herauszubekommen, haben Self-Hoster vollständige Instanz-Backups; siehe @doc(dataSafety.backupCollectionData).
 
+### Zahlen, um ein gehostetes Konto freizuschalten
+
+Auf einer gehosteten Instanz gilt das Objektlimit, und die Bildschirme, die es erklären, sind fertig, einschließlich des Bestätigungsschritts, der festhält, wem du zugestimmt hast. Der Zahlungsdienstleister hinter diesem Schritt ist noch nicht angebunden, es lässt sich also nichts wirklich kaufen und kein Konto durch Zahlung freischalten. Selbsthosting hat kein Limit und braucht nichts davon. Siehe @doc(account.freePlan).
+
 ### Instanzadministration: Support und Bewertungen
 
 Im Instanzadministrationsbereich sind die Bereiche Support und Bewertungen Platzhalter, die das auch so sagen. Der Rest des Bereichs funktioniert; siehe @doc(instanceAdmin.panel).

@@ -122,7 +122,7 @@ class CatalogSeeder extends Seeder
      */
     private function createItems(User $user, Catalog $catalog, array $categories, array $sets, EloquentCollection $conditions, EloquentCollection $locations): void
     {
-        $this->command->info('Creating the items of the collection, this takes a moment...');
+        $this->command->info('Creating the items of the collection...');
 
         $counter = 0;
 
@@ -257,25 +257,23 @@ class CatalogSeeder extends Seeder
      * Title, category, first issue, last issue, and the value range in cents the
      * copies of that run fall into.
      *
+     * The plan stays under the free item allowance on purpose, so a freshly
+     * seeded account on a hosted instance does not start life already at its
+     * ceiling. It still spreads across several categories and both sets, so the
+     * statistics, the set completion and the copy history all have something to
+     * show. Add a run here if you need more, and expect the upgrade screens to
+     * appear once the account passes ten items.
+     *
      * @return list<array{0: string, 1: string, 2: int, 3: int, 4: int, 5: int}>
      */
     private function itemPlan(): array
     {
         return [
-            ['Amazing Spider-Man', 'Spider-Man', 300, 320, 4000, 85000],
-            ['Spectacular Spider-Man', 'Spider-Man', 150, 165, 1500, 12000],
-            ['Spider-Man', 'Spider-Man', 1, 16, 2000, 64000],
-            ['X-Men', 'X-Men', 1, 12, 3000, 31000],
-            ['Uncanny X-Men', 'X-Men', 275, 290, 1200, 9000],
-            ['New Mutants', 'X-Men', 95, 100, 5000, 95000],
-            ['Infinity Gauntlet', 'Infinity Saga', 1, 6, 3500, 22000],
-            ['Infinity War', 'Infinity Saga', 1, 6, 2500, 14000],
-            ['Infinity Crusade', 'Infinity Saga', 1, 6, 1800, 9000],
-            ['Wolverine', 'Wolverine', 40, 55, 1000, 8000],
-            ['Fantastic Four', 'Fantastic Four', 350, 360, 900, 6500],
-            ['Avengers', 'Avengers', 360, 368, 1100, 7500],
-            ['Daredevil', 'Daredevil', 280, 284, 800, 5000],
-            ['Silver Surfer', 'Silver Surfer', 50, 52, 1400, 11000],
+            ['Amazing Spider-Man', 'Spider-Man', 300, 302, 4000, 85000],
+            ['Spider-Man', 'Spider-Man', 1, 1, 2000, 64000],
+            ['X-Men', 'X-Men', 1, 1, 3000, 31000],
+            ['Infinity Gauntlet', 'Infinity Saga', 1, 2, 3500, 22000],
+            ['Wolverine', 'Wolverine', 40, 40, 1000, 8000],
         ];
     }
 }

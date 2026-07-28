@@ -52,8 +52,8 @@ class MarketingFaq
             ],
             [
                 'question' => __('Is there a subscription?'),
-                'verdict' => __('No billing at all'),
-                'note' => __('The app has no plans, tiers or paywalled features.'),
+                'verdict' => __('No, one payment'),
+                'note' => __('Self-hosting is free. A hosted account is unlocked once, never rented.'),
             ],
             [
                 'question' => __('Can I export my data?'),
@@ -149,7 +149,7 @@ class MarketingFaq
                     ],
                     [
                         __('What is the difference between hosted KolleK and self-hosted KolleK?'),
-                        __('The software is the same, and so is the feature set: there is no billing anywhere in the application, so nothing can be locked behind a plan. The difference is who runs the server, applies the updates and keeps the backups.'),
+                        __('The software is the same, and so is the feature set: nothing is locked behind a plan, and no feature is held back from the self-hosted version. What differs is who runs the server, applies the updates and keeps the backups, and that a hosted account holds ten items for free before it has to be unlocked. A self-hosted instance has no such limit.'),
                     ],
                     [
                         __('Which option do you recommend?'),
@@ -192,15 +192,15 @@ class MarketingFaq
                 'items' => $this->pairs([
                     [
                         __('How much does KolleK cost?'),
-                        __('The software is free. There is no billing code in the application at all: no plans, no tiers, no paywalled features, no checkout. Self-hosting costs you whatever your own server costs. The plan for a managed hosted service is a single payment of $49, and it is not open for purchase yet.'),
+                        __('Self-hosting is free, and costs you whatever your own server costs. On the hosted service an account holds ten items for free, and unlocking it for good is a single payment of $49. Checkout is not open yet, so nothing can be bought today, but the screens that explain the limit are already in the application.'),
                     ],
                     [
                         __('Is there a monthly subscription?'),
-                        __('No, and there is no mechanism for one. Nothing in KolleK can charge a card, monthly or otherwise. If hosted plans open later, the commitment on the pricing page is one payment rather than a subscription.'),
+                        __('No, and there is no mechanism for one. Nothing in KolleK can charge a card on a schedule. The commitment is one payment that unlocks an account permanently, never a rental.'),
                     ],
                     [
                         __('What does the one-time payment include?'),
-                        __('It would pay for the operational side of a hosted instance: the servers, the updates, the backups and the support. It would not unlock features, because every feature is already in the application however you run it.'),
+                        __('It removes the item limit on a hosted account, and pays for the operational side of running one: the servers, the updates, the backups and the support. It does not unlock features, because every feature is already in the application however you run it.'),
                     ],
                     [
                         __('Is self-hosting really free?'),
@@ -208,11 +208,11 @@ class MarketingFaq
                     ],
                     [
                         __('Are there limits on items, collections, members, photos, or documents?'),
-                        __('The application enforces no quotas on any of them. The real limits are per file (10 MB for a photo, 12 MB for a document) and whatever disk you give the instance. A hosted service can suspend an account that is genuinely abusing it, as the terms of use describe.'),
+                        __('A self-hosted instance has no quotas at all. On the hosted service the only quota is on items: an account holds ten for free, accepts five more as a grace, and then stops accepting new ones until it is unlocked. Nothing already added is ever deleted, hidden or made read-only. Collections, members, photos and documents are not counted either way. The remaining limits are per file (10 MB for a photo, 12 MB for a document) and whatever disk you give the instance.'),
                     ],
                     [
                         __('Do you offer refunds?'),
-                        __('Nothing is being charged today, so there is nothing to refund. The pricing page commits to a 30 day, no questions asked refund once a hosted plan is actually sold.'),
+                        __('No, and we say so before you pay rather than in the small print. A reversal costs a project this size the payment fee, the chargeback penalty and an afternoon of paperwork. If anything goes wrong, email us and we will fix it. If you would rather not pay at all, self-hosting is free and always will be.'),
                     ],
                     [
                         __('Will pricing change later?'),

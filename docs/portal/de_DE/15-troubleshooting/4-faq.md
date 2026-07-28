@@ -19,7 +19,7 @@ Nein. Ein Benutzer gehört zu genau einem Konto, und eine E-Mail-Adresse kann nu
 
 ## Ist KolleK wirklich kostenlos?
 
-Ja. Es gibt überhaupt keine Bezahlung innerhalb der App: keine Pläne, keine Stufen, keine hinter einer Bezahlschranke versteckten Funktionen. Self Hosting ist kostenlos, und jede Funktion ist enthalten, egal wie du es betreibst. Siehe @doc(kollek.hostingOptions).
+Selbsthosting ist kostenlos und hat kein Objektlimit. Auf einer gehosteten Instanz fasst ein Konto zehn Objekte kostenlos und wird dann durch eine einmalige Zahlung freigeschaltet, nie durch ein Abo. In beiden Fällen gibt es keine Tarife, keine Stufen und keine Funktionen hinter einer Paywall: jede Funktion ist enthalten, egal wie du es betreibst. Siehe @doc(account.freePlan) und @doc(kollek.hostingOptions).
 
 ## Wie bekomme ich meine Daten heraus?
 

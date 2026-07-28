@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Log;
 use App\Models\User;
+use App\Services\AccountPlan;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,12 +82,18 @@ class AccountController extends Controller
             ->limit(15)
             ->get();
 
+        $plan = new AccountPlan(account: $account);
+
         return view('app.instance.accounts.show', [
             'account' => $account,
             'members' => $members,
             'activity' => $activity,
             'catalogCount' => $account->catalogs()->count(),
             'itemCount' => $account->items()->count(),
+            'plan' => $plan,
+            // What was agreed to before a payment was attempted, newest first. The
+            // rows outlive the user, so the relation may come back empty.
+            'consents' => $account->purchaseConsents()->with('user')->orderByDesc('accepted_at')->orderBy('id')->get(),
         ]);
     }
 

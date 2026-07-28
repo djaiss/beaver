@@ -60,7 +60,7 @@
     </h1>
 
     <p class="mx-auto mt-6 max-w-[600px] text-[17px] leading-relaxed text-muted sm:text-[19px]">
-      One price. One time. No monthly nibbling at your wallet. Or, and we genuinely mean this, host it yourself for free and pay us nothing. We won't come back asking for more.
+      One price. One time. No monthly nibbling at your wallet. Your first ten items on the cloud cost nothing, so you can see whether we suit you before paying. Or, and we genuinely mean this, host it yourself for free and pay us nothing at all. We won't come back asking for more.
     </p>
   </section>
 
@@ -125,7 +125,7 @@
     <div class="mb-12 text-center">
       <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">Two ways in. Both fair.</h2>
       <p class="mx-auto mt-4.5 max-w-[520px] text-[17px] text-muted">
-        Roll up your sleeves and self-host for free, or let us handle the ops for a single, one-time $49. No fine print, no surprises.
+        Roll up your sleeves and self-host for free, with no limits at all, or let us handle the ops. A cloud account holds ten items free, and a single one-time $49 unlocks it for good. No fine print, no surprises.
       </p>
     </div>
 
@@ -140,7 +140,7 @@
               '$0, forever',
               'One-command Docker deploy',
               'Full control of your data',
-              'Unlimited everything',
+              'Unlimited everything, no item cap',
               'Updates via docker pull',
           ] as $feature)
             <div class="flex items-center gap-x-2.5 text-[15px] text-body">
@@ -169,11 +169,11 @@
 
         <div class="my-7 flex flex-col gap-y-3">
           @foreach ([
+              'Ten items free before you pay a cent',
               'One payment, no renewals',
               'Lifetime managed hosting',
               'Automatic updates & backups',
               'Unlimited members & storage',
-              '30-day money-back guarantee',
           ] as $feature)
             <div class="flex items-center gap-x-2.5 text-[15px] text-[#e5e7eb]">
               <x-lucide-check class="h-4 w-4 shrink-0 text-badge-emerald" stroke-width="2.4" />
@@ -329,8 +329,8 @@
           ],
           [
               'radius' => 'rounded-[3px]',
-              'title' => 'Refund, no hard feelings',
-              'desc' => "30 days to change your mind. If KolleK isn't for you, we return the $49 and part as friends.",
+              'title' => 'Try before you pay',
+              'desc' => "Ten items free on the cloud, and self-hosting free forever. Make up your mind before any money changes hands, because the payment is final once it does.",
           ],
       ] as $card)
         <div class="flex flex-col gap-y-3.5 rounded-lg bg-card p-8">
@@ -392,7 +392,7 @@
       @foreach ([
           [
               'question' => 'Wait, is it really just $49, one time?',
-              'answer' => "Yes. Forty-nine dollars, paid once, and the cloud-hosted KolleK is yours. No monthly fee, no annual renewal, no surprise 'loyalty' price hikes. We only charge you the one time, and then we leave your wallet a-loan.",
+              'answer' => "Yes, and the first ten items are free before that. Catalogue those, see whether we suit you, then pay forty-nine dollars once and the cloud-hosted KolleK is yours. No monthly fee, no annual renewal, no surprise 'loyalty' price hikes. We only charge you the one time, and then we leave your wallet a-loan.",
           ],
           [
               'question' => 'Should I self-host instead?',
@@ -404,7 +404,7 @@
           ],
           [
               'question' => 'What does the $49 cloud plan actually cover?',
-              'answer' => "Managed hosting for life, automatic updates, encrypted daily backups, and zero maintenance on your end. You collect; we keep the servers running. It's the same software as self-host, you're just paying us to handle the infrastructure for you.",
+              'answer' => "It lifts the ten item limit on your account, and covers managed hosting for life, automatic updates, encrypted daily backups, and zero maintenance on your end. You collect; we keep the servers running. It's the same software as self-host, you're just paying us to handle the infrastructure for you.",
           ],
           [
               'question' => 'Is there a subscription hiding somewhere?',
@@ -416,7 +416,7 @@
           ],
           [
               'question' => 'Can I get a refund if I change my mind?',
-              'answer' => "Yes, a 30-day, no-questions-asked, no-hard-feelings refund. If KolleK isn't your cup of tea, we'll return your $49 and wish you well. We'd rather part as friends than hold a grudge.",
+              'answer' => "No, and we would rather say that here than in the small print. A reversal costs a project this size the payment fee, the chargeback penalty and an afternoon of paperwork. That is why the cloud gives you ten items free first, and why self-hosting is free forever: make up your mind before you pay, not after. If something breaks, email us and we will fix it.",
           ],
           [
               'question' => 'Do you offer a discount for teams, students, or very good collectors?',
@@ -453,7 +453,7 @@
         Stop putting it off. Start collecting.
       </h2>
       <p class="mx-auto mt-4.5 max-w-[460px] text-[17px] text-muted">
-        Free if you self-host, $49 once if you'd like us to handle the hosting. Either way, no subscription is ever going to eat into your bank account.
+        Free forever if you self-host, ten items free then $49 once if you'd like us to handle the hosting. Either way, no subscription is ever going to eat into your bank account.
       </p>
 
       <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">

@@ -19,7 +19,7 @@ Não. Um usuário pertence a exatamente uma conta, e um endereço de e-mail só 
 
 ## O KolleK é realmente gratuito?
 
-Sim. Não existe cobrança dentro do aplicativo de forma alguma: sem planos, sem níveis, sem recursos bloqueados por pagamento. Auto-hospedar é gratuito, e todo recurso está incluído, não importa como você o execute. Veja @doc(kollek.hostingOptions).
+A autohospedagem é gratuita e não tem limite de itens. Numa instância hospedada, uma conta comporta dez itens de graça e depois é desbloqueada por um pagamento único, nunca por assinatura. Nos dois casos não há planos, nem níveis, nem recursos bloqueados por pagamento: todo recurso está incluído independentemente de como você executa o aplicativo. Veja @doc(account.freePlan) e @doc(kollek.hostingOptions).
 
 ## Como faço para exportar meus dados?
 

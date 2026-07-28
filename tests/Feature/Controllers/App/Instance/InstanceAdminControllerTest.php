@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Actions\RecordPurchaseConsent;
 use App\Enums\PermissionEnum;
+use App\Enums\PurchaseConsentChoice;
+use App\Models\Catalog;
+use App\Models\Item;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 
@@ -182,4 +186,92 @@ it('forbids an administrator from deleting their own user', function () {
 
     $response->assertNotFound();
     $this->assertModelExists($monica);
+});
+
+it('reports the plan standing of a hosted account', function () {
+    config(['pricing.hosted' => true]);
+
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+    $centralPerk = $this->createAccount('Central Perk');
+    $catalog = Catalog::factory()->create(['account_id' => $centralPerk->id]);
+    Item::factory()->count(15)->create(['catalog_id' => $catalog->id]);
+
+    $this->actingAs($monica)
+        ->get('instance-admin/accounts/'.$centralPerk->id)
+        ->assertOk()
+        ->assertSee('Free plan')
+        ->assertSee('15 of 10 free, 15 hard limit');
+});
+
+it('reports an unlocked account as unlocked', function () {
+    config(['pricing.hosted' => true]);
+
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+    $centralPerk = $this->createAccount('Central Perk');
+    $centralPerk->update(['unlocked_at' => now()]);
+
+    $this->actingAs($monica)
+        ->get('instance-admin/accounts/'.$centralPerk->id)
+        ->assertOk()
+        ->assertSee('Unlocked on '.$centralPerk->unlocked_at->isoFormat('ll'))
+        ->assertSee('0, uncapped');
+});
+
+it('says a self hosted instance applies no limit', function () {
+    config(['pricing.hosted' => false]);
+
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+    $centralPerk = $this->createAccount('Central Perk');
+
+    $this->actingAs($monica)
+        ->get('instance-admin/accounts/'.$centralPerk->id)
+        ->assertOk()
+        ->assertSee('Self hosted instance, no limit applies');
+});
+
+it('lists what an account confirmed before paying, with who, when and from where', function () {
+    config(['pricing.hosted' => true]);
+
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+    $centralPerk = $this->createAccount('Central Perk');
+    $rachel = $this->createUser(['first_name' => 'Rachel', 'last_name' => 'Green']);
+    $this->assignUserToAccount(user: $rachel, account: $centralPerk, role: PermissionEnum::Owner->value);
+
+    new RecordPurchaseConsent(
+        user: $rachel,
+        account: $centralPerk,
+        ipAddress: '198.51.100.7',
+    )->execute();
+
+    $response = $this->actingAs($monica)
+        ->get('instance-admin/accounts/'.$centralPerk->id)
+        ->assertOk()
+        ->assertSee('Purchase confirmations')
+        ->assertSee('Rachel Green')
+        ->assertSee('198.51.100.7');
+
+    foreach (PurchaseConsentChoice::cases() as $choice) {
+        $response->assertSee($choice->summary());
+    }
+});
+
+it('says so when an account has confirmed nothing', function () {
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+    $centralPerk = $this->createAccount('Central Perk');
+
+    $this->actingAs($monica)
+        ->get('instance-admin/accounts/'.$centralPerk->id)
+        ->assertOk()
+        ->assertSee('Nobody in this account has gone through the purchase confirmation yet.');
+});
+
+it('no longer lists the billing plan as unsupported', function () {
+    $monica = $this->createUser(['is_instance_administrator' => true]);
+    $centralPerk = $this->createAccount('Central Perk');
+
+    $this->actingAs($monica)
+        ->get('instance-admin/accounts/'.$centralPerk->id)
+        ->assertOk()
+        ->assertSee('Not supported yet')
+        ->assertDontSee('Billing plan');
 });

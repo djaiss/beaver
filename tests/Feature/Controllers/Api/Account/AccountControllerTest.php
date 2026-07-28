@@ -3,6 +3,8 @@
 declare(strict_types=1);
 use App\Enums\PermissionEnum;
 use App\Models\Account;
+use App\Models\Catalog;
+use App\Models\Item;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -17,6 +19,8 @@ beforeEach(function () {
         'attributes' => [
             'name',
             'currency_code',
+            'items_used',
+            'item_limit',
             'created_at',
             'updated_at',
         ],
@@ -196,4 +200,52 @@ it('does not touch another account', function () {
     ])->assertOk();
 
     expect($otherAccount->refresh()->name)->toBe('Moondance Diner');
+});
+
+it('reports the free plan usage of a hosted account', function () {
+    config(['pricing.hosted' => true]);
+
+    $account = $this->createAccount();
+    $user = $this->createUser();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Owner->value);
+
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    Item::factory()->count(4)->create(['catalog_id' => $catalog->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', route('api.account'))
+        ->assertOk()
+        ->assertJsonPath('data.attributes.items_used', 4)
+        ->assertJsonPath('data.attributes.item_limit', 15);
+});
+
+it('reports no item limit on a self hosted instance', function () {
+    config(['pricing.hosted' => false]);
+
+    $account = $this->createAccount();
+    $user = $this->createUser();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Owner->value);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', route('api.account'))
+        ->assertOk()
+        ->assertJsonPath('data.attributes.items_used', 0)
+        ->assertJsonPath('data.attributes.item_limit', null);
+});
+
+it('reports no item limit once the account is unlocked', function () {
+    config(['pricing.hosted' => true]);
+
+    $account = $this->createAccount();
+    $account->update(['unlocked_at' => now()]);
+    $user = $this->createUser();
+    $this->assignUserToAccount(user: $user, account: $account, role: PermissionEnum::Owner->value);
+
+    Sanctum::actingAs($user);
+
+    $this->json('GET', route('api.account'))
+        ->assertOk()
+        ->assertJsonPath('data.attributes.item_limit', null);
 });

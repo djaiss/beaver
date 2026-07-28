@@ -10,6 +10,7 @@ use App\Enums\ItemActionEnum;
 use App\Enums\UserActionEnum;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
+use App\Exceptions\ItemLimitReached;
 use App\Helpers\TextSanitizer;
 use App\Jobs\LogItemAction;
 use App\Jobs\LogUserAction;
@@ -25,6 +26,7 @@ use App\Models\Set;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Valuation;
+use App\Services\AccountPlan;
 use App\Traits\RecordsCopyMoves;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -100,6 +102,13 @@ class CreateItem
     {
         if (! $this->catalog->account->allowsManagementBy($this->user)) {
             throw new ModelNotFoundException('Account not found');
+        }
+
+        // The free allowance is an account rule rather than a collection one, and
+        // this is the only place an item row is written, so both the app and the
+        // API are held to it here.
+        if (new AccountPlan(account: $this->catalog->account)->hasReachedHardLimit()) {
+            throw new ItemLimitReached;
         }
 
         if ($this->catalogType instanceof CatalogType && ! $this->catalog->catalogTypes()->whereKey($this->catalogType->id)->exists()) {

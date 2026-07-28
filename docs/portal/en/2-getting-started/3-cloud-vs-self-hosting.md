@@ -11,13 +11,15 @@ Before you invest time in KolleK, it helps to know how you will run it. This pag
 
 ## There is no subscription
 
-KolleK has no plans, no tiers, and no paywalled features. There is no billing inside the app at all. Whichever way you run it, you get the same complete application. Nothing is locked behind an upgrade.
+KolleK has no plans, no tiers, and no paywalled features. Whichever way you run it, you get the same complete application, and nothing is locked behind an upgrade.
+
+There is one difference, and it is about size rather than features. A hosted account holds ten items for free, and stops accepting new ones once it has used that allowance and a small grace on top. Unlocking it is a single payment. A self hosted instance has no item limit at all. See @doc(account.freePlan).
 
 :::note
-There is nothing to buy inside KolleK. Self hosting is free, and every feature is included no matter how you run it.
+Self hosting is free and unlimited. Every feature is included no matter how you run it: what a hosted account pays for is the hosting, not the features.
 :::
 
-So the choice below is only about where the software runs, not about what you can do with it.
+So the choice below is mostly about where the software runs, and about whether you would rather pay for a server or for us to keep one running.
 
 ## Option 1: host it yourself
 
@@ -31,7 +33,7 @@ If that describes you, the installation guide will live in the **Self Hosting** 
 
 ## Option 2: use a hosted instance
 
-If you would rather not run anything yourself, someone may offer to host a KolleK instance for you. That is a convenience arrangement handled entirely outside the application. It does not change the software, unlock anything extra, or add any in app charge.
+If you would rather not run anything yourself, someone may offer to host a KolleK instance for you. That is a convenience arrangement handled entirely outside the application. It does not change the software or unlock anything extra. On our own hosted service the account holds ten items for free before it has to be unlocked; another operator may set things up differently.
 
 If you use a hosted instance, you can skip installation entirely and go straight to creating your account.
 

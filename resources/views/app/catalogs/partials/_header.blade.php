@@ -47,7 +47,18 @@
             {{-- The delete button sits inside the menu, so its form lives outside and is reached with form=. --}}
             <x-form method="delete" :action="route('collections.destroy', $catalog->id)" id="delete-collection-form" data-turbo="true" class="hidden" onsubmit="return confirm('{{ __('Delete :name? The collection and everything in it will no longer be accessible.', ['name' => $catalog->name]) }}')"></x-form>
 
-            <x-button.split :href="route('items.new', $catalog)" :label="__('Add item')" turbo data-test="new-item-button">
+            {{-- An account that has used up its allowance keeps the menu, but the
+                 primary action becomes a disabled button rather than a link: an
+                 anchor cannot be disabled, and the banner above carries the way out. --}}
+            <x-button.split
+                :href="$hasReachedItemLimit ? null : route('items.new', $catalog)"
+                :type="$hasReachedItemLimit ? 'button' : 'submit'"
+                :disabled="$hasReachedItemLimit"
+                :title="$hasReachedItemLimit ? __('Unlock the account to add more items.') : null"
+                :label="__('Add item')"
+                turbo
+                data-test="new-item-button"
+            >
                 <x-slot:icon>
                     <x-lucide-plus class="size-4" />
                 </x-slot>

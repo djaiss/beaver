@@ -11,13 +11,15 @@ Antes de invertir tiempo en KolleK, conviene saber cómo lo vas a usar. Esta pá
 
 ## No hay suscripción
 
-KolleK no tiene planes, ni niveles, ni funciones bloqueadas tras un muro de pago. No hay ninguna facturación dentro de la aplicación. Sea cual sea la forma en que lo uses, obtienes la misma aplicación completa. Nada está bloqueado tras una mejora de plan.
+KolleK no tiene planes, ni niveles, ni funciones bloqueadas tras un muro de pago. Sea cual sea la forma en que lo uses, obtienes la misma aplicación completa, y nada está bloqueado tras una mejora de plan.
+
+Hay una diferencia, y tiene que ver con el tamaño, no con las funciones. Una cuenta alojada admite diez objetos gratis, y deja de aceptar nuevos una vez agotada esa reserva y una pequeña cortesía adicional. Desbloquearla es un pago único. Una instancia autoalojada no tiene ningún límite de objetos. Consulta @doc(account.freePlan).
 
 :::note
-No hay nada que comprar dentro de KolleK. Autoalojarlo es gratis, y todas las funciones están incluidas sin importar cómo lo uses.
+Autoalojarlo es gratis e ilimitado. Todas las funciones están incluidas sin importar cómo lo uses: lo que paga una cuenta alojada es el alojamiento, no las funciones.
 :::
 
-Así que la elección de abajo solo trata de dónde se ejecuta el software, no de lo que puedes hacer con él.
+Así que la elección de abajo trata sobre todo de dónde se ejecuta el software, y de si prefieres pagar un servidor o pagarnos a nosotros por mantener uno.
 
 ## Opción 1: alojarlo tú mismo
 
@@ -31,7 +33,7 @@ Si esa descripción encaja contigo, la guía de instalación estará en la secci
 
 ## Opción 2: usar una instancia alojada
 
-Si prefieres no gestionar nada tú mismo, alguien puede ofrecerse a alojar una instancia de KolleK para ti. Ese es un arreglo de conveniencia gestionado por completo fuera de la aplicación. No cambia el software, no desbloquea nada adicional, ni añade ningún cargo dentro de la aplicación.
+Si prefieres no gestionar nada tú mismo, alguien puede ofrecerse a alojar una instancia de KolleK para ti. Ese es un arreglo de conveniencia gestionado por completo fuera de la aplicación. No cambia el software ni desbloquea nada adicional. En nuestro propio servicio alojado, la cuenta admite diez objetos gratis antes de tener que desbloquearse; otro operador puede organizarlo de otra manera.
 
 Si usas una instancia alojada, puedes saltarte la instalación por completo e ir directamente a crear tu cuenta.
 

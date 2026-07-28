@@ -39,6 +39,10 @@ Puedes registrar destinos de webhook, y cada uno recibe una clave secreta de fir
 
 La importación y exportación existen solo para las definiciones de tipo de colección. Todavía no hay importación ni exportación a nivel de elemento ni de colección completa. Para sacarlo todo, quienes autoalojan la instancia cuentan con copias de seguridad completas de la instancia; consulta @doc(dataSafety.backupCollectionData).
 
+### Pagar para desbloquear una cuenta alojada
+
+En una instancia alojada, el límite de objetos se aplica y las pantallas que lo explican están terminadas, incluido el paso de confirmación que registra lo que aceptaste. La pasarela de pago detrás de ese paso todavía no está conectada, así que no se puede comprar nada de verdad ni desbloquear ninguna cuenta pagando. El autoalojamiento no tiene límite y no necesita nada de esto. Consulta @doc(account.freePlan).
+
 ### Administración de la instancia: soporte y reseñas
 
 En el panel de administración de la instancia, las áreas de Soporte y Reseñas son marcadores de posición que lo indican como tal. El resto del panel funciona; consulta @doc(instanceAdmin.panel).

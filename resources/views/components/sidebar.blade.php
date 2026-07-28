@@ -197,6 +197,13 @@
 
     <div class="flex-1"></div>
 
+    {{-- The free plan, wherever the user happens to be. Not in the instance
+         administration: that panel looks across every account and belongs to
+         whoever runs the instance, not to the account they are reading. --}}
+    @unless ($isInstance)
+        <x-plan-usage />
+    @endunless
+
     {{-- User block --}}
     <div x-data="{ open: false }" class="relative border-t border-hairline pt-3">
         <button type="button" @click="open = !open" class="cursor-pointer flex w-full items-center gap-2.5 rounded-md px-2 py-2 transition-colors hover:bg-canvas">

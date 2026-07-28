@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $name
  * @property string $currency_code
  * @property bool $show_getting_started
+ * @property Carbon|null $unlocked_at
  * @property int|null $created_by_id
  * @property string|null $created_by_name
  * @property int|null $updated_by_id
@@ -45,6 +46,7 @@ class Account extends Model
         'name',
         'currency_code',
         'show_getting_started',
+        'unlocked_at',
     ];
 
     /**
@@ -57,6 +59,7 @@ class Account extends Model
         return [
             'name' => 'encrypted',
             'show_getting_started' => 'boolean',
+            'unlocked_at' => 'datetime',
         ];
     }
 
@@ -159,6 +162,16 @@ class Account extends Model
     public function items(): HasManyThrough
     {
         return $this->hasManyThrough(Item::class, Catalog::class);
+    }
+
+    /**
+     * Get what the account confirmed on its way to a payment.
+     *
+     * @return HasMany<PurchaseConsent, $this>
+     */
+    public function purchaseConsents(): HasMany
+    {
+        return $this->hasMany(PurchaseConsent::class);
     }
 
     /**

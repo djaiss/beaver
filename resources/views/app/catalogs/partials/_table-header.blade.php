@@ -58,7 +58,17 @@
     </div>
 
     @if ($canManage)
-        <x-button href="{{ route('items.new', $catalog) }}" turbo="true" data-test="new-item-button" class="shrink-0">
+        {{-- Disabled rather than linked once the account is full: an anchor cannot
+             be disabled, so it becomes a real button that goes nowhere. --}}
+        <x-button
+            :href="$hasReachedItemLimit ? null : route('items.new', $catalog)"
+            :type="$hasReachedItemLimit ? 'button' : 'submit'"
+            :disabled="$hasReachedItemLimit"
+            :title="$hasReachedItemLimit ? __('Unlock the account to add more items.') : null"
+            turbo="true"
+            data-test="new-item-button"
+            class="shrink-0"
+        >
             <x-slot:icon>
                 <x-lucide-plus class="size-4" />
             </x-slot>

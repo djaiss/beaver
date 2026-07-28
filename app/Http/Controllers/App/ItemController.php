@@ -11,6 +11,7 @@ use App\Enums\CopyStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Catalog;
 use App\Models\Category;
+use App\Services\AccountPlan;
 use App\Traits\SuggestsTags;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
@@ -50,10 +51,16 @@ class ItemController extends Controller
         ]);
     }
 
-    public function new(Request $request): View
+    public function new(Request $request): View|RedirectResponse
     {
         $account = $request->user()->account;
         $catalog = $request->attributes->get('catalog');
+
+        // Nobody is shown a form that cannot be submitted: an account that has
+        // used up its allowance lands on the screen explaining why instead.
+        if (new AccountPlan(account: $account)->hasReachedHardLimit()) {
+            return redirect()->route('upgrade.index');
+        }
 
         return view('app.items.new', [
             'types' => $catalog->catalogTypes()->with('customFields')->orderBy('name')->get(),

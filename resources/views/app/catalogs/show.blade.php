@@ -1,9 +1,16 @@
 @use('App\Enums\ItemViewEnum')
 @use('App\Helpers\Money')
+@use('App\Services\AccountPlan')
 
 @php
     $user = auth()->user();
     $canManage = $user->account->allowsManagementBy($user);
+
+    // Read once and handed to the partials: both view modes need to know whether the
+    // account has outgrown the free plan, and the answer costs a count query.
+    $plan = new AccountPlan(account: $user->account);
+    $isOverFreeLimit = $plan->isOverFreeLimit();
+    $hasReachedItemLimit = $isOverFreeLimit && $plan->hasReachedHardLimit();
 
     // Format an amount held in cents into the collection's currency.
     $money = fn (int $cents): string => Money::format($cents, $catalog->currency);
@@ -67,6 +74,13 @@
             <input type="hidden" id="collection-view-endpoint" value="{{ route('collections.item-view.update', $catalog) }}" />
 
             @include('app.catalogs.partials._table-header')
+
+            @if ($isOverFreeLimit)
+                <div class="px-6 pt-5">
+                    @include('app.catalogs.partials._upgrade-banner')
+                </div>
+            @endif
+
             @include('app.catalogs.partials._table')
         </div>
     </x-app-layout>
@@ -87,6 +101,10 @@
             }"
         >
             @include('app.catalogs.partials._header')
+
+            @if ($isOverFreeLimit)
+                @include('app.catalogs.partials._upgrade-banner')
+            @endif
 
             {{-- An empty category still shows the filter, otherwise there is no way
                  back to the other categories from it. --}}
