@@ -212,6 +212,10 @@ class MarketingSeo
                 'title' => __('Frequently asked questions'),
                 'description' => __('A hundred answers about ownership, privacy, pricing, self-hosting and the honest limits of what KolleK does today.'),
             ],
+            'marketing.about.index' => [
+                'title' => __('About'),
+                'description' => __('KolleK is an independent open source project built by one developer and a set of AI tools. Who is behind it, why it exists, and what it will never build.'),
+            ],
             'marketing.testimonials.index' => [
                 'title' => __('Reviews'),
                 'description' => __('What collectors say about cataloguing their collection with KolleK, in their own words.'),

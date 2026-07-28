@@ -41,6 +41,7 @@
                       ['label' => __('Documentation'), 'url' => route('marketing.docs.portal.home.show')],
                       ['label' => __('API reference'), 'url' => route('marketing.docs.api.index')],
                       ['label' => __('FAQ'), 'url' => route('marketing.faq.index')],
+                      ['label' => __('About'), 'url' => route('marketing.about.index')],
                       ['label' => __('Media kit'), 'url' => route('marketing.mediaKit.index')],
                       ['label' => __('Changelog'), 'url' => $github . '/releases'],
                   ],
