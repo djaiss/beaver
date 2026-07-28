@@ -1,3 +1,14 @@
+{{--
+  Who is behind KolleK. The page is deliberately light on its feet: the "team" is one
+  developer and a set of AI tools, and the page says so rather than dressing it up.
+
+  One thing here is not a settled fact. The launch date at the end of the timeline is a
+  plan rather than a shipped release, and the media kit still describes the status as in
+  development, so the two have to move together. The timeline's years used to be
+  bracketed placeholders with a note under the list; they are real now, and nothing on
+  the page hedges any more.
+--}}
+
 @php
     $github = config('marketing.github_url');
 
@@ -68,41 +79,35 @@
         ['label' => __('Bus factor'), 'value' => __('Concerning')],
     ];
 
-    // The first four dates are placeholders, and the note under the list says so.
+    // A bare year reads the same in every locale, so only the full date is translated.
     $timeline = [
         [
-            'date' => __('1981'),
-            'placeholder' => true,
+            'date' => '1981',
             'title' => __('Régis is born.'),
             'body' => __('No collection yet. Give it time.'),
         ],
         [
-            'date' => __('1987'),
-            'placeholder' => true,
+            'date' => '1987',
             'title' => __('The first object is carefully kept for no logical reason.'),
             'body' => __('A collector is born. Nobody notices, least of all him.'),
         ],
         [
-            'date' => __('1996'),
-            'placeholder' => true,
+            'date' => '1996',
             'title' => __('The first Pokémon card enters the collection.'),
             'body' => __('Things escalate quickly. Sleeves are purchased. A binder becomes several binders.'),
         ],
         [
-            'date' => __('2004'),
-            'placeholder' => true,
-            'title' => __('My first manga after years of reading Dragon Ball Z.'),
+            'date' => '2004',
+            'title' => __('The first manga arrives, after years of Dragon Ball Z.'),
             'body' => __('Discovers a new passion for collecting manga.'),
         ],
         [
             'date' => '2026',
-            'placeholder' => false,
             'title' => __('KolleK starts.'),
             'body' => __('After years of trying collection software, spreadsheets and increasingly creative folder structures, Régis starts building KolleK.'),
         ],
         [
             'date' => __('August 2, 2026'),
-            'placeholder' => false,
             'title' => __('KolleK launches.'),
             'body' => __('Everything will definitely work perfectly on day one. Probably.'),
         ],
@@ -256,7 +261,7 @@
         <li class="relative">
           <span aria-hidden="true" class="absolute top-1.5 -left-[37px] size-3.5 rounded-full border-2 border-ink bg-page"></span>
 
-          <p class="font-mono text-xs font-medium tracking-[0.8px] uppercase {{ $entry['placeholder'] ? 'text-muted-soft' : 'text-body' }}">{{ $entry['date'] }}</p>
+          <p class="font-mono text-xs font-medium tracking-[0.8px] text-body uppercase">{{ $entry['date'] }}</p>
           <h3 class="mt-2.5 text-xl font-semibold tracking-[-0.5px] text-ink">{{ $entry['title'] }}</h3>
           <p class="mt-2 max-w-[560px] text-base leading-[1.7] text-muted">{{ $entry['body'] }}</p>
         </li>

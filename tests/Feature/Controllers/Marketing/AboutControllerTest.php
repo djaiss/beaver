@@ -31,11 +31,22 @@ it('lists the whole team and says which member is human', function () {
     $response->assertSee('Only one member of this team is human.', false);
 });
 
-it('marks the unchecked timeline entries as placeholders', function () {
+it('tells the whole story on the timeline', function () {
+    $response = $this->get(route('marketing.about.index'))->assertOk();
+
+    foreach (['1981', '1987', '1996', '2004', '2026', 'August 2, 2026'] as $date) {
+        $response->assertSee($date, false);
+    }
+
+    $response->assertSee('Régis is born.', false)
+        ->assertSee('KolleK launches.', false);
+});
+
+it('leaves no placeholder copy on the timeline', function () {
     $this->get(route('marketing.about.index'))
         ->assertOk()
-        ->assertSee('[Birth year]')
-        ->assertSee('Entries in brackets are placeholders until Régis checks the exact years.', false);
+        ->assertDontSee('[Birth year]')
+        ->assertDontSee('Entries in brackets are placeholders until Régis checks the exact years.', false);
 });
 
 it('points the open source panel at the configured repository', function () {

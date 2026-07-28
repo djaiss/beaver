@@ -5,9 +5,10 @@
   language, so a reader on a translated page is told why before they start.
 
   Every claim on this page is one the codebase can back up. Where the product is not there
-  yet (the managed instance, the downloadable assets, the screenshots) the page says so
-  rather than describing a plan as a fact. The image slots are placeholders on purpose,
-  waiting for the real captures.
+  yet (the managed instance, the downloadable assets) the page says so rather than
+  describing a plan as a fact. The logo slots are placeholders on purpose, waiting for the
+  real files. The screenshots section is commented out further down for the same reason,
+  and nothing above promises screenshots while it is.
 --}}
 
 @php
@@ -250,7 +251,10 @@
     </div>
   </section>
 
-  {{-- 05 SCREENSHOTS --}}
+  {{-- SCREENSHOTS. Commented out until there are real captures to put in the slots:
+       a press page full of grey placeholder boxes is worse than one section short.
+       The sections below were renumbered to close the gap, so bringing this back means
+       numbering it 05 and pushing Founder and Links down again. --}}
   {{-- <section id="screenshots" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="{{ $sectionHeading }}">
       <span class="{{ $sectionNumber }}">05</span>
@@ -279,7 +283,7 @@
   {{-- 06 FOUNDER --}}
   <section id="founder" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="{{ $sectionHeading }}">
-      <span class="{{ $sectionNumber }}">06</span>
+      <span class="{{ $sectionNumber }}">05</span>
       <h2 class="{{ $sectionTitle }}">Founder</h2>
       <span class="{{ $sectionAside }}">bio cleared for print</span>
     </div>
@@ -322,7 +326,7 @@
   {{-- 07 LINKS --}}
   <section id="links" class="mx-auto max-w-[1200px] scroll-mt-24 px-5 pt-16 sm:px-8 sm:pt-24">
     <div class="{{ $sectionHeading }}">
-      <span class="{{ $sectionNumber }}">07</span>
+      <span class="{{ $sectionNumber }}">06</span>
       <h2 class="{{ $sectionTitle }}">Links</h2>
     </div>
 
@@ -370,7 +374,7 @@
         <p class="mb-4 font-mono text-[11px] tracking-[1.2px] text-muted-soft uppercase">Usage</p>
         <div class="flex max-w-[460px] flex-col gap-3.5">
           <p class="text-base leading-[1.7] text-body">
-            Everything on this page, the logos, the screenshots, the portrait and the copy, may be used in editorial coverage of KolleK without asking first, in print, on video, and as podcast artwork.
+            Everything on this page, the logos, the portrait and the copy, may be used in editorial coverage of KolleK without asking first, in print, on video, and as podcast artwork.
           </p>
           <p class="text-base leading-[1.7] text-body">
             Please do not alter the marks, imply a partnership or an endorsement, or use them on merchandise, in advertising, or in your own product. The software is MIT licensed. The brand assets are not.
