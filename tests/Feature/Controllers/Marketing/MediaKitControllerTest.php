@@ -34,13 +34,34 @@ it('says at the top that the page is english only', function () {
         ->assertSee('Everything a journalist needs to write about KolleK.');
 });
 
-it('publishes the press address from the configuration', function () {
+it('never writes the press address into the page', function () {
     config()->set('marketing.press_email', 'press@example.com');
 
     $this->get(route('marketing.mediaKit.index'))
         ->assertOk()
-        ->assertSee('press@example.com')
-        ->assertSee('mailto:press@example.com', false);
+        ->assertDontSee('press@example.com')
+        ->assertDontSee('mailto:press@example.com', false);
+});
+
+it('publishes the press address from the configuration, muddled', function () {
+    config()->set('marketing.press_email', 'press@example.com');
+
+    $html = $this->get(route('marketing.mediaKit.index'))
+        ->assertOk()
+        ->getContent();
+
+    // What the page ships is the address exclusive ored with a key drawn at render time
+    // and written as hexadecimal. Undo it the way the browser does, and the address the
+    // configuration asked for has to come back out.
+    preg_match("/const address = '([0-9a-f ]+)'/", $html, $codes);
+    preg_match('/parseInt\(code, 16\) \^ (\d+)\)/', $html, $key);
+
+    $decoded = implode('', array_map(
+        fn (string $code): string => chr(intval($code, 16) ^ (int) $key[1]),
+        explode(' ', $codes[1]),
+    ));
+
+    expect($decoded)->toBe('press@example.com');
 });
 
 it('sends journalists to github when no press address is configured', function () {
