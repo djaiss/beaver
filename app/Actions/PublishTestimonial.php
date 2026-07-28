@@ -63,7 +63,7 @@ class PublishTestimonial
             new TestimonialPublishedMail($this->testimonial),
             $this->testimonial->user,
             EmailType::TestimonialPublished,
-        );
+        )->onQueue('low');
     }
 
     /**

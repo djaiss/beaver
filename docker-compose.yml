@@ -47,7 +47,7 @@ services:
       - php
       - artisan
       - queue:work
-      - --queue=high,default,low
+      - --queue=high,low
       - --sleep=3
       - --tries=3
       - --max-time=3600

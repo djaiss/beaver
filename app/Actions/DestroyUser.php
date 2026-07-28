@@ -29,7 +29,7 @@ class DestroyUser
             ->queue(new UserDeleted(
                 reason: $this->reason,
                 activeSince: $this->user->created_at->format('Y-m-d'),
-            ));
+            )->onQueue('low'));
     }
 
     private function logUserDeletion(): void

@@ -31,7 +31,10 @@ it('sends email the traditional way', function () {
 
     $job->handle();
 
-    Mail::assertQueued(
+    // Sent, not queued. SendEmail is itself the queued unit, so the mailable must
+    // go out inside this job: if it queued itself instead, the row recorded below
+    // would be written before the email had actually left.
+    Mail::assertSent(
         LoginFailed::class,
         fn (LoginFailed $mail) => $mail->hasTo($user->email),
     );
