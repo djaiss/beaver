@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Exceptions\ItemLimitReached;
 use App\Http\Middleware\CacheMarketingResponse;
 use App\Http\Middleware\CheckCatalog;
 use App\Http\Middleware\CheckCopy;
@@ -9,6 +10,7 @@ use App\Http\Middleware\CheckItem;
 use App\Http\Middleware\CheckMarketing;
 use App\Http\Middleware\EnsureAccountOwner;
 use App\Http\Middleware\EnsureEditorAccess;
+use App\Http\Middleware\EnsureHostedInstance;
 use App\Http\Middleware\EnsureInstanceAdministrator;
 use App\Http\Middleware\EnsureSupportEnabled;
 use App\Http\Middleware\HandleOversizedUpload;
@@ -17,8 +19,10 @@ use App\Http\Middleware\SetMarketingLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -53,11 +57,22 @@ return Application::configure(basePath: dirname(__DIR__))
             'editor' => EnsureEditorAccess::class,
             'instance.admin' => EnsureInstanceAdministrator::class,
             'support.enabled' => EnsureSupportEnabled::class,
+            'hosted' => EnsureHostedInstance::class,
             'marketing' => CheckMarketing::class,
             'marketing.locale' => SetMarketingLocale::class,
             'marketing.cache' => CacheMarketingResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // An account that has used up its free allowance gets 402 rather than
+        // the 404 an authorization failure answers with, so an API client can
+        // tell "you may not" apart from "you have run out". In a browser the
+        // same refusal lands on the screen that explains it.
+        $exceptions->render(function (ItemLimitReached $e, Request $request): Response {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], 402);
+            }
+
+            return redirect()->route('upgrade.index');
+        });
     })->create();

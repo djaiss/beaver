@@ -11,13 +11,15 @@ Antes de investir tempo no KolleK, é bom saber como você vai executá-lo. Esta
 
 ## Não existe assinatura
 
-O KolleK não tem planos, não tem níveis e não tem recursos bloqueados por pagamento. Não há cobrança alguma dentro do aplicativo. Seja qual for a forma escolhida para executá-lo, você recebe o mesmo aplicativo completo. Nada fica trancado atrás de um upgrade.
+O KolleK não tem planos, não tem níveis e não tem recursos bloqueados por pagamento. Seja qual for a forma escolhida para executá-lo, você recebe o mesmo aplicativo completo, e nada fica trancado atrás de um upgrade.
+
+Existe uma diferença, e ela é sobre tamanho, não sobre recursos. Uma conta hospedada comporta dez itens de graça e para de aceitar novos assim que essa reserva e uma pequena cortesia se esgotam. Desbloqueá-la é um pagamento único. Uma instância autohospedada não tem limite de itens algum. Veja @doc(account.freePlan).
 
 :::note
-Não há nada para comprar dentro do KolleK. A autohospedagem é gratuita, e todo recurso está incluído independentemente de como você executa o aplicativo.
+A autohospedagem é gratuita e ilimitada. Todo recurso está incluído independentemente de como você executa o aplicativo: o que uma conta hospedada paga é a hospedagem, não os recursos.
 :::
 
-Então a escolha abaixo é apenas sobre onde o software é executado, não sobre o que você pode fazer com ele.
+Então a escolha abaixo é principalmente sobre onde o software é executado, e sobre preferir pagar por um servidor ou pagar para mantermos um funcionando.
 
 ## Opção 1: hospedar você mesmo
 
@@ -31,7 +33,7 @@ Se isso descreve você, o guia de instalação vai estar na seção **Autohosped
 
 ## Opção 2: usar uma instância hospedada
 
-Se você preferir não executar nada por conta própria, alguém pode oferecer hospedar uma instância do KolleK para você. Esse é um arranjo de conveniência tratado inteiramente fora do aplicativo. Ele não muda o software, não libera nada extra, nem adiciona qualquer cobrança dentro do aplicativo.
+Se você preferir não executar nada por conta própria, alguém pode oferecer hospedar uma instância do KolleK para você. Esse é um arranjo de conveniência tratado inteiramente fora do aplicativo. Ele não muda o software nem libera nada extra. No nosso próprio serviço hospedado, a conta comporta dez itens de graça antes de precisar ser desbloqueada; outro operador pode organizar as coisas de outro jeito.
 
 Se você usar uma instância hospedada, pode pular a instalação completamente e ir direto para a criação da sua conta.
 

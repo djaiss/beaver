@@ -230,3 +230,50 @@ it('leaves the tags, custom field values and copies alone when updating an item'
     expect($item->customFieldValues)->toHaveCount(1);
     expect($item->copies->pluck('id')->all())->toBe([$copy->id]);
 });
+
+it('answers 402 when the hosted account has reached its item limit', function () {
+    Queue::fake();
+    config(['pricing.hosted' => true]);
+
+    $user = $this->createUser();
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    Item::factory()->count(15)->create(['catalog_id' => $catalog->id]);
+
+    Sanctum::actingAs($user);
+
+    // 402 rather than the 404 an authorization failure answers with: a client
+    // deserves to tell "you may not" apart from "you have run out".
+    $this->json('POST', '/api/collections/'.$catalog->id.'/items', ['name' => 'Amazing Spider-Man #16'])
+        ->assertStatus(402)
+        ->assertJsonPath('message', 'This account has reached the item limit of its free plan.');
+
+    expect(Item::query()->count())->toBe(15);
+});
+
+it('still creates an item inside the grace band', function () {
+    Queue::fake();
+    config(['pricing.hosted' => true]);
+
+    $user = $this->createUser();
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    Item::factory()->count(12)->create(['catalog_id' => $catalog->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/collections/'.$catalog->id.'/items', ['name' => 'Amazing Spider-Man #13'])
+        ->assertCreated();
+});
+
+it('never answers 402 on a self hosted instance', function () {
+    Queue::fake();
+    config(['pricing.hosted' => false]);
+
+    $user = $this->createUser();
+    $catalog = Catalog::factory()->create(['account_id' => $user->account_id]);
+    Item::factory()->count(30)->create(['catalog_id' => $catalog->id]);
+
+    Sanctum::actingAs($user);
+
+    $this->json('POST', '/api/collections/'.$catalog->id.'/items', ['name' => 'Amazing Spider-Man #31'])
+        ->assertCreated();
+});

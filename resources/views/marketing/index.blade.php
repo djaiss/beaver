@@ -308,7 +308,7 @@
 
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       @foreach ([
-          ['title' => __('Unlimited collections'), 'description' => __('No caps, no tiers gating how much you can catalog.'), 'dot' => 'bg-brand'],
+          ['title' => __('Unlimited collections'), 'description' => __('Split what you own however you like. No tier gates the structure.'), 'dot' => 'bg-brand'],
           ['title' => __('Nested categories'), 'description' => __('Marvel, then Spider-Man, then 1990s. Structure as deep as you need.'), 'dot' => 'bg-badge-violet'],
           ['title' => __('Tags'), 'description' => __('Cross-cut your catalog with flexible, colour coded labels.'), 'dot' => 'bg-badge-pink'],
           ['title' => __('Nested locations'), 'description' => __('Room, shelf, box. Always know where a piece lives.'), 'dot' => 'bg-badge-emerald'],
@@ -642,7 +642,7 @@
       </div>
       <h2 class="text-[28px] leading-[1.1] font-semibold tracking-[-1px] text-ink sm:text-4xl lg:text-5xl lg:tracking-[-1.5px]">{{ __('One price. No subscriptions.') }}</h2>
       <p class="mx-auto mt-4.5 max-w-[520px] text-[17px] text-muted">
-        {{ __('Self-host it for free, or buy the managed cloud once. A single payment, no monthly bill, no renewal, ever. Your data is portable either way.') }}
+        {{ __('Self-host it for free with no limits at all, or try the managed cloud with ten items free and unlock it with one payment. No monthly bill, no renewal, ever. Your data is portable either way.') }}
       </p>
     </div>
 
@@ -652,7 +652,7 @@
         <p class="mt-3 text-[28px] font-semibold tracking-[-0.5px] text-ink">{{ __('Free') }}<span class="text-[15px] font-medium text-muted"> &middot; {{ __('forever') }}</span></p>
 
         <div class="my-6 flex flex-col gap-y-3">
-          @foreach ([__('Free forever'), __('One command Docker deploy'), __('Full control of your data'), __('Unlimited customization')] as $feature)
+          @foreach ([__('Free forever, with no item limit'), __('One command Docker deploy'), __('Full control of your data'), __('Unlimited customization')] as $feature)
             <div class="flex items-center gap-x-2.5 text-[15px] text-body">
               <x-lucide-check class="h-4 w-4 shrink-0 text-ink" stroke-width="2.4" />
               {{ $feature }}
@@ -675,7 +675,7 @@
         </div>
 
         <div class="my-6 flex flex-col gap-y-3">
-          @foreach ([__('One payment, no renewals'), __('Lifetime managed hosting'), __('Automatic updates and backups'), __('Zero maintenance')] as $feature)
+          @foreach ([__('Ten items free, then one payment'), __('One payment, no renewals'), __('Lifetime managed hosting'), __('Automatic updates and backups')] as $feature)
             <div class="flex items-center gap-x-2.5 text-[15px] text-[#e5e7eb]">
               <x-lucide-check class="h-4 w-4 shrink-0 text-badge-emerald" stroke-width="2.4" />
               {{ $feature }}
@@ -701,7 +701,7 @@
           ],
           [
               'question' => __('Is :name free?', ['name' => config('app.name')]),
-              'answer' => __('Self-hosting is free forever under the MIT License. The optional managed cloud is a single payment for people who would rather not run the ops.'),
+              'answer' => __('Self-hosting is free forever under the MIT License, with no item limit at all. On the managed cloud an account holds ten items for free, and a single payment unlocks it for good. There is no subscription either way.'),
           ],
           [
               'question' => __('Who owns my data?'),

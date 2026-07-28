@@ -39,6 +39,10 @@ You can register webhook endpoints, and each receives a signing secret, but no a
 
 Import and export exist for collection type definitions only. There is no item level or whole collection import or export yet. For getting everything out, self hosters have full instance backups; see @doc(dataSafety.backupCollectionData).
 
+### Paying to unlock a hosted account
+
+On a hosted instance, the item limit is enforced and the screens that explain it are finished, including the confirmation step that records what you agreed to. The payment processor behind that step is not wired up yet, so nothing can actually be bought and no account can be unlocked by paying. Self hosting has no limit and needs none of this. See @doc(account.freePlan).
+
 ### Instance administration: Support and Reviews
 
 In the instance administration panel, the Support and Reviews areas are placeholders that say as much. The rest of the panel works; see @doc(instanceAdmin.panel).

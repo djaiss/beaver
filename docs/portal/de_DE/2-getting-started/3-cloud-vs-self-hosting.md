@@ -11,13 +11,15 @@ Bevor du Zeit in KolleK investierst, hilft es zu wissen, wie du es betreiben wir
 
 ## Es gibt kein Abo
 
-KolleK hat keine Tarife, keine Stufen und keine Funktionen hinter einer Paywall. In der App gibt es überhaupt keine Abrechnung. Egal wie du es betreibst, du bekommst dieselbe vollständige Anwendung. Nichts ist hinter einem Upgrade versteckt.
+KolleK hat keine Tarife, keine Stufen und keine Funktionen hinter einer Paywall. Egal wie du es betreibst, du bekommst dieselbe vollständige Anwendung, und nichts ist hinter einem Upgrade versteckt.
+
+Ein Unterschied bleibt, und er betrifft die Größe, nicht die Funktionen. Ein gehostetes Konto fasst zehn Objekte kostenlos und nimmt keine neuen mehr an, sobald dieses Kontingent und eine kleine Kulanz obendrauf aufgebraucht sind. Die Freischaltung ist eine einmalige Zahlung. Eine selbst gehostete Instanz hat überhaupt kein Objektlimit. Siehe @doc(account.freePlan).
 
 :::note
-In KolleK gibt es nichts zu kaufen. Selbsthosting ist kostenlos, und jede Funktion ist enthalten, egal wie du es betreibst.
+Selbsthosting ist kostenlos und unbegrenzt. Jede Funktion ist enthalten, egal wie du es betreibst: Ein gehostetes Konto bezahlt das Hosting, nicht die Funktionen.
 :::
 
-Die folgende Wahl betrifft also nur, wo die Software läuft, nicht was du damit tun kannst.
+Die folgende Wahl betrifft also vor allem, wo die Software läuft, und ob du lieber einen Server bezahlst oder uns dafür, einen am Laufen zu halten.
 
 ## Option 1: selbst hosten
 
@@ -31,7 +33,7 @@ Falls das auf dich zutrifft, findest du die Installationsanleitung im Abschnitt 
 
 ## Option 2: eine gehostete Instanz nutzen
 
-Wenn du lieber nichts selbst betreiben möchtest, bietet dir vielleicht jemand an, eine KolleK-Instanz für dich zu hosten. Das ist eine Komfortlösung, die vollständig außerhalb der Anwendung geregelt wird. Sie ändert nichts an der Software, schaltet nichts Zusätzliches frei und fügt keine Kosten innerhalb der App hinzu.
+Wenn du lieber nichts selbst betreiben möchtest, bietet dir vielleicht jemand an, eine KolleK-Instanz für dich zu hosten. Das ist eine Komfortlösung, die vollständig außerhalb der Anwendung geregelt wird. Sie ändert nichts an der Software und schaltet nichts Zusätzliches frei. Bei unserem eigenen gehosteten Dienst fasst das Konto zehn Objekte kostenlos, bevor es freigeschaltet werden muss; ein anderer Betreiber kann das anders regeln.
 
 Wenn du eine gehostete Instanz nutzt, kannst du die Installation komplett überspringen und direkt dein Konto erstellen.
 

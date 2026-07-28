@@ -19,7 +19,7 @@ No. Un usuario pertenece a exactamente una cuenta, y una dirección de correo so
 
 ## ¿KolleK es realmente gratuito?
 
-Sí. No hay ninguna facturación dentro de la aplicación: sin planes, sin niveles, sin funcionalidades detrás de un muro de pago. Autoalojar la instancia es gratis, y todas las funcionalidades están incluidas sin importar cómo la ejecutes. Consulta @doc(kollek.hostingOptions).
+Autoalojarlo es gratis y no tiene límite de objetos. En una instancia alojada, una cuenta admite diez objetos gratis y luego se desbloquea con un pago único, nunca con una suscripción. En ambos casos no hay planes, ni niveles, ni funciones bloqueadas tras un muro de pago: todas las funciones están incluidas sin importar cómo lo uses. Consulta @doc(account.freePlan) y @doc(kollek.hostingOptions).
 
 ## ¿Cómo saco mis datos?
 

@@ -12,6 +12,8 @@ $account = fn (string $id, string $name, string $currency): array => [
     'attributes' => [
         'name' => $name,
         'currency_code' => $currency,
+        'items_used' => 7,
+        'item_limit' => 15,
         'created_at' => 1752537600,
         'updated_at' => 1752537600,
     ],
@@ -87,6 +89,9 @@ return [
             'method' => 'GET',
             'path' => '/account',
             'description' => 'Retrieve the account your API key belongs to. A user belongs to exactly one account, so there is no ID to pass.',
+            'body' => [
+                'The `items_used` and `item_limit` attributes describe the free plan of a hosted account. `item_limit` is the number of items past which creating one is refused with a 402 response. It is `null` on a self-hosted instance and on an account that has been unlocked, because neither has a ceiling to report.',
+            ],
             'permissions' => 'Any member of the account.',
             'returns' => 'An account object.',
             'response' => ['data' => $account('1', 'Central Perk', 'USD')],

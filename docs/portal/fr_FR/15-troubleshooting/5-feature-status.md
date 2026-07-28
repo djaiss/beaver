@@ -39,6 +39,10 @@ Vous pouvez enregistrer des points de terminaison de webhook, et chacun reçoit 
 
 L'import et l'export n'existent que pour les définitions de types de collection. Il n'existe pas encore d'import ou d'export au niveau des objets ou d'une collection entière. Pour tout récupérer, les instances auto hébergées disposent de sauvegardes complètes ; voir @doc(dataSafety.backupCollectionData).
 
+### Payer pour déverrouiller un compte hébergé
+
+Sur une instance hébergée, la limite d'objets est appliquée et les écrans qui l'expliquent sont terminés, y compris l'étape de confirmation qui enregistre ce que vous avez accepté. Le prestataire de paiement derrière cette étape n'est pas encore branché : rien ne peut donc réellement être acheté, et aucun compte ne peut être déverrouillé par un paiement. L'auto hébergement n'a aucune limite et n'a besoin de rien de tout cela. Voir @doc(account.freePlan).
+
 ### Administration de l'instance : Support et Avis
 
 Dans le panneau d'administration de l'instance, les sections Support et Avis sont des espaces réservés qui l'indiquent clairement. Le reste du panneau fonctionne ; voir @doc(instanceAdmin.panel).

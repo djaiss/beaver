@@ -19,7 +19,7 @@ No. One user belongs to exactly one account, and an email address can only have 
 
 ## Is KolleK really free?
 
-Yes. There is no billing inside the app at all: no plans, no tiers, no paywalled features. Self hosting is free, and every feature is included however you run it. See @doc(kollek.hostingOptions).
+Self hosting is free and has no item limit. On a hosted instance, an account holds ten items for free and is then unlocked by a single payment, never a subscription. There are no plans, no tiers and no paywalled features either way: every feature is included however you run it. See @doc(account.freePlan) and @doc(kollek.hostingOptions).
 
 ## How do I get my data out?
 

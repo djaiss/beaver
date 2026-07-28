@@ -46,6 +46,7 @@ use App\Http\Controllers\App\LocationController;
 use App\Http\Controllers\App\LocationHistoryController;
 use App\Http\Controllers\App\MaintenanceRecordController;
 use App\Http\Controllers\App\ProvenanceEventController;
+use App\Http\Controllers\App\PurchaseConfirmationController;
 use App\Http\Controllers\App\SearchController;
 use App\Http\Controllers\App\SeriesController;
 use App\Http\Controllers\App\SetController;
@@ -73,6 +74,7 @@ use App\Http\Controllers\App\Support\TicketController as SupportTicketController
 use App\Http\Controllers\App\TagController;
 use App\Http\Controllers\App\TransactionController;
 use App\Http\Controllers\App\TrashController;
+use App\Http\Controllers\App\UpgradeController;
 use App\Http\Controllers\App\ValuationController;
 use App\Http\Controllers\LocaleController;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -299,6 +301,20 @@ Route::middleware(['auth', 'verified', 'throttle:60,1', 'set.locale'])->group(fu
         Route::put('{supportTicket}', [SupportTicketController::class, 'update'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.update');
         Route::delete('{supportTicket}', [SupportTicketController::class, 'destroy'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.destroy');
         Route::post('{supportTicket}/messages', [SupportMessageController::class, 'create'])->where('supportTicket', '[1-9][0-9]*')->name('tickets.messages.create');
+    });
+
+    // the free allowance, and the two screens that explain outgrowing it. There is
+    // nothing to buy on a self hosted instance, so the middleware answers 404
+    // there. Any member may read the first screen, because anyone can run into the
+    // limit; only an owner reaches the second, because only they can commit the
+    // account to a payment.
+    Route::middleware(['hosted'])->prefix('upgrade')->name('upgrade.')->group(function (): void {
+        Route::get('/', [UpgradeController::class, 'index'])->name('index');
+
+        Route::middleware(['owner'])->group(function (): void {
+            Route::get('confirm', [PurchaseConfirmationController::class, 'new'])->name('confirm.new');
+            Route::post('confirm', [PurchaseConfirmationController::class, 'create'])->name('confirm.create');
+        });
     });
 
     // account settings — the account and its members (owners only)

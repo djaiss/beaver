@@ -19,7 +19,7 @@ Non. Un utilisateur appartient à exactement un compte, et une adresse email ne 
 
 ## KolleK est-il vraiment gratuit ?
 
-Oui. Il n'y a aucune facturation dans l'application : pas de forfaits, pas de niveaux, pas de fonctionnalités payantes. L'auto hébergement est gratuit, et toutes les fonctionnalités sont incluses quelle que soit la façon dont vous l'exécutez. Voir @doc(kollek.hostingOptions).
+L'auto hébergement est gratuit et sans limite d'objets. Sur une instance hébergée, un compte contient dix objets gratuitement, puis se déverrouille par un paiement unique, jamais par un abonnement. Dans les deux cas, il n'y a ni offre, ni palier, ni fonctionnalité payante : chaque fonctionnalité est incluse quelle que soit la manière dont vous l'utilisez. Voir @doc(account.freePlan) et @doc(kollek.hostingOptions).
 
 ## Comment récupérer mes données ?
 

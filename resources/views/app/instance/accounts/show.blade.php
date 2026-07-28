@@ -122,9 +122,60 @@
         @endforelse
       </x-box>
 
+      {{-- Plan --}}
+      <x-box title="Plan">
+        <dl class="space-y-3 text-sm">
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="text-muted">Standing</dt>
+            <dd class="font-medium text-ink">
+              @if (! config('pricing.hosted'))
+                Self hosted instance, no limit applies
+              @elseif ($account->unlocked_at)
+                Unlocked on {{ $account->unlocked_at->isoFormat('ll') }}
+              @else
+                Free plan
+              @endif
+            </dd>
+          </div>
+
+          <div class="flex items-baseline justify-between gap-3">
+            <dt class="text-muted">Items used</dt>
+            <dd class="font-medium {{ $plan->hasReachedHardLimit() ? 'text-warning' : 'text-ink' }}">
+              @if ($plan->isLimited())
+                {{ number_format($itemCount) }} of {{ $plan->freeLimit() }} free, {{ $plan->hardLimit() }} hard limit
+              @else
+                {{ number_format($itemCount) }}, uncapped
+              @endif
+            </dd>
+          </div>
+        </dl>
+      </x-box>
+
+      {{-- What was agreed to before a payment was attempted --}}
+      <x-box title="Purchase confirmations" padding="p-0">
+        @forelse ($consents as $consent)
+          <div class="flex flex-col gap-1 border-b border-hairline-soft px-4 py-3 last:border-b-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+            <p class="min-w-0 text-sm text-ink">{{ $consent->choice->summary() }}</p>
+            <p class="shrink-0 text-xs text-muted-soft">
+              {{ $consent->getUserName() }} · {{ $consent->accepted_at->isoFormat('lll') }}
+              @if ($consent->ip_address)
+                · {{ $consent->ip_address }}
+              @endif
+            </p>
+          </div>
+        @empty
+          <x-empty-state>
+            <x-slot:icon>
+              @svg('lucide-file-check', 'size-5 text-muted')
+            </x-slot>
+            Nobody in this account has gone through the purchase confirmation yet.
+          </x-empty-state>
+        @endforelse
+      </x-box>
+
       <x-box title="Not supported yet">
         <ul class="space-y-2.5">
-          @foreach (['Impersonate a user', 'Suspend an account', 'Give free access', 'Billing plan'] as $item)
+          @foreach (['Impersonate a user', 'Suspend an account', 'Give free access'] as $item)
             <li class="flex items-center justify-between text-sm text-muted">
               {{ $item }}
               <x-soon />

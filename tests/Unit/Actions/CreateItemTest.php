@@ -8,6 +8,7 @@ use App\Enums\PermissionEnum;
 use App\Enums\UserActionEnum;
 use App\Enums\ValuationConfidence;
 use App\Enums\ValuationType;
+use App\Exceptions\ItemLimitReached;
 use App\Jobs\LogUserAction;
 use App\Models\Catalog;
 use App\Models\CatalogType;
@@ -506,3 +507,84 @@ it('refuses a series from another account', function () {
         series: $series,
     )->execute();
 })->throws(ModelNotFoundException::class);
+
+it('refuses a new item once a hosted account has used its whole allowance', function () {
+    Queue::fake();
+    config(['pricing.hosted' => true]);
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    Item::factory()->count(15)->create(['catalog_id' => $catalog->id]);
+
+    expect(fn () => new CreateItem(
+        user: $owner,
+        catalog: $catalog,
+        name: 'Amazing Spider-Man #16',
+    )->execute())->toThrow(ItemLimitReached::class);
+
+    expect($account->items()->count())->toBe(15);
+});
+
+it('still accepts items inside the grace band', function () {
+    Queue::fake();
+    config(['pricing.hosted' => true]);
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    Item::factory()->count(12)->create(['catalog_id' => $catalog->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        catalog: $catalog,
+        name: 'Amazing Spider-Man #13',
+    )->execute();
+
+    expect($item)->toBeInstanceOf(Item::class);
+});
+
+it('ignores the allowance on a self hosted instance', function () {
+    Queue::fake();
+    config(['pricing.hosted' => false]);
+
+    $account = $this->createAccount();
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    Item::factory()->count(30)->create(['catalog_id' => $catalog->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        catalog: $catalog,
+        name: 'Amazing Spider-Man #31',
+    )->execute();
+
+    expect($item)->toBeInstanceOf(Item::class);
+});
+
+it('ignores the allowance once the account is unlocked', function () {
+    Queue::fake();
+    config(['pricing.hosted' => true]);
+
+    $account = $this->createAccount();
+    $account->update(['unlocked_at' => now()]);
+    $owner = $this->createUser();
+    $this->assignUserToAccount(user: $owner, account: $account, role: PermissionEnum::Owner->value);
+
+    $catalog = Catalog::factory()->create(['account_id' => $account->id]);
+    Item::factory()->count(30)->create(['catalog_id' => $catalog->id]);
+
+    $item = new CreateItem(
+        user: $owner,
+        catalog: $catalog,
+        name: 'Amazing Spider-Man #31',
+    )->execute();
+
+    expect($item)->toBeInstanceOf(Item::class);
+});

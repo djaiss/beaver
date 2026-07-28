@@ -107,6 +107,7 @@ enum UserActionEnum: string
     case TestimonialRejected = 'testimonial_rejected';
     case SiteOptionsUpdate = 'site_options_updated';
     case CloudflareCachePurged = 'cloudflare_cache_purged';
+    case PurchaseConsentRecorded = 'purchase_consent_recorded';
 
     public function translationKey(): string
     {
@@ -212,6 +213,7 @@ enum UserActionEnum: string
             self::TestimonialRejected => 'Rejected the testimonial by :name',
             self::SiteOptionsUpdate => 'Updated the site options from the instance administration',
             self::CloudflareCachePurged => 'Purged the Cloudflare cache from the instance administration',
+            self::PurchaseConsentRecorded => 'Confirmed the terms of unlocking the account',
         };
     }
 }

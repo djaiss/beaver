@@ -39,6 +39,10 @@ Você pode registrar endpoints de webhook, e cada um recebe um segredo de assina
 
 Importação e exportação existem apenas para definições de tipo de coleção. Ainda não há importação ou exportação em nível de item ou de coleção inteira. Para exportar tudo, quem auto-hospeda tem backups completos da instância; veja @doc(dataSafety.backupCollectionData).
 
+### Pagar para desbloquear uma conta hospedada
+
+Numa instância hospedada, o limite de itens é aplicado e as telas que o explicam estão prontas, incluindo a etapa de confirmação que registra o que você aceitou. O processador de pagamento por trás dessa etapa ainda não está ligado, então nada pode ser comprado de verdade e nenhuma conta pode ser desbloqueada pagando. A autohospedagem não tem limite e não precisa de nada disso. Veja @doc(account.freePlan).
+
 ### Administração da instância: suporte e avaliações
 
 No painel de administração da instância, as áreas de Suporte e Avaliações são espaços reservados que dizem exatamente isso. O restante do painel funciona; veja @doc(instanceAdmin.panel).

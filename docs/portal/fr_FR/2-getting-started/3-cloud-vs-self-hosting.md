@@ -11,13 +11,15 @@ Avant d'investir du temps dans KolleK, il est utile de savoir comment vous allez
 
 ## Il n'y a pas d'abonnement
 
-KolleK n'a ni offre, ni palier, ni fonctionnalité payante. Il n'y a aucune facturation dans l'application, quelle qu'elle soit. Quelle que soit la manière dont vous le faites fonctionner, vous obtenez la même application complète. Rien n'est verrouillé derrière une mise à niveau.
+KolleK n'a ni offre, ni palier, ni fonctionnalité payante. Quelle que soit la manière dont vous le faites fonctionner, vous obtenez la même application complète, et rien n'est verrouillé derrière une mise à niveau.
+
+Il y a une différence, et elle porte sur la taille plutôt que sur les fonctionnalités. Un compte hébergé contient dix objets gratuitement, puis cesse d'en accepter de nouveaux une fois cette réserve et une petite tolérance épuisées. Le déverrouiller demande un paiement unique. Une instance auto hébergée n'a aucune limite d'objets. Voir @doc(account.freePlan).
 
 :::note
-Il n'y a rien à acheter dans KolleK. L'auto hébergement est gratuit, et chaque fonctionnalité est incluse quelle que soit la manière dont vous l'utilisez.
+L'auto hébergement est gratuit et illimité. Chaque fonctionnalité est incluse quelle que soit la manière dont vous l'utilisez : ce qu'un compte hébergé paie, c'est l'hébergement, pas les fonctionnalités.
 :::
 
-Le choix ci dessous ne concerne donc que l'endroit où le logiciel s'exécute, pas ce que vous pouvez en faire.
+Le choix ci dessous concerne donc surtout l'endroit où le logiciel s'exécute, et le fait de préférer payer un serveur ou nous payer pour en maintenir un.
 
 ## Option 1 : l'héberger vous même
 
@@ -31,7 +33,7 @@ Si cela vous correspond, le guide d'installation se trouvera dans la section **A
 
 ## Option 2 : utiliser une instance hébergée
 
-Si vous préférez ne rien faire fonctionner vous même, quelqu'un peut proposer d'héberger une instance KolleK pour vous. C'est un arrangement de convenance géré entièrement en dehors de l'application. Cela ne change pas le logiciel, ne débloque rien de plus et n'ajoute aucun frais dans l'application.
+Si vous préférez ne rien faire fonctionner vous même, quelqu'un peut proposer d'héberger une instance KolleK pour vous. C'est un arrangement de convenance géré entièrement en dehors de l'application. Cela ne change pas le logiciel et ne débloque rien de plus. Sur notre propre service hébergé, le compte contient dix objets gratuitement avant de devoir être déverrouillé ; un autre opérateur peut organiser les choses différemment.
 
 Si vous utilisez une instance hébergée, vous pouvez sauter entièrement l'installation et passer directement à la création de votre compte.
 

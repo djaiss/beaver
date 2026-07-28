@@ -47,6 +47,9 @@ values that matter most:
 - `APP_PORT`: the host port the web container is published on.
 - `DB_PASSWORD` and `DB_ROOT_PASSWORD`: set real secrets before first boot.
 - `MAIL_*`: configure SMTP or Resend to send real email (defaults to the log).
+- `HOSTED_INSTANCE`: leave it `false`. It marks the managed instance we run and
+  charge for, where an account holds ten items for free before it has to be
+  unlocked. A self hosted instance has no item limit and nothing to buy.
 
 ## Data and persistence
 

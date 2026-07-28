@@ -58,11 +58,13 @@ You are responsible for checking important information with qualified profession
 
 ## 6. Payments and Hosted Plans
 
-If hosted plans are offered, pricing and plan details will be shown before purchase.
+On the hosted service, an account may hold a limited number of items free of charge. The current allowance is ten items, with five further items accepted as a grace. Once that allowance is used up, the account keeps everything already in it, and everything stays readable, searchable and exportable, but no new item can be added until the account is unlocked. Self-hosted instances are not subject to any such limit.
 
-Unless stated otherwise at checkout, fees are charged in advance and are non-recurring for one-time plans. Taxes may apply depending on your location.
+Unlocking an account is a single payment. Pricing and plan details are shown before purchase. Unless stated otherwise at checkout, fees are charged in advance and are non-recurring for one-time plans. Taxes may apply depending on your location.
 
-We may change pricing for future purchases, but changes will not retroactively alter a completed one-time purchase unless required by law or clearly stated in the purchase terms.
+Payments are final and non-refundable. This is stated on the confirmation screen before payment, and you are asked to confirm that you understand it. If something does not work as described, contact us and we will try to put it right. Self-hosting the software is free, and remains available as an alternative at no cost.
+
+We may change pricing for future purchases, but changes will not retroactively alter a completed one-time purchase unless required by law or clearly stated in the purchase terms. We may change the free allowance for new accounts, but an account already unlocked stays unlocked.
 
 ## 7. Availability and Backups
 
