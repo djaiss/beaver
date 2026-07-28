@@ -44,7 +44,7 @@
         <span class="text-sm text-muted-soft">({{ __('Optional') }})</span>
       @endif
     </div>
-    <input id="{{ $id }}" name="{{ $id }}" type="{{ $type }}" {{ $attributes->class($classes) }} value="{{ $value }}" {{ $autocomplete ? 'autocomplete="' . $autocomplete . '"' : '' }} placeholder="{{ $placeholder ? $placeholder : '' }}" @if($passManagerDisabled) data-1p-ignore @endif {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} {{ $disabled ? 'disabled' : '' }} />
+    <input id="{{ $id }}" name="{{ $id }}" type="{{ $type }}" {{ $attributes->class($classes) }} value="{{ $value }}" @if($autocomplete) autocomplete="{{ $autocomplete }}" @endif placeholder="{{ $placeholder ? $placeholder : '' }}" @if($passManagerDisabled) data-1p-ignore @endif {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} {{ $disabled ? 'disabled' : '' }} />
     @if ($help)
       <p class="mt-1 block text-xs text-muted">{{ $help }}</p>
     @endif
@@ -53,7 +53,7 @@
   </div>
 @else
   <div class="space-y-2">
-    <input id="{{ $id }}" name="{{ $id }}" type="{{ $type }}" {{ $attributes->class($classes) }} value="{{ $value }}" {{ $autocomplete ? 'autocomplete="' . $autocomplete . '"' : '' }} placeholder="{{ $placeholder ? $placeholder : '' }}" @if($passManagerDisabled) data-1p-ignore @endif {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} {{ $disabled ? 'disabled' : '' }} />
+    <input id="{{ $id }}" name="{{ $id }}" type="{{ $type }}" {{ $attributes->class($classes) }} value="{{ $value }}" @if($autocomplete) autocomplete="{{ $autocomplete }}" @endif placeholder="{{ $placeholder ? $placeholder : '' }}" @if($passManagerDisabled) data-1p-ignore @endif {{ $autofocus ? 'autofocus' : '' }} {{ $required ? 'required' : '' }} {{ $disabled ? 'disabled' : '' }} />
     @if ($help)
       <p class="mt-1 block text-xs text-muted">{{ $help }}</p>
     @endif

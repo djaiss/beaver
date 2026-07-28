@@ -12,6 +12,7 @@
   "license": "MIT",
   "require": {
     "php": "^8.4.0",
+    "aws/aws-sdk-php": "^3.389",
     "bacon/bacon-qr-code": "^3.0.3",
     "cesargb/laravel-magiclink": "^2.25.1",
     "erag/laravel-disposable-email": "^5.0",

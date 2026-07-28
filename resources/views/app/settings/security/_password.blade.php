@@ -6,7 +6,7 @@
     <div class="grid grid-cols-3 items-center border-b border-hairline-soft p-3">
       <p class="col-span-2 block text-sm font-medium text-ink">{{ __('Current password') }}</p>
       <div class="w-full justify-self-end">
-        <x-input id="current_password" type="password" required :error="$errors->get('current_password')" autofocus />
+        <x-input id="current_password" type="password" required :error="$errors->get('current_password')" autofocus :passManagerDisabled="false" autocomplete="current-password" />
       </div>
     </div>
 
@@ -14,7 +14,7 @@
     <div class="grid grid-cols-3 items-center border-b border-hairline-soft p-3">
       <p class="col-span-2 block text-sm font-medium text-ink">{{ __('New password') }}</p>
       <div class="w-full justify-self-end">
-        <x-input id="new_password" type="password" :help="__('Minimum 8 characters.')" passwordrules="minlength: 8" required :error="$errors->get('new_password')" :passManagerDisabled="false" />
+        <x-input id="new_password" type="password" :help="__('Minimum 8 characters.')" passwordrules="minlength: 8" required :error="$errors->get('new_password')" :passManagerDisabled="false" autocomplete="new-password" />
       </div>
     </div>
 
@@ -22,7 +22,7 @@
     <div class="grid grid-cols-3 items-center border-b border-hairline-soft p-3">
       <p class="col-span-2 block text-sm font-medium text-ink">{{ __('Confirm new password') }}</p>
       <div class="w-full justify-self-end">
-        <x-input id="new_password_confirmation" type="password" name="new_password_confirmation" required :error="$errors->get('new_password_confirmation')" />
+        <x-input id="new_password_confirmation" type="password" name="new_password_confirmation" passwordrules="minlength: 8" required :error="$errors->get('new_password_confirmation')" :passManagerDisabled="false" autocomplete="new-password" />
       </div>
     </div>
 
