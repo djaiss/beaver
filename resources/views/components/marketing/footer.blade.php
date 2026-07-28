@@ -1,6 +1,6 @@
 <footer class="mt-24 bg-[#101010] text-[#a1a1aa]">
   <div class="mx-auto max-w-[1200px] px-5 py-16 sm:px-8">
-    <div class="grid grid-cols-2 gap-8 border-b border-[#242424] pb-12 sm:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
+    <div class="grid grid-cols-2 gap-8 border-b border-[#242424] pb-12 sm:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_1fr]">
       <div class="col-span-2 sm:col-span-3 lg:col-span-1">
         <div class="mb-4 flex items-center gap-x-2.5">
           <x-logo size="28" hoverColor="#ffffff" aria-hidden="true" />
@@ -36,13 +36,19 @@
                   ])),
               ],
               [
-                  'title' => __('Resources'),
+                  'title' => __('Support'),
                   'links' => [
                       ['label' => __('Documentation'), 'url' => route('marketing.docs.portal.home.show')],
                       ['label' => __('API reference'), 'url' => route('marketing.docs.api.index')],
                       ['label' => __('FAQ'), 'url' => route('marketing.faq.index')],
-                      ['label' => __('Media kit'), 'url' => route('marketing.mediaKit.index')],
                       ['label' => __('Changelog'), 'url' => $github . '/releases'],
+                  ],
+              ],
+              [
+                  'title' => __('Company'),
+                  'links' => [
+                      ['label' => __('About'), 'url' => route('marketing.about.index')],
+                      ['label' => __('Media kit'), 'url' => route('marketing.mediaKit.index')],
                   ],
               ],
               [

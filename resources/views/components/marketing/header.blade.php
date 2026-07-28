@@ -61,8 +61,12 @@
         <x-wordmark height="17" class="text-ink" />
       </a>
 
-      {{-- Desktop navigation --}}
-      <div class="hidden items-center gap-x-1 lg:flex">
+      {{-- Desktop navigation. The bar carries its own text-body so the Features
+           link below reads the same as its neighbours before Alpine has run.
+           Its colour comes from a bound class, and a bound class is missing both
+           in the server HTML and in the copy Turbo caches, which left it
+           inheriting text-ink and fading back to grey on every page change. --}}
+      <div class="hidden items-center gap-x-1 text-body lg:flex">
         {{-- Features: hover opens the mega menu, click goes to the hub. The
              wrapper holds both the trigger and the panel, so mouseleave only
              fires once the pointer has left both (the panel is a descendant),

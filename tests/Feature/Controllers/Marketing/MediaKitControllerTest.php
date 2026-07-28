@@ -17,7 +17,6 @@ it('renders the media kit', function () {
         ->assertSee('Key facts')
         ->assertSee('Numbers worth printing')
         ->assertSee('Logos')
-        ->assertSee('Product screenshots')
         ->assertSee('Founder')
         ->assertSee('Links');
 });

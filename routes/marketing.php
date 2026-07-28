@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Marketing\AboutController;
 use App\Http\Controllers\Marketing\Docs\ApiDocsController;
 use App\Http\Controllers\Marketing\Docs\ApiDocsMarkdownController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalController;
@@ -53,6 +54,8 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
         Route::get('pricing', [PricingController::class, 'index'])->name('marketing.pricing.index');
 
         Route::get('faq', [FaqController::class, 'index'])->name('marketing.faq.index');
+
+        Route::get('about', [AboutController::class, 'index'])->name('marketing.about.index');
 
         Route::get('media-kit', [MediaKitController::class, 'index'])->name('marketing.mediaKit.index');
 
