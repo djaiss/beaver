@@ -3,9 +3,10 @@
   hardcoded rather than read from the database, so keeping the copy next to the markup it
   belongs to is easier to follow than chasing it through partials and a service.
 
-  Every user facing string goes through __() so the page can be translated later. None of
-  these keys are in lang/*.json yet, so Laravel falls back to the English text below. To
-  ship a locale, add the keys to every file in lang/.
+  Every user facing string goes through __(), and those keys are in every file in lang/,
+  so a string you add here has to be added to all of them (in the same order, which
+  scripts/check-translations.sh enforces) before the suite is green. Proper nouns are the
+  exception and stay as plain text: an album title or a person's name is not translated.
 --}}
 
 <x-marketing-layout>
@@ -43,7 +44,14 @@
   </section>
 
   {{-- HERO PRODUCT MOCKUP. The product drawn as markup rather than a screenshot, so it
-       stays crisp and follows the theme. --}}
+       stays crisp, follows the theme and gets translated with the rest of the page.
+
+       It is a copy of the real dashboard, and the point is that it stays one: the same
+       sidebar, the same six figures across the top, and the same three panels below.
+       When app/dashboard/index.blade.php or components/sidebar.blade.php gain or lose
+       something, change it here too, otherwise the first thing a visitor sees is a
+       product we no longer ship. The numbers are invented but they add up: the location
+       values sum to the estimated value, and that over the item count is the average. --}}
   <section class="mx-auto mt-10 max-w-[1200px] px-5 sm:mt-14 sm:px-8">
     <div class="overflow-hidden rounded-xl border border-hairline bg-canvas shadow-[0_24px_60px_rgba(17,17,17,0.10),0_4px_12px_rgba(17,17,17,0.05)]">
       <div class="flex h-11 items-center gap-x-2 border-b border-hairline-soft bg-sidebar px-4">
@@ -57,81 +65,192 @@
 
       <div class="flex min-h-[440px]">
         {{-- Sidebar. Hidden on small screens, where the real app collapses it too. --}}
-        <div class="hidden w-[212px] shrink-0 flex-col gap-y-5 border-r border-hairline-soft bg-sidebar p-4 md:flex">
-          <div class="flex items-center gap-x-2 px-1.5">
-            <x-logo size="22" aria-hidden="true" />
-            <x-wordmark height="14" class="text-ink" />
+        <div class="hidden w-[212px] shrink-0 flex-col gap-y-4 border-r border-hairline-soft bg-sidebar p-4 md:flex">
+          <div class="flex items-center justify-between px-1.5">
+            <div class="flex items-center gap-x-2">
+              <x-logo size="22" aria-hidden="true" />
+              <x-wordmark height="14" class="text-ink" />
+            </div>
+            <span class="flex size-7 items-center justify-center rounded-md border border-hairline bg-canvas text-muted">
+              <x-lucide-moon class="size-3.5" />
+            </span>
           </div>
 
-          <div class="flex flex-col gap-y-0.5">
-            <p class="px-2 py-1 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Workspace') }}</p>
-            <div class="flex items-center gap-x-2.5 rounded-md bg-canvas p-2 text-[13px] font-medium text-ink">
-              <span class="h-3.5 w-3.5 rounded-sm bg-brand"></span>{{ __('Dashboard') }}
-            </div>
-            <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
-              <span class="h-3.5 w-3.5 rounded-sm bg-muted"></span>{{ __('Search') }}
-            </div>
-            <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
-              <span class="h-3.5 w-3.5 rounded-sm bg-badge-violet"></span>{{ __('Collections') }}
-            </div>
-            <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
-              <span class="h-3.5 w-3.5 rounded-sm bg-badge-emerald"></span>{{ __('Locations') }}
-            </div>
+          <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
+            <x-lucide-search class="size-4 shrink-0 text-muted-soft" />
+            {{ __('Search') }}
+            <span class="ml-auto rounded-sm border border-hairline px-1.5 py-px text-[10px] font-semibold text-muted-soft">&#8984;K</span>
           </div>
 
-          <div class="flex flex-col gap-y-0.5">
-            <p class="px-2 py-1 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ __('Collections') }}</p>
-            <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
-              <span class="h-2 w-2 rounded-full bg-badge-orange"></span>{{ __('Marvel Comics') }}
+          @foreach ([
+              ['heading' => __('Workspace'), 'links' => [
+                  ['icon' => 'rocket', 'label' => __('Getting started'), 'active' => false, 'count' => null],
+                  ['icon' => 'layout-grid', 'label' => __('Dashboard'), 'active' => true, 'count' => null],
+                  ['icon' => 'layers', 'label' => __('Collections'), 'active' => false, 'count' => null],
+                  ['icon' => 'library', 'label' => __('Series'), 'active' => false, 'count' => null],
+                  ['icon' => 'map-pin', 'label' => __('Locations'), 'active' => false, 'count' => null],
+                  ['icon' => 'arrow-left-right', 'label' => __('Loans'), 'active' => false, 'count' => 1],
+              ]],
+              ['heading' => __('Account management'), 'links' => [
+                  ['icon' => 'settings', 'label' => __('Account settings'), 'active' => false, 'count' => null],
+              ]],
+              ['heading' => __('Documentation'), 'links' => [
+                  ['icon' => 'book-open', 'label' => __('Documentation site'), 'active' => false, 'count' => null],
+                  ['icon' => 'code', 'label' => __('API Docs'), 'active' => false, 'count' => null],
+                  ['icon' => 'life-buoy', 'label' => __('Support'), 'active' => false, 'count' => null],
+              ]],
+          ] as $group)
+            <div class="flex flex-col gap-y-0.5">
+              <p class="px-2 py-1 text-[11px] font-semibold tracking-wide text-muted-soft uppercase">{{ $group['heading'] }}</p>
+              @foreach ($group['links'] as $link)
+                <div @class([
+                    'flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium',
+                    'bg-canvas text-ink' => $link['active'],
+                    'text-body' => ! $link['active'],
+                ])>
+                  <x-dynamic-component :component="'lucide-' . $link['icon']" class="size-4 shrink-0" />
+                  {{ $link['label'] }}
+                  @if ($link['count'])
+                    <span class="ml-auto rounded-full bg-error px-1.5 text-[10px] font-semibold text-white">{{ $link['count'] }}</span>
+                  @endif
+                </div>
+              @endforeach
             </div>
-            <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
-              <span class="h-2 w-2 rounded-full bg-badge-violet"></span>{{ __('Jazz LPs') }}
-            </div>
-            <div class="flex items-center gap-x-2.5 rounded-md p-2 text-[13px] font-medium text-body">
-              <span class="h-2 w-2 rounded-full bg-badge-pink"></span>{{ __('Wine Cellar') }}
-            </div>
+          @endforeach
+
+          <div class="flex-1"></div>
+
+          <div class="flex items-center gap-x-2.5 border-t border-hairline pt-3">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-badge-emerald text-[11px] font-semibold text-white">MG</span>
+            <span class="flex min-w-0 flex-col">
+              <span class="truncate text-[13px] font-semibold text-ink">Monica Geller</span>
+              <span class="text-xs text-muted-soft">{{ __('Owner') }}</span>
+            </span>
+            <x-lucide-chevrons-up-down class="ml-auto size-4 shrink-0 text-muted-soft" />
           </div>
         </div>
 
         <div class="min-w-0 flex-1 p-5 sm:p-7">
           <div class="mb-6 flex items-start justify-between gap-4">
             <div>
-              <p class="text-lg font-semibold tracking-[-0.4px] text-ink sm:text-[22px]">{{ __('Good afternoon, :name', ['name' => 'Phoebe']) }}</p>
+              <p class="text-lg font-semibold tracking-[-0.4px] text-ink sm:text-[22px]">{{ __('Good afternoon, :name', ['name' => 'Monica']) }}</p>
               <p class="mt-0.5 text-[13px] text-muted">{{ __("Here's what's happening across your account.") }}</p>
             </div>
-            <div class="shrink-0 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-on-primary">{{ __('+ New collection') }}</div>
+            <div class="flex shrink-0 items-center gap-x-3">
+              <span class="hidden items-center gap-x-1.5 text-[13px] font-medium text-body lg:flex">
+                <x-lucide-sliders-horizontal class="size-4" />
+                {{ __('Customize') }}
+              </span>
+              <span class="flex items-center gap-x-1 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-on-primary">
+                <x-lucide-plus class="size-4" />
+                {{ __('New collection') }}
+              </span>
+            </div>
           </div>
 
-          <div class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {{-- The six headline figures, in the order the dashboard lists them. --}}
+          <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             @foreach ([
-                ['label' => __('Total items'), 'value' => '567', 'delta' => '+18'],
-                ['label' => __('Est. value'), 'value' => '$20.3k', 'delta' => '+$1.2k'],
-                ['label' => __('Collections'), 'value' => '4', 'delta' => __('3 members')],
-                ['label' => __('Sets'), 'value' => '3', 'delta' => __('in progress')],
-            ] as $stat)
-              <div class="rounded-lg bg-card p-3.5">
-                <p class="text-xs font-medium text-muted">{{ $stat['label'] }}</p>
-                <p class="mt-1 text-[22px] font-semibold tracking-[-0.5px] text-ink">{{ $stat['value'] }}</p>
-                <p class="mt-0.5 text-[11px] font-medium text-success">{{ $stat['delta'] }}</p>
+                ['label' => __('Collections'), 'value' => '6', 'note' => __('across your account'), 'dot' => 'bg-badge-violet'],
+                ['label' => __('Items'), 'value' => '1,284', 'note' => __('+:count added this month', ['count' => 37]), 'dot' => 'bg-brand'],
+                ['label' => __('Copies'), 'value' => '1,510', 'note' => __('physical pieces tracked'), 'dot' => 'bg-badge-emerald'],
+                ['label' => __('Estimated value'), 'value' => '$48,920', 'note' => trans_choice('across :count valued copy|across :count valued copies', 1463, ['count' => '1,463']), 'dot' => 'bg-success'],
+                ['label' => __('Added this month'), 'value' => '$2,140', 'note' => __('what came in this month is worth'), 'dot' => 'bg-badge-orange'],
+                ['label' => __('Average per item'), 'value' => '$38', 'note' => __('across the whole account'), 'dot' => 'bg-badge-pink'],
+            ] as $kpi)
+              <div class="flex flex-col gap-1 rounded-xl border border-hairline bg-canvas p-3.5">
+                {{-- Six tiles across a column this narrow leaves the longest label about
+                     90px, so it is set a notch smaller than the dashboard's own. --}}
+                <div class="flex items-center gap-1.5">
+                  <span class="size-2 shrink-0 rounded-sm {{ $kpi['dot'] }}"></span>
+                  <span class="truncate text-[10px] font-semibold text-muted">{{ $kpi['label'] }}</span>
+                </div>
+                <div class="text-[22px] leading-7 font-semibold tracking-[-0.5px] text-ink">{{ $kpi['value'] }}</div>
+                <div class="text-[11px] font-medium text-muted-soft">{{ $kpi['note'] }}</div>
               </div>
             @endforeach
           </div>
 
-          <p class="mb-3 text-sm font-semibold text-ink">{{ __('Your collections') }}</p>
-          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            @foreach ([
-                ['name' => __('Marvel Comics 1990s'), 'meta' => __(':items items · :value', ['items' => 142, 'value' => '$8,420']), 'from' => '#fb923c', 'to' => '#fdba74'],
-                ['name' => __('Vinyl, Jazz LPs'), 'meta' => __(':items items · :value', ['items' => 67, 'value' => '$3,150']), 'from' => '#8b5cf6', 'to' => '#c4b5fd'],
-                ['name' => __('Trading Cards'), 'meta' => __(':items items · :value', ['items' => 310, 'value' => '$5,980']), 'from' => '#34d399', 'to' => '#6ee7b7'],
-            ] as $card)
-              <div class="overflow-hidden rounded-lg border border-hairline">
-                <div class="h-16" style="background: repeating-linear-gradient(135deg, {{ $card['from'] }} 0px, {{ $card['from'] }} 9px, {{ $card['to'] }} 9px, {{ $card['to'] }} 18px)"></div>
-                <div class="px-3 py-2.5">
-                  <p class="text-[13px] font-semibold text-ink">{{ $card['name'] }}</p>
-                  <p class="mt-0.5 text-xs text-muted">{{ $card['meta'] }}</p>
+          <div class="grid grid-cols-1 gap-5 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+            {{-- Recent additions: the part that says "this is your shelf", so it leads. --}}
+            <div class="overflow-hidden rounded-xl border border-hairline bg-canvas">
+              <div class="flex items-center gap-2.5 border-b border-hairline-soft px-4 py-3">
+                <span class="size-2.5 shrink-0 rounded-full bg-brand"></span>
+                <h3 class="text-sm font-semibold text-ink">{{ __('Recent additions') }}</h3>
+                <span class="hidden text-xs text-muted-soft xl:inline">{{ __('the newest things you catalogued') }}</span>
+                <span class="ml-auto shrink-0 text-xs font-semibold text-body">{{ __('View all') }} &rarr;</span>
+              </div>
+
+              @foreach ([
+                  ['emoji' => '📚', 'name' => 'Daredevil #281', 'collection' => __('Marvel Comics 1990s'), 'condition' => __('Near Mint'), 'location' => __('Display Case'), 'copies' => 1],
+                  ['emoji' => '💿', 'name' => 'Kind of Blue', 'collection' => __('Jazz LPs'), 'condition' => __('Near Mint'), 'location' => __('Living Room'), 'copies' => 2],
+                  ['emoji' => '🍷', 'name' => 'Château Margaux 1995', 'collection' => __('Wine Cellar'), 'condition' => __('Good'), 'location' => __('Storage'), 'copies' => 6],
+                  ['emoji' => '🃏', 'name' => 'Charizard, 1st Edition', 'collection' => __('Trading Cards'), 'condition' => __('Near Mint'), 'location' => __('Display Case'), 'copies' => 1],
+              ] as $row)
+                <div class="flex items-center gap-3.5 border-b border-hairline-soft px-4 py-3 last:border-b-0">
+                  <div class="flex h-14 w-10 shrink-0 items-center justify-center rounded-lg bg-card text-lg">{{ $row['emoji'] }}</div>
+                  <div class="min-w-0 flex-1">
+                    <div class="truncate text-sm font-semibold text-ink">{{ $row['name'] }}</div>
+                    <div class="mt-0.5 truncate text-xs text-muted-soft">{{ $row['collection'] }} &middot; {{ $row['condition'] }} &middot; {{ $row['location'] }}</div>
+                  </div>
+                  <div class="shrink-0 text-right">
+                    <div class="text-xs font-semibold text-ink">{{ trans_choice(':count copy|:count copies', $row['copies'], ['count' => $row['copies']]) }}</div>
+                    <div class="mt-0.5 text-xs text-muted-soft">{{ __('1 day ago') }}</div>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+
+            <div class="flex flex-col gap-5">
+              {{-- Loans, because tracking what left the shelf is the part people do not
+                   expect a collection manager to do. It is the one panel here that is
+                   only numbers, so it is the one a phone drops to keep the hero short. --}}
+              <div class="hidden rounded-xl border border-hairline bg-canvas p-4 lg:block">
+                <div class="mb-3 flex items-center justify-between gap-3">
+                  <h3 class="text-sm font-semibold text-ink">{{ __('Loan snapshot') }}</h3>
+                  <span class="shrink-0 text-xs font-semibold text-body">{{ __('Open loans') }} &rarr;</span>
+                </div>
+                <div class="grid grid-cols-3 gap-y-3">
+                  @foreach ([
+                      ['label' => __('Lent out'), 'value' => '3', 'class' => 'text-ink'],
+                      ['label' => __('Borrowed in'), 'value' => '1', 'class' => 'text-ink'],
+                      ['label' => __('Overdue'), 'value' => '1', 'class' => 'text-error'],
+                      ['label' => __('Due soon'), 'value' => '2', 'class' => 'text-warning'],
+                      ['label' => __('Planned'), 'value' => '4', 'class' => 'text-ink'],
+                      ['label' => __('Returned'), 'value' => '27', 'class' => 'text-muted'],
+                  ] as $loan)
+                    <div>
+                      <div class="text-xl font-semibold tracking-[-0.5px] {{ $loan['class'] }}">{{ $loan['value'] }}</div>
+                      <div class="text-[11px] text-muted-soft">{{ $loan['label'] }}</div>
+                    </div>
+                  @endforeach
                 </div>
               </div>
-            @endforeach
+
+              {{-- Where things are: value by location, the panel nothing else on the page
+                   can show, and the one that reads as a real catalog at a glance. --}}
+              <div class="rounded-xl border border-hairline bg-canvas p-4">
+                <h3 class="text-sm font-semibold text-ink">{{ __('Where things are') }}</h3>
+                <p class="mt-0.5 mb-3.5 text-xs text-muted">{{ __('Estimated value by location.') }}</p>
+                <div class="flex flex-col gap-3">
+                  @foreach ([
+                      ['label' => __('Living Room'), 'value' => '$18,240', 'width' => 100, 'bar' => 'bg-brand'],
+                      ['label' => __('Storage'), 'value' => '$12,470', 'width' => 68, 'bar' => 'bg-badge-violet'],
+                      ['label' => __('Display Case'), 'value' => '$9,880', 'width' => 54, 'bar' => 'bg-badge-pink'],
+                      ['label' => __('Garage'), 'value' => '$5,410', 'width' => 30, 'bar' => 'bg-badge-emerald'],
+                      ['label' => __('Office'), 'value' => '$2,920', 'width' => 16, 'bar' => 'bg-badge-orange'],
+                  ] as $location)
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-20 shrink-0 truncate text-xs font-medium text-body">{{ $location['label'] }}</div>
+                      <div class="h-2 min-w-8 flex-1 overflow-hidden rounded-full bg-card">
+                        <div class="h-full rounded-full {{ $location['bar'] }}" style="width: {{ $location['width'] }}%"></div>
+                      </div>
+                      <div class="w-14 shrink-0 text-right text-xs font-semibold text-ink">{{ $location['value'] }}</div>
+                    </div>
+                  @endforeach
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

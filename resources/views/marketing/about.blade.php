@@ -5,6 +5,9 @@
         [
             'name' => 'Régis',
             'initial' => 'R',
+            // The one human on the list is the one with a face. Everybody else keeps
+            // their initial, which is what makes the difference read at a glance.
+            'photo' => 'images/regis.png',
             'kind' => __('Human'),
             'role' => __('Founder, support, main engineer'),
             'blurb' => __('Designs the product, writes the code, answers support requests and occasionally remembers to eat lunch.'),
@@ -190,7 +193,20 @@
       @foreach ($team as $member)
         <li class="flex flex-col gap-4 rounded-2xl border border-hairline-soft bg-card p-6.5 transition-colors hover:border-hairline">
           <div class="flex items-center gap-3.5">
-            <span aria-hidden="true" class="flex size-12 shrink-0 items-center justify-center rounded-xl border border-hairline bg-page font-mono text-lg font-medium text-ink">{{ $member['initial'] }}</span>
+            @if (! empty($member['photo']))
+              {{-- The name sits right next to it, so the photo is decorative and its alt
+                   stays empty rather than reading the name out a second time. --}}
+              <x-image
+                :src="asset($member['photo'])"
+                :srcset="asset($member['photo']) . ', ' . asset(Str::replaceLast('.', '@2x.', $member['photo'])) . ' 2x'"
+                alt=""
+                height="48"
+                width="48"
+                class="size-12 shrink-0 rounded-xl border border-hairline object-cover"
+              />
+            @else
+              <span aria-hidden="true" class="flex size-12 shrink-0 items-center justify-center rounded-xl border border-hairline bg-page font-mono text-lg font-medium text-ink">{{ $member['initial'] }}</span>
+            @endif
 
             <div class="flex min-w-0 flex-col gap-1">
               <h3 class="text-lg font-semibold tracking-[-0.3px] text-ink">{{ $member['name'] }}</h3>
