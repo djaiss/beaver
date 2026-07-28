@@ -7,13 +7,12 @@ namespace App\Mail;
 use App\Interfaces\HasEnvelope;
 use App\Models\Invitation;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AccountInvitation extends Mailable implements HasEnvelope, ShouldQueue
+class AccountInvitation extends Mailable implements HasEnvelope
 {
     use Queueable;
     use SerializesModels;

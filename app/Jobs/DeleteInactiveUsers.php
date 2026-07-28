@@ -39,7 +39,7 @@ class DeleteInactiveUsers implements ShouldQueue
             Mail::to(config('app.account_deletion_notification_email'))
                 ->queue(new UserAutomaticallyDeleted(
                     age: $user->created_at->diffInMonths(now()).' months',
-                ));
+                )->onQueue('low'));
         }
     }
 }

@@ -34,13 +34,13 @@
             <input type="hidden" name="token" value="{{ $request->token }}" />
 
             <!-- Email Address -->
-            <x-input id="email" type="email" :label="__('Email address')" :value="$request->email" required autocomplete="email" />
+            <x-input id="email" type="email" :label="__('Email address')" :value="$request->email" required :passManagerDisabled="false" autocomplete="username" />
 
             <!-- Password -->
-            <x-input id="password" type="password" :label="__('Password')" required autocomplete="new-password" />
+            <x-input id="password" type="password" :label="__('Password')" :help="__('Minimum 8 characters.')" passwordrules="minlength: 8" required :passManagerDisabled="false" autocomplete="new-password" />
 
             <!-- Confirm Password -->
-            <x-input id="password_confirmation" type="password" :label="__('Confirm password')" required autocomplete="new-password" />
+            <x-input id="password_confirmation" type="password" :label="__('Confirm password')" passwordrules="minlength: 8" required :passManagerDisabled="false" autocomplete="new-password" />
 
             <x-button class="w-full">{{ __('Reset password') }}</x-button>
           </x-form>

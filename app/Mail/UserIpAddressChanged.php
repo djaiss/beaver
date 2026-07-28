@@ -7,13 +7,12 @@ namespace App\Mail;
 use App\Interfaces\HasEnvelope;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class UserIpAddressChanged extends Mailable implements HasEnvelope, ShouldQueue
+class UserIpAddressChanged extends Mailable implements HasEnvelope
 {
     use Queueable;
     use SerializesModels;

@@ -86,7 +86,9 @@ class CreateSupportTeamMessage
             ),
             user: $this->ticket->user,
             emailType: EmailType::SupportTeamReply,
-        )->onQueue('high');
+            // Low: a support reply is welcome but nobody is blocked on it, unlike
+            // the sign in and security emails that make up the rest of high.
+        )->onQueue('low');
     }
 
     private function log(): void

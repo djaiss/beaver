@@ -36,25 +36,27 @@
             <!-- Name -->
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <div class="w-full">
-                <x-input type="text" id="first_name" :value="old('first_name')" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" autocomplete="first_name" />
+                <x-input type="text" id="first_name" :value="old('first_name')" :label="__('First name')" required placeholder="John" :error="$errors->get('first_name')" :passManagerDisabled="false" autocomplete="given-name" />
               </div>
 
               <div class="w-full">
-                <x-input type="text" id="last_name" :value="old('last_name')" :label="__('Last name')" required placeholder="Doe" :error="$errors->get('last_name')" autocomplete="last_name" />
+                <x-input type="text" id="last_name" :value="old('last_name')" :label="__('Last name')" required placeholder="Doe" :error="$errors->get('last_name')" :passManagerDisabled="false" autocomplete="family-name" />
               </div>
             </div>
 
             <!-- Email address -->
             <x-input type="email" id="email" :value="old('email')" :label="__('Email address')" required placeholder="john@doe.com" :error="$errors->get('email')" :passManagerDisabled="false" autocomplete="username" :help="__('We will never, ever send you marketing emails.')" />
 
-            <!-- Password -->
+            {{-- new-password on both, and passwordrules stating the floor the server
+                 actually enforces, so a password manager offers to generate one that
+                 will pass rather than filling an existing password in. --}}
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <div class="w-full">
-                <x-input type="password" id="password" :label="__('Password')" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="current-password" />
+                <x-input type="password" id="password" :label="__('Password')" :help="__('Minimum 8 characters.')" passwordrules="minlength: 8" required :error="$errors->get('password')" :passManagerDisabled="false" autocomplete="new-password" />
               </div>
 
               <div class="w-full">
-                <x-input type="password" id="password_confirmation" :label="__('Confirm password')" required :error="$errors->get('password_confirmation')" :passManagerDisabled="false" autocomplete="new-password" />
+                <x-input type="password" id="password_confirmation" :label="__('Confirm password')" passwordrules="minlength: 8" required :error="$errors->get('password_confirmation')" :passManagerDisabled="false" autocomplete="new-password" />
               </div>
             </div>
 

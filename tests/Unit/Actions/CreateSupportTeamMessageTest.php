@@ -49,8 +49,10 @@ it('emails the person who opened the conversation', function () {
         body: 'Fixed on our end.',
     )->execute();
 
+    // Low, not high: a support reply is welcome but nobody is blocked on it, and
+    // high is kept for the sign in and security emails.
     Queue::assertPushedOn(
-        queue: 'high',
+        queue: 'low',
         job: SendEmail::class,
         callback: fn (SendEmail $job): bool => $job->user->id === $ross->id
             && $job->emailType === EmailType::SupportTeamReply,

@@ -86,7 +86,7 @@ class InviteToAccount
 
     private function sendEmail(): void
     {
-        Mail::to($this->email)->queue(new AccountInvitation($this->invitation));
+        Mail::to($this->email)->queue(new AccountInvitation($this->invitation)->onQueue('low'));
     }
 
     private function log(): void

@@ -29,7 +29,7 @@
         <x-box>
           <x-form method="post" action="{{ route('password.email') }}" class="space-y-4">
             <!-- Email Address -->
-            <x-input id="email" type="email" :label="__('Email address')" required autofocus placeholder="john@doe.com" />
+            <x-input id="email" type="email" :label="__('Email address')" required autofocus placeholder="john@doe.com" :passManagerDisabled="false" autocomplete="username" />
 
             <div class="flex items-center justify-between">
               <x-link href="{{ route('login') }}" class="text-sm text-muted">
