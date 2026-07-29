@@ -22,6 +22,7 @@
     "laravel/sanctum": "^4.0",
     "laravel/tinker": "^3.0",
     "league/commonmark": "^2.8",
+    "league/flysystem-aws-s3-v3": "^3.35",
     "mallardduck/blade-lucide-icons": "^1.26",
     "pragmarx/google2fa-laravel": "^3.0",
     "resend/resend-laravel": "^1.2",

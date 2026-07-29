@@ -29,6 +29,31 @@ it('puts the price in perspective with the comparison grid', function () {
         ->assertSee('Zero monthly renewals');
 });
 
+it('renders the page in the language the url asks for', function () {
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/fr/pricing');
+
+    $response
+        ->assertOk()
+        ->assertSee('Des tarifs si simples que c&#039;en est presque incroyable.', false)
+        ->assertSee('Deux façons d&#039;entrer. Les deux honnêtes.', false)
+        ->assertDontSee('Two ways in. Both fair.');
+});
+
+it('hands the calculator its sentences already translated', function () {
+    // The quote panel is rendered by Alpine, so its copy travels to the browser
+    // in the x-data attribute rather than in the markup.
+    config()->set('marketing.show', true);
+
+    $response = $this->get('/fr/pricing');
+
+    $response
+        ->assertOk()
+        ->assertSee('Licence de base (une fois)', false)
+        ->assertSee('Notre comptable imaginaire approuve.', false);
+});
+
 it('offers to sign up when the visitor is a guest', function () {
     config()->set('marketing.show', true);
 

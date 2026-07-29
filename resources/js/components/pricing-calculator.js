@@ -1,7 +1,17 @@
-// The Suspiciously Accurate Pricing Calculator. Every slider, toggle and option feeds an
-// itemized estimate that, no matter how you drag it, always resolves to exactly $49.
-// That is the joke, and also the entire business model.
-export default () => ({
+/*
+ * The Suspiciously Accurate Pricing Calculator. Every slider, toggle and option feeds an
+ * itemized estimate that, no matter how you drag it, always resolves to exactly $49.
+ * That is the joke, and also the entire business model.
+ *
+ * Every user-facing string is passed in from Blade so it goes through __(), placeholders
+ * and all, which is why nothing here concatenates sentences. The enthusiasm levels stay
+ * English in the state and are only translated on the way out, so the comparisons in the
+ * markup keep working in every locale.
+ */
+const fill = (template, replacements) =>
+  Object.entries(replacements).reduce((text, [key, value]) => text.replaceAll(`:${key}`, value), template);
+
+export default ({ locale, enthusiasms, labels, quips }) => ({
   items: 4200,
   collections: 12,
   members: 3,
@@ -15,7 +25,7 @@ export default () => ({
   namedItems: false,
   enthusiasm: 'Rabid',
 
-  enthusiasmOptions: ['Casual', 'Keen', 'Rabid', 'Unhinged'],
+  enthusiasmOptions: Object.keys(enthusiasms),
 
   reset() {
     Object.assign(this, {
@@ -35,15 +45,15 @@ export default () => ({
   },
 
   fmt(n) {
-    return Number(n).toLocaleString('en-US');
+    return Number(n).toLocaleString(locale);
   },
 
   get itemsDisplay() {
-    return this.fmt(this.items) + ' items';
+    return fill(labels.items, { count: this.fmt(this.items) });
   },
 
   get storageDisplay() {
-    return this.fmt(this.storage) + ' GB';
+    return fill(labels.storage, { count: this.fmt(this.storage) });
   },
 
   get giveupsDisplay() {
@@ -51,7 +61,7 @@ export default () => ({
   },
 
   get raccoonsDisplay() {
-    return this.raccoons === 1 ? '1 raccoon' : this.raccoons + ' raccoons';
+    return this.raccoons === 1 ? labels.raccoonOne : fill(labels.raccoonMany, { count: this.raccoons });
   },
 
   get raccoonSurcharge() {
@@ -60,26 +70,24 @@ export default () => ({
 
   get lineItems() {
     return [
-      { label: 'Base license (one time)', value: '$49.00' },
-      { label: this.fmt(this.items) + ' items × $0.00', value: '$0.00' },
-      { label: this.members + ' team member' + (this.members === 1 ? '' : 's') + ', unlimited', value: 'included' },
-      { label: this.fmt(this.storage) + ' GB storage', value: 'included' },
-      { label: 'Shelf-chaos handling fee (' + this.chaos + '%)', value: 'waived' },
-      { label: 'Raccoon containment (' + this.raccoons + ')', value: this.raccoonSurcharge + ' → waived' },
-      { label: 'Enthusiasm multiplier (' + this.enthusiasm + ')', value: '×1.00' },
-      { label: 'Label-maker rebate', value: this.labelMaker ? '–$0.00' : '$0.00' },
+      { label: labels.baseLicense, value: '$49.00' },
+      { label: fill(labels.itemsLine, { count: this.fmt(this.items) }), value: '$0.00' },
+      {
+        label: this.members === 1 ? labels.memberOne : fill(labels.memberMany, { count: this.members }),
+        value: labels.included,
+      },
+      { label: fill(labels.storageLine, { count: this.fmt(this.storage) }), value: labels.included },
+      { label: fill(labels.chaosLine, { percent: this.chaos }), value: labels.waived },
+      {
+        label: fill(labels.raccoonLine, { count: this.raccoons }),
+        value: fill(labels.surchargeWaived, { amount: this.raccoonSurcharge }),
+      },
+      { label: fill(labels.enthusiasmLine, { level: enthusiasms[this.enthusiasm] }), value: '×1.00' },
+      { label: labels.rebateLine, value: this.labelMaker ? '–$0.00' : '$0.00' },
     ];
   },
 
   get quip() {
-    const quips = [
-      'Math checks out. It always does.',
-      'Our imaginary accountant approves.',
-      'Suspiciously round. Beautifully flat.',
-      'The algorithm has spoken. Loudly. $49.',
-      'No matter how you slice the log: $49.',
-    ];
-
     const index = (this.items + this.collections + this.members + this.raccoons + this.enthusiasmOptions.indexOf(this.enthusiasm)) % quips.length;
 
     return quips[index];
