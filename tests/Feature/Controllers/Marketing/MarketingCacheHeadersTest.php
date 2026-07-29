@@ -29,6 +29,24 @@ it('sends the same headers on the legal pages and the docs markdown', function (
     $this->get('/en/docs/api.md')->assertHeader('Cache-Control', $expected);
 });
 
+it('holds the redirect the bare domain answers with', function () use ($expected) {
+    // The most linked URL on the site, and its answer does not change. Without
+    // this it is the one public URL that wakes PHP on every single hit.
+    $this->get('/')
+        ->assertRedirect(route('marketing.index', ['locale' => 'en']))
+        ->assertHeader('Cache-Control', $expected);
+});
+
+it('never holds the redirect to the login page', function () {
+    // An instance with the public site off answers every public URL with a 302
+    // to the login page. A shared cache keeping that would serve it to everyone.
+    config()->set('marketing.show', false);
+
+    $response = $this->get('/')->assertRedirect(route('login'));
+
+    expect($response->headers->get('Cache-Control'))->not->toContain('s-maxage');
+});
+
 it('never lets a page that is not a rendered page be held', function () {
     // Laravel answers with `no-cache, private` of its own accord, so what matters
     // here is only that nothing invites a shared cache to keep it.

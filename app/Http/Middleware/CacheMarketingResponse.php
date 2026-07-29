@@ -16,7 +16,9 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * The browser lifetime is deliberately short. A purge reaches the CDN and
  * nothing else, so a page a visitor already holds cannot be taken back: five
- * minutes is the longest a mistake stays on screen.
+ * minutes is the longest a mistake stays on screen. That lifetime matters twice
+ * over for the bare domain: a browser handed a 301 with no lifetime on it may
+ * keep the redirect for good and never ask again.
  */
 class CacheMarketingResponse
 {
@@ -35,10 +37,12 @@ class CacheMarketingResponse
             return $response;
         }
 
-        // Only a rendered page. A 404 from an unknown slug, or the redirect to
-        // the login page an instance with the public site switched off answers
-        // with, must never be held anywhere.
-        if ($response->getStatusCode() !== 200) {
+        // A rendered page, or the permanent redirect the bare domain answers
+        // with. Everything else must never be held anywhere: a 404 from an
+        // unknown slug, and above all the 302 to the login page an instance with
+        // the public site switched off answers with. That is why this names 301
+        // rather than allowing any redirect through.
+        if (! in_array($response->getStatusCode(), [200, 301], true)) {
             return $response;
         }
 

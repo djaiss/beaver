@@ -5,10 +5,27 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('redirects the bare root to the default locale home', function () {
+it('redirects the bare root to the default locale home, permanently', function () {
     config()->set('marketing.show', true);
 
-    $this->get('/')->assertRedirect(route('marketing.index', ['locale' => 'en']));
+    $this->get('/')
+        ->assertMovedPermanently()
+        ->assertRedirect(route('marketing.index', ['locale' => 'en']));
+});
+
+it('sends every language of visitor to the same place from the bare root', function () {
+    config()->set('marketing.show', true);
+
+    // Deliberately not negotiated. The answer is held by a shared cache that does
+    // not vary on Accept-Language, so reading it here would hand whichever
+    // language warmed the cache to everybody who came after.
+    $this->withHeader('Accept-Language', 'fr-FR,fr;q=0.9')
+        ->get('/')
+        ->assertRedirect(route('marketing.index', ['locale' => 'en']));
+
+    $this->withHeader('Accept-Language', 'ja-JP,ja;q=0.9')
+        ->get('/')
+        ->assertRedirect(route('marketing.index', ['locale' => 'en']));
 });
 
 it('renders the marketing homepage under the locale prefix', function () {
