@@ -54,6 +54,16 @@ Diese Seiten sind für jeden Besucher gleich und ändern sich nur beim Neuausrol
 
 Wenn du die Website über Cloudflare auslieferst, setze zusätzlich `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ZONE_ID`. Sie sind es, die der Instanz erlauben, Cloudflare zum Verwerfen des Vorgehaltenen aufzufordern, wenn sich etwas ändert, das die öffentliche Website zeigt, von selbst oder über @doc(instanceAdmin.panel, "das Panel"). Lass sie leer auf einer direkt ausgelieferten Instanz: davor gibt es nichts zu leeren.
 
+## Spam-Schutz
+
+Nichts hindert einen Bot daran, dein Registrierungsformular auszufüllen, und auf einer Instanz, die jeder erreichen kann, passiert das früher oder später. `TURNSTILE_ENABLED` setzt ein Cloudflare-Turnstile-Widget auf die Formulare zum Anmelden, Registrieren und Zurücksetzen des Passworts, sodass eine Absendung, die es nicht gelöst hat, die Anwendung nie erreicht.
+
+Standardmäßig ist es `false`, und das ist die richtige Antwort für eine private Instanz, auf der du jeden kennst, der sich anmeldet. Zum Einschalten legst du in deinem Cloudflare-Konto ein Turnstile-Widget an, setzt dann `TURNSTILE_ENABLED` auf `true`, `TURNSTILE_SITE_KEY` auf den öffentlichen Schlüssel, den du bekommst, und `TURNSTILE_SECRET_KEY` auf den privaten. Der Schalter allein schützt nichts: ohne beide Schlüssel kommt kein Besucher an der Prüfung vorbei.
+
+:::note
+Mit eingeschaltetem Widget prüft deine Instanz jede Absendung bei Cloudflare, sie muss also `challenges.cloudflare.com` erreichen können, damit sich überhaupt jemand anmelden kann. Eine Prüfung, die nicht stattfinden kann, gilt absichtlich als fehlgeschlagene Prüfung. Eine Instanz ohne verlässlichen ausgehenden Internetzugang sollte das ausgeschaltet lassen.
+:::
+
 ## Was du nicht konfigurieren musst
 
 Sessions (`SESSION_DRIVER`), Cache (`CACHE_STORE`) und die Warteschlange (`QUEUE_CONNECTION`) laufen von Haus aus alle über `database`. Die Standardwerte sind für den mitgelieferten Stack korrekt, und es gibt keinen Redis oder anderen Dienst hinzuzufügen. Lass sie unangetastet, es sei denn, du weißt genau, warum du sie änderst.

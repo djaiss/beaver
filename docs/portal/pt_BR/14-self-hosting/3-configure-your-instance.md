@@ -54,6 +54,16 @@ Essas páginas são iguais para todos os visitantes e só mudam quando você rei
 
 Se você serve o site através do Cloudflare, defina também `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ZONE_ID`. São eles que permitem à instância pedir ao Cloudflare que descarte o que ele guarda quando algo que o site público mostra muda, por conta própria ou pelo @doc(instanceAdmin.panel, "painel"). Deixe vazios em uma instância servida diretamente: não há nada à frente dela para purgar.
 
+## Proteção contra spam
+
+Nada impede um bot de preencher seu formulário de cadastro, e numa instância que qualquer um alcança isso acontece mais cedo ou mais tarde. `TURNSTILE_ENABLED` coloca um widget do Cloudflare Turnstile nos formulários de login, de cadastro e de redefinição de senha, de modo que um envio que não o resolveu nunca chega à aplicação.
+
+O padrão é `false`, que é a resposta certa para uma instância privada onde você conhece todo mundo que entra. Para ligar, crie um widget do Turnstile na sua conta Cloudflare e depois defina `TURNSTILE_ENABLED` como `true`, `TURNSTILE_SITE_KEY` com a chave pública que ele fornece e `TURNSTILE_SECRET_KEY` com a privada. A opção sozinha não protege nada: sem as duas chaves, nenhum visitante passa pela verificação.
+
+:::note
+Com o widget ligado, sua instância verifica cada envio com o Cloudflare, então ela precisa alcançar `challenges.cloudflare.com` para que alguém consiga entrar. Uma verificação que não pode acontecer conta como uma verificação que falhou, de propósito. Uma instância sem acesso confiável de saída à internet deve deixar isso desligado.
+:::
+
 ## O que você não precisa configurar
 
 Sessões (`SESSION_DRIVER`), cache (`CACHE_STORE`) e a fila de jobs (`QUEUE_CONNECTION`) são todos baseados em `database` por padrão. Os valores padrão estão corretos para a stack fornecida, e não há Redis ou outro serviço para adicionar. Deixe-os como estão, a menos que você saiba exatamente por que está mudando.

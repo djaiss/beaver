@@ -10,6 +10,7 @@ use App\Jobs\CheckLastLogin;
 use App\Jobs\SendEmail;
 use App\Mail\LoginFailed;
 use App\Models\User;
+use App\Rules\Turnstile;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,10 +34,16 @@ class LoginController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $rules = [
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'max:255'],
-        ]);
+        ];
+
+        if (config('turnstile.enabled')) {
+            $rules['cf-turnstile-response'] = ['required', new Turnstile];
+        }
+
+        $request->validate($rules);
 
         $this->ensureIsNotRateLimited($request);
 

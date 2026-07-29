@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\App\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Rules\Turnstile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -24,9 +25,15 @@ class PasswordResetLinkController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $rules = [
             'email' => ['required', 'string', 'email', 'max:255'],
-        ]);
+        ];
+
+        if (config('turnstile.enabled')) {
+            $rules['cf-turnstile-response'] = ['required', new Turnstile];
+        }
+
+        $request->validate($rules);
 
         Password::sendResetLink($request->only('email'));
 

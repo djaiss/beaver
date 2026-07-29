@@ -80,6 +80,8 @@
               <x-error :messages="$errors->get('terms')" />
             </div>
 
+            <x-turnstile data-size="flexible" />
+
             <div class="flex items-center justify-between">
               <x-button class="w-full">{{ __('Next step: validate your email address') }}</x-button>
             </div>

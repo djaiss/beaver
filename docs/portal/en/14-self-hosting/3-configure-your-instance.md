@@ -54,6 +54,16 @@ Those pages are the same for every visitor and change only when you redeploy, so
 
 If you serve the site through Cloudflare, set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ZONE_ID` as well. They are what lets the instance tell Cloudflare to drop what it holds when something the public site shows changes, either by itself or through @doc(instanceAdmin.panel, "the panel"). Leave them empty on an instance served directly: there is nothing in front of it to purge.
 
+## Spam protection
+
+Nothing stops a bot from filling in your sign up form, and on an instance anybody can reach that happens sooner or later. `TURNSTILE_ENABLED` puts a Cloudflare Turnstile widget on the sign in, sign up and password reset forms, so a submission that has not solved it never reaches the application.
+
+It is `false` by default, which is the right answer for a private instance where you know everyone who signs in. To turn it on, create a Turnstile widget in your Cloudflare account, then set `TURNSTILE_ENABLED` to `true`, `TURNSTILE_SITE_KEY` to the public key it gives you and `TURNSTILE_SECRET_KEY` to the private one. The flag on its own protects nothing: without both keys, no visitor can get past the check.
+
+:::note
+With the widget on, your instance verifies every submission with Cloudflare, so it has to reach `challenges.cloudflare.com` for anybody to sign in. A verification that cannot happen counts as a verification that failed, deliberately. An instance without dependable outbound internet access should leave this off.
+:::
+
 ## What you do not need to configure
 
 Sessions (`SESSION_DRIVER`), cache (`CACHE_STORE`), and the queue (`QUEUE_CONNECTION`) are all `database` backed out of the box. The defaults are correct for the provided stack, and there is no Redis or other service to add. Leave them alone unless you know precisely why you are changing them.

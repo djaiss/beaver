@@ -31,6 +31,8 @@
             <!-- Email Address -->
             <x-input id="email" type="email" :label="__('Email address')" required autofocus placeholder="john@doe.com" :passManagerDisabled="false" autocomplete="username" />
 
+            <x-turnstile data-size="flexible" />
+
             <div class="flex items-center justify-between">
               <x-link href="{{ route('login') }}" class="text-sm text-muted">
                 {{ __('Back to login') }}

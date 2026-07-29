@@ -7,6 +7,7 @@ namespace App\Http\Controllers\App\Auth;
 use App\Actions\CreateAccount;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\Turnstile;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class RegistrationController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $rules = [
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => [
@@ -48,7 +49,13 @@ class RegistrationController extends Controller
                 Password::min(8)->uncompromised(),
             ],
             'terms' => ['accepted'],
-        ], [
+        ];
+
+        if (config('turnstile.enabled')) {
+            $rules['cf-turnstile-response'] = ['required', new Turnstile];
+        }
+
+        $validated = $request->validate($rules, [
             'terms.accepted' => __('You have to agree with the terms of use and the privacy policy to create an account.'),
         ]);
 
