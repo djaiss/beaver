@@ -34,9 +34,12 @@
       </a>
     </div>
 
-    <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted-soft">
+    {{-- The two claims read as one line from the small breakpoint up. A phone stacks them
+         instead of wrapping them, which is what left a separator dot stranded on a line
+         of its own once a translation ran long. --}}
+    <div class="mt-6 flex flex-col items-center gap-y-1.5 text-[13px] text-muted-soft sm:flex-row sm:justify-center sm:gap-x-6">
       <span>{{ __('Pay once, own it forever') }}</span>
-      <span aria-hidden="true">&middot;</span>
+      <span aria-hidden="true" class="hidden sm:inline">&middot;</span>
       <span>{{ __('No subscription') }}</span>
     </div>
   </section>
@@ -129,8 +132,11 @@
         </div>
 
         <div class="min-w-0 flex-1 p-5 sm:p-7">
-          <div class="mb-6 flex items-start justify-between gap-4">
-            <div>
+          {{-- Stacked on a phone and side by side above it, the way the real dashboard
+               header does it, so the greeting keeps the full width instead of being
+               squeezed into a column next to the button. --}}
+          <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+            <div class="min-w-0">
               <p class="text-lg font-semibold tracking-[-0.4px] text-ink sm:text-[22px]">{{ __('Good afternoon, :name', ['name' => 'Monica']) }}</p>
               <p class="mt-0.5 text-[13px] text-muted">{{ __("Here's what's happening across your account.") }}</p>
             </div>
@@ -189,7 +195,9 @@
                   <div class="flex h-14 w-10 shrink-0 items-center justify-center rounded-lg bg-card text-lg">{{ $row['emoji'] }}</div>
                   <div class="min-w-0 flex-1">
                     <div class="truncate text-sm font-semibold text-ink">{{ $row['name'] }}</div>
-                    <div class="mt-0.5 truncate text-xs text-muted-soft">{{ $row['collection'] }} &middot; {{ $row['condition'] }} &middot; {{ $row['location'] }}</div>
+                    {{-- A phone has room for the collection and nothing else, and half a
+                         truncated condition reads as a bug rather than as a screenshot. --}}
+                    <div class="mt-0.5 truncate text-xs text-muted-soft">{{ $row['collection'] }}<span class="hidden sm:inline"> &middot; {{ $row['condition'] }} &middot; {{ $row['location'] }}</span></div>
                   </div>
                   <div class="shrink-0 text-right">
                     <div class="text-xs font-semibold text-ink">{{ trans_choice(':count copy|:count copies', $row['copies'], ['count' => $row['copies']]) }}</div>
