@@ -23,8 +23,7 @@
 <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
 <link rel="alternate icon" href="{{ asset('favicon.ico') }}" sizes="32x32" />
 
-<link rel="preconnect" href="https://fonts.bunny.net" />
-<link href="https://fonts.bunny.net/css?family=inter:400,500,600&family=jetbrains-mono:400,500&display=swap" rel="stylesheet" />
+@fonts
 
 {{-- Apply the saved theme before paint to avoid a flash of the wrong theme. --}}
 <script>
