@@ -54,6 +54,8 @@ Esas páginas son iguales para todos los visitantes y solo cambian cuando redesp
 
 Si sirves el sitio a través de Cloudflare, define también `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ZONE_ID`. Son los que permiten a la instancia pedir a Cloudflare que descarte lo que guarda cuando cambia algo que muestra el sitio público, por su cuenta o desde @doc(instanceAdmin.panel, "el panel"). Déjalos vacíos en una instancia servida directamente: no hay nada delante que purgar.
 
+En ambos casos, la instancia responde ella misma a `/robots.txt` en lugar de servir un archivo del disco. Con el sitio público activado, dirige a los rastreadores a `/sitemap.xml`, que enumera todas las páginas públicas en cada idioma en el que se ofrecen. Con el sitio público desactivado, indica a todos los rastreadores que se mantengan fuera de todo el host, porque una instancia privada no tiene nada que merezca ser indexado.
+
 ## Protección contra el spam
 
 Nada impide que un bot rellene tu formulario de registro, y en una instancia a la que puede llegar cualquiera eso acaba pasando tarde o temprano. `TURNSTILE_ENABLED` coloca un widget de Cloudflare Turnstile en los formularios de inicio de sesión, de registro y de restablecimiento de contraseña, de modo que un envío que no lo haya resuelto nunca llega a la aplicación.

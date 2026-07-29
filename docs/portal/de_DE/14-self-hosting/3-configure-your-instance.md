@@ -54,6 +54,8 @@ Diese Seiten sind für jeden Besucher gleich und ändern sich nur beim Neuausrol
 
 Wenn du die Website über Cloudflare auslieferst, setze zusätzlich `CLOUDFLARE_API_TOKEN` und `CLOUDFLARE_ZONE_ID`. Sie sind es, die der Instanz erlauben, Cloudflare zum Verwerfen des Vorgehaltenen aufzufordern, wenn sich etwas ändert, das die öffentliche Website zeigt, von selbst oder über @doc(instanceAdmin.panel, "das Panel"). Lass sie leer auf einer direkt ausgelieferten Instanz: davor gibt es nichts zu leeren.
 
+In beiden Fällen beantwortet die Instanz `/robots.txt` selbst, statt eine Datei von der Festplatte auszuliefern. Ist die öffentliche Website eingeschaltet, verweist sie Crawler auf `/sitemap.xml`, die jede öffentliche Seite in jeder angebotenen Sprache auflistet. Ist sie ausgeschaltet, weist sie jeden Crawler an, den gesamten Host zu meiden, denn auf einer privaten Instanz gibt es nichts, was indexiert werden sollte.
+
 ## Spam-Schutz
 
 Nichts hindert einen Bot daran, dein Registrierungsformular auszufüllen, und auf einer Instanz, die jeder erreichen kann, passiert das früher oder später. `TURNSTILE_ENABLED` setzt ein Cloudflare-Turnstile-Widget auf die Formulare zum Anmelden, Registrieren und Zurücksetzen des Passworts, sodass eine Absendung, die es nicht gelöst hat, die Anwendung nie erreicht.

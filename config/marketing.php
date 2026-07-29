@@ -19,6 +19,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | English only pages
+    |--------------------------------------------------------------------------
+    |
+    | The public site is served at one URL per language prefix, but a handful of
+    | pages carry the very same English text behind all of them. Left alone they
+    | would compete with themselves in search, so they get one canonical URL
+    | between them (the English one) and claim no hreflang alternates.
+    |
+    | Both App\ViewModels\MarketingSeo, which writes the tags in the head, and
+    | App\Services\Sitemap, which lists the page once rather than seven times,
+    | read the list from here. They have to agree: a sitemap that contradicts a
+    | canonical is worse than no sitemap at all.
+    |
+    */
+
+    'english_only_routes' => [
+        'marketing.terms.index',
+        'marketing.privacy.index',
+        'marketing.mediaKit.index',
+        'marketing.docs.api.index',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Repository
     |--------------------------------------------------------------------------
     |

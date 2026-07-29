@@ -27,19 +27,6 @@ use Illuminate\Http\Request;
  */
 class MarketingSeo
 {
-    /**
-     * Routes whose body is the same English text whatever the prefix says. They
-     * get one canonical URL between them and no hreflang.
-     *
-     * @var list<string>
-     */
-    private const ENGLISH_ONLY_ROUTES = [
-        'marketing.terms.index',
-        'marketing.privacy.index',
-        'marketing.mediaKit.index',
-        'marketing.docs.api.index',
-    ];
-
     public function __construct(
         private MarketingLanguages $languages,
         private MarketingFeatures $features,
@@ -151,9 +138,14 @@ class MarketingSeo
         return (string) ($english['url'] ?? route('marketing.index', ['locale' => 'en']));
     }
 
+    /**
+     * Whether this page carries the same English text whatever the prefix says.
+     * The list is in config/marketing.php, because the sitemap has to reach the
+     * same verdict about the same page.
+     */
     private function isEnglishOnly(Request $request): bool
     {
-        return in_array($request->route()?->getName(), self::ENGLISH_ONLY_ROUTES, true);
+        return in_array($request->route()?->getName(), config('marketing.english_only_routes'), true);
     }
 
     /**
