@@ -54,6 +54,16 @@ Ces pages sont les mêmes pour tous les visiteurs et ne changent qu'au redéploi
 
 Si vous servez le site à travers Cloudflare, renseignez aussi `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ZONE_ID`. Ce sont eux qui permettent à l'instance de demander à Cloudflare de supprimer ce qu'il conserve quand quelque chose d'affiché sur le site public change, d'elle même ou depuis @doc(instanceAdmin.panel, "le panneau"). Laissez-les vides sur une instance servie directement : il n'y a rien à purger devant elle.
 
+## Protection contre le spam
+
+Rien n'empêche un robot de remplir votre formulaire d'inscription, et sur une instance accessible à tous cela finit toujours par arriver. `TURNSTILE_ENABLED` place un widget Cloudflare Turnstile sur les formulaires de connexion, d'inscription et de réinitialisation du mot de passe, de sorte qu'un envoi qui ne l'a pas résolu n'atteint jamais l'application.
+
+Ce réglage vaut `false` par défaut, ce qui est la bonne réponse pour une instance privée où vous connaissez toutes les personnes qui se connectent. Pour l'activer, créez un widget Turnstile dans votre compte Cloudflare, puis définissez `TURNSTILE_ENABLED` à `true`, `TURNSTILE_SITE_KEY` avec la clé publique qu'il vous donne et `TURNSTILE_SECRET_KEY` avec la clé privée. Le réglage seul ne protège rien : sans les deux clés, aucun visiteur ne peut passer la vérification.
+
+:::note
+Avec le widget activé, votre instance vérifie chaque envoi auprès de Cloudflare, elle doit donc pouvoir joindre `challenges.cloudflare.com` pour que quiconque puisse se connecter. Une vérification impossible compte comme une vérification échouée, délibérément. Une instance sans accès internet sortant fiable devrait laisser ce réglage désactivé.
+:::
+
 ## Ce que vous n'avez pas besoin de configurer
 
 Les sessions (`SESSION_DRIVER`), le cache (`CACHE_STORE`) et la file d'attente (`QUEUE_CONNECTION`) reposent tous sur `database` par défaut. Les valeurs par défaut sont correctes pour la stack fournie, et il n'y a pas de Redis ni d'autre service à ajouter. Laissez-les inchangées à moins de savoir précisément pourquoi vous les modifiez.

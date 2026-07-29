@@ -54,6 +54,16 @@ Esas páginas son iguales para todos los visitantes y solo cambian cuando redesp
 
 Si sirves el sitio a través de Cloudflare, define también `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ZONE_ID`. Son los que permiten a la instancia pedir a Cloudflare que descarte lo que guarda cuando cambia algo que muestra el sitio público, por su cuenta o desde @doc(instanceAdmin.panel, "el panel"). Déjalos vacíos en una instancia servida directamente: no hay nada delante que purgar.
 
+## Protección contra el spam
+
+Nada impide que un bot rellene tu formulario de registro, y en una instancia a la que puede llegar cualquiera eso acaba pasando tarde o temprano. `TURNSTILE_ENABLED` coloca un widget de Cloudflare Turnstile en los formularios de inicio de sesión, de registro y de restablecimiento de contraseña, de modo que un envío que no lo haya resuelto nunca llega a la aplicación.
+
+Por defecto es `false`, que es la respuesta correcta para una instancia privada en la que conoces a todo el que inicia sesión. Para activarlo, crea un widget de Turnstile en tu cuenta de Cloudflare y luego pon `TURNSTILE_ENABLED` en `true`, `TURNSTILE_SITE_KEY` con la clave pública que te da y `TURNSTILE_SECRET_KEY` con la privada. El indicador por sí solo no protege nada: sin las dos claves, ningún visitante puede superar la comprobación.
+
+:::note
+Con el widget activado, tu instancia verifica cada envío con Cloudflare, así que necesita poder alcanzar `challenges.cloudflare.com` para que alguien pueda iniciar sesión. Una verificación que no puede hacerse cuenta como una verificación fallida, a propósito. Una instancia sin acceso saliente a internet fiable debería dejar esto desactivado.
+:::
+
 ## Lo que no necesitas configurar
 
 Las sesiones (`SESSION_DRIVER`), la caché (`CACHE_STORE`) y la cola (`QUEUE_CONNECTION`) dependen todas de la base de datos (`database`) de fábrica. Los valores por defecto son correctos para la pila proporcionada, y no hay Redis ni ningún otro servicio que añadir. Déjalos como están a menos que sepas con precisión por qué los cambias.

@@ -44,15 +44,7 @@
               </label>
             </div>
 
-            {{--
-              @if (config('app.show_marketing_site'))
-              <div class="mt-4 mb-0">
-              <x-turnstile data-size="flexible" />
-              
-              <x-error :messages="$errors->get('cf-turnstile-response')" class="mt-2" />
-              </div>
-              @endif
-            --}}
+            <x-turnstile data-size="flexible" />
 
             <div class="flex items-center justify-between">
               <x-link href="{{ route('password.request') }}" class="text-sm text-muted">

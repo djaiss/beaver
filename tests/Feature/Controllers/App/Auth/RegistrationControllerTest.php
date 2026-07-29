@@ -5,6 +5,7 @@ use App\Enums\PermissionEnum;
 use App\Models\Account;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 
 uses(RefreshDatabase::class);
 
@@ -47,6 +48,61 @@ it('refuses to sign anybody up who has not agreed to the terms', function () {
 
     $response->assertSessionHasErrors('terms');
 
+    $this->assertGuest();
+    expect(User::query()->count())->toBe(0);
+});
+
+it('does not create a user without an anti-spam token', function () {
+    config(['turnstile.enabled' => true]);
+    Http::fake();
+
+    $response = $this->post('/register', [
+        'first_name' => 'Chandler',
+        'last_name' => 'Bing',
+        'email' => 'chandler.bing@friends.com',
+        'password' => '5UTHSmdj',
+        'password_confirmation' => '5UTHSmdj',
+        'terms' => '1',
+    ]);
+
+    $response->assertSessionHasErrors('cf-turnstile-response');
+    $this->assertGuest();
+    expect(User::query()->count())->toBe(0);
+});
+
+it('creates a user when cloudflare accepts the anti-spam token', function () {
+    config(['turnstile.enabled' => true]);
+    Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => true])]);
+
+    $response = $this->post('/register', [
+        'first_name' => 'Chandler',
+        'last_name' => 'Bing',
+        'email' => 'chandler.bing@friends.com',
+        'password' => '5UTHSmdj',
+        'password_confirmation' => '5UTHSmdj',
+        'terms' => '1',
+        'cf-turnstile-response' => 'token-from-the-widget',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('dashboard.index', absolute: false));
+});
+
+it('does not create a user when cloudflare rejects the anti-spam token', function () {
+    config(['turnstile.enabled' => true]);
+    Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => false])]);
+
+    $response = $this->post('/register', [
+        'first_name' => 'Chandler',
+        'last_name' => 'Bing',
+        'email' => 'chandler.bing@friends.com',
+        'password' => '5UTHSmdj',
+        'password_confirmation' => '5UTHSmdj',
+        'terms' => '1',
+        'cf-turnstile-response' => 'token-that-was-already-used',
+    ]);
+
+    $response->assertSessionHasErrors('cf-turnstile-response');
     $this->assertGuest();
     expect(User::query()->count())->toBe(0);
 });

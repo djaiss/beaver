@@ -54,6 +54,16 @@ docker compose up -d
 
 如果你通过 Cloudflare 提供站点，还要设置 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ZONE_ID`。当公开站点展示的内容发生变化时，实例正是靠它们告诉 Cloudflare 丢弃已保存的副本，无论是实例自己触发，还是从@doc(instanceAdmin.panel, "面板")触发。直接对外提供服务的实例请把它们留空：前面没有什么可清除的。
 
+## 垃圾注册防护
+
+没有什么能阻止机器人填写你的注册表单，而在任何人都能访问的实例上，这种事迟早会发生。`TURNSTILE_ENABLED` 会在登录、注册和重置密码这三个表单上加载 Cloudflare Turnstile 组件，没有通过验证的提交根本到不了应用本身。
+
+它默认是 `false`，对于你认识每一个登录者的私有实例来说，这就是正确的选择。要开启它，先在你的 Cloudflare 账户中创建一个 Turnstile 组件，然后把 `TURNSTILE_ENABLED` 设为 `true`，把它给你的公开密钥填进 `TURNSTILE_SITE_KEY`，私密密钥填进 `TURNSTILE_SECRET_KEY`。只打开开关并不能保护任何东西：缺少这两个密钥，没有访客能通过这项验证。
+
+:::note
+组件开启后，你的实例会把每一次提交都交给 Cloudflare 校验，因此它必须能访问 `challenges.cloudflare.com`，否则谁都无法登录。无法完成的验证会被当作失败的验证，这是有意为之。出网连接不稳定的实例应当保持关闭。
+:::
+
 ## 不需要配置的部分
 
 会话（`SESSION_DRIVER`）、缓存（`CACHE_STORE`）和队列（`QUEUE_CONNECTION`）默认都基于数据库存储。这些默认值对提供的服务栈来说已经是正确的，不需要额外添加 Redis 或其他服务。除非你清楚知道自己为什么要改，否则不要动它们。
