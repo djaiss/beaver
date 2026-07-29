@@ -139,6 +139,7 @@ class DocumentationPortal
                         'id' => $page['id'],
                         'title' => $page['title'],
                         'url' => $this->urlFor($locale, $page),
+                        'markdownUrl' => $this->markdownUrlFor($locale, $page),
                     ])->all(),
                 ];
             })
@@ -152,6 +153,24 @@ class DocumentationPortal
     public function urlFor(string $locale, array $page): string
     {
         return route('marketing.docs.portal.show', [
+            'locale' => $this->urlLocaleFor($locale),
+            'section' => $page['section'],
+            'slug' => $page['slug'],
+        ]);
+    }
+
+    /**
+     * The URL for a page's Markdown source in a given locale, the "View as
+     * Markdown" link and llms.txt point readers and assistants at instead of
+     * the rendered HTML.
+     */
+    public function markdownUrlFor(string $locale, array $page): string
+    {
+        if ($page['is_home']) {
+            return route('marketing.docs.portal.home.markdown', ['locale' => $this->urlLocaleFor($locale)]);
+        }
+
+        return route('marketing.docs.portal.markdown', [
             'locale' => $this->urlLocaleFor($locale),
             'section' => $page['section'],
             'slug' => $page['slug'],

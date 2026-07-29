@@ -54,17 +54,27 @@
 
             <h1 class="mb-4 text-3xl font-bold tracking-tight text-ink">{{ $page['title'] }}</h1>
 
-            {{-- Content actions (copy for LLM / view as Markdown are out of scope for now). --}}
-            <div class="mb-3.5 flex flex-wrap items-center gap-0 text-sm font-medium text-muted">
-              <button type="button" class="flex items-center gap-2 py-1 pr-4.5 hover:text-brand cursor-pointer">
+            {{-- Content actions: copy the page's Markdown source, or open it directly. --}}
+            <div
+              x-data="{
+                  copied: false,
+                  copyForLlm() {
+                      docsCopy(@js($markdown));
+                      this.copied = true;
+                      setTimeout(() => (this.copied = false), 1500);
+                  },
+              }"
+              class="mb-3.5 flex flex-wrap items-center gap-0 text-sm font-medium text-muted"
+            >
+              <button type="button" @click="copyForLlm()" class="flex items-center gap-2 py-1 pr-4.5 hover:text-brand cursor-pointer">
                 <x-lucide-clipboard class="h-[15px] w-[15px]" />
-                {{ __('Copy for LLM') }}
+                <span x-text="copied ? '{{ __('Copied') }}' : '{{ __('Copy for LLM') }}'"></span>
               </button>
               <span class="h-4 w-px bg-hairline"></span>
-              <button type="button" class="flex items-center gap-2 py-1 px-4.5 hover:text-brand cursor-pointer">
+              <a href="{{ $markdownUrl }}" target="_blank" class="flex items-center gap-2 py-1 px-4.5 hover:text-brand cursor-pointer">
                 <x-lucide-file-text class="h-[15px] w-[15px]" />
                 {{ __('View as Markdown') }}
-              </button>
+              </a>
             </div>
 
             <div class="mb-7 h-px bg-hairline-soft"></div>

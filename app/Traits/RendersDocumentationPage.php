@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Traits;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -33,6 +34,27 @@ trait RendersDocumentationPage
             'toc' => $rendered['toc'],
             'languageUrls' => $this->languageUrls($locale, $page),
             'excerpt' => $this->excerpt($parts['body']),
+            'markdown' => $this->parser->resolveDocLinks($parts['body'], $locale),
+            'markdownUrl' => $this->portal->markdownUrlFor($locale, $page),
+        ]);
+    }
+
+    /**
+     * The same page's Markdown source, with its @doc() references resolved to
+     * real links, served plain for the "View as Markdown" link and for an
+     * assistant that would rather not parse the rendered HTML.
+     *
+     * @param  array{page: array<string, mixed>, fallback: bool}  $resolved
+     */
+    private function renderMarkdown(string $locale, array $resolved): Response
+    {
+        $page = $resolved['page'];
+        $parts = $this->parser->split(file_get_contents($page['path']));
+        $body = $this->parser->resolveDocLinks($parts['body'], $locale);
+
+        return response($body, 200, [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Disposition' => 'inline',
         ]);
     }
 

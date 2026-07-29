@@ -9,6 +9,7 @@ use App\Http\Controllers\Marketing\Docs\DocsPortalController;
 use App\Http\Controllers\Marketing\Docs\DocsPortalHomeController;
 use App\Http\Controllers\Marketing\FaqController;
 use App\Http\Controllers\Marketing\FeaturesController;
+use App\Http\Controllers\Marketing\LlmsTxtController;
 use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\MediaKitController;
 use App\Http\Controllers\Marketing\PricingController;
@@ -69,6 +70,12 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
         ->middleware('marketing.cache')
         ->name('marketing.sitemap.index');
 
+    // llms.txt (https://llmstxt.org), one Markdown index for the whole host
+    // rather than one per language prefix, the same as the sitemap above.
+    Route::get('llms.txt', [LlmsTxtController::class, 'index'])
+        ->middleware('marketing.cache')
+        ->name('marketing.llms.index');
+
     // Every localized page is a public GET that changes only when the site is
     // redeployed, so the whole group carries the cache headers that let a CDN
     // hold it for a week (see config/marketing.php). Every visitor gets the same
@@ -94,9 +101,14 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
         Route::get('docs/api/{section}.md', [ApiDocsMarkdownController::class, 'show'])->where('section', '[a-z0-9\-]+')->name('marketing.docs.api.markdown.show');
 
         Route::get('docs', [DocsPortalHomeController::class, 'show'])->name('marketing.docs.portal.home.show');
+        Route::get('docs.md', [DocsPortalHomeController::class, 'markdown'])->name('marketing.docs.portal.home.markdown');
         Route::get('docs/{section}/{slug}', [DocsPortalController::class, 'show'])
             ->where('section', '[a-z0-9\-]+')
             ->where('slug', '[a-z0-9\-]+')
             ->name('marketing.docs.portal.show');
+        Route::get('docs/{section}/{slug}.md', [DocsPortalController::class, 'markdown'])
+            ->where('section', '[a-z0-9\-]+')
+            ->where('slug', '[a-z0-9\-]+')
+            ->name('marketing.docs.portal.markdown');
     });
 });
