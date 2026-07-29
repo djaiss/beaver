@@ -40,7 +40,7 @@ Alpine.data('typeSchemaValidator', TypeSchemaValidator);
 // list share the same page chrome, so they swap instantly. The table view uses a different
 // chrome (the sidebar moves to a top bar), so crossing into or out of it needs a reload for the
 // server to render the right shell.
-window.switchCollectionView = (component, target) => {
+window.switchCatalogView = (component, target) => {
   const url = document.getElementById('collection-view-endpoint')?.value;
   const token = document.querySelector('meta[name="csrf-token"]')?.content;
 
