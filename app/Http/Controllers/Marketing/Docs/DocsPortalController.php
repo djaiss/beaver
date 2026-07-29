@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\DocumentationParser;
 use App\Services\DocumentationPortal;
 use App\Traits\RendersDocumentationPage;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -41,5 +42,21 @@ class DocsPortalController extends Controller
         }
 
         return $this->renderPage($locale, $resolved);
+    }
+
+    /**
+     * The same page as plain Markdown, for the "View as Markdown" link.
+     */
+    public function markdown(string $locale, string $section, string $slug): Response
+    {
+        $locale = app()->getLocale();
+
+        $resolved = $this->portal->find($locale, $section, $slug);
+
+        if ($resolved === null || $resolved['fallback']) {
+            throw new NotFoundHttpException;
+        }
+
+        return $this->renderMarkdown($locale, $resolved);
     }
 }

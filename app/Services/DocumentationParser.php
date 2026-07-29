@@ -134,8 +134,12 @@ class DocumentationParser
      * Replace @doc(id) and @doc(id, "label") with Markdown links. An unknown
      * identifier renders as its label alone so the page still reads, while the
      * validation test catches the broken reference separately.
+     *
+     * Public because the raw Markdown served by the "View as Markdown" routes
+     * and llms.txt goes through this same resolution without the rest of the
+     * HTML rendering pipeline.
      */
-    private function resolveDocLinks(string $body, string $locale): string
+    public function resolveDocLinks(string $body, string $locale): string
     {
         return preg_replace_callback($this->docPattern(), function (array $matches) use ($locale): string {
             $id = $matches[1];

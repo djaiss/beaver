@@ -32,8 +32,7 @@ it('renders a documentation page with its navigation and table of contents', fun
         ->assertSee('Getting Started')
         // A resolved @doc() link points at another portal page, never a raw file path.
         ->assertSee('/en/docs/', false)
-        ->assertDontSee('@doc(', false)
-        ->assertDontSee('.md', false);
+        ->assertDontSee('@doc(', false);
 });
 
 it('renders note and warning admonitions from the markdown', function () {
@@ -140,4 +139,42 @@ it('drives the docs sidebar and content links through turbo', function () {
         // opt into Turbo Drive.
         ->assertSee('data-turbo="true"', false)
         ->assertSee('/en/docs/', false);
+});
+
+it('serves a documentation page as plain markdown', function () {
+    $response = $this->get('/en/docs/getting-started/create-your-account.md');
+
+    $response
+        ->assertOk()
+        ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+        ->assertSee('# Create your account', false)
+        // The @doc() directive resolves to a real, absolute link rather than
+        // shipping its own made up syntax to whoever reads the raw file.
+        ->assertSee(']('.route('marketing.docs.portal.show', ['locale' => 'en', 'section' => 'getting-started', 'slug' => 'getting-started-checklist']).')', false)
+        ->assertDontSee('@doc(', false);
+});
+
+it('serves the docs home as plain markdown', function () {
+    $response = $this->get('/en/docs.md');
+
+    $response
+        ->assertOk()
+        ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+        ->assertSee('# KolleK documentation', false);
+});
+
+it('returns not found for an unknown page as markdown', function () {
+    $this->get('/en/docs/getting-started/does-not-exist.md')->assertNotFound();
+});
+
+it('never serves a fallback page as markdown under a locale that does not carry it', function () {
+    $this->get('/fr/docs/getting-started/create-your-account.md')->assertNotFound();
+});
+
+it('links the page actions at the page own markdown route', function () {
+    $this->get('/en/docs/getting-started/create-your-account')
+        ->assertOk()
+        ->assertSee(route('marketing.docs.portal.markdown', ['locale' => 'en', 'section' => 'getting-started', 'slug' => 'create-your-account']), false)
+        ->assertSee('Copy for LLM')
+        ->assertSee('View as Markdown');
 });
