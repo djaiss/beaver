@@ -256,8 +256,8 @@ class DocumentationParser
             ?? ($kind === 'warning' ? __('Warning') : __('Note'));
 
         $palette = $kind === 'warning'
-            ? ['wrap' => 'border-amber-200 bg-amber-50', 'bar' => 'border-l-amber-500', 'title' => 'text-amber-800', 'body' => 'text-amber-900', 'icon' => 'text-amber-700']
-            : ['wrap' => 'border-blue-200 bg-blue-50', 'bar' => 'border-l-blue-500', 'title' => 'text-blue-800', 'body' => 'text-blue-900', 'icon' => 'text-blue-600'];
+            ? ['wrap' => 'border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950', 'bar' => 'border-l-amber-500', 'title' => 'text-amber-800 dark:text-amber-200', 'body' => 'text-amber-900 dark:text-amber-100', 'icon' => 'text-amber-700 dark:text-amber-400']
+            : ['wrap' => 'border-blue-200 bg-blue-50 dark:border-blue-900 dark:bg-blue-950', 'bar' => 'border-l-blue-500', 'title' => 'text-blue-800 dark:text-blue-200', 'body' => 'text-blue-900 dark:text-blue-100', 'icon' => 'text-blue-600 dark:text-blue-400'];
 
         $icon = $kind === 'warning'
             ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 shrink-0 '.$palette['icon'].'"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>'
@@ -281,16 +281,16 @@ class DocumentationParser
         foreach ($steps as $index => $step) {
             $number = $index + 1;
             $isLast = $number === $total;
-            $connector = $isLast ? '' : '<div class="my-1.5 w-0.5 flex-1 bg-gray-200"></div>';
+            $connector = $isLast ? '' : '<div class="my-1.5 w-0.5 flex-1 bg-hairline"></div>';
             $body = $this->convert($step['lines'], $locale);
 
             $html .= '<div class="flex gap-4.5">'
                 .'<div class="flex shrink-0 flex-col items-center">'
-                .'<div class="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-gray-900 text-sm font-semibold text-white">'.$number.'</div>'
+                .'<div class="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-primary text-sm font-semibold text-on-primary">'.$number.'</div>'
                 .$connector.'</div>'
                 .'<div class="min-w-0 flex-1 pb-7">'
-                .($step['title'] !== null ? '<div class="mb-1.5 text-[17px] font-semibold tracking-tight text-gray-900">'.e($step['title']).'</div>' : '')
-                .'<div class="doc-step text-[15px] leading-relaxed text-gray-600">'.$body.'</div></div></div>';
+                .($step['title'] !== null ? '<div class="mb-1.5 text-[17px] font-semibold tracking-tight text-ink">'.e($step['title']).'</div>' : '')
+                .'<div class="doc-step text-[15px] leading-relaxed text-body">'.$body.'</div></div></div>';
         }
 
         return $html.'</div>';
