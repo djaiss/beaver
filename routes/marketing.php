@@ -48,7 +48,19 @@ Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['market
 });
 
 Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
-    Route::get('/', fn () => redirect()->route('marketing.index'))->name('marketing.root');
+    // The bare domain is the most linked URL on the site and its answer does not
+    // change, so it is permanent rather than temporary, and it is held by the
+    // same caches as the pages behind it instead of waking PHP every time.
+    //
+    // It sends everybody to the default language rather than reading
+    // Accept-Language. The two cannot both be true here: the answer is kept by a
+    // shared cache that does not vary on that header, so negotiating would hand
+    // whichever language warmed the cache to everybody who came after. The
+    // x-default alternate already points search engines at the same place, and a
+    // visitor who wants another language is one click away in the footer.
+    Route::get('/', fn () => redirect()->route('marketing.index', status: 301))
+        ->middleware('marketing.cache')
+        ->name('marketing.root');
 
     // One sitemap for the whole site rather than one per language: the hreflang
     // alternates inside it are what tie the translations of a page together, and
@@ -60,8 +72,7 @@ Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
     // Every localized page is a public GET that changes only when the site is
     // redeployed, so the whole group carries the cache headers that let a CDN
     // hold it for a week (see config/marketing.php). Every visitor gets the same
-    // page, signed in or not, which is what makes one shared copy correct. The
-    // bare root redirect above is left out of the group on purpose.
+    // page, signed in or not, which is what makes one shared copy correct.
     Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['marketing.locale', 'marketing.cache'])->group(function (): void {
         Route::get('/', [MarketingController::class, 'index'])->name('marketing.index');
 
