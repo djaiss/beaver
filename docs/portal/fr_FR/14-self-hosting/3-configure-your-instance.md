@@ -54,6 +54,8 @@ Ces pages sont les mêmes pour tous les visiteurs et ne changent qu'au redéploi
 
 Si vous servez le site à travers Cloudflare, renseignez aussi `CLOUDFLARE_API_TOKEN` et `CLOUDFLARE_ZONE_ID`. Ce sont eux qui permettent à l'instance de demander à Cloudflare de supprimer ce qu'il conserve quand quelque chose d'affiché sur le site public change, d'elle même ou depuis @doc(instanceAdmin.panel, "le panneau"). Laissez-les vides sur une instance servie directement : il n'y a rien à purger devant elle.
 
+Dans les deux cas, l'instance répond elle-même à `/robots.txt` au lieu de servir un fichier présent sur le disque. Quand le site public est activé, elle oriente les robots vers `/sitemap.xml`, qui liste toutes les pages publiques dans chacune des langues où elles existent. Quand il est désactivé, elle demande à tous les robots de rester en dehors de l'hôte entier, car une instance privée n'a rien qui mérite d'être indexé.
+
 ## Protection contre le spam
 
 Rien n'empêche un robot de remplir votre formulaire d'inscription, et sur une instance accessible à tous cela finit toujours par arriver. `TURNSTILE_ENABLED` place un widget Cloudflare Turnstile sur les formulaires de connexion, d'inscription et de réinitialisation du mot de passe, de sorte qu'un envoi qui ne l'a pas résolu n'atteint jamais l'application.

@@ -54,6 +54,8 @@ Those pages are the same for every visitor and change only when you redeploy, so
 
 If you serve the site through Cloudflare, set `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ZONE_ID` as well. They are what lets the instance tell Cloudflare to drop what it holds when something the public site shows changes, either by itself or through @doc(instanceAdmin.panel, "the panel"). Leave them empty on an instance served directly: there is nothing in front of it to purge.
 
+Either way, the instance answers `/robots.txt` itself rather than serving a file from disk. With the public site on, it points crawlers at `/sitemap.xml`, which lists every public page in every language it is offered in. With the public site off, it tells every crawler to stay out of the whole host, because a private instance has nothing worth indexing.
+
 ## Spam protection
 
 Nothing stops a bot from filling in your sign up form, and on an instance anybody can reach that happens sooner or later. `TURNSTILE_ENABLED` puts a Cloudflare Turnstile widget on the sign in, sign up and password reset forms, so a submission that has not solved it never reaches the application.

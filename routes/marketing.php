@@ -13,6 +13,8 @@ use App\Http\Controllers\Marketing\MarketingController;
 use App\Http\Controllers\Marketing\MediaKitController;
 use App\Http\Controllers\Marketing\PricingController;
 use App\Http\Controllers\Marketing\PrivacyController;
+use App\Http\Controllers\Marketing\RobotsController;
+use App\Http\Controllers\Marketing\SitemapController;
 use App\Http\Controllers\Marketing\TermsController;
 use App\Http\Controllers\Marketing\TestimonialsController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +29,14 @@ $urlLocales = collect(config('docs.locales'))
     ->pluck('url')
     ->implode('|');
 
+// robots.txt sits outside the marketing gate: an instance that keeps the public
+// site off still has something to tell a crawler, and the redirect to the login
+// page the gate answers with says nothing at all. It carries no language prefix
+// because it is one file for the whole host.
+Route::get('robots.txt', [RobotsController::class, 'index'])
+    ->middleware('marketing.cache')
+    ->name('marketing.robots.index');
+
 // The terms of use and the privacy policy sit outside the marketing gate below.
 // The registration form links to them and refuses to sign anybody up until they
 // have agreed, so they have to be readable on an instance that keeps the rest of
@@ -39,6 +49,13 @@ Route::prefix('{locale}')->where(['locale' => $urlLocales])->middleware(['market
 
 Route::middleware(['marketing'])->group(function () use ($urlLocales): void {
     Route::get('/', fn () => redirect()->route('marketing.index'))->name('marketing.root');
+
+    // One sitemap for the whole site rather than one per language: the hreflang
+    // alternates inside it are what tie the translations of a page together, and
+    // they only work when every language of that page is in the same file.
+    Route::get('sitemap.xml', [SitemapController::class, 'index'])
+        ->middleware('marketing.cache')
+        ->name('marketing.sitemap.index');
 
     // Every localized page is a public GET that changes only when the site is
     // redeployed, so the whole group carries the cache headers that let a CDN
