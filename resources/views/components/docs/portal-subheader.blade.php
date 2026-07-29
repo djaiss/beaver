@@ -11,15 +11,7 @@
       {{ __('Documentation') }}
     </a>
 
-    {{-- Static search box (search is out of scope for now). --}}
-    <div class="hidden flex-1 cursor-text items-center gap-2 rounded-lg border border-hairline-soft bg-sidebar px-3 py-[7px] text-muted-soft sm:flex sm:max-w-md">
-      <x-lucide-search class="h-3.5 w-3.5" />
-      <span class="flex-1 text-sm">{{ __('Search documentation') }}</span>
-      <span class="rounded bg-hairline px-1.5 py-0.5 font-mono text-[11px] text-muted">&#8984;K</span>
-    </div>
-
-    {{-- Growing spacer so the language selector is pushed to the right edge of the
-         subheader, both on mobile (search hidden) and on desktop (search capped). --}}
+    {{-- Growing spacer so the language selector is pushed to the right edge of the subheader. --}}
     <div class="flex-1"></div>
 
     {{-- Language selector: mirrors the site language choice, keyed on the page id. --}}
