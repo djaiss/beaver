@@ -51,7 +51,6 @@
     ":count problems found": "問題が :count 件見つかりました",
     ":count series|:count series": ":countシリーズ|:countシリーズ",
     ":count set|:count sets": ":countセット|:countセット",
-    ":count stars": "スター:count件",
     ":count star|:count stars": "スター:count件|スター:count件",
     ":count subcategory|:count subcategories": ":countサブカテゴリー|:countサブカテゴリー",
     ":count sublocation|:count sublocations": ":countサブ保管場所|:countサブ保管場所",
