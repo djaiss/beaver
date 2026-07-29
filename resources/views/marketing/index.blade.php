@@ -35,8 +35,6 @@
     </div>
 
     <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted-soft">
-      <span>&starf; {{ __(':count stars', ['count' => '4.8k']) }}</span>
-      <span aria-hidden="true">&middot;</span>
       <span>{{ __('Pay once, own it forever') }}</span>
       <span aria-hidden="true">&middot;</span>
       <span>{{ __('No subscription') }}</span>

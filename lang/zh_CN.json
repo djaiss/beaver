@@ -51,7 +51,6 @@
     ":count problems found": "发现 :count 个问题",
     ":count series|:count series": ":count 个系列|:count 个系列",
     ":count set|:count sets": ":count 个套装|:count 个套装",
-    ":count stars": ":count 个星标",
     ":count star|:count stars": ":count 个星标|:count 个星标",
     ":count subcategory|:count subcategories": ":count 个子分类|:count 个子分类",
     ":count sublocation|:count sublocations": ":count 个子位置|:count 个子位置",
