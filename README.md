@@ -42,32 +42,32 @@ The model is small enough to hold in your head:
 
 ### Cataloguing
 
-- **Collections.** Group your items into named collections, each with its own emoji, description, and currency.
-- **Types and custom fields.** Describe what a collection holds with your own field definitions (text, number, date, boolean, or select), arranged in labelled groups so long forms stay readable. A dozen types ship ready made (Comics, Vinyl Records, Coins, Watches, Wine), and any type exports and imports as JSON.
-- **Items and photos.** Add catalogue entries with a description, tags, and multiple photos (one main visual, reorderable).
-- **Copies.** Track each physical instance you own, with its own condition, storage location, acquisition date, price paid, and estimated value.
-- **Copy history.** Record transactions, valuations, insurance, maintenance, provenance, moves, and documents against a copy, then read them back as one chronological timeline.
+- **[Collections](https://getkollek.com/en/docs/core-features/create-and-manage-collections).** Group your items into named collections, each with its own emoji, description, and currency.
+- **[Types and custom fields](https://getkollek.com/en/docs/organizing/set-up-collection-types-and-custom-fields).** Describe what a collection holds with your own field definitions (text, number, date, boolean, or select), arranged in labelled groups so long forms stay readable. A dozen types ship ready made (Comics, Vinyl Records, Coins, Watches, Wine), and any type [exports and imports as JSON](https://getkollek.com/en/docs/organizing/import-and-export-a-collection-type).
+- **[Items and photos](https://getkollek.com/en/docs/core-features/add-and-edit-items).** Add catalogue entries with a description, tags, and [multiple photos](https://getkollek.com/en/docs/core-features/add-photos-to-an-item) (one main visual, reorderable).
+- **[Copies](https://getkollek.com/en/docs/core-features/track-the-copies-you-own).** Track each physical instance you own, with its own condition, storage location, acquisition date, price paid, and estimated value.
+- **[Copy history](https://getkollek.com/en/docs/copy-history/copy-history).** Record transactions, valuations, insurance, maintenance, provenance, moves, and documents against a copy, then read them back as [one chronological timeline](https://getkollek.com/en/docs/copy-history/read-the-copy-timeline).
 
 ### Organization
 
-- **Categories, sets, and series.** Nest items inside a collection, track a finite set towards a target count, and tie a franchise together across several collections.
-- **Locations.** Record where items are physically stored, nested as deeply as you like (a shelf inside a box inside a room).
-- **Tags and conditions.** Reusable labels that work across every collection, and item grades from New to Damaged that you can rename or extend.
-- **Statistics.** Roll up what a collection cost and what it is worth, in your account currency.
+- **[Categories, sets, and series](https://getkollek.com/en/docs/core-concepts/categories-sets-and-series).** [Nest items](https://getkollek.com/en/docs/organizing/organize-items-with-categories) inside a collection, [track a finite set](https://getkollek.com/en/docs/organizing/track-a-set-to-completion) towards a target count, and [tie a franchise together](https://getkollek.com/en/docs/organizing/group-a-franchise-with-series) across several collections.
+- **[Locations](https://getkollek.com/en/docs/organizing/set-up-your-locations).** Record where items are physically stored, nested as deeply as you like (a shelf inside a box inside a room).
+- **[Tags](https://getkollek.com/en/docs/organizing/manage-account-tags) and [conditions](https://getkollek.com/en/docs/organizing/manage-item-conditions).** Reusable labels that work across every collection, and item grades from New to Damaged that you can rename or extend.
+- **[Statistics](https://getkollek.com/en/docs/insights/collection-statistics).** Roll up what a collection cost and what it is worth, in your account currency.
 
 ### Collaboration and safety
 
-- **Teams and roles.** Invite people into your account as owners, editors, or viewers, with permissions enforced on every write.
-- **Loans.** Lend a piece out or borrow one in, and see everything currently out of your hands in one place.
-- **Audit trail and trash.** Every action is logged and surfaced as an activity feed, and deleted records stay recoverable.
-- **Account security.** Sensitive values are encrypted at rest with Laravel's built in encryption, and sign in supports two factor authentication and passwordless magic links.
+- **[Teams and roles](https://getkollek.com/en/docs/collaboration/invite-people).** Invite people into your account as [owners, editors, or viewers](https://getkollek.com/en/docs/collaboration/roles-in-practice), with permissions enforced on every write.
+- **[Loans](https://getkollek.com/en/docs/core-features/loans-and-custody).** Lend a piece out or borrow one in, and see everything currently out of your hands in one place.
+- **[Audit trail](https://getkollek.com/en/docs/core-features/activity-feed-and-audit-trail) and [trash](https://getkollek.com/en/docs/data-safety/restore-from-trash).** Every action is logged and surfaced as an activity feed, and deleted records stay recoverable.
+- **[Account security](https://getkollek.com/en/docs/core-concepts/how-your-data-is-protected).** Sensitive values are encrypted at rest with Laravel's built in encryption, and sign in supports [two factor authentication](https://getkollek.com/en/docs/security/two-factor-authentication) and passwordless [magic links](https://getkollek.com/en/docs/security/magic-links).
 
 ### Platform
 
-- **JSON API.** A token authenticated REST API covers the whole catalogue. See [API](#api).
-- **Self hosting.** A production Docker image and Compose stack, with data safe upgrades. See [Run your own instance](#run-your-own-instance).
-- **Localized.** Available in English, French, Spanish, German, Portuguese (Brazil), Chinese (Simplified), and Japanese, each user picking their own. Translations live as one file per locale under `lang/`.
-- **Documentation.** A full portal is served from your own instance at `/en/docs`.
+- **[JSON API](https://getkollek.com/en/docs/developers/api-overview).** A token authenticated REST API covers the whole catalogue. See [API](#api).
+- **[Self hosting](https://getkollek.com/en/docs/self-hosting/install-with-docker).** A production Docker image and Compose stack, with data safe upgrades. See [Run your own instance](#run-your-own-instance).
+- **[Localized](https://getkollek.com/en/docs/account-and-profile/change-your-language).** Available in English, French, Spanish, German, Portuguese (Brazil), Chinese (Simplified), and Japanese, each user picking their own. Translations live as one file per locale under `lang/`.
+- **[Documentation](https://getkollek.com/en/docs).** A full portal, also served from your own instance at `/en/docs`.
 
 A few capabilities are visible in the interface before they are finished, currently global search, collection sharing, and webhook delivery. The [feature status page](https://getkollek.com/en/docs/troubleshooting/feature-status) is the honest list of what works today.
 
