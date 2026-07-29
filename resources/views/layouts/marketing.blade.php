@@ -17,7 +17,7 @@
       @include('components.marketing.header')
 
       <!-- Page Content -->
-      <main>
+      <main id="main-content" tabindex="-1" class="scroll-mt-20 focus:outline-none">
         @if (! empty($breadcrumbItems))
           <x-breadcrumb :items="$breadcrumbItems" />
         @endif

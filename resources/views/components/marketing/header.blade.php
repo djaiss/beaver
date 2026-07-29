@@ -35,6 +35,12 @@
   @keydown.escape.window="featuresOpen = false"
   class="contents"
 >
+  {{-- Skip to content. The wrapper is display:contents, so this stays the first
+       thing in the tab order of every page the header sits on, and a keyboard
+       visitor reaches the page without walking the whole navigation first. It is
+       off screen until it takes focus. --}}
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-60 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-on-primary">{{ __('Skip to content') }}</a>
+
   {{-- The announcement bar is written by an instance administrator in the site
        options, so it is only here when there is something to announce. --}}
   @if ($banner)
