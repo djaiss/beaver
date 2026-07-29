@@ -4,7 +4,8 @@
   are allowed to claim it. The application and the error pages sit behind auth or behind a
   4xx, so they get none of this.
 
-  Include it right after partials.meta, and pass the same $seo array the page fed to it.
+  Include it right after partials.meta, and pass the same $seo array the page fed to it,
+  along with the $structuredData graph from App\ViewModels\MarketingStructuredData.
 --}}
 
 <link rel="canonical" href="{{ $seo['canonical'] }}" />
@@ -32,3 +33,8 @@
 <meta name="twitter:title" content="{{ $seo['ogTitle'] }}" />
 <meta name="twitter:description" content="{{ $seo['description'] }}" />
 <meta name="twitter:image" content="{{ $seo['image'] }}" />
+
+{{-- One graph rather than a script tag per entity, so the organisation is declared once and
+     the rest of the page points at it. JSON_HEX_TAG is what keeps a translated answer that
+     happens to contain a closing tag from ending the script early. --}}
+<script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>

@@ -3,10 +3,11 @@
   <head>
     @php
         $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request());
+        $structuredData = app(\App\ViewModels\MarketingStructuredData::class)->forRequest(request());
     @endphp
 
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
-    @include('partials.marketingMeta', ['seo' => $seo])
+    @include('partials.marketingMeta', ['seo' => $seo, 'structuredData' => $structuredData])
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
 

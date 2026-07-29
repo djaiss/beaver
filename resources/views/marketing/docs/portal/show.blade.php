@@ -13,10 +13,14 @@
         // The portal home already says it is the documentation in its own title.
         $seoTitle = $page['is_home'] ? $page['title'] : $page['title'].' — '.__('documentation');
         $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request(), $seoTitle, $excerpt);
+
+        // The page has already been read off disk to render it, so the graph is handed what
+        // it needs rather than resolving the same page a second time.
+        $structuredData = app(\App\ViewModels\MarketingStructuredData::class)->forDocumentationPage(request(), $page, $excerpt);
     @endphp
 
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
-    @include('partials.marketingMeta', ['seo' => $seo])
+    @include('partials.marketingMeta', ['seo' => $seo, 'structuredData' => $structuredData])
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
 

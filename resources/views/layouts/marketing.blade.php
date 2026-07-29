@@ -3,16 +3,14 @@
   <head>
     @php
         $seo = app(\App\ViewModels\MarketingSeo::class)->forRequest(request(), $pageTitle ?? null, $pageDescription ?? null);
+        $structuredData = app(\App\ViewModels\MarketingStructuredData::class)->forRequest(request());
     @endphp
 
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
-    @include('partials.marketingMeta', ['seo' => $seo])
+    @include('partials.marketingMeta', ['seo' => $seo, 'structuredData' => $structuredData])
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
-
-    <!-- json-ld -->
-    @yield('json-ld')
   </head>
   <body class="font-sans antialiased">
     <div class="min-h-screen bg-page text-ink">
