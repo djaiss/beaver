@@ -1,3 +1,28 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@import './theme.css';
+
+/* Scan everything except the logged-in screens, which app.css builds on its own.
+   The shared components under views/components stay in both builds. */
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source not '../views/app';
+@source not '../views/partials/quotes.blade.php';
+
+/* The anchor link the documentation portal puts next to a heading. */
+.heading-anchor {
+  opacity: 0;
+  margin-left: 0.375rem;
+  font-weight: 400;
+  color: var(--color-gray-400);
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+:is(h1, h2, h3, h4, h5, h6):hover .heading-anchor {
+  opacity: 1;
+}
+
 /* Styles specific to the marketing site. */
 
 /*

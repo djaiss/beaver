@@ -10,7 +10,7 @@
     @include('partials.marketingMeta', ['seo' => $seo, 'structuredData' => $structuredData])
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
+    @vite(['resources/css/marketing.css', 'resources/js/marketing.js'])
   </head>
   <body class="font-sans antialiased">
     <div class="min-h-screen bg-page text-ink">

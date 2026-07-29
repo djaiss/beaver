@@ -23,6 +23,7 @@ use App\Models\Valuation;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +35,21 @@ class AppServiceProvider extends ServiceProvider
         $this->registerAuthorMacro();
         $this->registerMorphMap();
         $this->registerDefaultUrlLocale();
+        $this->registerTrackedAssets();
+    }
+
+    /**
+     * The public site and the logged-in application load different bundles, and
+     * Turbo merges the two documents' heads rather than replacing them, so a
+     * Turbo link crossing between them would append the other side's Alpine on
+     * top of the one already running. Tracking the asset tags makes Turbo notice
+     * the set changed and do a full page load instead. It also picks up a deploy
+     * that changed the hashed filenames, which is what the attribute is for.
+     */
+    private function registerTrackedAssets(): void
+    {
+        Vite::useScriptTagAttributes(['data-turbo-track' => 'reload']);
+        Vite::useStyleTagAttributes(['data-turbo-track' => 'reload']);
     }
 
     /**

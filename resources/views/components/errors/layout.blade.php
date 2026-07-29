@@ -18,7 +18,7 @@
     @include('partials.meta', ['title' => $code.' · '.$name])
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/marketing.css', 'resources/js/marketing.js'])
 
     <style>
       @keyframes floatY {

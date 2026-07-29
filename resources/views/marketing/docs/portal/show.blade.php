@@ -22,7 +22,7 @@
     @include('partials.meta', ['title' => $seo['title'], 'description' => $seo['description']])
     @include('partials.marketingMeta', ['seo' => $seo, 'structuredData' => $structuredData])
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/marketing.css', 'resources/js/marketing.js'])
+    @vite(['resources/css/marketing.css', 'resources/js/marketing.js'])
 
     <style>
       html { scroll-behavior: smooth; }
