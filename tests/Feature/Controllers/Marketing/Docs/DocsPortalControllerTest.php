@@ -150,7 +150,7 @@ it('serves a documentation page as plain markdown', function () {
         ->assertSee('# Create your account', false)
         // The @doc() directive resolves to a real, absolute link rather than
         // shipping its own made up syntax to whoever reads the raw file.
-        ->assertSee('](http://beaver.test/en/docs/getting-started/getting-started-checklist)', false)
+        ->assertSee(']('.route('marketing.docs.portal.show', ['locale' => 'en', 'section' => 'getting-started', 'slug' => 'getting-started-checklist']).')', false)
         ->assertDontSee('@doc(', false);
 });
 
