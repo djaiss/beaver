@@ -12,16 +12,6 @@ export default defineConfig({
         'resources/css/marketing.css',
         'resources/js/marketing.js'
       ],
-      fonts: [
-        bunny('Inter', {
-          alias: 'sans',
-          weights: [400, 500, 600],
-        }),
-        bunny('JetBrains Mono', {
-          alias: 'mono',
-          weights: [400, 500],
-        }),
-      ],
       refresh: true,
     }),
     tailwindcss(),
