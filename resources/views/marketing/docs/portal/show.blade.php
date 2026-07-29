@@ -41,7 +41,7 @@
         <x-docs.portal-sidebar :navigation="$navigation" :locale="$locale" :currentId="$page['id']" />
 
         {{-- Center: content --}}
-        <main id="doc-top" class="min-w-0 flex-1 px-6 py-10 sm:px-10 lg:px-16 lg:pb-24">
+        <main id="main-content" tabindex="-1" class="min-w-0 flex-1 scroll-mt-20 px-6 py-10 focus:outline-none sm:px-10 lg:px-16 lg:pb-24">
           <div class="mx-auto max-w-[720px]">
             {{-- Breadcrumb --}}
             <nav class="mb-5 flex items-center gap-2.5 text-sm text-muted">

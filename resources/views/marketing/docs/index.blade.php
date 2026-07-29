@@ -26,7 +26,7 @@
       <div class="flex">
         <x-api-docs.sidebar :navigation="$navigation" />
 
-        <main class="min-w-0 flex-1">
+        <main id="main-content" tabindex="-1" class="min-w-0 flex-1 scroll-mt-20 focus:outline-none">
           @foreach ($sections as $section)
             <x-api-docs.section :section="$section" />
           @endforeach
