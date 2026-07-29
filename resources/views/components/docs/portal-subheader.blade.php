@@ -4,18 +4,18 @@
     $current = collect($languageUrls)->firstWhere('current', true);
 @endphp
 
-<div class="sticky top-16 z-40 border-b border-gray-200 bg-white">
+<div class="sticky top-16 z-40 border-b border-hairline bg-page">
   <div class="mx-auto flex h-14 max-w-[1440px] items-center gap-4 px-5 sm:px-8">
-    <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $urlLocale]) }}" data-turbo="true" class="flex shrink-0 items-center gap-2 text-sm font-semibold text-gray-900">
+    <a href="{{ route('marketing.docs.portal.home.show', ['locale' => $urlLocale]) }}" data-turbo="true" class="flex shrink-0 items-center gap-2 text-sm font-semibold text-ink">
       <x-lucide-book-open class="h-4 w-4" />
       {{ __('Documentation') }}
     </a>
 
     {{-- Static search box (search is out of scope for now). --}}
-    <div class="hidden flex-1 cursor-text items-center gap-2 rounded-lg border border-gray-100 bg-gray-50 px-3 py-[7px] text-gray-400 sm:flex sm:max-w-md">
+    <div class="hidden flex-1 cursor-text items-center gap-2 rounded-lg border border-hairline-soft bg-sidebar px-3 py-[7px] text-muted-soft sm:flex sm:max-w-md">
       <x-lucide-search class="h-3.5 w-3.5" />
       <span class="flex-1 text-sm">{{ __('Search documentation') }}</span>
-      <span class="rounded bg-gray-200 px-1.5 py-0.5 font-mono text-[11px] text-gray-500">&#8984;K</span>
+      <span class="rounded bg-hairline px-1.5 py-0.5 font-mono text-[11px] text-muted">&#8984;K</span>
     </div>
 
     {{-- Growing spacer so the language selector is pushed to the right edge of the
@@ -27,30 +27,30 @@
       <button
         type="button"
         @click="open = !open"
-        class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-[7px] text-[13px] font-semibold text-gray-900 hover:bg-gray-50"
+        class="flex items-center gap-2 rounded-lg border border-hairline bg-page px-2.5 py-[7px] text-[13px] font-semibold text-ink hover:bg-sidebar"
       >
-        <x-lucide-globe class="h-[15px] w-[15px] text-gray-500" />
+        <x-lucide-globe class="h-[15px] w-[15px] text-muted" />
         {{ $current['code'] ?? strtoupper($locale) }}
-        <x-lucide-chevron-down class="h-3.5 w-3.5 text-gray-400" />
+        <x-lucide-chevron-down class="h-3.5 w-3.5 text-muted-soft" />
       </button>
 
       <div
         x-show="open"
         x-cloak
-        class="absolute top-11 right-0 z-50 w-56 rounded-xl border border-gray-200 bg-white p-1.5 shadow-xl"
+        class="absolute top-11 right-0 z-50 w-56 rounded-xl border border-hairline bg-page p-1.5 shadow-xl"
       >
         @foreach ($languageUrls as $language)
           <a
             href="{{ $language['url'] }}"
             data-turbo="true"
-            class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-gray-900 hover:bg-gray-50 {{ $language['current'] ? 'bg-gray-50' : '' }}"
+            class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-ink hover:bg-sidebar {{ $language['current'] ? 'bg-sidebar' : '' }}"
           >
-            <span class="w-6 font-mono text-[11px] font-semibold text-gray-500">{{ $language['code'] }}</span>
+            <span class="w-6 font-mono text-[11px] font-semibold text-muted">{{ $language['code'] }}</span>
             <span class="flex-1">{{ $language['label'] }}</span>
             @if ($language['current'])
-              <x-lucide-check class="h-[15px] w-[15px] text-blue-600" />
+              <x-lucide-check class="h-[15px] w-[15px] text-brand" />
             @elseif (! $language['translated'])
-              <span class="text-[11px] font-medium text-amber-700">{{ __('no version') }}</span>
+              <span class="text-[11px] font-medium text-warning">{{ __('no version') }}</span>
             @endif
           </a>
         @endforeach
